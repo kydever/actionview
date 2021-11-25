@@ -22,10 +22,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe0d46dc8e177a6145da51"
+        "$oid": "2"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b8d610e41179e66a02d1",
+    "role_id": "6",
     "permissions": [
         "view_project",
         "link_issue",
@@ -50,10 +50,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe0d76dc8e177772575911"
+        "$oid": "3"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b8bc10e4117a3f5a83e1",
+    "role_id": "4",
     "permissions": [
         "view_project",
         "assigned_issue",
@@ -89,10 +89,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe0e0bdc8e17777426ac22"
+        "$oid": "4"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b89d10e41179e512a341",
+    "role_id": "1",
     "permissions": [
         "view_project",
         "exec_workflow",
@@ -127,10 +127,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe0e1cdc8e177a60432293"
+        "$oid": "5"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b8aa10e4117a3d0cb902",
+    "role_id": "2",
     "permissions": [
         "view_project",
         "assigned_issue",
@@ -164,10 +164,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe0e3adc8e1778336eb2f3"
+        "$oid": "6"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b90610e4117a3e6491f1",
+    "role_id": "7",
     "permissions": [
         "view_project",
         "download_file",
@@ -188,10 +188,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe0e42dc8e17777147a545"
+        "$oid": "7"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b90c10e41179e3228cd2",
+    "role_id": "8",
     "permissions": [
         "view_project",
         "manage_project",
@@ -213,10 +213,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe0e74dc8e177772575912"
+        "$oid": "8"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b8b310e4117a822ea965",
+    "role_id": "3",
     "permissions": [
         "view_project",
         "assigned_issue",
@@ -249,10 +249,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe0e96dc8e17777324de33"
+        "$oid": "9"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b8c310e4117cae659e82",
+    "role_id": "5",
     "permissions": [
         "view_project",
         "assigned_issue",
@@ -287,10 +287,10 @@
 }
 {
     "_id": {
-        "$oid": "5dbe109ddc8e177d974598d1"
+        "$oid": "10"
     },
     "project_key": "$_sys_$",
-    "role_id": "5965b91310e4117a822ea966",
+    "role_id": "9",
     "permissions": [
         "view_project",
         "manage_project",
