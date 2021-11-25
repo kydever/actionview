@@ -1,0 +1,181 @@
+{
+    "_id": {
+        "$oid": "59658fc510e4117a3d0cb901"
+    },
+    "schema": [
+        {
+            "_id": "596486f910e4116d323fb755",
+            "name": "主题",
+            "key": "title",
+            "type": "Text",
+            "required": true
+        },
+        {
+            "_id": "596487e110e4116bd154a091",
+            "optionValues": [],
+            "defaultValue": "",
+            "name": "优先级",
+            "key": "priority",
+            "type": "Select"
+        },
+        {
+            "_id": "5964885910e4116d34637991",
+            "optionValues": [],
+            "defaultValue": "",
+            "name": "负责人",
+            "key": "assignee",
+            "type": "SingleUser"
+        },
+        {
+            "_id": "5964887c10e4116b9c114161",
+            "optionValues": [],
+            "defaultValue": "",
+            "name": "模块",
+            "key": "module",
+            "type": "MultiSelect"
+        },
+        {
+            "_id": "5964890910e4116b9969ed56",
+            "optionValues": [],
+            "defaultValue": "",
+            "name": "解决版本",
+            "key": "resolve_version",
+            "type": "SingleVersion"
+        },
+        {
+            "_id": "596488c410e4116b9a6205c1",
+            "name": "描述",
+            "key": "descriptions",
+            "type": "RichTextEditor"
+        },
+        {
+            "_id": "596489a510e4116d31204ac5",
+            "name": "附件",
+            "key": "attachments",
+            "type": "File"
+        },
+        {
+            "_id": "5b72041c10e4113c3337aa01",
+            "optionValues": [],
+            "defaultValue": "",
+            "name": "标签",
+            "key": "labels",
+            "type": "MultiSelect"
+        },
+        {
+            "_id": "5e2ee6d2dc8e172440674f6e",
+            "name": "期望开始时间",
+            "key": "expect_start_time",
+            "type": "DatePicker"
+        },
+        {
+            "_id": "5964881b10e41170d2614811",
+            "name": "期望完成时间",
+            "key": "expect_complete_time",
+            "type": "DatePicker"
+        },
+        {
+            "_id": "5e2ee6eadc8e1718556dffc7",
+            "name": "进度",
+            "key": "progress",
+            "type": "Number",
+            "maxValue": {
+                "$numberInt": "100"
+            },
+            "minValue": {
+                "$numberInt": "0"
+            }
+        },
+        {
+            "_id": "5aa6897d10e4111dfc17c581",
+            "optionValues": [],
+            "defaultValue": "",
+            "name": "Epic",
+            "key": "epic",
+            "type": "Select"
+        },
+        {
+            "_id": "5964898110e4116d323fb756",
+            "name": "原估时间",
+            "key": "original_estimate",
+            "type": "TimeTracking"
+        },
+        {
+            "_id": "5b0a6a9e10e4117d9211cfa3",
+            "name": "故事点数",
+            "key": "story_points",
+            "type": "Number",
+            "minValue": {
+                "$numberInt": "0"
+            }
+        },
+        {
+            "_id": "5b0c024010e4114b3e57d151",
+            "name": "关联用户",
+            "key": "related_users",
+            "type": "MultiUser"
+        }
+    ],
+    "field_ids": [
+        "596486f910e4116d323fb755",
+        "596487e110e4116bd154a091",
+        "5964885910e4116d34637991",
+        "5964887c10e4116b9c114161",
+        "5964890910e4116b9969ed56",
+        "596488c410e4116b9a6205c1",
+        "596489a510e4116d31204ac5",
+        "5b72041c10e4113c3337aa01",
+        "5e2ee6d2dc8e172440674f6e",
+        "5964881b10e41170d2614811",
+        "5e2ee6eadc8e1718556dffc7",
+        "5aa6897d10e4111dfc17c581",
+        "5964898110e4116d323fb756",
+        "5b0a6a9e10e4117d9211cfa3",
+        "5b0c024010e4114b3e57d151"
+    ],
+    "project_key": "$_sys_$",
+    "name": "系统默认界面",
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1613091802046"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1499828165372"
+        }
+    },
+    "description": "系统默认界面"
+}
+{
+    "_id": {
+        "$oid": "5965935e10e4117cae659e81"
+    },
+    "schema": [
+        {
+            "_id": "5964885910e4116d34637991",
+            "optionValues": [],
+            "defaultValue": "",
+            "name": "负责人",
+            "key": "assignee",
+            "type": "SingleUser",
+            "required": true
+        }
+    ],
+    "field_ids": [
+        "5964885910e4116d34637991"
+    ],
+    "project_key": "$_sys_$",
+    "name": "分配经办人",
+    "description": "主要用户流程中间环节",
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1613091802047"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1499829086690"
+        }
+    }
+}

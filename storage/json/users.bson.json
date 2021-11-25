@@ -1,0 +1,26 @@
+{
+    "_id": {
+        "$oid": "596429f510e4116b9969ed51"
+    },
+    "email": "admin@action.view",
+    "first_name": "系统管理员",
+    "password": "$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku",
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1499926453838"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1499736565692"
+        }
+    },
+    "last_login": {
+        "date": "2017-07-13 14:14:13.000000",
+        "timezone_type": {
+            "$numberInt": "3"
+        },
+        "timezone": "Asia/Chongqing"
+    },
+    "permissions": "{\"sys_admin\":true}"
+}

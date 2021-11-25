@@ -1,0 +1,19 @@
+{
+    "_id": {
+        "$oid": "59672581e12b140e4a3a57d1"
+    },
+    "properties": {
+        "login_mail_domain": "actionview.cn",
+        "week2day": {
+            "$numberInt": "5"
+        },
+        "day2hour": {
+            "$numberInt": "8"
+        }
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1499932066628"
+        }
+    }
+}

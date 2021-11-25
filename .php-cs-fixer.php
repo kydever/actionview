@@ -83,6 +83,8 @@ return (new PhpCsFixer\Config())
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()
+            ->exclude('front-end')
+            ->exclude('laravel')
             ->exclude('public')
             ->exclude('runtime')
             ->exclude('vendor')

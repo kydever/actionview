@@ -1,0 +1,328 @@
+{
+    "_id": {
+        "$oid": "5a633f4a10e41163094a5b7a"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5a633f4a10e41163094a5b79",
+    "permissions": [
+        "manage_project",
+        "create_issue",
+        "edit_issue"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1516453706510"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1516453706510"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe0d46dc8e177a6145da51"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b8d610e41179e66a02d1",
+    "permissions": [
+        "view_project",
+        "link_issue",
+        "upload_file",
+        "exec_workflow",
+        "download_file",
+        "add_comments",
+        "edit_self_comments",
+        "delete_self_comments",
+        "remove_self_file"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572736326946"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572736326946"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe0d76dc8e177772575911"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b8bc10e4117a3f5a83e1",
+    "permissions": [
+        "view_project",
+        "assigned_issue",
+        "assign_issue",
+        "create_issue",
+        "edit_issue",
+        "delete_issue",
+        "link_issue",
+        "move_issue",
+        "resolve_issue",
+        "close_issue",
+        "exec_workflow",
+        "upload_file",
+        "add_worklog",
+        "download_file",
+        "add_comments",
+        "edit_self_comments",
+        "delete_self_comments",
+        "edit_self_worklog",
+        "delete_self_worklog",
+        "remove_self_file"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572736374556"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572736374556"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe0e0bdc8e17777426ac22"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b89d10e41179e512a341",
+    "permissions": [
+        "view_project",
+        "exec_workflow",
+        "add_comments",
+        "edit_self_comments",
+        "delete_self_comments",
+        "add_worklog",
+        "edit_self_worklog",
+        "delete_self_worklog",
+        "create_issue",
+        "edit_issue",
+        "assign_issue",
+        "assigned_issue",
+        "close_issue",
+        "resolve_issue",
+        "link_issue",
+        "move_issue",
+        "upload_file",
+        "download_file",
+        "remove_self_file"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572736523751"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572736523751"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe0e1cdc8e177a60432293"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b8aa10e4117a3d0cb902",
+    "permissions": [
+        "view_project",
+        "assigned_issue",
+        "assign_issue",
+        "create_issue",
+        "edit_issue",
+        "link_issue",
+        "move_issue",
+        "resolve_issue",
+        "exec_workflow",
+        "upload_file",
+        "add_worklog",
+        "download_file",
+        "add_comments",
+        "edit_self_comments",
+        "delete_self_comments",
+        "edit_self_worklog",
+        "delete_self_worklog",
+        "remove_self_file"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572736540456"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572736540456"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe0e3adc8e1778336eb2f3"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b90610e4117a3e6491f1",
+    "permissions": [
+        "view_project",
+        "download_file",
+        "add_comments",
+        "edit_self_comments",
+        "delete_self_comments"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572736570639"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572736570639"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe0e42dc8e17777147a545"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b90c10e41179e3228cd2",
+    "permissions": [
+        "view_project",
+        "manage_project",
+        "download_file",
+        "add_comments",
+        "edit_self_comments",
+        "delete_self_comments"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572736578087"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572736578087"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe0e74dc8e177772575912"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b8b310e4117a822ea965",
+    "permissions": [
+        "view_project",
+        "assigned_issue",
+        "assign_issue",
+        "create_issue",
+        "edit_issue",
+        "link_issue",
+        "exec_workflow",
+        "upload_file",
+        "add_worklog",
+        "resolve_issue",
+        "download_file",
+        "add_comments",
+        "edit_self_comments",
+        "delete_self_comments",
+        "edit_self_worklog",
+        "delete_self_worklog",
+        "remove_self_file"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572736628878"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572736628878"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe0e96dc8e17777324de33"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b8c310e4117cae659e82",
+    "permissions": [
+        "view_project",
+        "assigned_issue",
+        "assign_issue",
+        "create_issue",
+        "edit_issue",
+        "delete_issue",
+        "link_issue",
+        "resolve_issue",
+        "close_issue",
+        "exec_workflow",
+        "upload_file",
+        "add_worklog",
+        "download_file",
+        "edit_self_worklog",
+        "delete_self_worklog",
+        "delete_self_comments",
+        "edit_self_comments",
+        "add_comments",
+        "remove_self_file"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572736662608"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572736662608"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5dbe109ddc8e177d974598d1"
+    },
+    "project_key": "$_sys_$",
+    "role_id": "5965b91310e4117a822ea966",
+    "permissions": [
+        "view_project",
+        "manage_project",
+        "create_issue",
+        "edit_issue",
+        "delete_issue",
+        "assign_issue",
+        "assigned_issue",
+        "resolve_issue",
+        "close_issue",
+        "reset_issue",
+        "link_issue",
+        "move_issue",
+        "exec_workflow",
+        "add_comments",
+        "edit_comments",
+        "delete_comments",
+        "add_worklog",
+        "edit_worklog",
+        "delete_worklog",
+        "upload_file",
+        "download_file",
+        "remove_file"
+    ],
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1572737181903"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1572737181903"
+        }
+    }
+}

@@ -1,0 +1,127 @@
+{
+    "_id": {
+        "$oid": "596551d84274278bb5257bf7"
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1476596596356"
+        }
+    },
+    "key": "Unresolved",
+    "name": "未解决",
+    "project_key": "$_sys_$",
+    "sn": {
+        "$numberDouble": "1.0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1499825217464"
+        }
+    },
+    "default": true
+}
+{
+    "_id": {
+        "$oid": "596551fd4274278bb5257bf8"
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1476596545063"
+        }
+    },
+    "key": "Fixed",
+    "name": "已解决",
+    "project_key": "$_sys_$",
+    "sn": {
+        "$numberDouble": "2.0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1476596545063"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "596552144274278bb5257bf9"
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1476596551520"
+        }
+    },
+    "key": "Wont Fixed",
+    "name": "无法修复",
+    "project_key": "$_sys_$",
+    "sn": {
+        "$numberDouble": "3.0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1476596551520"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5965523b4274278bb5257bfa"
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1476596508180"
+        }
+    },
+    "key": "Incomplete",
+    "name": "不明确",
+    "project_key": "$_sys_$",
+    "sn": {
+        "$numberDouble": "5.0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1492868242077"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "596552514274278bb5257bfb"
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1476596520326"
+        }
+    },
+    "key": "Cannot Reproduce",
+    "name": "无法复现",
+    "project_key": "$_sys_$",
+    "sn": {
+        "$numberDouble": "7.0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1492868199302"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "596553244274278bb5257bfc"
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1488350742587"
+        }
+    },
+    "key": "Duplicate",
+    "name": "重复问题",
+    "project_key": "$_sys_$",
+    "sn": {
+        "$numberDouble": "4.0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1488350742587"
+        }
+    }
+}

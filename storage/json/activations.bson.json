@@ -1,0 +1,25 @@
+{
+    "_id": {
+        "$oid": "596429f510e4116b9969ed52"
+    },
+    "code": "C5SKny95ix41rCbrh29Q14GbYwoEqj6I",
+    "user_id": "596429f510e4116b9969ed51",
+    "completed": true,
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1499736565699"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1499736565695"
+        }
+    },
+    "completed_at": {
+        "date": "2017-07-11 09:29:25.000000",
+        "timezone_type": {
+            "$numberInt": "3"
+        },
+        "timezone": "Asia/Chongqing"
+    }
+}

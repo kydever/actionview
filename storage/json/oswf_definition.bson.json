@@ -1,0 +1,1408 @@
+{
+    "_id": {
+        "$oid": "59661e8310e4117a3e6491f2"
+    },
+    "project_key": "$_sys_$",
+    "latest_modifier": {
+        "id": "596429f510e4116b9969ed51",
+        "name": "系统管理员"
+    },
+    "latest_modified_time": "2017-07-14 22:07:41",
+    "state_ids": [
+        "Open",
+        "In Progess",
+        "Resolved",
+        "Reopened",
+        "Closed"
+    ],
+    "screen_ids": [
+        "5965935e10e4117cae659e81"
+    ],
+    "steps": {
+        "$numberInt": "5"
+    },
+    "contents": {
+        "initial_action": {
+            "id": {
+                "$numberInt": "0"
+            },
+            "name": "initial_action",
+            "results": [
+                {
+                    "step": {
+                        "$numberInt": "1"
+                    },
+                    "status": "Underway"
+                }
+            ]
+        },
+        "steps": [
+            {
+                "id": {
+                    "$numberInt": "1"
+                },
+                "name": "开始",
+                "state": "Open",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "1001"
+                        },
+                        "name": "开始处理",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "2"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@assignIssue",
+                                "args": {
+                                    "assigneeParam": "me"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "start_progress_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "1002"
+                        },
+                        "name": "已解决",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "3"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "resolve_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "1003"
+                        },
+                        "name": "关闭问题",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "5"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "close_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "id": {
+                    "$numberInt": "2"
+                },
+                "name": "进行中",
+                "state": "In Progess",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "2001"
+                        },
+                        "name": "已解决",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "3"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "resolve_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "2002"
+                        },
+                        "name": "停止处理",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "1"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Unresolved"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "stop_progress_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "2003"
+                        },
+                        "name": "关闭问题",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "5"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "close_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "id": {
+                    "$numberInt": "3"
+                },
+                "name": "已完成",
+                "state": "Resolved",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "3001"
+                        },
+                        "name": "关闭问题",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "5"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "close_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "3002"
+                        },
+                        "name": "重新开发",
+                        "screen": "5965935e10e4117cae659e81",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "1"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Unresolved"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "normal"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "id": {
+                    "$numberInt": "4"
+                },
+                "name": "重新打开",
+                "state": "Reopened",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "4001"
+                        },
+                        "name": "开始处理",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "2"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@assignIssue",
+                                "args": {
+                                    "assigneeParam": "me"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "start_progress_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "4002"
+                        },
+                        "name": "已解决",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "3"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "resolve_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "4003"
+                        },
+                        "name": "关闭问题",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "5"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "close_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "id": {
+                    "$numberInt": "5"
+                },
+                "name": "关闭",
+                "state": "Closed",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "5001"
+                        },
+                        "name": "重新打开",
+                        "screen": "5965935e10e4117cae659e81",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "4"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Unresolved"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "reopen_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "name": "系统工作流",
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1500041261836"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1499864707769"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5968681e10e411208c64d28f"
+    },
+    "project_key": "demo",
+    "latest_modifier": {
+        "id": "596429f510e4116b9969ed51",
+        "name": "系统管理员"
+    },
+    "latest_modified_time": "2017-07-12 22:34:33",
+    "state_ids": [
+        "Open",
+        "In Progess",
+        "Resolved",
+        "Reopened",
+        "Closed"
+    ],
+    "screen_ids": [
+        "5965935e10e4117cae659e81"
+    ],
+    "steps": {
+        "$numberInt": "5"
+    },
+    "contents": {
+        "initial_action": {
+            "id": {
+                "$numberInt": "0"
+            },
+            "name": "initial_action",
+            "results": [
+                {
+                    "step": {
+                        "$numberInt": "1"
+                    },
+                    "status": "Underway"
+                }
+            ]
+        },
+        "steps": [
+            {
+                "id": {
+                    "$numberInt": "1"
+                },
+                "name": "开始",
+                "state": "Open",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "1001"
+                        },
+                        "name": "开始处理",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "2"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "start_progress_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@isSome",
+                                        "args": {
+                                            "someParam": "assignee"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "1002"
+                        },
+                        "name": "已解决",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "3"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "resolve_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "1003"
+                        },
+                        "name": "关闭问题",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "5"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "close_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "id": {
+                    "$numberInt": "2"
+                },
+                "name": "进行中",
+                "state": "In Progess",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "2001"
+                        },
+                        "name": "已解决",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "3"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "resolve_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "2002"
+                        },
+                        "name": "停止处理",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "1"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Unresolved"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "stop_progress_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "2003"
+                        },
+                        "name": "关闭问题",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "5"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "close_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "id": {
+                    "$numberInt": "3"
+                },
+                "name": "已完成",
+                "state": "Resolved",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "3001"
+                        },
+                        "name": "关闭问题",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "5"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "close_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "3002"
+                        },
+                        "name": "重新开发",
+                        "screen": "5965935e10e4117cae659e81",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "1"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Unresolved"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "normal"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "id": {
+                    "$numberInt": "4"
+                },
+                "name": "重新打开",
+                "state": "Reopened",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "4001"
+                        },
+                        "name": "开始处理",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "2"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "start_progress_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@isSome",
+                                        "args": {
+                                            "someParam": "assignee"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "4002"
+                        },
+                        "name": "已解决",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "3"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Fixed"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "resolve_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "resolve_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "id": {
+                            "$numberInt": "4003"
+                        },
+                        "name": "关闭问题",
+                        "screen": "",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "5"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "close_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "id": {
+                    "$numberInt": "5"
+                },
+                "name": "关闭",
+                "state": "Closed",
+                "actions": [
+                    {
+                        "id": {
+                            "$numberInt": "5001"
+                        },
+                        "name": "重新打开",
+                        "screen": "5965935e10e4117cae659e81",
+                        "results": [
+                            {
+                                "step": {
+                                    "$numberInt": "4"
+                                },
+                                "old_status": "Finished",
+                                "status": "Underway"
+                            }
+                        ],
+                        "post_functions": [
+                            {
+                                "name": "App\\Workflow\\Func@setResolution",
+                                "args": {
+                                    "resolutionParam": "Unresolved"
+                                }
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@setState"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@addComments"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@updIssue"
+                            },
+                            {
+                                "name": "App\\Workflow\\Func@triggerEvent",
+                                "args": {
+                                    "eventParam": "reopen_issue"
+                                }
+                            }
+                        ],
+                        "restrict_to": {
+                            "conditions": {
+                                "type": "and",
+                                "list": [
+                                    {
+                                        "name": "App\\Workflow\\Func@hasPermission",
+                                        "args": {
+                                            "permissionParam": "close_issue"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "name": "复制 - 系统工作流",
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1500014622650"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1500014622650"
+        }
+    }
+}

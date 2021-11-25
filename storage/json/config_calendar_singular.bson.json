@@ -1,0 +1,1121 @@
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0651"
+    },
+    "day": "2018/01/01",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063181"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063181"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0652"
+    },
+    "day": "2018/02/11",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063182"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063182"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0653"
+    },
+    "day": "2018/02/15",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063182"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063182"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0654"
+    },
+    "day": "2018/02/16",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063183"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063183"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0655"
+    },
+    "day": "2018/02/17",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063183"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063183"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0656"
+    },
+    "day": "2018/02/18",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063183"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063183"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0657"
+    },
+    "day": "2018/02/19",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063184"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063184"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0658"
+    },
+    "day": "2018/02/20",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063184"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063184"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0659"
+    },
+    "day": "2018/02/21",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063185"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063185"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e065a"
+    },
+    "day": "2018/02/24",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063185"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063185"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e065b"
+    },
+    "day": "2018/04/05",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063186"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063186"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e065c"
+    },
+    "day": "2018/04/06",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063186"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063186"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e065d"
+    },
+    "day": "2018/04/07",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063187"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063187"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e065e"
+    },
+    "day": "2018/04/08",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063187"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063187"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e065f"
+    },
+    "day": "2018/04/28",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063187"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063187"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0660"
+    },
+    "day": "2018/04/29",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063188"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063188"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0661"
+    },
+    "day": "2018/04/30",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063188"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063188"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0662"
+    },
+    "day": "2018/05/01",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063188"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063188"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0663"
+    },
+    "day": "2018/06/18",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063189"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063189"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0664"
+    },
+    "day": "2018/09/24",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063189"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063189"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0665"
+    },
+    "day": "2018/09/29",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063190"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063190"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0666"
+    },
+    "day": "2018/09/30",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063190"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063190"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0667"
+    },
+    "day": "2018/10/01",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063190"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063190"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0668"
+    },
+    "day": "2018/10/02",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063191"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063191"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0669"
+    },
+    "day": "2018/10/03",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063191"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063191"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e066a"
+    },
+    "day": "2018/10/04",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063192"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063192"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e066b"
+    },
+    "day": "2018/10/05",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063192"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063192"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e066c"
+    },
+    "day": "2018/10/06",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063192"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063192"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e066d"
+    },
+    "day": "2018/10/07",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063193"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063193"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e066e"
+    },
+    "day": "2018/12/29",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063193"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063193"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e066f"
+    },
+    "day": "2018/12/30",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063194"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063194"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0670"
+    },
+    "day": "2018/12/31",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063194"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063194"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0671"
+    },
+    "day": "2019/01/01",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063195"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063195"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0672"
+    },
+    "day": "2019/02/02",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063195"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063195"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0673"
+    },
+    "day": "2019/02/03",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063195"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063195"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0674"
+    },
+    "day": "2019/02/04",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063196"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063196"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0675"
+    },
+    "day": "2019/02/05",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063196"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063196"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0676"
+    },
+    "day": "2019/02/06",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063197"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063197"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0677"
+    },
+    "day": "2019/02/07",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063197"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063197"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0678"
+    },
+    "day": "2019/02/08",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063198"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063198"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0679"
+    },
+    "day": "2019/02/09",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063198"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063198"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e067a"
+    },
+    "day": "2019/02/10",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063199"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063199"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e067b"
+    },
+    "day": "2019/04/05",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063200"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063200"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e067c"
+    },
+    "day": "2019/04/27",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063200"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063200"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e067d"
+    },
+    "day": "2019/04/28",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063201"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063201"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e067e"
+    },
+    "day": "2019/04/29",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063201"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063201"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e067f"
+    },
+    "day": "2019/04/30",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063202"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063202"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0680"
+    },
+    "day": "2019/05/01",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063202"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063202"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0681"
+    },
+    "day": "2019/06/07",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063203"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063203"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0682"
+    },
+    "day": "2019/09/13",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063203"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063203"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0683"
+    },
+    "day": "2019/09/28",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063203"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063203"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0684"
+    },
+    "day": "2019/09/29",
+    "flag": {
+        "$numberInt": "1"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063204"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063204"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0685"
+    },
+    "day": "2019/10/01",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063204"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063204"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0686"
+    },
+    "day": "2019/10/02",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063205"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063205"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0687"
+    },
+    "day": "2019/10/03",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063205"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063205"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0688"
+    },
+    "day": "2019/10/04",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063206"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063206"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e0689"
+    },
+    "day": "2019/10/05",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063206"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063206"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e068a"
+    },
+    "day": "2019/10/06",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063206"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063206"
+        }
+    }
+}
+{
+    "_id": {
+        "$oid": "5b11532f10e41129e73e068b"
+    },
+    "day": "2019/10/07",
+    "flag": {
+        "$numberInt": "0"
+    },
+    "updated_at": {
+        "$date": {
+            "$numberLong": "1527862063207"
+        }
+    },
+    "created_at": {
+        "$date": {
+            "$numberLong": "1527862063207"
+        }
+    }
+}
