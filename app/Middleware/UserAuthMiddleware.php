@@ -26,7 +26,7 @@ class UserAuthMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $token = $request->getCookieParams()['token'] ?? '';
+        $token = $request->getCookieParams()[UserAuth::X_TOKEN] ?? '';
 
         UserAuth::instance()->load($token);
 

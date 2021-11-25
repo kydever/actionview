@@ -21,6 +21,8 @@ class UserAuth
 {
     use StaticInstance;
 
+    public const X_TOKEN = 'x-token';
+
     private int $userId = 0;
 
     private string $token = '';

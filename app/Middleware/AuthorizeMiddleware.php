@@ -26,6 +26,8 @@ class AuthorizeMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        var_dump(123);
+
         UserAuth::instance()->build();
 
         return $handler->handle($request);

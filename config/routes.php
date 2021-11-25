@@ -14,3 +14,10 @@ use Hyperf\HttpServer\Router\Router;
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController::index');
 
 Router::post('/session', App\Controller\SessionController::class . '::create');
+Router::get('/session', App\Controller\SessionController::class . '::getSession');
+
+Router::addGroup('/', function () {
+    Router::get('mysetting', App\Controller\MySettingController::class . '::show');
+}, [
+    'middleware' => [App\Middleware\AuthorizeMiddleware::class],
+]);

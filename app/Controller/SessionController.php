@@ -34,12 +34,16 @@ class SessionController extends Controller
 
         $response = $this->response->response();
         if ($response instanceof Response) {
-            $response = $response->withCookie(new Cookie('x-token', UserAuth::instance()->getToken()));
+            $response = $response->withCookie(new Cookie(UserAuth::X_TOKEN, UserAuth::instance()->getToken()));
             Context::set(ResponseInterface::class, $response);
         }
 
         return $this->response->success([
             'user' => $result,
         ]);
+    }
+
+    public function getSession()
+    {
     }
 }
