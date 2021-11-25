@@ -1,22 +1,85 @@
 # 介绍
 
-Hyperf 是基于 `Swoole 4.5+` 实现的高性能、高灵活性的 PHP 持久化框架，内置协程服务器及大量常用的组件，性能较传统基于 `PHP-FPM` 的框架有质的提升，提供超高性能的同时，也保持着极其灵活的可扩展性，标准组件均以最新的 [PSR 标准](https://www.php-fig.org/psr) 实现，基于强大的依赖注入设计可确保框架内的绝大部分组件或类都是可替换的。
-   
-框架组件库除了常见的协程版的 `MySQL 客户端`、`Redis 客户端`，还为您准备了协程版的 `Eloquent ORM`、`GRPC 服务端及客户端`、`Zipkin (OpenTracing) 客户端`、`Guzzle HTTP 客户端`、`Elasticsearch 客户端`、`Consul 客户端`、`ETCD 客户端`、`AMQP 组件`、`Apollo 配置中心`、`基于令牌桶算法的限流器`、`通用连接池` 等组件的提供也省去了自己去实现对应协程版本的麻烦，并提供了 `依赖注入`、`注解`、`AOP 面向切面编程`、`中间件`、`自定义进程`、`事件管理器`、`简易的 Redis 消息队列和全功能的 RabbitMQ 消息队列` 等非常便捷的功能，满足丰富的技术场景和业务场景，开箱即用。
+本项目以 [actionview](https://github.com/lxerxa/actionview.git) 为蓝本，使用 `Hyperf` 框架进行重写。
 
-# 框架初衷
+> 本项目为 Hyperf 框架的 DEMO 项目
 
-尽管现在基于 PHP 语言开发的框架处于一个百花争鸣的时代，但仍旧没能看到一个优雅的设计与超高性能的共存的完美框架，亦没有看到一个真正为 PHP 微服务铺路的框架，此为 Hyperf 及其团队成员的初衷，我们将持续投入并为此付出努力，也欢迎你加入我们参与开源建设。
+# 原 ActionView 介绍
 
-# 设计理念
+![](https://img.shields.io/badge/language-php-orange.svg) ![](https://img.shields.io/badge/framework-laravel+reactjs-brightgreen.svg) ![](https://img.shields.io/badge/license-apache2.0-blue.svg)
 
-`Hyperspeed + Flexibility = Hyperf`，从名字上我们就将 `超高速` 和 `灵活性` 作为 Hyperf 的基因。
-   
-- 对于超高速，我们基于 Swoole 协程并在框架设计上进行大量的优化以确保超高性能的输出。   
-- 对于灵活性，我们基于 Hyperf 强大的依赖注入组件，组件均基于 [PSR 标准](https://www.php-fig.org/psr) 的契约和由 Hyperf 定义的契约实现，达到框架内的绝大部分的组件或类都是可替换的。   
+[English](https://github.com/lxerxa/actionview/blob/master/readme.md) | [中文](https://github.com/lxerxa/actionview/blob/master/readme-cn.md)
 
-基于以上的特点，Hyperf 将存在丰富的可能性，如实现 Web 服务，网关服务，分布式中间件，微服务架构，游戏服务器，物联网（IOT）等。
+一个类Jira的问题需求跟踪工具，前端基于reactjs＋redux、后端基于php laravel-framework。前端代码库：[actionview-fe](https://github.com/lxerxa/actionview-fe)。
 
-# 文档
+我们实际开发过程一直在用Jira进行任务管理和Bug跟踪，除了采购License价格不菲外，使用过程中觉得Jira还是有点重、全局方案配置到了后期越来越难维护、页面体验也不像现在流行的SPA那么好，所以有了做ActionView的想法。
 
-[https://hyperf.wiki/](https://hyperf.wiki/)
+# Demo
+
+http://www.actionview.cn
+
+![image](http://actionview.cn/images/summary.png)
+
+![image](http://actionview.cn/images/issues.png)
+
+![image](http://actionview.cn/images/workflow.png)
+
+![image](http://actionview.cn/images/kanban.png)
+
+![image](http://actionview.cn/images/kanban-drag.png)
+
+![image](http://actionview.cn/images/kanban-backlog.png)
+
+![image](http://actionview.cn/images/report.png)
+
+![image](http://actionview.cn/images/gantt.png)
+
+# 安装手册
+
+[Ubuntu Installation - Apache](https://github.com/lxerxa/actionview/wiki/Ubuntu-Installation(Apache))  
+[Ubuntu Installation - Nginx](https://github.com/lxerxa/actionview/wiki/Ubuntu-Installation(Nginx))  
+[CentOS Installation - Apache](https://github.com/lxerxa/actionview/wiki/CentOS-Installation(Apache))  
+[CentOS Installation - Nginx](https://github.com/lxerxa/actionview/wiki/CentOS-Installation(Nginx))  
+[Docker Installation](https://github.com/lxerxa/actionview/wiki/Docker-Installation)
+
+# Feature
+
+* 支持用户创建项目，项目不仅可引用全局配置方案，也可自定义本地方案，实现了全局配置方案和本地配置方案的完美结合。
+* 各项目不仅可引用系统默认工作流，同时可自定义自己的工作流，工作流的每一步可进行精细控制，确保正确的人在正确的时间执行正确的操作。
+* 支持敏捷开发的看板视图(Kanban和Scrum)。
+* 支持甘特图视图。
+* 简单易用的问题界面配置。
+* 强大的问题筛选功能，可定义自己的过滤器。
+* 完备的权限控制模型，支持给用户组授权。
+* 灵活可定制的消息通知方案。
+* 不仅可查看某个问题的改动记录，还可浏览整个项目的活动日志。
+* 支持用户在问题上添加工作日志。
+* 支持用户针对问题发表评论。
+* 团队成员可分享和查找工作所需的资料文档。
+* 支持基于markdown语法的wiki。
+* 支持各种维度的统计报表。
+* 支持基于LDAP用户的同步和认证。
+* 通过webhook集成GitLab和GitHub.
+* 使用当前较流行的前后端技术框架，后端：php/laravel, 前端：ReactJS+Redux.
+* 支持Docker安装。
+* 清晰的代码结构，方便进行二次开发。
+
+# 常见问题
+
+[FAQ](https://github.com/lxerxa/actionview/wiki/FAQ)
+
+# RoadMap
+
+* 开发移动APP
+* 代码托管仓库
+* 流水线
+* 支持多语言
+
+# Contributing
+
+谢谢您能参与ActionView的开发当中。如果您对系统有什么疑惑，或发现了一些问题，或建议增加新的feature，或提出改进时，欢迎在[issue board](https://github.com/lxerxa/actionview/issues)中讨论，如果是前端相关的可以在[front-end issue board](https://github.com/lxerxa/actionview/issues)中讨论。如果发现有重大安全问题可发Email至：actionview@126.com。
+
+
+# License
+
+ActionView 遵从许可证 [ Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
