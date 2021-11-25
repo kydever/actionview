@@ -18,6 +18,7 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Exception\CircularDependencyException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Exception\HttpException;
+use Hyperf\Validation\ValidationException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -46,6 +47,9 @@ class BusinessExceptionHandler extends ExceptionHandler
             case $throwable instanceof CircularDependencyException:
                 $this->logger->error($throwable->getMessage());
                 return $this->response->fail(ErrorCode::SERVER_ERROR, $throwable->getMessage());
+            case $throwable instanceof ValidationException:
+                $this->logger->error($message = $throwable->validator->errors()->first());
+                return $this->response->fail(ErrorCode::PARAMS_INVALID, $message);
         }
 
         $this->logger->error(format_throwable($throwable));

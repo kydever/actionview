@@ -20,6 +20,8 @@ namespace App\Model;
  * @property string $description
  * @property string $option_values
  * @property string $default_value
+ * @property string $min_value
+ * @property string $max_value
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -37,7 +39,7 @@ class ConfigField extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'key', 'type', 'description', 'option_values', 'default_value', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'name', 'key', 'type', 'description', 'option_values', 'default_value', 'min_value', 'max_value', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.

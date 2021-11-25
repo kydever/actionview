@@ -11,10 +11,35 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\SessionCreateRequest;
+use App\Service\SessionService;
+use App\Service\UserAuth;
+use Hyperf\Di\Annotation\Inject;
+use Hyperf\HttpMessage\Cookie\Cookie;
+use Hyperf\HttpMessage\Server\Response;
+use Hyperf\Utils\Context;
+use Psr\Http\Message\ResponseInterface;
+
 class SessionController extends Controller
 {
-    public function create()
+    #[Inject()]
+    protected SessionService $service;
+
+    public function create(SessionCreateRequest $request)
     {
-        return $this->response->success([]);
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        $result = $this->service->create($email, $password);
+
+        $response = $this->response->response();
+        if ($response instanceof Response) {
+            $response = $response->withCookie(new Cookie('x-token', UserAuth::instance()->getToken()));
+            Context::set(ResponseInterface::class, $response);
+        }
+
+        return $this->response->success([
+            'user' => $result,
+        ]);
     }
 }

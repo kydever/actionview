@@ -19,6 +19,7 @@ namespace App\Model;
  * @property string $key
  * @property string $name
  * @property string $sn
+ * @property int $default
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -36,12 +37,12 @@ class ConfigPriority extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'color', 'description', 'key', 'name', 'sn', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'color', 'description', 'key', 'name', 'sn', 'default', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'default' => 'integer'];
 }

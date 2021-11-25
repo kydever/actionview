@@ -23,7 +23,22 @@ class ErrorCode extends AbstractConstants
     public const SERVER_ERROR = 500;
 
     /**
+     * @Message("邮箱或密码错误")
+     */
+    public const USER_PASSWORD_INVALID = -10000;
+
+    /**
      * @Message("登录态已经失效，请重新登录")
      */
     public const TOKEN_INVALID = -10001;
+
+    /**
+     * @Message("参数错误")
+     */
+    public const PARAMS_INVALID = -10003;
+
+    /**
+     * @Message("用户已被封禁")
+     */
+    public const USER_DISABLED = -10006;
 }

@@ -9,10 +9,9 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-return [
-    'http' => [
-        Han\Utils\Middleware\RequestHandledDebugMiddleware::class,
-        Hyperf\Validation\Middleware\ValidationMiddleware::class,
-        App\Middleware\UserAuthMiddleware::class,
-    ],
-];
+namespace App\Constants;
+
+class UserConstant
+{
+    public const INVALID_FLAG = 1;
+}
