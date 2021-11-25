@@ -13,9 +13,9 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property string $properties
- * @property string $mailserver
- * @property string $sysroles
+ * @property array $properties
+ * @property array $mailserver
+ * @property array $sysroles
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -40,5 +40,5 @@ class SysSetting extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'properties' => 'json', 'mailserver' => 'json', 'sysroles' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

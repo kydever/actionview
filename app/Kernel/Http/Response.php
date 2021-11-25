@@ -33,7 +33,7 @@ class Response
     public function success(mixed $data = []): PsrResponseInterface
     {
         return $this->response->json([
-            'code' => 0,
+            'ecode' => 0,
             'data' => $data,
         ]);
     }
@@ -41,7 +41,7 @@ class Response
     public function fail(int $code, string $message = ''): PsrResponseInterface
     {
         return $this->response->json([
-            'code' => $code,
+            'ecode' => $code,
             'message' => $message,
         ]);
     }
