@@ -41,4 +41,9 @@ class ErrorCode extends AbstractConstants
      * @Message("用户已被封禁")
      */
     public const USER_DISABLED = -10006;
+
+    /**
+     * @Message("用户不存在")
+     */
+    public const USER_NOT_EXISTS = -15000;
 }

@@ -12,37 +12,20 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\UserAuth;
+use App\Service\UserSettingService;
+use Hyperf\Di\Annotation\Inject;
 
 class MySettingController extends Controller
 {
+    #[Inject]
+    protected UserSettingService $service;
+
     public function show()
     {
-        var_dump(UserAuth::instance()->getUserId());
-        return $this->response->success();
-        // $data = [];
-        //
-        // $user = Sentinel::findById($this->user->id);
-        // if (!$user)
-        // {
-        //     throw new \UnexpectedValueException('the user is not existed.', -15000);
-        // }
-        // $data['accounts'] = $user;
-        //
-        // $user_setting = UserSetting::where('user_id', $this->user->id)->first();
-        // if ($user_setting && isset($user_setting->notifications))
-        // {
-        //     $data['notifications'] = $user_setting->notifications;
-        // }
-        // else
-        // {
-        //     $data['notifications'] = [ 'mail_notify' => true ];
-        // }
-        //
-        // if ($user_setting && isset($user_setting->favorites))
-        // {
-        //     $data['favorites'] = $user_setting->favorites;
-        // }
-        //
-        // return Response()->json([ 'ecode' => 0, 'data' => $data ]);
+        $userId = UserAuth::instance()->build()->getUserId();
+
+        return $this->response->success(
+            $this->service->show($userId)
+        );
     }
 }
