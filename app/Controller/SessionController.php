@@ -11,13 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\HttpServer\Contract\ResponseInterface;
-
 class SessionController extends Controller
 {
-    public function index(RequestInterface $request, ResponseInterface $response)
+    public function create()
     {
-        return $response->raw('Hello Hyperf!');
+        return $this->response->success([]);
     }
 }
