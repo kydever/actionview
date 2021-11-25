@@ -14,6 +14,8 @@ namespace App\Model;
 /**
  * @property int $id
  * @property string $properties
+ * @property string $mailserver
+ * @property string $sysroles
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -31,7 +33,7 @@ class SysSetting extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'properties', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'properties', 'mailserver', 'sysroles', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
