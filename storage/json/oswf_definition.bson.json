@@ -23,38 +23,28 @@
     },
     "contents": {
         "initial_action": {
-            "id": {
-                "$numberInt": "0"
-            },
+            "id": 0,
             "name": "initial_action",
             "results": [
                 {
-                    "step": {
-                        "$numberInt": "1"
-                    },
+                    "step": 1,
                     "status": "Underway"
                 }
             ]
         },
         "steps": [
             {
-                "id": {
-                    "$numberInt": "1"
-                },
+                "id": 1,
                 "name": "开始",
                 "state": "Open",
                 "actions": [
                     {
-                        "id": {
-                            "$numberInt": "1001"
-                        },
+                        "id": 1001,
                         "name": "开始处理",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "2"
-                                },
+                                "step": 2,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -97,16 +87,12 @@
                         }
                     },
                     {
-                        "id": {
-                            "$numberInt": "1002"
-                        },
+                        "id": 1002,
                         "name": "已解决",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "3"
-                                },
+                                "step": 3,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -149,16 +135,12 @@
                         }
                     },
                     {
-                        "id": {
-                            "$numberInt": "1003"
-                        },
+                        "id": 1003,
                         "name": "关闭问题",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "5"
-                                },
+                                "step": 5,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -203,23 +185,17 @@
                 ]
             },
             {
-                "id": {
-                    "$numberInt": "2"
-                },
+                "id": 2,
                 "name": "进行中",
                 "state": "In Progess",
                 "actions": [
                     {
-                        "id": {
-                            "$numberInt": "2001"
-                        },
+                        "id": 2001,
                         "name": "已解决",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "3"
-                                },
+                                "step": 3,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -262,16 +238,12 @@
                         }
                     },
                     {
-                        "id": {
-                            "$numberInt": "2002"
-                        },
+                        "id": 2002,
                         "name": "停止处理",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "1"
-                                },
+                                "step": 1,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -314,16 +286,12 @@
                         }
                     },
                     {
-                        "id": {
-                            "$numberInt": "2003"
-                        },
+                        "id": 2003,
                         "name": "关闭问题",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "5"
-                                },
+                                "step": 5,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -368,23 +336,17 @@
                 ]
             },
             {
-                "id": {
-                    "$numberInt": "3"
-                },
+                "id": 3,
                 "name": "已完成",
                 "state": "Resolved",
                 "actions": [
                     {
-                        "id": {
-                            "$numberInt": "3001"
-                        },
+                        "id": 3001,
                         "name": "关闭问题",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "5"
-                                },
+                                "step": 5,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -421,16 +383,12 @@
                         }
                     },
                     {
-                        "id": {
-                            "$numberInt": "3002"
-                        },
+                        "id": 3002,
                         "name": "重新开发",
                         "screen": "2",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "1"
-                                },
+                                "step": 1,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -475,23 +433,17 @@
                 ]
             },
             {
-                "id": {
-                    "$numberInt": "4"
-                },
+                "id": 4,
                 "name": "重新打开",
                 "state": "Reopened",
                 "actions": [
                     {
-                        "id": {
-                            "$numberInt": "4001"
-                        },
+                        "id": 4001,
                         "name": "开始处理",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "2"
-                                },
+                                "step": 2,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -534,16 +486,12 @@
                         }
                     },
                     {
-                        "id": {
-                            "$numberInt": "4002"
-                        },
+                        "id": 4002,
                         "name": "已解决",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "3"
-                                },
+                                "step": 3,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -586,16 +534,12 @@
                         }
                     },
                     {
-                        "id": {
-                            "$numberInt": "4003"
-                        },
+                        "id": 4003,
                         "name": "关闭问题",
                         "screen": "",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "5"
-                                },
+                                "step": 5,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }
@@ -634,23 +578,17 @@
                 ]
             },
             {
-                "id": {
-                    "$numberInt": "5"
-                },
+                "id": 5,
                 "name": "关闭",
                 "state": "Closed",
                 "actions": [
                     {
-                        "id": {
-                            "$numberInt": "5001"
-                        },
+                        "id": 5001,
                         "name": "重新打开",
                         "screen": "2",
                         "results": [
                             {
-                                "step": {
-                                    "$numberInt": "4"
-                                },
+                                "step": 4,
                                 "old_status": "Finished",
                                 "status": "Underway"
                             }

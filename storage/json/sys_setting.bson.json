@@ -1,15 +1,11 @@
 {
     "_id": {
-        "$oid": "59672581e12b140e4a3a57d1"
+        "$oid": "1"
     },
     "properties": {
         "login_mail_domain": "actionview.cn",
-        "week2day": {
-            "$numberInt": "5"
-        },
-        "day2hour": {
-            "$numberInt": "8"
-        }
+        "week2day": 5,
+        "day2hour": 8
     },
     "updated_at": {
         "$date": {
