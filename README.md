@@ -19,4 +19,5 @@ git submodule update --init --recursive
 
 ```shell
 docker build . -t actionview -f front-end.Dockerfile
+docker run -p 8080:8080 actionview:latest
 ```

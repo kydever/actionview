@@ -18,9 +18,7 @@
     "screen_ids": [
         "2"
     ],
-    "steps": {
-        "$numberInt": "5"
-    },
+    "steps": 5,
     "contents": {
         "initial_action": {
             "id": 0,
