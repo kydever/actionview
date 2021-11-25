@@ -18,6 +18,10 @@ git submodule sync --recursive
 git submodule update --init --recursive
 ```
 
+### 修改 react 版本
+
+> 暂时前端代码存在版本冲突，所以修改 react-dom 和 react 版本到 15.5.4
+
 ## 运行前端代码
 
 > 如果不是 OSX 系统，则需要自行修改 front-end.conf 中的 api 代理
