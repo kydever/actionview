@@ -27,7 +27,7 @@ class UserAuth
 
     private ?User $user = null;
 
-    public function load(string $token)
+    public function load(string $token): static
     {
         $this->token = $token;
 
@@ -37,6 +37,8 @@ class UserAuth
             $this->userId = $id;
             di()->get(Redis::class)->expire($this->getKey(), 86400 * 14);
         }
+
+        return $this;
     }
 
     public function init(User $user): static
