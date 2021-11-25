@@ -1,9 +1,9 @@
 {
     "_id": {
-        "$oid": "596429f510e4116b9969ed52"
+        "$oid": "1"
     },
     "code": "C5SKny95ix41rCbrh29Q14GbYwoEqj6I",
-    "user_id": "596429f510e4116b9969ed51",
+    "user_id": "1",
     "completed": true,
     "updated_at": {
         "$date": {

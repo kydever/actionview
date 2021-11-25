@@ -1,6 +1,6 @@
 {
     "_id": {
-        "$oid": "5966376a10e4117a3e6491f4"
+        "$oid": "1"
     },
     "project_key": "$_sys_$",
     "sn": {
@@ -8,8 +8,8 @@
     },
     "name": "任务",
     "abb": "T",
-    "screen_id": "59658fc510e4117a3d0cb901",
-    "workflow_id": "59661e8310e4117a3e6491f2",
+    "screen_id": "1",
+    "workflow_id": "1",
     "updated_at": {
         "$date": {
             "$numberLong": "1499926581725"
@@ -24,7 +24,7 @@
 }
 {
     "_id": {
-        "$oid": "59670fed10e4110c8c515e45"
+        "$oid": "2"
     },
     "project_key": "$_sys_$",
     "sn": {
@@ -32,8 +32,8 @@
     },
     "name": "新功能",
     "abb": "F",
-    "screen_id": "59658fc510e4117a3d0cb901",
-    "workflow_id": "59661e8310e4117a3e6491f2",
+    "screen_id": "1",
+    "workflow_id": "1",
     "updated_at": {
         "$date": {
             "$numberLong": "1499926509887"
@@ -47,7 +47,7 @@
 }
 {
     "_id": {
-        "$oid": "5967100610e4110c8d76ca03"
+        "$oid": "3"
     },
     "project_key": "$_sys_$",
     "sn": {
@@ -55,8 +55,8 @@
     },
     "name": "缺陷",
     "abb": "B",
-    "screen_id": "59658fc510e4117a3d0cb901",
-    "workflow_id": "59661e8310e4117a3e6491f2",
+    "screen_id": "1",
+    "workflow_id": "1",
     "updated_at": {
         "$date": {
             "$numberLong": "1499926534692"
@@ -70,7 +70,7 @@
 }
 {
     "_id": {
-        "$oid": "5967101c10e4110c7075da04"
+        "$oid": "4"
     },
     "project_key": "$_sys_$",
     "sn": {
@@ -78,8 +78,8 @@
     },
     "name": "改进",
     "abb": "I",
-    "screen_id": "59658fc510e4117a3d0cb901",
-    "workflow_id": "59661e8310e4117a3e6491f2",
+    "screen_id": "1",
+    "workflow_id": "1",
     "updated_at": {
         "$date": {
             "$numberLong": "1499926556067"
@@ -93,7 +93,7 @@
 }
 {
     "_id": {
-        "$oid": "5967102f10e4110c91748e64"
+        "$oid": "5"
     },
     "project_key": "$_sys_$",
     "sn": {
@@ -101,8 +101,8 @@
     },
     "name": "子任务",
     "abb": "S",
-    "screen_id": "59658fc510e4117a3d0cb901",
-    "workflow_id": "59661e8310e4117a3e6491f2",
+    "screen_id": "1",
+    "workflow_id": "1",
     "type": "subtask",
     "updated_at": {
         "$date": {

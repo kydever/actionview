@@ -1,17 +1,17 @@
 {
-    "_id": {
-        "$oid": "59658fc510e4117a3d0cb901"
+    "id": {
+        "$oid": "1"
     },
     "schema": [
         {
-            "_id": "596486f910e4116d323fb755",
+            "id": "1",
             "name": "主题",
             "key": "title",
             "type": "Text",
             "required": true
         },
         {
-            "_id": "596487e110e4116bd154a091",
+            "id": "2",
             "optionValues": [],
             "defaultValue": "",
             "name": "优先级",
@@ -19,7 +19,7 @@
             "type": "Select"
         },
         {
-            "_id": "5964885910e4116d34637991",
+            "id": "4",
             "optionValues": [],
             "defaultValue": "",
             "name": "负责人",
@@ -27,7 +27,7 @@
             "type": "SingleUser"
         },
         {
-            "_id": "5964887c10e4116b9c114161",
+            "id": "5",
             "optionValues": [],
             "defaultValue": "",
             "name": "模块",
@@ -35,7 +35,7 @@
             "type": "MultiSelect"
         },
         {
-            "_id": "5964890910e4116b9969ed56",
+            "id": "7",
             "optionValues": [],
             "defaultValue": "",
             "name": "解决版本",
@@ -43,19 +43,19 @@
             "type": "SingleVersion"
         },
         {
-            "_id": "596488c410e4116b9a6205c1",
+            "id": "6",
             "name": "描述",
             "key": "descriptions",
             "type": "RichTextEditor"
         },
         {
-            "_id": "596489a510e4116d31204ac5",
+            "id": "10",
             "name": "附件",
             "key": "attachments",
             "type": "File"
         },
         {
-            "_id": "5b72041c10e4113c3337aa01",
+            "id": "16",
             "optionValues": [],
             "defaultValue": "",
             "name": "标签",
@@ -63,31 +63,27 @@
             "type": "MultiSelect"
         },
         {
-            "_id": "5e2ee6d2dc8e172440674f6e",
+            "id": "17",
             "name": "期望开始时间",
             "key": "expect_start_time",
             "type": "DatePicker"
         },
         {
-            "_id": "5964881b10e41170d2614811",
+            "id": "3",
             "name": "期望完成时间",
             "key": "expect_complete_time",
             "type": "DatePicker"
         },
         {
-            "_id": "5e2ee6eadc8e1718556dffc7",
+            "id": "18",
             "name": "进度",
             "key": "progress",
             "type": "Number",
-            "maxValue": {
-                "$numberInt": "100"
-            },
-            "minValue": {
-                "$numberInt": "0"
-            }
+            "maxValue": 100,
+            "minValue": 0
         },
         {
-            "_id": "5aa6897d10e4111dfc17c581",
+            "id": "13",
             "optionValues": [],
             "defaultValue": "",
             "name": "Epic",
@@ -95,43 +91,41 @@
             "type": "Select"
         },
         {
-            "_id": "5964898110e4116d323fb756",
+            "id": "9",
             "name": "原估时间",
             "key": "original_estimate",
             "type": "TimeTracking"
         },
         {
-            "_id": "5b0a6a9e10e4117d9211cfa3",
+            "id": "14",
             "name": "故事点数",
             "key": "story_points",
             "type": "Number",
-            "minValue": {
-                "$numberInt": "0"
-            }
+            "minValue": 0
         },
         {
-            "_id": "5b0c024010e4114b3e57d151",
+            "id": "15",
             "name": "关联用户",
             "key": "related_users",
             "type": "MultiUser"
         }
     ],
     "field_ids": [
-        "596486f910e4116d323fb755",
-        "596487e110e4116bd154a091",
-        "5964885910e4116d34637991",
-        "5964887c10e4116b9c114161",
-        "5964890910e4116b9969ed56",
-        "596488c410e4116b9a6205c1",
-        "596489a510e4116d31204ac5",
-        "5b72041c10e4113c3337aa01",
-        "5e2ee6d2dc8e172440674f6e",
-        "5964881b10e41170d2614811",
-        "5e2ee6eadc8e1718556dffc7",
-        "5aa6897d10e4111dfc17c581",
-        "5964898110e4116d323fb756",
-        "5b0a6a9e10e4117d9211cfa3",
-        "5b0c024010e4114b3e57d151"
+        "1",
+        "2",
+        "4",
+        "5",
+        "7",
+        "6",
+        "10",
+        "16",
+        "17",
+        "3",
+        "18",
+        "13",
+        "9",
+        "14",
+        "15"
     ],
     "project_key": "$_sys_$",
     "name": "系统默认界面",
@@ -148,12 +142,12 @@
     "description": "系统默认界面"
 }
 {
-    "_id": {
-        "$oid": "5965935e10e4117cae659e81"
+    "id": {
+        "$oid": "2"
     },
     "schema": [
         {
-            "_id": "5964885910e4116d34637991",
+            "id": "4",
             "optionValues": [],
             "defaultValue": "",
             "name": "负责人",
@@ -163,7 +157,7 @@
         }
     ],
     "field_ids": [
-        "5964885910e4116d34637991"
+        "4"
     ],
     "project_key": "$_sys_$",
     "name": "分配经办人",

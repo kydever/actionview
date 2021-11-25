@@ -1,9 +1,9 @@
 {
     "_id": {
-        "$oid": "5966a5b210e4110c724b6961"
+        "$oid": "1"
     },
     "project_key": "$_sys_$",
-    "event_id": "596558154274278bb5257c14",
+    "event_id": "8",
     "notifications": [
         "assignee",
         "reporter",
@@ -22,10 +22,10 @@
 }
 {
     "_id": {
-        "$oid": "5a633f7c10e4116585347576"
+        "$oid": "2"
     },
     "project_key": "$_sys_$",
-    "event_id": "5965574e4274278bb5257c0c",
+    "event_id": "1",
     "notifications": [
         "assignee",
         "reporter",
@@ -44,10 +44,10 @@
 }
 {
     "_id": {
-        "$oid": "5a633f9b10e4115db46a2b34"
+        "$oid": "3"
     },
     "project_key": "$_sys_$",
-    "event_id": "596557554274278bb5257c0d",
+    "event_id": "2",
     "notifications": [
         "assignee",
         "reporter",
@@ -66,10 +66,10 @@
 }
 {
     "_id": {
-        "$oid": "5a633fab10e41170f47e2a35"
+        "$oid": "4"
     },
     "project_key": "$_sys_$",
-    "event_id": "5965575c4274278bb5257c0e",
+    "event_id": "3",
     "notifications": [
         "assignee",
         "reporter",
@@ -88,10 +88,10 @@
 }
 {
     "_id": {
-        "$oid": "5a633fe010e4116585347577"
+        "$oid": "5"
     },
     "project_key": "$_sys_$",
-    "event_id": "596557984274278bb5257c10",
+    "event_id": "4",
     "notifications": [
         "reporter",
         "assignee",
@@ -110,10 +110,10 @@
 }
 {
     "_id": {
-        "$oid": "5a633ff210e41166ac4e4157"
+        "$oid": "6"
     },
     "project_key": "$_sys_$",
-    "event_id": "5965579e4274278bb5257c11",
+    "event_id": "5",
     "notifications": [
         "assignee",
         "reporter",
@@ -132,10 +132,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63400010e4115db46a2b35"
+        "$oid": "7"
     },
     "project_key": "$_sys_$",
-    "event_id": "596557fe4274278bb5257c12",
+    "event_id": "6",
     "notifications": [
         "reporter",
         "project_principal",
@@ -154,10 +154,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63401010e41170f47e2a36"
+        "$oid": "8"
     },
     "project_key": "$_sys_$",
-    "event_id": "596558104274278bb5257c13",
+    "event_id": "7",
     "notifications": [
         "assignee",
         "reporter",
@@ -176,10 +176,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63402410e411668c475664"
+        "$oid": "9"
     },
     "project_key": "$_sys_$",
-    "event_id": "5965581b4274278bb5257c15",
+    "event_id": "9",
     "notifications": [
         "assignee",
         "reporter",
@@ -198,10 +198,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63403410e4116585347578"
+        "$oid": "10"
     },
     "project_key": "$_sys_$",
-    "event_id": "5965583c4274278bb5257c16",
+    "event_id": "10",
     "notifications": [
         "assignee",
         "reporter",
@@ -220,10 +220,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63404610e41166aa1d8855"
+        "$oid": "11"
     },
     "project_key": "$_sys_$",
-    "event_id": "596558444274278bb5257c17",
+    "event_id": "11",
     "notifications": [
         "assignee",
         "reporter",
@@ -242,10 +242,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63405510e41165d966d94a"
+        "$oid": "12"
     },
     "project_key": "$_sys_$",
-    "event_id": "5965584f4274278bb5257c18",
+    "event_id": "12",
     "notifications": [
         "assignee",
         "reporter",
@@ -264,10 +264,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63405f10e4115db46a2b36"
+        "$oid": "13"
     },
     "project_key": "$_sys_$",
-    "event_id": "596558964274278bb5257c19",
+    "event_id": "13",
     "notifications": [
         "assignee",
         "reporter",
@@ -286,10 +286,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63406a10e4116bff12bed5"
+        "$oid": "14"
     },
     "project_key": "$_sys_$",
-    "event_id": "596558af4274278bb5257c1a",
+    "event_id": "14",
     "notifications": [
         "assignee",
         "reporter",
@@ -308,10 +308,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63407e10e411668c475665"
+        "$oid": "15"
     },
     "project_key": "$_sys_$",
-    "event_id": "596558c04274278bb5257c1b",
+    "event_id": "15",
     "notifications": [
         "assignee",
         "reporter",
@@ -330,10 +330,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63408c10e4116585347579"
+        "$oid": "16"
     },
     "project_key": "$_sys_$",
-    "event_id": "596558d24274278bb5257c1c",
+    "event_id": "16",
     "notifications": [
         "assignee",
         "reporter",
@@ -352,10 +352,10 @@
 }
 {
     "_id": {
-        "$oid": "5a63409510e411658534757b"
+        "$oid": "17"
     },
     "project_key": "$_sys_$",
-    "event_id": "596558f94274278bb5257c1d",
+    "event_id": "17",
     "notifications": [
         "assignee",
         "reporter",

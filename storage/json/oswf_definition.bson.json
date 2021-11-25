@@ -1,10 +1,10 @@
 {
     "_id": {
-        "$oid": "59661e8310e4117a3e6491f2"
+        "$oid": "1"
     },
     "project_key": "$_sys_$",
     "latest_modifier": {
-        "id": "596429f510e4116b9969ed51",
+        "id": "1",
         "name": "系统管理员"
     },
     "latest_modified_time": "2017-07-14 22:07:41",
@@ -16,7 +16,7 @@
         "Closed"
     ],
     "screen_ids": [
-        "5965935e10e4117cae659e81"
+        "2"
     ],
     "steps": {
         "$numberInt": "5"
@@ -425,7 +425,7 @@
                             "$numberInt": "3002"
                         },
                         "name": "重新开发",
-                        "screen": "5965935e10e4117cae659e81",
+                        "screen": "2",
                         "results": [
                             {
                                 "step": {
@@ -645,7 +645,7 @@
                             "$numberInt": "5001"
                         },
                         "name": "重新打开",
-                        "screen": "5965935e10e4117cae659e81",
+                        "screen": "2",
                         "results": [
                             {
                                 "step": {
@@ -710,11 +710,11 @@
 }
 {
     "_id": {
-        "$oid": "5968681e10e411208c64d28f"
+        "$oid": "2"
     },
     "project_key": "demo",
     "latest_modifier": {
-        "id": "596429f510e4116b9969ed51",
+        "id": "1",
         "name": "系统管理员"
     },
     "latest_modified_time": "2017-07-12 22:34:33",
@@ -726,7 +726,7 @@
         "Closed"
     ],
     "screen_ids": [
-        "5965935e10e4117cae659e81"
+        "2"
     ],
     "steps": {
         "$numberInt": "5"
@@ -1129,7 +1129,7 @@
                             "$numberInt": "3002"
                         },
                         "name": "重新开发",
-                        "screen": "5965935e10e4117cae659e81",
+                        "screen": "2",
                         "results": [
                             {
                                 "step": {
@@ -1343,7 +1343,7 @@
                             "$numberInt": "5001"
                         },
                         "name": "重新打开",
-                        "screen": "5965935e10e4117cae659e81",
+                        "screen": "2",
                         "results": [
                             {
                                 "step": {

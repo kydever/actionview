@@ -1,6 +1,6 @@
 {
     "_id": {
-        "$oid": "596486f910e4116d323fb755"
+        "$oid": "1"
     },
     "project_key": "$_sys_$",
     "name": "主题",
@@ -20,7 +20,7 @@
 }
 {
     "_id": {
-        "$oid": "596487e110e4116bd154a091"
+        "$oid": "2"
     },
     "project_key": "$_sys_$",
     "optionValues": [],
@@ -42,7 +42,7 @@
 }
 {
     "_id": {
-        "$oid": "5964881b10e41170d2614811"
+        "$oid": "3"
     },
     "project_key": "$_sys_$",
     "name": "期望完成时间",
@@ -61,7 +61,7 @@
 }
 {
     "_id": {
-        "$oid": "5964885910e4116d34637991"
+        "$oid": "4"
     },
     "project_key": "$_sys_$",
     "optionValues": [],
@@ -82,7 +82,7 @@
 }
 {
     "_id": {
-        "$oid": "5964887c10e4116b9c114161"
+        "$oid": "5"
     },
     "project_key": "$_sys_$",
     "optionValues": [],
@@ -104,7 +104,7 @@
 }
 {
     "_id": {
-        "$oid": "596488c410e4116b9a6205c1"
+        "$oid": "6"
     },
     "project_key": "$_sys_$",
     "name": "描述",
@@ -123,7 +123,7 @@
 }
 {
     "_id": {
-        "$oid": "5964890910e4116b9969ed56"
+        "$oid": "7"
     },
     "project_key": "$_sys_$",
     "optionValues": [],
@@ -145,7 +145,7 @@
 }
 {
     "_id": {
-        "$oid": "5964893910e4116b9b2e6803"
+        "$oid": "8"
     },
     "project_key": "$_sys_$",
     "optionValues": [],
@@ -167,7 +167,7 @@
 }
 {
     "_id": {
-        "$oid": "5964898110e4116d323fb756"
+        "$oid": "9"
     },
     "project_key": "$_sys_$",
     "name": "原估时间",
@@ -186,7 +186,7 @@
 }
 {
     "_id": {
-        "$oid": "596489a510e4116d31204ac5"
+        "$oid": "10"
     },
     "project_key": "$_sys_$",
     "name": "附件",
@@ -206,7 +206,7 @@
 }
 {
     "_id": {
-        "$oid": "59648af310e4116bd154a092"
+        "$oid": "11"
     },
     "project_key": "$_sys_$",
     "optionValues": [],
@@ -228,7 +228,7 @@
 }
 {
     "_id": {
-        "$oid": "596637a110e41179e66a02d2"
+        "$oid": "12"
     },
     "project_key": "$_sys_$",
     "name": "备注",
@@ -248,7 +248,7 @@
 }
 {
     "_id": {
-        "$oid": "5aa6897d10e4111dfc17c581"
+        "$oid": "13"
     },
     "project_key": "$_sys_$",
     "optionValues": [],
@@ -270,7 +270,7 @@
 }
 {
     "_id": {
-        "$oid": "5b0a6a9e10e4117d9211cfa3"
+        "$oid": "14"
     },
     "project_key": "$_sys_$",
     "name": "故事点数",
@@ -293,7 +293,7 @@
 }
 {
     "_id": {
-        "$oid": "5b0c024010e4114b3e57d151"
+        "$oid": "15"
     },
     "project_key": "$_sys_$",
     "name": "关联用户",
@@ -312,7 +312,7 @@
 }
 {
     "_id": {
-        "$oid": "5b72041c10e4113c3337aa01"
+        "$oid": "16"
     },
     "project_key": "$_sys_$",
     "optionValues": [],
@@ -333,7 +333,7 @@
 }
 {
     "_id": {
-        "$oid": "5e2ee6d2dc8e172440674f6e"
+        "$oid": "17"
     },
     "project_key": "$_sys_$",
     "name": "期望开始时间",
@@ -353,7 +353,7 @@
 }
 {
     "_id": {
-        "$oid": "5e2ee6eadc8e1718556dffc7"
+        "$oid": "18"
     },
     "project_key": "$_sys_$",
     "name": "进度",

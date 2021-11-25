@@ -1,6 +1,6 @@
 {
     "_id": {
-        "$oid": "596429f510e4116b9969ed51"
+        "$oid": "1"
     },
     "email": "admin@action.view",
     "first_name": "系统管理员",
