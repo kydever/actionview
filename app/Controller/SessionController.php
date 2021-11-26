@@ -59,4 +59,15 @@ class SessionController extends Controller
             'user' => $result,
         ]);
     }
+
+    public function destroy()
+    {
+        UserAuth::instance()->destroy();
+        $response = $this->response->response();
+        if ($response instanceof Response) {
+            $response = $response->withCookie(new Cookie(UserAuth::X_TOKEN, ''));
+            Context::set(ResponseInterface::class, $response);
+        }
+        return $this->response->success();
+    }
 }

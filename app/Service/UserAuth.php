@@ -54,6 +54,13 @@ class UserAuth
         return $this;
     }
 
+    public function destroy(): void
+    {
+        if ($this->token) {
+            di()->get(Redis::class)->del($this->getKey());
+        }
+    }
+
     public function build(): static
     {
         if ($this->userId <= 0) {

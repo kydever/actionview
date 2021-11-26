@@ -15,6 +15,7 @@ Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController::
 
 Router::post('/session', App\Controller\SessionController::class . '::create');
 Router::get('/session', App\Controller\SessionController::class . '::getSession');
+Router::delete('/session', App\Controller\SessionController::class . '::destroy');
 
 Router::addGroup('/', function () {
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
