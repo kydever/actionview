@@ -17,6 +17,8 @@ namespace App\Model;
  * @property int $ug_id
  * @property int $type
  * @property int $link_count
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class UserGroupProject extends Model
 {
@@ -32,12 +34,12 @@ class UserGroupProject extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'ug_id', 'type', 'link_count'];
+    protected $fillable = ['id', 'project_key', 'ug_id', 'type', 'link_count', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'ug_id' => 'integer', 'type' => 'integer', 'link_count' => 'integer'];
+    protected $casts = ['id' => 'int', 'ug_id' => 'integer', 'type' => 'integer', 'link_count' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
