@@ -18,7 +18,7 @@ namespace App\Model;
  * @property array $principal
  * @property int $category
  * @property string $description
- * @property string $creator
+ * @property array $creator
  * @property string $status
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -46,7 +46,7 @@ class Project extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'principal' => 'json', 'category' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'principal' => 'json', 'category' => 'integer', 'creator' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function isActive(): bool
     {

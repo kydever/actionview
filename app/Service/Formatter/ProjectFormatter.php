@@ -24,4 +24,32 @@ class ProjectFormatter extends Service
             'principal' => $model->principal,
         ];
     }
+
+    public function base(Project $model)
+    {
+        return [
+            'key' => $model->key,
+            'name' => $model->name,
+            'principal' => $model->principal,
+            'category' => $model->category,
+            'description' => $model->description,
+            'creator' => $model->creator,
+            'status' => $model->status,
+        ];
+    }
+
+    /**
+     * @param Project[] $models
+     */
+    public function formatList($models): array
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $item = $this->base($model);
+            $item['principal']['nameAndEmail'] = sprintf('%s(%s)', $model->principal['name'] ?? '未知', $model->principal['email'] ?? '未知');
+            $result[] = $item;
+        }
+
+        return $result;
+    }
 }

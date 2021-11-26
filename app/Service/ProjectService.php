@@ -11,14 +11,21 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ProjectConstant;
+use App\Constants\StatusConstant;
 use App\Model\Project;
 use App\Service\Dao\AccessProjectLogDao;
 use App\Service\Dao\AclGroupDao;
+use App\Service\Dao\ActivityDao;
+use App\Service\Dao\IssueDao;
 use App\Service\Dao\ProjectDao;
+use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\ProjectFormatter;
-use App\System\Eloquent\SysSetting;
 use Han\Utils\Service;
+use Han\Utils\Utils\Sorter;
+use Hyperf\Cache\Annotation\Cacheable;
+use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\Di\Annotation\Inject;
 
 class ProjectService extends Service
@@ -28,6 +35,12 @@ class ProjectService extends Service
 
     #[Inject]
     protected AclService $acl;
+
+    #[Inject]
+    protected IssueDao $issue;
+
+    #[Inject]
+    protected ActivityDao $activity;
 
     #[Inject]
     protected ProjectFormatter $formatter;
@@ -42,118 +55,106 @@ class ProjectService extends Service
         return null;
     }
 
-    public function mine(int $userId, string $sortkey)
+    /**
+     * 根据项目ID和标记KEY获取对应的issue等数量.
+     * @param mixed $userId
+     * @return array<string, int> 项目KEY => 数量
+     */
+    public function getOpenCount(array $keys, string $sortkey, $userId = 0): ?array
     {
+        return match ($sortkey) {
+            ProjectConstant::SORT_KEY_ALL_ISSUES_CNT => $this->issue->countGroupByProjectKeys($keys),
+            ProjectConstant::SORT_KEY_UNRESOLVED_ISSUES_CNT => $this->issue->countGroupByProjectKeys($keys, 'Unresolved'),
+            ProjectConstant::SORT_KEY_ASSIGNTOME_ISSUES_CNT => $this->issue->countGroupByProjectKeys($keys, 'Unresolved', $userId),
+            ProjectConstant::SORT_KEY_ACTIVITY => $this->activity->recentCountGroupByProjectKeys($keys, 14),
+            default => null,
+        };
+    }
+
+    #[Cacheable(prefix: 'project:all', ttl: 8640000)]
+    public function getAllProjectKeys()
+    {
+        return $this->dao->findAllProjectKeys();
+    }
+
+    #[CachePut(prefix: 'project:all', ttl: 8640000)]
+    public function putAllProjectKeys()
+    {
+        return $this->dao->findAllProjectKeys();
+    }
+
+    public function sortByCreatedAt(array $keys, string $sort)
+    {
+        $projectKeys = $this->getAllProjectKeys();
+        return di()->get(Sorter::class)->sort($keys, static function ($key) use ($projectKeys, $sort) {
+            $priority = $projectKeys[$key] ?? 0;
+
+            return match ($sort) {
+                StatusConstant::ASC => PHP_INT_MAX - $priority,
+                default => $priority,
+            };
+        });
+    }
+
+    public function mine(int $userId, array $input = [], )
+    {
+        $sortKey = $input['sortkey'] ?? null;
+        $offsetKey = $input['offset_key'] ?? null;
+        $limit = intval($input['limit'] ?? 24);
+        $status = $input['status'] ?? 'all';
+        $name = $input['name'] ?? null;
+
         $keys = $this->getRecentProjectKeys($userId);
 
-        if (isset($sortkey) && $sortkey) {
-            $pkey_cnts = [];
-            if ($sortkey == 'all_issues_cnt') {
-                foreach ($pkeys as $pkey) {
-                    $pkey_cnts[$pkey] = DB::collection('issue_' . $pkey)
-                        ->where('del_flg', '<>', 1)
-                        ->count();
-                }
-            } elseif ($sortkey == 'unresolved_issues_cnt') {
-                foreach ($pkeys as $pkey) {
-                    $pkey_cnts[$pkey] = DB::collection('issue_' . $pkey)
-                        ->where('del_flg', '<>', 1)
-                        ->where('resolution', 'Unresolved')
-                        ->count();
-                }
-            } elseif ($sortkey == 'assigntome_issues_cnt') {
-                foreach ($pkeys as $pkey) {
-                    $pkey_cnts[$pkey] = DB::collection('issue_' . $pkey)
-                        ->where('del_flg', '<>', 1)
-                        ->where('resolution', 'Unresolved')
-                        ->where('assignee.id', $this->user->id)
-                        ->count();
-                }
-            } elseif ($sortkey == 'activity') {
-                $twoWeeksAgo = strtotime(date('Ymd', strtotime('-2 week')));
-                foreach ($pkeys as $pkey) {
-                    $pkey_cnts[$pkey] = DB::collection('activity_' . $pkey)
-                        ->where('created_at', '>=', $twoWeeksAgo)
-                        ->count();
-                }
-            } elseif ($sortkey == 'key_asc') {
-                sort($pkeys);
-            } elseif ($sortkey == 'key_desc') {
-                rsort($pkeys);
-            } elseif ($sortkey == 'create_time_asc') {
-                $project_keys = \App\Project\Eloquent\Project::whereIn('key', $pkeys)
-                    ->orderBy('created_at', 'asc')
-                    ->get(['key'])
-                    ->toArray();
-                $pkeys = array_column($project_keys, 'key');
-            } elseif ($sortkey == 'create_time_desc') {
-                $project_keys = Project::whereIn('key', $pkeys)
-                    ->orderBy('created_at', 'desc')
-                    ->get(['key'])
-                    ->toArray();
-                $pkeys = array_column($project_keys, 'key');
-            }
-
-            if ($pkey_cnts) {
-                arsort($pkey_cnts);
-                $pkeys = array_keys($pkey_cnts);
-            }
-        }
-
-        $offset_key = $request->input('offset_key');
-        if (isset($offset_key)) {
-            $ind = array_search($offset_key, $pkeys);
-            if ($ind === false) {
-                $pkeys = [];
+        if ($sortKey) {
+            $openCount = $this->getOpenCount($keys, $sortKey, $userId);
+            if ($openCount !== null) {
+                arsort($openCount);
+                $keys = array_keys($openCount);
             } else {
-                $pkeys = array_slice($pkeys, $ind + 1);
+                $keys = match ($sortKey) {
+                    ProjectConstant::SORT_KEY_KEY_ASC => value(
+                        static function () use ($keys) {
+                            sort($keys);
+                            return $keys;
+                        }
+                    ),
+                    ProjectConstant::SORT_KEY_KEY_DESC => value(
+                        static function () use ($keys) {
+                            rsort($keys);
+                            return $keys;
+                        }
+                    ),
+                    ProjectConstant::SORT_KEY_CREATE_TIME_ASC => $this->sortByCreatedAt($keys, StatusConstant::ASC),
+                    ProjectConstant::SORT_KEY_CREATE_TIME_DESC => $this->sortByCreatedAt($keys, StatusConstant::DESC),
+                };
             }
         }
 
-        $limit = $request->input('limit');
-        if (! isset($limit)) {
-            $limit = 24;
-        }
-        $limit = intval($limit);
-
-        $status = $request->input('status');
-        if (! isset($status)) {
-            $status = 'all';
-        }
-
-        $name = $request->input('name');
-
-        $projects = [];
-        foreach ($pkeys as $pkey) {
-            $query = Project::where('key', $pkey);
-            if ($name) {
-                $query->where(function ($query) use ($name) {
-                    $query->where('key', 'like', '%' . $name . '%')->orWhere('name', 'like', '%' . $name . '%');
-                });
-            }
-            if ($status != 'all') {
-                $query = $query->where('status', $status);
-            }
-
-            $project = $query->first();
-            if (! $project) {
-                continue;
-            }
-
-            $projects[] = $project->toArray();
-            if (count($projects) >= $limit) {
-                break;
+        if (isset($offsetKey)) {
+            $ind = array_search($offsetKey, $keys);
+            if ($ind === false) {
+                $keys = [];
+            } else {
+                $keys = array_slice($keys, $ind + 1);
             }
         }
 
-        foreach ($projects as $key => $project) {
-            $projects[$key]['principal']['nameAndEmail'] = $project['principal']['name'] . '(' . $project['principal']['email'] . ')';
-        }
+        $projects = $this->dao->find([
+            'keys' => $keys,
+            'key_or_name' => $name,
+            'status' => $status,
+        ], $limit);
 
-        $syssetting = SysSetting::first();
-        $allow_create_project = isset($syssetting->properties['allow_create_project']) ? $syssetting->properties['allow_create_project'] : 0;
-
-        return Response()->json(['ecode' => 0, 'data' => $projects, 'options' => ['limit' => $limit, 'allow_create_project' => $allow_create_project]]);
+        $result = $this->formatter->formatList($projects);
+        $setting = di()->get(SysSettingDao::class)->first();
+        return [
+            $result,
+            [
+                'limit' => $limit,
+                'allow_create_project' => $setting->properties['allow_create_project'] ?: 0,
+            ],
+        ];
     }
 
     public function recent(int $userId)

@@ -24,9 +24,11 @@ class ProjectController extends Controller
     {
         $userId = UserAuth::instance()->build()->getUserId();
 
-        $result = $this->service->mine($userId);
+        [$result, $options] = $this->service->mine($userId);
 
-        return $this->response->success($result);
+        return $this->response->success($result, [
+            'options' => $options,
+        ]);
     }
 
     public function recent()

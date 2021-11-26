@@ -9,18 +9,13 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace HyperfTest\Cases;
+namespace App\Constants;
 
-use HyperfTest\HttpTestCase;
-
-/**
- * @internal
- * @coversNothing
- */
-class ExampleTest extends HttpTestCase
+class StatusConstant
 {
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
+    public const DELETED = 1;
+
+    public const ASC = 'asc';
+
+    public const DESC = 'desc';
 }
