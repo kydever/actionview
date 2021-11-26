@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-25 09:48:53 +0000
+# Generation Time: 2021-11-26 03:56:56 +0000
 # ************************************************************
 
 
@@ -19,6 +19,22 @@ SET NAMES utf8mb4;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+# Dump of table access_project_log
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `access_project_log`;
+
+CREATE TABLE `access_project_log` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `user_id` bigint(20) unsigned NOT NULL,
+  `latest_access_time` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `INDEX_USER_ID` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table acl_role
@@ -447,11 +463,32 @@ LOCK TABLES `oswf_definition` WRITE;
 
 INSERT INTO `oswf_definition` (`id`, `project_key`, `name`, `latest_modifier`, `latest_modified_time`, `state_ids`, `screen_ids`, `steps`, `contents`, `created_at`, `updated_at`)
 VALUES
-	(1,'$_sys_$','系统管理员',1,'2021-01-01 00:00:00','[\"Open\", \"In Progess\", \"Resolved\", \"Reopened\", \"Closed\"]','[\"2\"]',5,'[]','2021-01-01 00:00:00','2021-01-01 00:00:00'),
-	(2,'demo','系统管理员',1,'2021-01-01 00:00:00','[\"Open\", \"In Progess\", \"Resolved\", \"Reopened\", \"Closed\"]','[\"2\"]',2,'[]','2021-01-01 00:00:00','2021-01-01 00:00:00');
+	(1,'$_sys_$','系统工作流',1,'2021-01-01 00:00:00','[\"Open\", \"In Progess\", \"Resolved\", \"Reopened\", \"Closed\"]','[\"2\"]',5,'{\"steps\": [{\"id\": 1, \"name\": \"开始\", \"state\": \"Open\", \"actions\": [{\"id\": 1001, \"name\": \"开始处理\", \"screen\": \"\", \"results\": [{\"step\": 2, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"assigneeParam\": \"me\"}, \"name\": \"App\\\\Workflow\\\\Func@assignIssue\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"start_progress_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}, {\"id\": 1002, \"name\": \"已解决\", \"screen\": \"\", \"results\": [{\"step\": 3, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"resolutionParam\": \"Fixed\"}, \"name\": \"App\\\\Workflow\\\\Func@setResolution\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}, {\"id\": 1003, \"name\": \"关闭问题\", \"screen\": \"\", \"results\": [{\"step\": 5, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"resolutionParam\": \"Fixed\"}, \"name\": \"App\\\\Workflow\\\\Func@setResolution\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}]}, {\"id\": 2, \"name\": \"进行中\", \"state\": \"In Progess\", \"actions\": [{\"id\": 2001, \"name\": \"已解决\", \"screen\": \"\", \"results\": [{\"step\": 3, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"resolutionParam\": \"Fixed\"}, \"name\": \"App\\\\Workflow\\\\Func@setResolution\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}, {\"id\": 2002, \"name\": \"停止处理\", \"screen\": \"\", \"results\": [{\"step\": 1, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"resolutionParam\": \"Unresolved\"}, \"name\": \"App\\\\Workflow\\\\Func@setResolution\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"stop_progress_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}, {\"id\": 2003, \"name\": \"关闭问题\", \"screen\": \"\", \"results\": [{\"step\": 5, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"resolutionParam\": \"Fixed\"}, \"name\": \"App\\\\Workflow\\\\Func@setResolution\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}]}, {\"id\": 3, \"name\": \"已完成\", \"state\": \"Resolved\", \"actions\": [{\"id\": 3001, \"name\": \"关闭问题\", \"screen\": \"\", \"results\": [{\"step\": 5, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}, {\"id\": 3002, \"name\": \"重新开发\", \"screen\": \"2\", \"results\": [{\"step\": 1, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"resolutionParam\": \"Unresolved\"}, \"name\": \"App\\\\Workflow\\\\Func@setResolution\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"normal\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}]}, {\"id\": 4, \"name\": \"重新打开\", \"state\": \"Reopened\", \"actions\": [{\"id\": 4001, \"name\": \"开始处理\", \"screen\": \"\", \"results\": [{\"step\": 2, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"assigneeParam\": \"me\"}, \"name\": \"App\\\\Workflow\\\\Func@assignIssue\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"start_progress_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}, {\"id\": 4002, \"name\": \"已解决\", \"screen\": \"\", \"results\": [{\"step\": 3, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"resolutionParam\": \"Fixed\"}, \"name\": \"App\\\\Workflow\\\\Func@setResolution\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"resolve_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}, {\"id\": 4003, \"name\": \"关闭问题\", \"screen\": \"\", \"results\": [{\"step\": 5, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}]}, {\"id\": 5, \"name\": \"关闭\", \"state\": \"Closed\", \"actions\": [{\"id\": 5001, \"name\": \"重新打开\", \"screen\": \"2\", \"results\": [{\"step\": 4, \"status\": \"Underway\", \"old_status\": \"Finished\"}], \"restrict_to\": {\"conditions\": {\"list\": [{\"args\": {\"permissionParam\": \"close_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@hasPermission\"}], \"type\": \"and\"}}, \"post_functions\": [{\"args\": {\"resolutionParam\": \"Unresolved\"}, \"name\": \"App\\\\Workflow\\\\Func@setResolution\"}, {\"name\": \"App\\\\Workflow\\\\Func@setState\"}, {\"name\": \"App\\\\Workflow\\\\Func@addComments\"}, {\"name\": \"App\\\\Workflow\\\\Func@updIssue\"}, {\"args\": {\"eventParam\": \"reopen_issue\"}, \"name\": \"App\\\\Workflow\\\\Func@triggerEvent\"}]}]}], \"initial_action\": {\"id\": 0, \"name\": \"initial_action\", \"results\": [{\"step\": 1, \"status\": \"Underway\"}]}}','2021-01-01 00:00:00','2021-01-01 00:00:00'),
+	(2,'demo','复制 - 系统工作流',1,'2021-01-01 00:00:00','[\"Open\", \"In Progess\", \"Resolved\", \"Reopened\", \"Closed\"]','[\"2\"]',2,'[]','2021-01-01 00:00:00','2021-01-01 00:00:00');
 
 /*!40000 ALTER TABLE `oswf_definition` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+# Dump of table project
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `project`;
+
+CREATE TABLE `project` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `principal` json NOT NULL,
+  `category` bigint(10) unsigned NOT NULL DEFAULT '0',
+  `description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `creator` json NOT NULL,
+  `status` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table sys_setting
@@ -469,6 +506,31 @@ CREATE TABLE `sys_setting` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+LOCK TABLES `sys_setting` WRITE;
+/*!40000 ALTER TABLE `sys_setting` DISABLE KEYS */;
+
+INSERT INTO `sys_setting` (`id`, `properties`, `mailserver`, `sysroles`, `created_at`, `updated_at`)
+VALUES
+	(1,'{\"day2hour\": 8, \"week2day\": 5, \"login_mail_domain\": \"actionview.cn\"}','[]','[]','2021-01-01 00:00:00','2021-01-01 00:00:00');
+
+/*!40000 ALTER TABLE `sys_setting` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table user_setting
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_setting`;
+
+CREATE TABLE `user_setting` (
+  `user_id` bigint(11) unsigned NOT NULL COMMENT '用户ID',
+  `notifications` json NOT NULL,
+  `favorites` json NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table users
@@ -483,6 +545,7 @@ CREATE TABLE `users` (
   `password` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '密码',
   `last_login` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   `permissions` json NOT NULL,
+  `invalid_flag` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   PRIMARY KEY (`id`),
@@ -492,9 +555,9 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `created_at`, `updated_at`)
+INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `invalid_flag`, `created_at`, `updated_at`)
 VALUES
-	(1,'l@hyperf.io','系统管理员','$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}','2021-01-01 00:00:00','2021-01-01 00:00:00');
+	(1,'l@hyperf.io','系统管理员','$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'2021-01-01 00:00:00','2021-01-01 00:00:00');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
