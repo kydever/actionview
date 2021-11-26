@@ -14,8 +14,12 @@ namespace App\Service;
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\User;
+use Hyperf\HttpMessage\Cookie\Cookie;
+use Hyperf\HttpMessage\Server\Response;
 use Hyperf\Redis\Redis;
+use Hyperf\Utils\Context;
 use Hyperf\Utils\Traits\StaticInstance;
+use Psr\Http\Message\ResponseInterface;
 
 class UserAuth
 {
@@ -51,6 +55,8 @@ class UserAuth
 
         di()->get(Redis::class)->set($this->getKey(), $this->userId, 86400 * 14);
 
+        $this->appendTokenToCookies();
+
         return $this;
     }
 
@@ -59,6 +65,9 @@ class UserAuth
         if ($this->token) {
             di()->get(Redis::class)->del($this->getKey());
         }
+
+        $this->token = '';
+        $this->appendTokenToCookies();
     }
 
     public function build(): static
@@ -83,6 +92,15 @@ class UserAuth
     public function getUser(): ?User
     {
         return $this->user;
+    }
+
+    protected function appendTokenToCookies(): void
+    {
+        $response = Context::get(ResponseInterface::class);
+        if ($response instanceof Response) {
+            $response = $response->withCookie(new Cookie(self::X_TOKEN, $this->token));
+            Context::set(ResponseInterface::class, $response);
+        }
     }
 
     private function getKey(): string

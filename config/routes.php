@@ -17,6 +17,9 @@ Router::post('/session', App\Controller\SessionController::class . '::create');
 Router::get('/session', App\Controller\SessionController::class . '::getSession');
 Router::delete('/session', App\Controller\SessionController::class . '::destroy');
 
+Router::post('/user/login', App\Controller\UserController::class . '::login');
+Router::post('/user/register', App\Controller\UserController::class . '::register');
+
 Router::addGroup('/', function () {
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
 }, [
