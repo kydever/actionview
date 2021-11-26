@@ -12,6 +12,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\SessionCreateRequest;
+use App\Service\Dao\UserDao;
+use App\Service\Formatter\UserFormatter;
+use App\Service\ProjectService;
 use App\Service\SessionService;
 use App\Service\UserAuth;
 use Hyperf\Di\Annotation\Inject;
@@ -45,15 +48,15 @@ class SessionController extends Controller
 
     public function getSession()
     {
-        $user = Sentinel::getUser();
-        if ($user) {
-            $latest_access_project = $this->getLatestAccessProject($user->id);
-            if ($latest_access_project) {
-                $user->latest_access_project = $latest_access_project->key;
-            }
-            return Response()->json(['ecode' => 0, 'data' => ['user' => $user]]);
-        }
+        $userId = UserAuth::instance()->build()->getUserId();
 
-        return Response()->json(['ecode' => -10001, 'data' => ['user' => []]]);
+        $user = di()->get(UserDao::class)->first($userId, true);
+        $project = di()->get(ProjectService::class)->getLatestAccessProject($userId);
+
+        $result = di()->get(UserFormatter::class)->base($user);
+        $result['latest_access_project'] = $project?->key;
+        return $this->response->success([
+            'user' => $result,
+        ]);
     }
 }
