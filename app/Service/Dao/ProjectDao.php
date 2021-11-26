@@ -92,26 +92,26 @@ class ProjectDao extends Service
     public function find(array $input = [], int $limit = 10)
     {
         $keys = $input['keys'] ?? [];
-        $query = Project::query()->whereIn('key', $keys);
+        $query = Project::query();
+        if (!empty($keys)){
+            $query->whereIn('key', $keys);
+        }
         if (! empty($input['key_or_name'])) {
             $name = $input['key_or_name'];
             $query->where(static function ($query) use ($name) {
                 $query->where('key', 'like', '%' . $name . '%')->orWhere('name', 'like', '%' . $name . '%');
             });
         }
-
         if (! empty($input['status'])) {
             $status = $input['status'];
             if ($status != 'all') {
                 $query = $query->where('status', $status);
             }
         }
-
         $models = $query->limit($limit)->get();
         if ($models->isEmpty()) {
             return $models;
         }
-
         $models = sort($models->getDictionary(), static function (Project $model) use ($keys) {
             return PHP_INT_MAX - ($keys[$model->key] ?? 0);
         });

@@ -108,6 +108,7 @@ class ProjectService extends Service
 
     public function mine(int $userId, array $input = [], )
     {
+
         $sortKey = $input['sortkey'] ?? null;
         $offsetKey = $input['offset_key'] ?? null;
         $limit = intval($input['limit'] ?? 24);
@@ -137,6 +138,7 @@ class ProjectService extends Service
                     ),
                     ProjectConstant::SORT_KEY_CREATE_TIME_ASC => $this->sortByCreatedAt($keys, StatusConstant::ASC),
                     ProjectConstant::SORT_KEY_CREATE_TIME_DESC => $this->sortByCreatedAt($keys, StatusConstant::DESC),
+                    default => [],
                 };
             }
         }

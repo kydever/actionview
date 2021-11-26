@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Constants\StatusConstant;
 use App\Request\PaginationRequest;
+use App\Request\ProjectMiniRequest;
 use App\Request\ProjectStoreRequest;
 use App\Service\Dao\ProjectDao;
 use App\Service\ProjectService;
@@ -27,11 +28,11 @@ class ProjectController extends Controller
     #[Inject]
     protected ProjectDao $dao;
 
-    public function mine()
+    public function mine(ProjectMiniRequest $request)
     {
         $userId = UserAuth::instance()->build()->getUserId();
 
-        [$result, $options] = $this->service->mine($userId);
+        [$result, $options] = $this->service->mine($userId, $request->all());
 
         return $this->response->success($result, [
             'options' => $options,
