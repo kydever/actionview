@@ -152,7 +152,7 @@ class ProjectService extends Service
             $result,
             [
                 'limit' => $limit,
-                'allow_create_project' => $setting->properties['allow_create_project'] ?: 0,
+                'allow_create_project' => $setting->properties['allow_create_project'] ?? 0,
             ],
         ];
     }

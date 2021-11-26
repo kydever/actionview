@@ -18,4 +18,8 @@ class StatusConstant
     public const ASC = 'asc';
 
     public const DESC = 'desc';
+
+    public const AVAILABLE = 1;
+
+    public const UN_AVAILABLE = 2;
 }

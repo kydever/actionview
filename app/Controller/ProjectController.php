@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Constants\StatusConstant;
+use App\Service\Dao\ProjectDao;
 use App\Service\ProjectService;
 use App\Service\UserAuth;
 use Hyperf\Di\Annotation\Inject;
@@ -19,6 +21,9 @@ class ProjectController extends Controller
 {
     #[Inject]
     protected ProjectService $service;
+
+    #[Inject]
+    protected ProjectDao $dao;
 
     public function mine()
     {
@@ -38,5 +43,14 @@ class ProjectController extends Controller
         return $this->response->success(
             $this->service->recent($userId)
         );
+    }
+
+    public function checkKey(string $key)
+    {
+        $isExisted = $this->dao->exists($key);
+
+        return $this->response->success([
+            'flag' => $isExisted ? StatusConstant::UN_AVAILABLE : StatusConstant::AVAILABLE,
+        ]);
     }
 }

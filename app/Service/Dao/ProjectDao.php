@@ -18,6 +18,11 @@ use function Han\Utils\sort;
 
 class ProjectDao extends Service
 {
+    public function exists(string $key): bool
+    {
+        return Project::query()->where('key', $key)->exists();
+    }
+
     public function firstByKey(string $key): ?Project
     {
         return Project::query()->where('key', $key)->first();
