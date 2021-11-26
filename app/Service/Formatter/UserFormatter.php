@@ -34,7 +34,6 @@ class UserFormatter extends Service
             'first_name' => $model->first_name,
             // 'avatar' => '',
             'permissions' => $model->permissions,
-            // 'latest_access_project' => 'demo',
             // 'latest_access_url' => '/project/boba/summary'
         ];
     }

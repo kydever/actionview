@@ -45,5 +45,15 @@ class SessionController extends Controller
 
     public function getSession()
     {
+        $user = Sentinel::getUser();
+        if ($user) {
+            $latest_access_project = $this->getLatestAccessProject($user->id);
+            if ($latest_access_project) {
+                $user->latest_access_project = $latest_access_project->key;
+            }
+            return Response()->json(['ecode' => 0, 'data' => ['user' => $user]]);
+        }
+
+        return Response()->json(['ecode' => -10001, 'data' => ['user' => []]]);
     }
 }

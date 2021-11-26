@@ -53,8 +53,10 @@ class SessionService extends Service
 
         UserAuth::instance()->init($user);
 
-        // TODO: getLatestAccessProject
+        $project = di()->get(ProjectService::class)->getLatestAccessProject($user->id);
 
-        return $this->formatter->base($user);
+        $result = $this->formatter->base($user);
+        $result['latest_access_project'] = $project?->key;
+        return $result;
     }
 }
