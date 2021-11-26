@@ -14,6 +14,7 @@ use Hyperf\Server\Server;
 
 return [
     'mode' => SWOOLE_BASE,
+    'type' => Hyperf\Server\CoroutineServer::class,
     'servers' => [
         [
             'name' => 'http',
