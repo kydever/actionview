@@ -60,6 +60,8 @@ class ProjectController extends Controller
         $input = $request->all();
         $userId = UserAuth::instance()->build()->getUserId();
 
-        $this->service->store($userId, $input);
+        return $this->response->success(
+            $this->service->store($userId, $input)
+        );
     }
 }

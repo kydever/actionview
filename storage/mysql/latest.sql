@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-26 08:56:29 +0000
+# Generation Time: 2021-11-26 08:59:48 +0000
 # ************************************************************
 
 
@@ -599,7 +599,7 @@ CREATE TABLE `user_group_project` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `ug_id` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `type` int(10) unsigned NOT NULL DEFAULT '0',
+  `type` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `link_count` int(10) unsigned NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
