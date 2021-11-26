@@ -33,14 +33,34 @@ class ErrorCode extends AbstractConstants
     public const TOKEN_INVALID = -10001;
 
     /**
-     * @Message("参数错误")
+     * @Message("邮箱或密码不能为空")
      */
-    public const PARAMS_INVALID = -10003;
+    public const EMAIL_OR_PASSWORD_NOT_EXIST = -10003;
 
     /**
      * @Message("用户已被封禁")
      */
     public const USER_DISABLED = -10006;
+
+    /**
+     * @Message("昵称不能为空")
+     */
+    public const USER_NAME_NOT_EXIST = -10100;
+
+    /**
+     * @Message("邮箱不能为空")
+     */
+    public const EMAIL_NOT_EXIST = -10101;
+
+    /**
+     * @Message("邮箱已被注册")
+     */
+    public const EMAIL_ALREADY_REGISTERED = -10102;
+
+    /**
+     * @Message("密码不能为空")
+     */
+    public const PASSWORD_NOT_EXIST = -10103;
 
     /**
      * @Message("用户不存在")

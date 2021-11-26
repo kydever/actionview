@@ -13,10 +13,12 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Model\User;
 use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
+use Hyperf\Di\Annotation\Inject;
 
 class UserService extends Service
 {
@@ -51,5 +53,20 @@ class UserService extends Service
         UserAuth::instance()->init($user);
 
         return $user;
+    }
+
+    public function register(string $email, string $firstName, string $password)
+    {
+        if ($this->dao->firstByEmail($email)) {
+            throw new BusinessException(ErrorCode::EMAIL_ALREADY_REGISTERED);
+        }
+
+        $user = new User();
+        $user->email = $email;
+        $user->first_name = $firstName;
+        $user->password = $password;
+        $user->save();
+
+        return $this->formatter->base($user);
     }
 }

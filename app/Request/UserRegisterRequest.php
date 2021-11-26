@@ -14,7 +14,7 @@ namespace App\Request;
 use App\Constants\ErrorCode;
 use Hyperf\Validation\Request\FormRequest;
 
-class SessionCreateRequest extends FormRequest
+class UserRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,6 +30,7 @@ class SessionCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'first_name' => 'required',
             'email' => 'required',
             'password' => 'required',
         ];
@@ -38,8 +39,9 @@ class SessionCreateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => (string) ErrorCode::EMAIL_OR_PASSWORD_NOT_EXIST,
-            'password.required' => (string) ErrorCode::EMAIL_OR_PASSWORD_NOT_EXIST,
+            'email.required' => (string) ErrorCode::EMAIL_NOT_EXIST,
+            'password.required' => (string) ErrorCode::PASSWORD_NOT_EXIST,
+            'first_name.required' => (string) ErrorCode::USER_NAME_NOT_EXIST,
         ];
     }
 }

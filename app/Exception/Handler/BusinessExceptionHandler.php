@@ -48,8 +48,17 @@ class BusinessExceptionHandler extends ExceptionHandler
                 $this->logger->error($throwable->getMessage());
                 return $this->response->fail(ErrorCode::SERVER_ERROR, $throwable->getMessage());
             case $throwable instanceof ValidationException:
-                $this->logger->error($message = $throwable->validator->errors()->first());
-                return $this->response->fail(ErrorCode::PARAMS_INVALID, $message);
+                // 兼容前端错误码
+                $code = $throwable->validator->errors()->first();
+                if (is_numeric($code)) {
+                    $code = (int) $code;
+                    $message = ErrorCode::getMessage($code);
+                } else {
+                    $message = $code;
+                    $code = ErrorCode::SERVER_ERROR;
+                }
+                $this->logger->error(sprintf('[%s] $s', $code, $message));
+                return $this->response->fail($code, $message);
         }
 
         $this->logger->error(format_throwable($throwable));
