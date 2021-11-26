@@ -21,6 +21,8 @@ namespace App\Model;
  */
 class SysSetting extends Model
 {
+    public const ALLOW_CREATE_PROJECT = 1;
+
     /**
      * The table associated with the model.
      *
@@ -41,4 +43,9 @@ class SysSetting extends Model
      * @var array
      */
     protected $casts = ['id' => 'integer', 'properties' => 'json', 'mailserver' => 'json', 'sysroles' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function allowCreateProject(): bool
+    {
+        return ($this->properties['allow_create_project'] ?? null) === self::ALLOW_CREATE_PROJECT;
+    }
 }

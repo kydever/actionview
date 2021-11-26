@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Constants\StatusConstant;
+use App\Request\ProjectStoreRequest;
 use App\Service\Dao\ProjectDao;
 use App\Service\ProjectService;
 use App\Service\UserAuth;
@@ -52,5 +53,13 @@ class ProjectController extends Controller
         return $this->response->success([
             'flag' => $isExisted ? StatusConstant::UN_AVAILABLE : StatusConstant::AVAILABLE,
         ]);
+    }
+
+    public function store(ProjectStoreRequest $request)
+    {
+        $input = $request->all();
+        $userId = UserAuth::instance()->build()->getUserId();
+
+        $this->service->store($userId, $input);
     }
 }

@@ -18,6 +18,21 @@ use function Han\Utils\sort;
 
 class ProjectDao extends Service
 {
+    public function create(string $key, string $name, string $description, array $creator, array $principal)
+    {
+        $model = new Project();
+        $model->key = $key;
+        $model->name = $name;
+        $model->description = $description;
+        $model->creator = $creator;
+        $model->principal = $principal;
+        $model->category = 1;
+        $model->status = Project::ACTIVE;
+        $model->save();
+
+        return $model;
+    }
+
     public function exists(string $key): bool
     {
         return Project::query()->where('key', $key)->exists();

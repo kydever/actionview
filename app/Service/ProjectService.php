@@ -11,8 +11,12 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Constants\StatusConstant;
+use App\Events\AddUserToRoleEvent;
+use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Service\Dao\AccessProjectLogDao;
 use App\Service\Dao\AclGroupDao;
@@ -20,6 +24,7 @@ use App\Service\Dao\ActivityDao;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\SysSettingDao;
+use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\ProjectFormatter;
 use Han\Utils\Service;
@@ -27,6 +32,7 @@ use Han\Utils\Utils\Sorter;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\Di\Annotation\Inject;
+use Illuminate\Support\Facades\Event;
 
 class ProjectService extends Service
 {
@@ -184,5 +190,70 @@ class ProjectService extends Service
         $accessedProjectKeys = di()->get(AccessProjectLogDao::class)->findLatestProjectKeys($userId);
 
         return array_values(array_unique(array_intersect($projectKeys, $accessedProjectKeys)));
+    }
+
+    /**
+     * @param $input = [
+     *     'key' => 'required',
+     *     'name' => 'required',
+     *     'description' => 'required',
+     *     'principal' => 'required',
+     * ]
+     */
+    public function store(int $userId, array $input)
+    {
+        $user = di()->get(UserDao::class)->first($userId, true);
+        $setting = di()->get(SysSettingDao::class)->first();
+        if (! $setting->allowCreateProject() && ! $user->hasAccess(Permission::SYS_ADMIN)) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        $name = $input['name'];
+        $key = $input['key'];
+        $principalId = (string) ($input['principal'] ?? null);
+        $description = $input['description'] ?? '';
+        $creator = [
+            'id' => $user->id,
+            'name' => $user->first_name,
+            'email' => $user->email,
+        ];
+
+        if ($this->dao->exists($key)) {
+            throw new BusinessException(ErrorCode::PROJECT_KEY_HAS_BEEN_TAKEN);
+        }
+
+        $principal = match ($principalId) {
+            'self', '' => [
+                'id' => $user->id,
+                'name' => $user->first_name,
+                'email' => $user->email,
+            ],
+            default => value(
+                static function () use ($principalId) {
+                    $model = di()->get(UserDao::class)->first((int) $principalId, false);
+                    if (empty($model)) {
+                        throw new BusinessException(ErrorCode::PROJECT_PRINCIPAL_NOT_EXIST);
+                    }
+                    return [
+                        'id' => $model->id,
+                        'name' => $model->first_name,
+                        'email' => $model->email,
+                    ];
+                }
+            ),
+        };
+
+        $project = $this->dao->create($key, $name, $description, $creator, $principal);
+
+        // // add issue-type template to project
+        // $this->initialize($project->key);
+        // // trigger add user to usrproject
+        // Event::fire(new AddUserToRoleEvent([$insValues['principal']['id']], $key));
+        //
+        // if (isset($project->principal)) {
+        //     $project->principal = array_merge($insValues['principal'], ['nameAndEmail' => $insValues['principal']['name'] . '(' . $insValues['principal']['email'] . ')']);
+        // }
+        //
+        // return Response()->json(['ecode' => 0, 'data' => $project]);
     }
 }

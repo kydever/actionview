@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-26 05:44:13 +0000
+# Generation Time: 2021-11-26 08:11:22 +0000
 # ************************************************************
 
 
@@ -471,6 +471,8 @@ CREATE TABLE `config_type` (
   `workflow_id` bigint(20) unsigned NOT NULL,
   `type` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `default` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `disabled` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   PRIMARY KEY (`id`),
@@ -480,13 +482,13 @@ CREATE TABLE `config_type` (
 LOCK TABLES `config_type` WRITE;
 /*!40000 ALTER TABLE `config_type` DISABLE KEYS */;
 
-INSERT INTO `config_type` (`id`, `project_key`, `sn`, `name`, `abb`, `screen_id`, `workflow_id`, `type`, `default`, `created_at`, `updated_at`)
+INSERT INTO `config_type` (`id`, `project_key`, `sn`, `name`, `abb`, `screen_id`, `workflow_id`, `type`, `default`, `description`, `disabled`, `created_at`, `updated_at`)
 VALUES
-	(1,'$_sys_$',1499871082,'任务','T',1,1,'',1,'2021-01-01 00:00:00','2021-01-01 00:00:00'),
-	(2,'$_sys_$',1499926509,'新功能','F',1,1,'',0,'2021-01-01 00:00:00','2021-01-01 00:00:00'),
-	(3,'$_sys_$',1499926534,'缺陷','B',1,1,'',0,'2021-01-01 00:00:00','2021-01-01 00:00:00'),
-	(4,'$_sys_$',1499926556,'改进','I',1,1,'',0,'2021-01-01 00:00:00','2021-01-01 00:00:00'),
-	(5,'$_sys_$',1499926575,'子任务','S',1,1,'subtask',0,'2021-01-01 00:00:00','2021-01-01 00:00:00');
+	(1,'$_sys_$',1499871082,'任务','T',1,1,'',1,'',0,'2021-01-01 00:00:00','2021-01-01 00:00:00'),
+	(2,'$_sys_$',1499926509,'新功能','F',1,1,'',0,'',0,'2021-01-01 00:00:00','2021-01-01 00:00:00'),
+	(3,'$_sys_$',1499926534,'缺陷','B',1,1,'',0,'',0,'2021-01-01 00:00:00','2021-01-01 00:00:00'),
+	(4,'$_sys_$',1499926556,'改进','I',1,1,'',0,'',0,'2021-01-01 00:00:00','2021-01-01 00:00:00'),
+	(5,'$_sys_$',1499926575,'子任务','S',1,1,'subtask',0,'',0,'2021-01-01 00:00:00','2021-01-01 00:00:00');
 
 /*!40000 ALTER TABLE `config_type` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -582,7 +584,7 @@ LOCK TABLES `sys_setting` WRITE;
 
 INSERT INTO `sys_setting` (`id`, `properties`, `mailserver`, `sysroles`, `created_at`, `updated_at`)
 VALUES
-	(1,'{\"day2hour\": 8, \"week2day\": 5, \"login_mail_domain\": \"actionview.cn\"}','[]','[]','2021-01-01 00:00:00','2021-01-01 00:00:00');
+	(1,'{\"day2hour\": 8, \"week2day\": 5, \"login_mail_domain\": \"actionview.cn\", \"allow_create_project\": 0}','[]','[]','2021-01-01 00:00:00','2021-01-01 00:00:00');
 
 /*!40000 ALTER TABLE `sys_setting` ENABLE KEYS */;
 UNLOCK TABLES;

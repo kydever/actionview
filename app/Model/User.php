@@ -56,4 +56,9 @@ class User extends Model
     {
         return $this->invalid_flag === UserConstant::INVALID_FLAG;
     }
+
+    public function hasAccess(string $access): bool
+    {
+        return ($this->permissions[$access] ?? null) === true;
+    }
 }

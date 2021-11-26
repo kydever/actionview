@@ -33,6 +33,11 @@ class ErrorCode extends AbstractConstants
     public const TOKEN_INVALID = -10001;
 
     /**
+     * @Message("您没有对应权限")
+     */
+    public const PERMISSION_DENIED = -10002;
+
+    /**
      * @Message("邮箱或密码不能为空")
      */
     public const EMAIL_OR_PASSWORD_NOT_EXIST = -10003;
@@ -61,6 +66,26 @@ class ErrorCode extends AbstractConstants
      * @Message("密码不能为空")
      */
     public const PASSWORD_NOT_EXIST = -10103;
+
+    /**
+     * @Message("项目名称不能为空")
+     */
+    public const PROJECT_NAME_CANNOT_BE_EMPTY = -14000;
+
+    /**
+     * @Message("项目KEY不能为空")
+     */
+    public const PROJECT_KEY_CANNOT_BE_EMPTY = -14001;
+
+    /**
+     * @Message("项目KEY已被其他项目使用")
+     */
+    public const PROJECT_KEY_HAS_BEEN_TAKEN = -14002;
+
+    /**
+     * @Message("项目 principal 不存在")
+     */
+    public const PROJECT_PRINCIPAL_NOT_EXIST = -14003;
 
     /**
      * @Message("用户不存在")

@@ -21,6 +21,8 @@ namespace App\Model;
  * @property int $workflow_id
  * @property string $type
  * @property int $default
+ * @property string $description
+ * @property int $disabled
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -38,12 +40,12 @@ class ConfigType extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'sn', 'name', 'abb', 'screen_id', 'workflow_id', 'type', 'default', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'sn', 'name', 'abb', 'screen_id', 'workflow_id', 'type', 'default', 'description', 'disabled', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'sn' => 'integer', 'screen_id' => 'integer', 'workflow_id' => 'integer', 'default' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'sn' => 'integer', 'screen_id' => 'integer', 'workflow_id' => 'integer', 'default' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'disabled' => 'integer'];
 }

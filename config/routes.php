@@ -24,6 +24,7 @@ Router::addGroup('/', function () {
     Router::get('myproject', App\Controller\ProjectController::class . '::mine');
     Router::get('project/recent', App\Controller\ProjectController::class . '::recent');
     Router::get('project/checkkey/{key}', App\Controller\ProjectController::class . '::checkKey');
+    Router::post('project', App\Controller\ProjectController::class . '::store');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
 }, [
