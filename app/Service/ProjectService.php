@@ -15,24 +15,27 @@ use App\Constants\ErrorCode;
 use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Constants\StatusConstant;
-use App\Events\AddUserToRoleEvent;
+use App\Event\AddUserToRoleEvent;
 use App\Exception\BusinessException;
+use App\Model\ConfigType;
 use App\Model\Project;
 use App\Service\Dao\AccessProjectLogDao;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\ActivityDao;
+use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\ProjectFormatter;
+use Carbon\Carbon;
 use Han\Utils\Service;
 use Han\Utils\Utils\Sorter;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\Di\Annotation\Inject;
-use Illuminate\Support\Facades\Event;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ProjectService extends Service
 {
@@ -245,15 +248,37 @@ class ProjectService extends Service
 
         $project = $this->dao->create($key, $name, $description, $creator, $principal);
 
-        // // add issue-type template to project
-        // $this->initialize($project->key);
-        // // trigger add user to usrproject
-        // Event::fire(new AddUserToRoleEvent([$insValues['principal']['id']], $key));
-        //
-        // if (isset($project->principal)) {
-        //     $project->principal = array_merge($insValues['principal'], ['nameAndEmail' => $insValues['principal']['name'] . '(' . $insValues['principal']['email'] . ')']);
-        // }
-        //
-        // return Response()->json(['ecode' => 0, 'data' => $project]);
+        $this->initialize($project->key);
+
+        di()->get(EventDispatcherInterface::class)->dispatch(new AddUserToRoleEvent([$project->getPrincipal()['id']], $project->key));
+
+        return $this->formatter->base($project);
+    }
+
+    /**
+     * 初始化项目相关数据.
+     */
+    public function initialize(string $key)
+    {
+        $default = di()->get(ConfigTypeDao::class)->findDefault();
+        $values = [];
+        $now = Carbon::now()->toDateTimeString();
+        foreach ($default as $item) {
+            $values[] = [
+                'name' => $item->name,
+                'abb' => $item->abb,
+                'screen_id' => $item->screen_id,
+                'workflow_id' => $item->workflow_id,
+                'sn' => $item->sn,
+                'type' => $item->type,
+                'disabled' => $item->disabled,
+                'default' => $item->default,
+                'project_key' => $key,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        ConfigType::query()->insert($values);
     }
 }

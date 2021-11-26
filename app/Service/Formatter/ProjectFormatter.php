@@ -27,7 +27,7 @@ class ProjectFormatter extends Service
 
     public function base(Project $model)
     {
-        return [
+        $result = [
             'key' => $model->key,
             'name' => $model->name,
             'principal' => $model->principal,
@@ -36,6 +36,9 @@ class ProjectFormatter extends Service
             'creator' => $model->creator,
             'status' => $model->status,
         ];
+
+        $result['principal']['nameAndEmail'] = sprintf('%s(%s)', $model->principal['name'] ?? '未知', $model->principal['email'] ?? '未知');
+        return $result;
     }
 
     /**
@@ -46,7 +49,6 @@ class ProjectFormatter extends Service
         $result = [];
         foreach ($models as $model) {
             $item = $this->base($model);
-            $item['principal']['nameAndEmail'] = sprintf('%s(%s)', $model->principal['name'] ?? '未知', $model->principal['email'] ?? '未知');
             $result[] = $item;
         }
 

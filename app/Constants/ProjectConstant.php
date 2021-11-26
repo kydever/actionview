@@ -13,6 +13,8 @@ namespace App\Constants;
 
 class ProjectConstant
 {
+    public const SYS = '$_sys_$';
+
     public const SORT_KEY_ALL_ISSUES_CNT = 'all_issues_cnt';
 
     public const SORT_KEY_UNRESOLVED_ISSUES_CNT = 'unresolved_issues_cnt';

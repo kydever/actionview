@@ -25,4 +25,12 @@ class UserGroupProjectDao extends Service
             ->where('link_count', '>', 0)
             ->get();
     }
+
+    public function firstByUserId(int $userId, string $key): ?UserGroupProject
+    {
+        return UserGroupProject::query()
+            ->where('ug_id', $userId)
+            ->where('project_key', $key)
+            ->first();
+    }
 }

@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use JetBrains\PhpStorm\ArrayShape;
+
 /**
  * @property int $id
  * @property string $name
@@ -51,5 +53,11 @@ class Project extends Model
     public function isActive(): bool
     {
         return $this->status === self::ACTIVE;
+    }
+
+    #[ArrayShape(['id' => 'int', 'name' => 'string', 'email' => 'string'])]
+    public function getPrincipal(): array
+    {
+        return $this->principal;
     }
 }
