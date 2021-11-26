@@ -34,6 +34,7 @@ use Han\Utils\Service;
 use Han\Utils\Utils\Sorter;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
+use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -246,11 +247,21 @@ class ProjectService extends Service
             ),
         };
 
-        $project = $this->dao->create($key, $name, $description, $creator, $principal);
+        Db::beginTransaction();
+        try {
+            $project = $this->dao->create($key, $name, $description, $creator, $principal);
 
-        $this->initialize($project->key);
+            $this->initialize($project->key);
 
-        di()->get(EventDispatcherInterface::class)->dispatch(new AddUserToRoleEvent([$project->getPrincipal()['id']], $project->key));
+            di()->get(EventDispatcherInterface::class)->dispatch(new AddUserToRoleEvent([$project->getPrincipal()['id']], $project->key));
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+
+            throw $exception;
+        }
+
+        $this->putAllProjectKeys();
 
         return $this->formatter->base($project);
     }
