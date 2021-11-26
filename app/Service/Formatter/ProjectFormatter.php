@@ -35,6 +35,8 @@ class ProjectFormatter extends Service
             'description' => $model->description,
             'creator' => $model->creator,
             'status' => $model->status,
+            'created_at' => $model->created_at->toDateTimeString(),
+            'updated_at' => $model->created_at->toDateTimeString(),
         ];
 
         $result['principal']['nameAndEmail'] = sprintf('%s(%s)', $model->principal['name'] ?? '未知', $model->principal['email'] ?? '未知');
