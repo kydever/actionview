@@ -25,4 +25,15 @@ class AccessProjectLogDao extends Service
             ->orderBy('latest_access_time', 'desc')
             ->first();
     }
+
+    public function findLatestProjectKeys(int $userId): array
+    {
+        return AccessProjectLog::query()->where('user_id', $userId)
+            ->orderBy('latest_access_time', 'desc')
+            ->distinct()
+            ->select('project_key')
+            ->get()
+            ->columns('project_key')
+            ->toArray();
+    }
 }

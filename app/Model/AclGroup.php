@@ -14,42 +14,36 @@ namespace App\Model;
 /**
  * @property int $id
  * @property string $name
- * @property string $key
- * @property array $principal
- * @property int $category
+ * @property string $users
+ * @property string $principal
+ * @property int $public_scope
  * @property string $description
- * @property string $creator
- * @property string $status
+ * @property string $directory
+ * @property string $ldap_dn
+ * @property string $sync_flag
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Project extends Model
+class AclGroup extends Model
 {
-    public const ACTIVE = 'active';
-
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'project';
+    protected $table = 'acl_group';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['id', 'name', 'key', 'principal', 'category', 'description', 'creator', 'status', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'name', 'users', 'principal', 'public_scope', 'description', 'directory', 'ldap_dn', 'sync_flag', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'principal' => 'json', 'category' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
-
-    public function isActive(): bool
-    {
-        return $this->status === self::ACTIVE;
-    }
+    protected $casts = ['id' => 'int', 'public_scope' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
