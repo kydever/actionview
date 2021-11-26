@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-26 03:56:56 +0000
+# Generation Time: 2021-11-26 05:44:13 +0000
 # ************************************************************
 
 
@@ -33,6 +33,28 @@ CREATE TABLE `access_project_log` (
   `latest_access_time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `INDEX_USER_ID` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+# Dump of table acl_group
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `acl_group`;
+
+CREATE TABLE `acl_group` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `users` json NOT NULL COMMENT '用户ID列表',
+  `principal` json NOT NULL,
+  `public_scope` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `directory` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Unknown',
+  `ldap_dn` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Unknown',
+  `sync_flag` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Unknown',
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -105,6 +127,24 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table acl_roleactor
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `acl_roleactor`;
+
+CREATE TABLE `acl_roleactor` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` bigint(20) NOT NULL,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `user_ids` json NOT NULL,
+  `group_ids` json NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 # Dump of table activations
 # ------------------------------------------------------------
 
@@ -130,6 +170,21 @@ VALUES
 
 /*!40000 ALTER TABLE `activations` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+# Dump of table activity
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `activity`;
+
+CREATE TABLE `activity` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table config_event_notifications
@@ -437,6 +492,22 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table issue
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `issue`;
+
+CREATE TABLE `issue` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `del_flg` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `resolution` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `assignee` json NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 # Dump of table oswf_definition
 # ------------------------------------------------------------
 
@@ -515,6 +586,22 @@ VALUES
 
 /*!40000 ALTER TABLE `sys_setting` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+# Dump of table user_group_project
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_group_project`;
+
+CREATE TABLE `user_group_project` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `ug_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `type` int(10) unsigned NOT NULL DEFAULT '0',
+  `link_count` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table user_setting

@@ -30,12 +30,15 @@ class Response
         $this->response = $container->get(ResponseInterface::class);
     }
 
-    public function success(mixed $data = []): PsrResponseInterface
+    public function success(mixed $data = [], array $extra = []): PsrResponseInterface
     {
-        return $this->response->json([
-            'ecode' => 0,
-            'data' => $data,
-        ]);
+        return $this->response->json(array_merge(
+            [
+                'ecode' => 0,
+                'data' => $data,
+            ],
+            $extra
+        ));
     }
 
     public function fail(int $code, string $message = ''): PsrResponseInterface

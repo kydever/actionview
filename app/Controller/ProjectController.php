@@ -20,6 +20,15 @@ class ProjectController extends Controller
     #[Inject]
     protected ProjectService $service;
 
+    public function mine()
+    {
+        $userId = UserAuth::instance()->build()->getUserId();
+
+        $result = $this->service->mine($userId);
+
+        return $this->response->success($result);
+    }
+
     public function recent()
     {
         $userId = UserAuth::instance()->build()->getUserId();

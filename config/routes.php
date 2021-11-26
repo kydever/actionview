@@ -21,6 +21,7 @@ Router::post('/user/login', App\Controller\UserController::class . '::login');
 Router::post('/user/register', App\Controller\UserController::class . '::register');
 
 Router::addGroup('/', function () {
+    Router::get('myproject', App\Controller\ProjectController::class . '::mine');
     Router::get('project/recent', App\Controller\ProjectController::class . '::recent');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
