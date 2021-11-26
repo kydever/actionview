@@ -23,8 +23,10 @@ Router::post('/user/register', App\Controller\UserController::class . '::registe
 Router::addGroup('/', function () {
     Router::get('myproject', App\Controller\ProjectController::class . '::mine');
     Router::get('project/recent', App\Controller\ProjectController::class . '::recent');
+    Router::get('project/stats', App\Controller\ProjectController::class . '::stats');
     Router::get('project/checkkey/{key}', App\Controller\ProjectController::class . '::checkKey');
     Router::post('project', App\Controller\ProjectController::class . '::store');
+    Router::get('project', App\Controller\ProjectController::class . '::index');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
 }, [

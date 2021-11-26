@@ -292,4 +292,18 @@ class ProjectService extends Service
 
         ConfigType::query()->insert($values);
     }
+
+    public function index(array $input, int $offset, int $limit)
+    {
+        $input['key_or_name'] = $input['name'] ?? null;
+
+        [$count, $projects] = $this->dao->search($input, $offset, $limit);
+
+        $result = $this->formatter->formatList($projects);
+
+        return [
+            $result,
+            ['total' => $count, 'sizePerPage' => $limit],
+        ];
+    }
 }

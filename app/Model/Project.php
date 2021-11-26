@@ -29,6 +29,8 @@ class Project extends Model
 {
     public const ACTIVE = 'active';
 
+    public const ALL = 'all';
+
     /**
      * The table associated with the model.
      *

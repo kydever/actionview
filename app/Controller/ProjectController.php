@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Constants\StatusConstant;
+use App\Request\PaginationRequest;
 use App\Request\ProjectStoreRequest;
 use App\Service\Dao\ProjectDao;
 use App\Service\ProjectService;
@@ -63,5 +64,17 @@ class ProjectController extends Controller
         return $this->response->success(
             $this->service->store($userId, $input)
         );
+    }
+
+    public function stats()
+    {
+        return $this->response->success();
+    }
+
+    public function index(PaginationRequest $request)
+    {
+        [$result, $options] = $this->service->index($request->all(), $request->offset(), $request->limit());
+
+        return $this->response->success($result, ['options' => $options]);
     }
 }

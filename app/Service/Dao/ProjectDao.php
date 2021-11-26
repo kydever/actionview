@@ -53,6 +53,36 @@ class ProjectDao extends Service
 
     /**
      * @param $input = [
+     *     'principal_id' => 1,
+     *     'status' => 'active',
+     *     'key_or_name' => '',
+     * ]
+     */
+    public function search(array $input, int $offset, int $limit)
+    {
+        $query = Project::query();
+        if (! empty($input['principal_id'])) {
+            $query->where('principal->id', $input['principal_id']);
+        }
+
+        if (! empty($input['status']) && $input['status'] !== Project::ALL) {
+            $query = $query->where('status', $input['status']);
+        }
+
+        if (! empty($input['key_or_name'])) {
+            $name = $input['key_or_name'];
+            $query->where(static function ($query) use ($name) {
+                $query->where('key', 'like', '%' . $name . '%')->orWhere('name', 'like', '%' . $name . '%');
+            });
+        }
+
+        $query->orderBy('created_at', 'desc');
+
+        return $this->factory->model->pagination($query, $offset, $limit);
+    }
+
+    /**
+     * @param $input = [
      *     'keys' => $keys,
      *     'key_or_name' => $name,
      *     'status' => $status,
