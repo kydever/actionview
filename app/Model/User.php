@@ -64,6 +64,11 @@ class User extends Model
         return password_verify($password, $this->password);
     }
 
+    public function hash(string $password): string
+    {
+        return password_hash($password, PASSWORD_BCRYPT);
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->id === 1;

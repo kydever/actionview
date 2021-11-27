@@ -15,9 +15,11 @@ use App\Request\PaginationRequest;
 use App\Request\SessionCreateRequest;
 use App\Request\UserRegisterRequest;
 use App\Request\UserSearchRequest;
+use App\Request\UserStoreRequest;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\GroupService;
+use App\Service\UserAuth;
 use App\Service\UserService;
 use Hyperf\Di\Annotation\Inject;
 
@@ -76,7 +78,12 @@ class UserController extends Controller
         ]);
     }
 
-    public function store()
+    public function store(UserStoreRequest $request)
     {
+        $user = UserAuth::instance()->build()->getUser();
+
+        return $this->response->success(
+            $this->service->store(0, $request->all(), $user)
+        );
     }
 }

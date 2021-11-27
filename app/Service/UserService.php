@@ -111,4 +111,38 @@ class UserService extends Service
 
         return [$total, $this->formatter->formatList($models)];
     }
+
+    /**
+     * @param $input = [
+     *     'first_name' => '',
+     *     'email' => '',
+     *     'phone' => '',
+     * ]
+     */
+    public function store(int $id, array $input, User $user)
+    {
+        $firstName = $input['first_name'];
+        $email = $input['email'];
+        $phone = $input['phone'] ?? '';
+
+        if ($this->dao->firstByEmail($email)) {
+            throw new BusinessException(ErrorCode::EMAIL_ALREADY_REGISTERED);
+        }
+
+        if ($id > 0) {
+            $model = $this->dao->first($id, true);
+        } else {
+            $model = new User();
+            $model->invalid_flag = 0;
+            $model->permissions = [];
+        }
+
+        $model->first_name = $firstName;
+        $model->email = $email;
+        $model->phone = $phone;
+        $model->password = $model->hash('actionview');
+        $model->save();
+
+        return $this->formatter->base($model);
+    }
 }
