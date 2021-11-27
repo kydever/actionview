@@ -14,6 +14,7 @@ namespace App\Listener;
 use App\Event\DeleteGroupEvent;
 use App\Service\Dao\AclRoleactorDao;
 use App\Service\Dao\UserGroupProjectDao;
+use App\Service\GroupService;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
@@ -39,6 +40,8 @@ class DeleteGroupListener implements ListenerInterface
     {
         $this->deleteGroupFromRole($event->getGroupId());
         $this->deleteGroupProject($event->getGroupId());
+
+        di()->get(GroupService::class)->putAll();
     }
 
     protected function deleteGroupProject(int $groupId)

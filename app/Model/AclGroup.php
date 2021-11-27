@@ -72,6 +72,6 @@ class AclGroup extends Model
 
     public function isPrincipal(int $userId): bool
     {
-        return $this->principal['id'] === $userId;
+        return ($this->principal['id'] ?? null) === $userId;
     }
 }
