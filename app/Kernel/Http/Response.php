@@ -30,6 +30,11 @@ class Response
         $this->response = $container->get(ResponseInterface::class);
     }
 
+    /**
+     * @param $extra = [
+     *     'options' => []
+     * ]
+     */
     public function success(mixed $data = [], array $extra = []): PsrResponseInterface
     {
         return $this->response->json(array_merge(

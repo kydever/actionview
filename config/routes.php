@@ -44,6 +44,8 @@ Router::addGroup('/', function () {
         Router::post('syssetting/sendtestmail', App\Controller\SysSettingController::class . '::sendTestMail');
 
         Router::get('user', App\Controller\UserController::class . '::index');
+
+        Router::get('group', App\Controller\GroupController::class . '::index');
     }, [
         'middleware' => [App\Middleware\PrivilegeMiddleware::class],
         'options' => [

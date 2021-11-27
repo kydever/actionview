@@ -42,6 +42,17 @@ class SQLTest extends HttpTestCase
         $this->assertInstanceOf(Collection::class, $model[0]->groups);
     }
 
+    public function testORMInJsonArrayRelation()
+    {
+        $group = di()->get(AclGroupDao::class)->first(1);
+        $res = $group->userModels;
+        $this->assertInstanceOf(Collection::class, $res);
+
+        $group = di()->get(AclGroupDao::class)->first(1);
+        $group->load('userModels');
+        $this->assertInstanceOf(Collection::class, $group->userModels);
+    }
+
     public function testFindLatestProjectKeys()
     {
         $res = di()->get(AccessProjectLogDao::class)->findLatestProjectKeys(1);

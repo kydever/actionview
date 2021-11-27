@@ -29,6 +29,37 @@ class AclGroupDao extends Service
     }
 
     /**
+     * @param $input = [
+     *     'name' => '',
+     *     'directory' => '',
+     *     'public_scope' => 1,
+     * ]
+     */
+    public function find(array $input, int $offset, int $limit)
+    {
+        $query = AclGroup::query()->where('name', '<>', '');
+
+        if ($name = $input['name'] ?? null) {
+            $query->where('name', 'like', '%' . $name . '%');
+        }
+
+        if ($directory = $input['directory'] ?? null) {
+            $query->where('directory', $directory);
+        }
+
+        if ($scope = $input['public_scope'] ?? null) {
+            // TODO: 不知道干嘛用的，后期优化
+            if ($scope == 1) {
+                $query->where('public_scope', '<>', 2)->where('public_scope', '<>', 3);
+            } elseif (in_array($scope, [2, 3])) {
+                $query->where('public_scope', $scope);
+            }
+        }
+
+        return $this->factory->model->pagination($query, $offset, $limit);
+    }
+
+    /**
      * @return AclGroup[]|\Hyperf\Database\Model\Collection
      */
     public function findByUserId(int $userId)

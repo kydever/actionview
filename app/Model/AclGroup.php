@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use Hao\ORMJsonRelation\HasORMJsonRelations;
+use Hyperf\Database\Model\Relations\HasMany;
+
 /**
  * @property int $id
  * @property string $name
@@ -23,9 +26,12 @@ namespace App\Model;
  * @property string $sync_flag
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property \Hyperf\Database\Model\Collection|User[] $userModels
  */
 class AclGroup extends Model
 {
+    use HasORMJsonRelations;
+
     /**
      * The table associated with the model.
      *
@@ -46,4 +52,9 @@ class AclGroup extends Model
      * @var array
      */
     protected $casts = ['id' => 'int', 'users' => 'json', 'public_scope' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function userModels(): HasMany
+    {
+        return $this->hasManyInJsonArray(User::class, 'id', 'users');
+    }
 }
