@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Constants\ErrorCode;
+use App\Constants\UserConstant;
 use App\Exception\BusinessException;
 use App\Model\User;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Builder;
 
 class UserDao extends Service
 {
@@ -33,7 +35,20 @@ class UserDao extends Service
     }
 
     /**
-     * @param int $ids
+     * @return \Hyperf\Database\Model\Collection|User[]
+     */
+    public function findByKeyword(string $keyword)
+    {
+        return User::query()->where('invalid_flag', UserConstant::INVALID_FLAG)
+            ->where(static function (Builder $query) use ($keyword) {
+                $query->where('first_name', 'like', "%{$keyword}%")
+                    ->orWhere('email', 'like', "%{$keyword}%");
+            })
+            ->limit(10)
+            ->get();
+    }
+
+    /**
      * @return \Hyperf\Database\Model\Collection|User[]
      */
     public function findMany(array $ids)

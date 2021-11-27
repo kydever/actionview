@@ -69,4 +69,23 @@ class UserService extends Service
 
         return $this->formatter->base($user);
     }
+
+    public function search(string $keyword): array
+    {
+        if (! $keyword) {
+            return [];
+        }
+
+        $models = $this->dao->findByKeyword($keyword);
+        $result = [];
+        foreach ($models as $model) {
+            if ($model->isSuperAdmin()) {
+                continue;
+            }
+
+            $result[] = $this->formatter->small($model);
+        }
+
+        return $result;
+    }
 }

@@ -51,4 +51,11 @@ class UserController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function search()
+    {
+        $keyword = $this->request->input('s');
+
+        return $this->service->search($keyword);
+    }
 }

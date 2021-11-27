@@ -29,6 +29,8 @@ Router::addGroup('/', function () {
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
 
+    Router::get('user/search', App\Controller\UserController::class . '::search');
+
     Router::addGroup('', function () {
         Router::get('project', App\Controller\ProjectController::class . '::index');
         Router::get('project/options', App\Controller\ProjectController::class . '::getOptions');

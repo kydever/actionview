@@ -18,16 +18,6 @@ class UserFormatter extends Service
 {
     public function base(User $model)
     {
-        //         avatar: "f95033df5f25c124771aafe58ef497c8"
-        // created_at: "2017-07-14 09:16:35"
-        // department: "ssssss"
-        // email: "hongzhong@actionview.cn"
-        // first_name: "红中"
-        // id: "59681b7310e411208a0d8eb7"
-        // last_login: {date: "2021-11-25 19:41:08.000000", timezone_type: 3, timezone: "Asia/Chongqing"}
-        // latest_access_project: "demo"
-        // position: ""
-        // updated_at: "2021-11-25 19:41:08"
         return [
             'id' => $model->id,
             'email' => $model->email,
@@ -35,6 +25,15 @@ class UserFormatter extends Service
             // 'avatar' => '',
             'permissions' => $model->permissions,
             // 'latest_access_url' => '/project/boba/summary'
+        ];
+    }
+
+    public function small(User $model)
+    {
+        return [
+            'id' => $model->id,
+            'name' => $model->first_name,
+            'email' => $model->email,
         ];
     }
 }

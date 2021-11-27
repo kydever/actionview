@@ -52,6 +52,11 @@ class User extends Model
         return password_verify($password, $this->password);
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->id === 1;
+    }
+
     public function isInvalid(): bool
     {
         return $this->invalid_flag === UserConstant::INVALID_FLAG;
