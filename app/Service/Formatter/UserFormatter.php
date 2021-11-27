@@ -11,8 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Service\Formatter;
 
+use App\Constants\UserConstant;
 use App\Model\User;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class UserFormatter extends Service
 {
@@ -22,6 +24,10 @@ class UserFormatter extends Service
             'id' => $model->id,
             'email' => $model->email,
             'first_name' => $model->first_name,
+            'directory' => $model->directory ?: 'self',
+            // unactivated
+            'status' => $model->isInvalid() ? UserConstant::INVALID : UserConstant::ACTIVE,
+            'phone' => $model->phone ?: '',
             // 'avatar' => '',
             'permissions' => $model->permissions,
             // 'latest_access_url' => '/project/boba/summary'
@@ -35,5 +41,23 @@ class UserFormatter extends Service
             'name' => $model->first_name,
             'email' => $model->email,
         ];
+    }
+
+    /**
+     * @param User[] $models
+     */
+    public function formatList(Collection $models): array
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $item = $this->base($model);
+            if ($model->relationLoaded('groups')) {
+                $item['groups'] = $model->groups->columns('name')->toArray();
+            }
+
+            $users[] = $item;
+        }
+
+        return $result;
     }
 }

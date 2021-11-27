@@ -52,32 +52,20 @@ class SysSetting extends Model
     public function allowSendEmail(): bool
     {
         $mailServer = $this->mailserver;
-
         $hasSender = ! empty($mailServer['send']['from']);
-        $hasSmtp = ! empty($mailServer['smtp']['host'])
-            && ! empty($mailServer['smtp']['port'])
-            && ! empty($mailServer['smtp']['username'])
-            && ! empty($mailServer['smtp']['password']);
-
+        $hasSmtp = ! empty($mailServer['smtp']['host']) && ! empty($mailServer['smtp']['port']) && ! empty($mailServer['smtp']['username']) && ! empty($mailServer['smtp']['password']);
         return $hasSender && $hasSmtp;
     }
 
     public function getSendPrefix(): string
     {
         $mailServer = $this->mailserver;
-
-        return ($mailServer['send']['prefix'] ?? 'ActionView') ?: 'ActionView';
+        return $mailServer['send']['prefix'] ?? 'ActionView' ?: 'ActionView';
     }
 
     public function getSmtp(): array
     {
         $smtp = $this->mailserver['smtp'] ?? [];
-        return [
-            $smtp['host'],
-            $smtp['port'],
-            $smtp['username'],
-            $smtp['password'],
-            $smtp['encryption'] ?? null,
-        ];
+        return [$smtp['host'], $smtp['port'], $smtp['username'], $smtp['password'], $smtp['encryption'] ?? null];
     }
 }

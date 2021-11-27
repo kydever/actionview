@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App\Constants\UserConstant;
+use Hao\ORMJsonRelation\HasORMJsonRelations;
 
 /**
  * @property int $id
@@ -21,11 +22,15 @@ use App\Constants\UserConstant;
  * @property string $last_login
  * @property array $permissions
  * @property int $invalid_flag
+ * @property string $directory
+ * @property string $phone
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
 class User extends Model
 {
+    use HasORMJsonRelations;
+
     /**
      * The table associated with the model.
      *
@@ -38,7 +43,7 @@ class User extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'email', 'first_name', 'password', 'last_login', 'permissions', 'invalid_flag', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'email', 'first_name', 'password', 'last_login', 'permissions', 'invalid_flag', 'directory', 'phone', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
@@ -46,6 +51,11 @@ class User extends Model
      * @var array
      */
     protected $casts = ['id' => 'integer', 'permissions' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'invalid_flag' => 'integer'];
+
+    public function groups()
+    {
+        return $this->hasManyJsonContains(AclGroup::class, 'users', 'id');
+    }
 
     public function verify(string $password): bool
     {
@@ -74,7 +84,6 @@ class User extends Model
                 return false;
             }
         }
-
         return true;
     }
 

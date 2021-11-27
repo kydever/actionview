@@ -11,9 +11,11 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Acl\Eloquent\Group;
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\User;
+use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
@@ -87,5 +89,26 @@ class UserService extends Service
         }
 
         return $result;
+    }
+
+    /**
+     * @param $input = [
+     *     'group' => 1,
+     * ]
+     */
+    public function index(array $input, int $offset = 0, int $limit = 10)
+    {
+        if (! empty($input['group'])) {
+            $groupId = $input['group'];
+            $group = di()->get(AclGroupDao::class)->first($groupId, false);
+
+            $input['ids'] = $group?->users;
+        }
+
+        [$total, $models] = $this->dao->find($input, $offset, $limit);
+
+        $models->load('groups');
+
+        return [$total, $this->formatter->formatList($models)];
     }
 }

@@ -42,6 +42,8 @@ Router::addGroup('/', function () {
         Router::post('syssetting', App\Controller\SysSettingController::class . '::update');
         Router::post('syssetting/restpwd', App\Controller\SysSettingController::class . '::resetPwd');
         Router::post('syssetting/sendtestmail', App\Controller\SysSettingController::class . '::sendTestMail');
+
+        Router::get('user', App\Controller\UserController::class . '::index');
     }, [
         'middleware' => [App\Middleware\PrivilegeMiddleware::class],
         'options' => [

@@ -55,4 +55,35 @@ class UserDao extends Service
     {
         return User::findManyFromCache($ids);
     }
+
+    /**
+     * @param $input = [
+     *     'name' => '',
+     *     'ids' => [],
+     *     'directory' => '',
+     * ]
+     */
+    public function find(array $input, int $offset = 0, int $limit = 10)
+    {
+        $query = User::query()->where('email', '<>', '')
+            ->where('id', '<>', 1);
+
+        if ($name = $input['name'] ?? null) {
+            $query->where(function ($query) use ($name) {
+                $query->where('email', 'like', '%' . $name . '%')->orWhere('name', 'like', '%' . $name . '%');
+            });
+        }
+
+        if (is_array($input['ids'] ?? null)) {
+            $query->whereIn('id', $input['ids']);
+        }
+
+        if ($directory = $input['directory'] ?? null) {
+            $query->where('directory', $directory);
+        }
+
+        $query->orderBy('id');
+
+        return $this->factory->model->pagination($query, $offset, $limit);
+    }
 }

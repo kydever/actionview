@@ -14,7 +14,7 @@ namespace App\Model;
 /**
  * @property int $id
  * @property string $name
- * @property string $users
+ * @property array $users
  * @property string $principal
  * @property int $public_scope
  * @property string $description
@@ -45,5 +45,5 @@ class AclGroup extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'public_scope' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'users' => 'json', 'public_scope' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

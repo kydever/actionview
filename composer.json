@@ -43,6 +43,7 @@
         "hyperf/utils": "3.0.*",
         "hyperf/validation": " 3.0.*",
         "jetbrains/phpstorm-attributes": "^1.0",
+        "limingxinleo/hyperf-orm-json-relation": "^0.1",
         "limingxinleo/hyperf-utils": "^3.1",
         "yurunsoft/phpmailer-swoole": "^1.0"
     },

@@ -11,8 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\PaginationRequest;
 use App\Request\SessionCreateRequest;
 use App\Request\UserRegisterRequest;
+use App\Request\UserSearchRequest;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\UserService;
@@ -57,5 +59,19 @@ class UserController extends Controller
         $keyword = $this->request->input('s');
 
         return $this->service->search($keyword);
+    }
+
+    public function index(UserSearchRequest $request, PaginationRequest $page)
+    {
+        [$count, $result] = $this->service->index($request->all(), $page->offset(), $page->limit());
+
+        return $this->response->success($result, [
+            'options' => [
+                'total' => $count,
+                'sizePerPage' => $page->limit(),
+                'groups' => [],
+                'directories' => [],
+            ],
+        ]);
     }
 }

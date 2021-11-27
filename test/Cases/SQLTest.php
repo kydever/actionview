@@ -14,6 +14,7 @@ namespace HyperfTest\Cases;
 use App\Service\Dao\AccessProjectLogDao;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\IssueDao;
+use App\Service\Dao\UserDao;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
 use HyperfTest\HttpTestCase;
@@ -29,6 +30,16 @@ class SQLTest extends HttpTestCase
         $res = di()->get(AclGroupDao::class)->findByUserId(1);
 
         $this->assertInstanceOf(Collection::class, $res);
+    }
+
+    public function testORMJsonContainsRelation()
+    {
+        $model = di()->get(UserDao::class)->first(1);
+        $this->assertInstanceOf(Collection::class, $model->groups);
+
+        $model = di()->get(UserDao::class)->findMany([1]);
+        $model->load('groups');
+        $this->assertInstanceOf(Collection::class, $model[0]->groups);
     }
 
     public function testFindLatestProjectKeys()
