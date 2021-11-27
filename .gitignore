@@ -10,4 +10,3 @@ vendor/
 .env
 .DS_Store
 *.cache
-*.lock
