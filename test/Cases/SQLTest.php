@@ -45,11 +45,17 @@ class SQLTest extends HttpTestCase
     public function testORMInJsonArrayRelation()
     {
         $group = di()->get(AclGroupDao::class)->first(1);
+        if ($group === null) {
+            $this->markTestSkipped('没有对应的用户组');
+        }
+
         $res = $group->userModels;
         $this->assertInstanceOf(Collection::class, $res);
 
         $group = di()->get(AclGroupDao::class)->first(1);
+        $this->assertFalse($group->relationLoaded('userModels'));
         $group->load('userModels');
+        $this->assertTrue($group->relationLoaded('userModels'));
         $this->assertInstanceOf(Collection::class, $group->userModels);
     }
 

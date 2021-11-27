@@ -55,7 +55,7 @@ class UserFormatter extends Service
                 $item['groups'] = $model->groups->columns('name')->toArray();
             }
 
-            $users[] = $item;
+            $result[] = $item;
         }
 
         return $result;
