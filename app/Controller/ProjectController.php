@@ -78,4 +78,20 @@ class ProjectController extends Controller
 
         return $this->response->success($result, ['options' => $options]);
     }
+
+    public function getOptions()
+    {
+    }
+
+    public function updMultiStatus()
+    {
+    }
+
+    public function createMultiIndex()
+    {
+    }
+
+    public function destroy()
+    {
+    }
 }

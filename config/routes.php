@@ -26,14 +26,28 @@ Router::addGroup('/', function () {
     Router::get('project/stats', App\Controller\ProjectController::class . '::stats');
     Router::get('project/checkkey/{key}', App\Controller\ProjectController::class . '::checkKey');
     Router::post('project', App\Controller\ProjectController::class . '::store');
-    Router::get('project', App\Controller\ProjectController::class . '::index');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
 
-    Router::get('syssetting', App\Controller\SysSettingController::class . '::show');
-    Router::post('syssetting', App\Controller\SysSettingController::class . '::update');
-    Router::post('syssetting/restpwd', App\Controller\SysSettingController::class . '::resetPwd');
-    Router::post('syssetting/sendtestmail', App\Controller\SysSettingController::class . '::sendTestMail');
+    Router::addGroup('', function () {
+        Router::get('project', App\Controller\ProjectController::class . '::index');
+        Router::get('project/options', App\Controller\ProjectController::class . '::getOptions');
+        Router::post('project/batch/status', App\Controller\ProjectController::class . '::updMultiStatus');
+        Router::post('project/batch/createindex', App\Controller\ProjectController::class . '::createMultiIndex');
+        Router::delete('project/{id}', App\Controller\ProjectController::class . '::destroy');
+
+        Router::get('syssetting', App\Controller\SysSettingController::class . '::show');
+        Router::post('syssetting', App\Controller\SysSettingController::class . '::update');
+        Router::post('syssetting/restpwd', App\Controller\SysSettingController::class . '::resetPwd');
+        Router::post('syssetting/sendtestmail', App\Controller\SysSettingController::class . '::sendTestMail');
+    }, [
+        'middleware' => [App\Middleware\PrivilegeMiddleware::class],
+        'options' => [
+            App\Middleware\PrivilegeMiddleware::class => [
+                'sys_admin',
+            ],
+        ],
+    ]);
 }, [
     'middleware' => [App\Middleware\AuthorizeMiddleware::class],
 ]);

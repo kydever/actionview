@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\User;
+use App\Service\Dao\UserDao;
 use Hyperf\HttpMessage\Cookie\Cookie;
 use Hyperf\HttpMessage\Server\Response;
 use Hyperf\Redis\Redis;
@@ -91,7 +92,15 @@ class UserAuth
 
     public function getUser(): ?User
     {
-        return $this->user;
+        if ($this->userId === 0) {
+            return null;
+        }
+
+        if ($this->user) {
+            return $this->user;
+        }
+
+        return $this->user = di()->get(UserDao::class)->first($this->userId, true);
     }
 
     protected function appendTokenToCookies(): void

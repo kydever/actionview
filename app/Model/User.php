@@ -61,4 +61,15 @@ class User extends Model
     {
         return ($this->permissions[$access] ?? null) === true;
     }
+
+    public function mustContainsAccesses(array $accesses): bool
+    {
+        foreach ($accesses as $access) {
+            if (! $this->hasAccess($access)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
