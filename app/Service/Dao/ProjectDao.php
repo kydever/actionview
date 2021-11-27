@@ -93,7 +93,7 @@ class ProjectDao extends Service
     {
         $keys = $input['keys'] ?? [];
         $query = Project::query();
-        if (!empty($keys)){
+        if (! empty($keys)) {
             $query->whereIn('key', $keys);
         }
         if (! empty($input['key_or_name'])) {

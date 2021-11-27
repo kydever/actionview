@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace App\Request;
 
-use App\Constants\ErrorCode;
 use Hyperf\Validation\Request\FormRequest;
 
 class ProjectMiniRequest extends FormRequest
@@ -34,5 +33,4 @@ class ProjectMiniRequest extends FormRequest
             'sortKey' => 'string',
         ];
     }
-
 }

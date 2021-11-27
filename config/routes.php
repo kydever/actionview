@@ -29,6 +29,11 @@ Router::addGroup('/', function () {
     Router::get('project', App\Controller\ProjectController::class . '::index');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
+
+    Router::get('syssetting', App\Controller\SysSettingController::class . '::show');
+    Router::post('syssetting', App\Controller\SysSettingController::class . '::update');
+    Router::post('syssetting/restpwd', App\Controller\SysSettingController::class . '::resetPwd');
+    Router::post('syssetting/sendtestmail', App\Controller\SysSettingController::class . '::sendTestMail');
 }, [
     'middleware' => [App\Middleware\AuthorizeMiddleware::class],
 ]);

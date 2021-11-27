@@ -108,7 +108,6 @@ class ProjectService extends Service
 
     public function mine(int $userId, array $input = [], )
     {
-
         $sortKey = $input['sortkey'] ?? null;
         $offsetKey = $input['offset_key'] ?? null;
         $limit = intval($input['limit'] ?? 24);
