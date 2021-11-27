@@ -13,6 +13,7 @@ namespace App\Model;
 
 use App\Constants\UserConstant;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
+use Hyperf\Database\Model\Relations\HasMany;
 
 /**
  * @property int $id
@@ -26,6 +27,7 @@ use Hao\ORMJsonRelation\HasORMJsonRelations;
  * @property string $phone
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property AclGroup[]|\Hyperf\Database\Model\Collection $groups
  */
 class User extends Model
 {
@@ -52,7 +54,7 @@ class User extends Model
      */
     protected $casts = ['id' => 'integer', 'permissions' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'invalid_flag' => 'integer'];
 
-    public function groups()
+    public function groups(): HasMany
     {
         return $this->hasManyJsonContains(AclGroup::class, 'users', 'id');
     }
