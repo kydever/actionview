@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
+use App\Service\Client\EmailSender;
 use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\SysSettingFormatter;
@@ -101,5 +104,36 @@ class SysSettingService extends Service
                 $user->removePermission($permission);
             }
         }
+    }
+
+    /**
+     * @param $input = [
+     *     'to' => '',
+     *     'subject' => '',
+     *     'contents' => '',
+     * ]
+     */
+    public function sendTestMail(array $input)
+    {
+        $to = $input['to'];
+        $subject = $input['subject'];
+        $contents = $input['contents'] ?? '';
+
+        $setting = $this->dao->first();
+        if (! $setting->allowSendEmail()) {
+            throw new BusinessException(ErrorCode::MAIL_INVALID);
+        }
+
+        $subject = '[' . $setting->getSendPrefix() . ']' . $subject;
+
+        try {
+            $client = new EmailSender(...$setting->getSmtp());
+            $client->send($subject, $contents, [$to]);
+        } catch (\Throwable $e) {
+            $this->logger->error((string) $e);
+            throw new BusinessException(ErrorCode::MAIL_SEND_FAILED, $e->getMessage());
+        }
+
+        return true;
     }
 }

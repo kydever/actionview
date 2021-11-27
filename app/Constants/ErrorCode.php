@@ -91,4 +91,24 @@ class ErrorCode extends AbstractConstants
      * @Message("用户不存在")
      */
     public const USER_NOT_EXISTS = -15000;
+
+    /**
+     * @Message("邮件发送失败")
+     */
+    public const MAIL_SEND_FAILED = -15200;
+
+    /**
+     * @Message("邮件接收者不允许为空")
+     */
+    public const MAIL_RECIPIENTS_CANNOT_BE_EMPTY = -15201;
+
+    /**
+     * @Message("邮件标题不允许为空")
+     */
+    public const MAIL_SUBJECT_CANNOT_BE_EMPTY = -15202;
+
+    /**
+     * @Message("邮件服务配置有误")
+     */
+    public const MAIL_INVALID = -15203;
 }

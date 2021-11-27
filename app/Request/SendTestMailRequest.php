@@ -11,9 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Request;
 
+use App\Constants\ErrorCode;
 use Hyperf\Validation\Request\FormRequest;
 
-class SysSettingSaveRequest extends FormRequest
+class SendTestMailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,15 +30,16 @@ class SysSettingSaveRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'properties' => 'array',
-            'smtp' => 'array',
-            'smtp.host' => 'string',
-            'smtp.port' => 'string',
-            'smtp.username' => 'string',
-            'smtp.password' => 'string',
-            'smtp.encryption' => 'string',
-            'mail_send' => 'array',
-            'sysroles' => 'array',
+            'to' => 'required',
+            'subject' => 'required',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'to.required' => (string) ErrorCode::MAIL_RECIPIENTS_CANNOT_BE_EMPTY,
+            'subject.required' => (string) ErrorCode::MAIL_SUBJECT_CANNOT_BE_EMPTY,
         ];
     }
 }

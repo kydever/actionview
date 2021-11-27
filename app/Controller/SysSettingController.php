@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\SendTestMailRequest;
 use App\Request\SysSettingSaveRequest;
 use App\Service\Dao\SysSettingDao;
 use App\Service\Formatter\SysSettingFormatter;
@@ -51,10 +52,10 @@ class SysSettingController extends Controller
     {
     }
 
-    /**
-     * TODO: rewrite by limx.
-     */
-    public function sendTestMail()
+    public function sendTestMail(SendTestMailRequest $request)
     {
+        return $this->response->success(
+            $this->service->sendTestMail($request->all())
+        );
     }
 }
