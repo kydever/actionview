@@ -26,7 +26,7 @@ use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class GroupService extends Service
 {
