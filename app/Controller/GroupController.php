@@ -41,7 +41,16 @@ class GroupController extends Controller
         $user = UserAuth::instance()->build()->getUser();
 
         return $this->response->success(
-            $this->service->store($request->all(), $user)
+            $this->service->store(0, $request->all(), $user)
+        );
+    }
+
+    public function update(GroupStoreRequest $request, int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+
+        return $this->response->success(
+            $this->service->store($id, $request->all(), $user)
         );
     }
 }

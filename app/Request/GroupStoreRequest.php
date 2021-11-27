@@ -31,7 +31,7 @@ class GroupStoreRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'principal' => 'string',
+            'principal' => 'numeric',
             'public_scope' => 'in:1,2,3',
         ];
     }

@@ -22,7 +22,7 @@ class AclGroupDao extends Service
     {
         $model = AclGroup::findFromCache($id);
         if (empty($model) && $throw) {
-            throw new BusinessException(ErrorCode::SERVER_ERROR, '组不存在');
+            throw new BusinessException(ErrorCode::GROUP_NOT_EXSIT);
         }
 
         return $model;

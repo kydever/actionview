@@ -11,7 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Constants\Permission;
 use App\Constants\StatusConstant;
+use App\Exception\BusinessException;
 use App\Model\AclGroup;
 use App\Model\User;
 use App\Service\Dao\AclGroupDao;
@@ -48,16 +51,17 @@ class GroupService extends Service
      *     'public_scope' => '1',
      *     'description' => '',
      *     'source_id' => 1,
+     *     'users' => [],
      * ]
      */
-    public function store(array $input, User $user)
+    public function store(int $id, array $input, User $user)
     {
         $name = $input['name'];
         $principal = $input['principal'] ?? null;
         $scope = $input['public_scope'] ?? StatusConstant::SCOPE_PUBLIC;
         $description = $input['description'] ?? '';
         $sourceId = $input['source_id'] ?? null;
-        $users = [];
+        $users = $input['users'] ?? [];
 
         $principal = new Principal((string) $principal, $user);
 
@@ -66,7 +70,19 @@ class GroupService extends Service
             $users = $group->users ?? [];
         }
 
-        $model = new AclGroup();
+        if ($id > 0) {
+            $model = $this->dao->first($id, true);
+            if ($model->directory && ! $model->isSelfDirectory()) {
+                throw new BusinessException(ErrorCode::GROUP_FROM_EXTERNAL_DIRECTION);
+            }
+
+            if (! $model->isPrincipal($user->id) && ! $user->hasAccess(Permission::SYS_ADMIN)) {
+                throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+            }
+        } else {
+            $model = new AclGroup();
+        }
+
         $model->name = $name;
         $model->principal = $principal->toArray();
         $model->public_scope = $scope;

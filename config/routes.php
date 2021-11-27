@@ -31,6 +31,7 @@ Router::addGroup('/', function () {
 
     Router::get('user/search', App\Controller\UserController::class . '::search');
     Router::post('group', App\Controller\GroupController::class . '::store');
+    Router::put('group/{id:\d+}', App\Controller\GroupController::class . '::update');
 
     Router::addGroup('', function () {
         Router::get('project', App\Controller\ProjectController::class . '::index');

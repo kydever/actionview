@@ -11,7 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use App\Service\GroupService;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
+use Hyperf\Database\Model\Events\Saved;
 use Hyperf\Database\Model\Relations\HasMany;
 
 /**
@@ -56,5 +58,20 @@ class AclGroup extends Model
     public function userModels(): HasMany
     {
         return $this->hasManyInJsonArray(User::class, 'id', 'users');
+    }
+
+    public function saved(Saved $event)
+    {
+        di()->get(GroupService::class)->putAll();
+    }
+
+    public function isSelfDirectory(): bool
+    {
+        return $this->directory === 'self';
+    }
+
+    public function isPrincipal(int $userId): bool
+    {
+        return $this->principal['id'] === $userId;
     }
 }

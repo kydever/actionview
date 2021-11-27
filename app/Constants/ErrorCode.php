@@ -73,6 +73,16 @@ class ErrorCode extends AbstractConstants
     public const GROUP_NAME_NOT_EMPTY = -10200;
 
     /**
+     * @Message("用户组不存在")
+     */
+    public const GROUP_NOT_EXSIT = -10201;
+
+    /**
+     * @Message("The group come from external directroy")
+     */
+    public const GROUP_FROM_EXTERNAL_DIRECTION = -10203;
+
+    /**
      * @Message("项目名称不能为空")
      */
     public const PROJECT_NAME_CANNOT_BE_EMPTY = -14000;
