@@ -29,6 +29,14 @@ class AclGroupDao extends Service
     }
 
     /**
+     * @return AclGroup[]|\Hyperf\Database\Model\Collection
+     */
+    public function all()
+    {
+        return AclGroup::query()->get();
+    }
+
+    /**
      * @param $input = [
      *     'name' => '',
      *     'directory' => '',

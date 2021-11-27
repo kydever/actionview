@@ -32,6 +32,13 @@ class GroupFormatter extends Service
         ];
     }
 
+    public function detail(AclGroup $model)
+    {
+        $result = $this->base($model);
+        $result['users'] = di()->get(UserFormatter::class)->formatList($model->userModels);
+        return $result;
+    }
+
     /**
      * @param AclGroup[] $models
      */

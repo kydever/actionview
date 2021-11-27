@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-27 06:04:51 +0000
+# Generation Time: 2021-11-27 08:22:35 +0000
 # ************************************************************
 
 
@@ -46,7 +46,7 @@ CREATE TABLE `acl_group` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `users` json NOT NULL COMMENT '用户ID列表',
-  `principal` json NOT NULL,
+  `principal` json NOT NULL COMMENT '负责人',
   `public_scope` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `directory` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Unknown',

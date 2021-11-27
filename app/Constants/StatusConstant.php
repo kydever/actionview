@@ -22,4 +22,13 @@ class StatusConstant
     public const AVAILABLE = 1;
 
     public const UN_AVAILABLE = 2;
+
+    // 公开
+    public const SCOPE_PUBLIC = 1;
+
+    // 私有
+    public const SCOPE_PRIVATE = 2;
+
+    // 成员可见
+    public const SCOPE_MEMBER = 3;
 }

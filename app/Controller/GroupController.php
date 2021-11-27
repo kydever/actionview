@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\GroupSearchRequest;
+use App\Request\GroupStoreRequest;
 use App\Request\PaginationRequest;
 use App\Service\GroupService;
+use App\Service\UserAuth;
 use Hyperf\Di\Annotation\Inject;
 
 class GroupController extends Controller
@@ -32,5 +34,14 @@ class GroupController extends Controller
                 'directories' => [],
             ],
         ]);
+    }
+
+    public function store(GroupStoreRequest $request)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+
+        return $this->response->success(
+            $this->service->store($request->all(), $user)
+        );
     }
 }

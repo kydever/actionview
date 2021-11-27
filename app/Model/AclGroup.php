@@ -51,7 +51,7 @@ class AclGroup extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'users' => 'json', 'public_scope' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'users' => 'json', 'principal' => 'json', 'public_scope' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function userModels(): HasMany
     {

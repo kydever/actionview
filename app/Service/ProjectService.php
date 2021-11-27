@@ -29,6 +29,7 @@ use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\ProjectFormatter;
+use App\Service\Struct\Principal;
 use Carbon\Carbon;
 use Han\Utils\Service;
 use Han\Utils\Utils\Sorter;
@@ -227,30 +228,11 @@ class ProjectService extends Service
             throw new BusinessException(ErrorCode::PROJECT_KEY_HAS_BEEN_TAKEN);
         }
 
-        $principal = match ($principalId) {
-            'self', '' => [
-                'id' => $user->id,
-                'name' => $user->first_name,
-                'email' => $user->email,
-            ],
-            default => value(
-                static function () use ($principalId) {
-                    $model = di()->get(UserDao::class)->first((int) $principalId, false);
-                    if (empty($model)) {
-                        throw new BusinessException(ErrorCode::PROJECT_PRINCIPAL_NOT_EXIST);
-                    }
-                    return [
-                        'id' => $model->id,
-                        'name' => $model->first_name,
-                        'email' => $model->email,
-                    ];
-                }
-            ),
-        };
+        $principal = new Principal($principalId, $user);
 
         Db::beginTransaction();
         try {
-            $project = $this->dao->create($key, $name, $description, $creator, $principal);
+            $project = $this->dao->create($key, $name, $description, $creator, $principal->toArray());
 
             $this->initialize($project->key);
 

@@ -17,6 +17,7 @@ use App\Request\UserRegisterRequest;
 use App\Request\UserSearchRequest;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
+use App\Service\GroupService;
 use App\Service\UserService;
 use Hyperf\Di\Annotation\Inject;
 
@@ -69,9 +70,13 @@ class UserController extends Controller
             'options' => [
                 'total' => $count,
                 'sizePerPage' => $page->limit(),
-                'groups' => [],
+                'groups' => di()->get(GroupService::class)->getAll(),
                 'directories' => [],
             ],
         ]);
+    }
+
+    public function store()
+    {
     }
 }

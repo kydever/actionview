@@ -68,6 +68,11 @@ class ErrorCode extends AbstractConstants
     public const PASSWORD_NOT_EXIST = -10103;
 
     /**
+     * @Message("用户组名称不能为空")
+     */
+    public const GROUP_NAME_NOT_EMPTY = -10200;
+
+    /**
      * @Message("项目名称不能为空")
      */
     public const PROJECT_NAME_CANNOT_BE_EMPTY = -14000;

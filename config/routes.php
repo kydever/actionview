@@ -30,6 +30,7 @@ Router::addGroup('/', function () {
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
 
     Router::get('user/search', App\Controller\UserController::class . '::search');
+    Router::post('group', App\Controller\GroupController::class . '::store');
 
     Router::addGroup('', function () {
         Router::get('project', App\Controller\ProjectController::class . '::index');
@@ -44,6 +45,7 @@ Router::addGroup('/', function () {
         Router::post('syssetting/sendtestmail', App\Controller\SysSettingController::class . '::sendTestMail');
 
         Router::get('user', App\Controller\UserController::class . '::index');
+        Router::post('user', App\Controller\UserController::class . '::store');
 
         Router::get('group', App\Controller\GroupController::class . '::index');
     }, [
