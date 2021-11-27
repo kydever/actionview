@@ -11,8 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\SysSettingSaveRequest;
 use App\Service\Dao\SysSettingDao;
 use App\Service\Formatter\SysSettingFormatter;
+use App\Service\SysSettingService;
 use Hyperf\Di\Annotation\Inject;
 
 class SysSettingController extends Controller
@@ -21,11 +23,11 @@ class SysSettingController extends Controller
     protected SysSettingDao $dao;
 
     #[Inject]
+    protected SysSettingService $service;
+
+    #[Inject]
     protected SysSettingFormatter $formatter;
 
-    /**
-     * TODO: rewrite by limx.
-     */
     public function show()
     {
         $setting = $this->dao->first();
@@ -35,11 +37,11 @@ class SysSettingController extends Controller
         );
     }
 
-    /**
-     * TODO: rewrite by limx.
-     */
-    public function update()
+    public function update(SysSettingSaveRequest $request)
     {
+        return $this->response->success(
+            $this->service->update($request->all())
+        );
     }
 
     /**

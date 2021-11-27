@@ -72,4 +72,16 @@ class User extends Model
 
         return true;
     }
+
+    public function addPermission(string $permission)
+    {
+        $this->permissions[$permission] = true;
+        return $this;
+    }
+
+    public function removePermission(string $permission)
+    {
+        $this->permissions[$permission] = false;
+        return $this;
+    }
 }

@@ -31,4 +31,13 @@ class UserDao extends Service
     {
         return User::query()->where('email', $email)->first();
     }
+
+    /**
+     * @param int $ids
+     * @return \Hyperf\Database\Model\Collection|User[]
+     */
+    public function findMany(array $ids)
+    {
+        return User::findManyFromCache($ids);
+    }
 }
