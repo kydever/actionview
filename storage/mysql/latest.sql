@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-26 08:59:48 +0000
+# Generation Time: 2021-11-27 02:51:41 +0000
 # ************************************************************
 
 
@@ -584,7 +584,7 @@ LOCK TABLES `sys_setting` WRITE;
 
 INSERT INTO `sys_setting` (`id`, `properties`, `mailserver`, `sysroles`, `created_at`, `updated_at`)
 VALUES
-	(1,'{\"day2hour\": 8, \"week2day\": 5, \"login_mail_domain\": \"actionview.cn\", \"allow_create_project\": 0}','[]','[]','2021-01-01 00:00:00','2021-01-01 00:00:00');
+	(1,'{\"day2hour\": 8, \"week2day\": 5, \"login_mail_domain\": \"hyperf.io\", \"allow_create_project\": 0}','[]','[]','2021-01-01 00:00:00','2021-11-27 10:51:03');
 
 /*!40000 ALTER TABLE `sys_setting` ENABLE KEYS */;
 UNLOCK TABLES;
