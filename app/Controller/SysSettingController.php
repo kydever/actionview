@@ -45,9 +45,6 @@ class SysSettingController extends Controller
         );
     }
 
-    /**
-     * TODO: rewrite by limx.
-     */
     public function resetPwd()
     {
     }
