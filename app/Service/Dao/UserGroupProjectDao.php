@@ -26,6 +26,13 @@ class UserGroupProjectDao extends Service
             ->get();
     }
 
+    public function findByGroupId(int $groupId)
+    {
+        return UserGroupProject::query()
+            ->where('ug_id', $groupId)
+            ->get();
+    }
+
     public function firstByUserId(int $userId, string $key): ?UserGroupProject
     {
         return UserGroupProject::query()

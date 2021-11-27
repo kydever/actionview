@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Constants\ErrorCode;
 use App\Constants\Permission;
 use App\Constants\StatusConstant;
+use App\Event\DeleteGroupEvent;
 use App\Exception\BusinessException;
 use App\Model\AclGroup;
 use App\Model\User;
@@ -23,7 +24,9 @@ use App\Service\Struct\Principal;
 use Han\Utils\Service;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
+use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class GroupService extends Service
 {
@@ -110,5 +113,30 @@ class GroupService extends Service
         $models = $this->dao->all();
 
         return $this->formatter->formatList($models);
+    }
+
+    public function destroy(int $id, User $user): int
+    {
+        $model = $this->dao->first($id, true);
+        if ($model->directory && $model->isSelfDirectory()) {
+            throw new BusinessException(ErrorCode::GROUP_FROM_EXTERNAL_DIRECTION);
+        }
+
+        if (! $model->isPrincipal($user->id) && ! $user->hasAccess(Permission::SYS_ADMIN)) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        Db::beginTransaction();
+        try {
+            $model->delete();
+            di()->get(EventDispatcherInterface::class)->dispatch(new DeleteGroupEvent($id));
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+
+            throw $exception;
+        }
+
+        return $id;
     }
 }

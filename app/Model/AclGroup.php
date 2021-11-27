@@ -20,7 +20,7 @@ use Hyperf\Database\Model\Relations\HasMany;
  * @property int $id
  * @property string $name
  * @property array $users
- * @property string $principal
+ * @property array $principal
  * @property int $public_scope
  * @property string $description
  * @property string $directory

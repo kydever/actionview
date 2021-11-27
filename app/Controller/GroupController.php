@@ -53,4 +53,14 @@ class GroupController extends Controller
             $this->service->store($id, $request->all(), $user)
         );
     }
+
+    public function destroy(int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+
+        $id = $this->service->destroy($id, $user);
+        return $this->response->success([
+            'id' => $id,
+        ]);
+    }
 }
