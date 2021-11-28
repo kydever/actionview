@@ -46,6 +46,7 @@
         "jetbrains/phpstorm-attributes": "^1.0",
         "limingxinleo/hyperf-orm-json-relation": "^0.1",
         "limingxinleo/hyperf-utils": "^3.1",
+        "overtrue/flysystem-qiniu": "^2.0",
         "yurunsoft/phpmailer-swoole": "^1.0"
     },
     "require-dev": {

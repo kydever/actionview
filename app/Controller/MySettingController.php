@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Service\UserAuth;
 use App\Service\UserSettingService;
 use Hyperf\Di\Annotation\Inject;
@@ -29,14 +31,16 @@ class MySettingController extends Controller
         );
     }
 
-    /**
-     * @TODO: limx
-     */
     public function setAvatar()
     {
-        $userId = UserAuth::instance()->build()->getUserId();
+        $user = UserAuth::instance()->build()->getUser();
+        $data = $this->request->input('data');
 
-        $result = $this->service->setAvatar($userId);
+        if (empty($data)) {
+            throw new BusinessException(ErrorCode::AVATAR_CANNOT_EMPTY);
+        }
+
+        $result = $this->service->setAvatar($data, $user);
 
         return $this->response->success($result);
     }

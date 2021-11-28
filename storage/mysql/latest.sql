@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-27 08:22:35 +0000
+# Generation Time: 2021-11-28 06:42:17 +0000
 # ************************************************************
 
 
@@ -639,6 +639,7 @@ CREATE TABLE `users` (
   `invalid_flag` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `directory` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `phone` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `avatar` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   PRIMARY KEY (`id`),
@@ -648,9 +649,9 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `invalid_flag`, `directory`, `phone`, `created_at`, `updated_at`)
+INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `invalid_flag`, `directory`, `phone`, `avatar`, `created_at`, `updated_at`)
 VALUES
-	(1,'l@hyperf.io','系统管理员','$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'','','2021-01-01 00:00:00','2021-01-01 00:00:00');
+	(1,'l@hyperf.io','系统管理员','$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'','','','2021-01-01 00:00:00','2021-01-01 00:00:00');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

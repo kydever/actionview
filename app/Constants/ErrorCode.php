@@ -123,6 +123,16 @@ class ErrorCode extends AbstractConstants
     public const MAIL_SUBJECT_CANNOT_BE_EMPTY = -15202;
 
     /**
+     * @Message("上传的头像不能为空")
+     */
+    public const AVATAR_CANNOT_EMPTY = -15006;
+
+    /**
+     * @Message("头像格式非法")
+     */
+    public const AVATAR_TYPE_INVALID = -15007;
+
+    /**
      * @Message("邮件服务配置有误")
      */
     public const MAIL_INVALID = -15203;

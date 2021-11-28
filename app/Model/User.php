@@ -25,6 +25,7 @@ use Hyperf\Database\Model\Relations\HasMany;
  * @property int $invalid_flag
  * @property string $directory
  * @property string $phone
+ * @property string $avatar
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property AclGroup[]|\Hyperf\Database\Model\Collection $groups
@@ -45,7 +46,7 @@ class User extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'email', 'first_name', 'password', 'last_login', 'permissions', 'invalid_flag', 'directory', 'phone', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'email', 'first_name', 'password', 'last_login', 'permissions', 'invalid_flag', 'directory', 'phone', 'avatar', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.

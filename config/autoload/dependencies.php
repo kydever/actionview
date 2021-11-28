@@ -12,4 +12,5 @@ declare(strict_types=1);
 return [
     Hyperf\Contract\StdoutLoggerInterface::class => App\Kernel\Log\LoggerFactory::class,
     Hyperf\Server\Listener\AfterWorkerStartListener::class => App\Kernel\Http\WorkerStartListener::class,
+    League\Flysystem\FilesystemOperator::class => Hyperf\Filesystem\FilesystemInvoker::class,
 ];
