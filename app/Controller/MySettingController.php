@@ -28,4 +28,16 @@ class MySettingController extends Controller
             $this->service->show($userId)
         );
     }
+
+    /**
+     * @TODO: limx
+     */
+    public function setAvatar()
+    {
+        $userId = UserAuth::instance()->build()->getUserId();
+
+        $result = $this->service->setAvatar($userId);
+
+        return $this->response->success($result);
+    }
 }

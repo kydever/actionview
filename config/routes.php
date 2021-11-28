@@ -28,6 +28,7 @@ Router::addGroup('/', function () {
     Router::post('project', App\Controller\ProjectController::class . '::store');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
+    Router::post('mysetting/avatar', App\Controller\MySettingController::class . '::setAvatar');
 
     Router::get('user/search', App\Controller\UserController::class . '::search');
     Router::post('group', App\Controller\GroupController::class . '::store');
