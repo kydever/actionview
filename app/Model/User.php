@@ -11,7 +11,11 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use App\Constants\Permission;
+use App\Constants\ProjectConstant;
 use App\Constants\UserConstant;
+use App\Service\AclService;
+use App\Service\ProjectAuth;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
 use Hyperf\Database\Model\Relations\HasMany;
 
@@ -87,8 +91,21 @@ class User extends Model
 
     public function mustContainsAccesses(array $accesses): bool
     {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
         foreach ($accesses as $access) {
             if (! $this->hasAccess($access)) {
+                $projectAuth = ProjectAuth::instance();
+                if ($projectAuth->getProjectKey() === ProjectConstant::SYS) {
+                    return $this->hasAccess(Permission::SYS_ADMIN);
+                }
+
+                $isAllowed = di()->get(AclService::class)->hasAccess($this->id, $projectAuth->getCurrent(), $access);
+                if ($isAllowed) {
+                    continue;
+                }
+
                 return false;
             }
         }

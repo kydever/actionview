@@ -72,3 +72,18 @@ Router::addGroup('/', function () {
 }, [
     'middleware' => [App\Middleware\AuthorizeMiddleware::class],
 ]);
+
+Router::addGroup('/project/{project_key}/', function () {
+    Router::get('summary', App\Controller\SummaryController::class . '::index');
+}, [
+    'middleware' => [
+        App\Middleware\AuthorizeMiddleware::class,
+        App\Middleware\ProjectAuthMiddleware::class,
+        App\Middleware\PrivilegeMiddleware::class,
+    ],
+    'options' => [
+        App\Middleware\PrivilegeMiddleware::class => [
+            'view_project',
+        ],
+    ],
+]);

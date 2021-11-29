@@ -9,13 +9,12 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace App\Constants;
+namespace App\Controller;
 
-class Permission
+class SummaryController extends Controller
 {
-    public const SYS_ADMIN = 'sys_admin';
-
-    public const PROJECT_VIEW = 'view_project';
-
-    public const PROJECT_MANAGE = 'manage_project';
+    public function index()
+    {
+        return $this->response->success();
+    }
 }

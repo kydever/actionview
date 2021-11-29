@@ -108,6 +108,11 @@ class ErrorCode extends AbstractConstants
     public const PROJECT_KEY_NOT_EXIST = -14004;
 
     /**
+     * @Message("项目已被废弃")
+     */
+    public const PROJECT_ARCHIVED = -14009;
+
+    /**
      * @Message("用户不存在")
      */
     public const USER_NOT_EXISTS = -15000;

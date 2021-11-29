@@ -11,13 +11,16 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\Permission;
 use App\Constants\UserConstant;
 use App\Model\Project;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\AclRoleactorDao;
 use App\Service\Dao\AclRolePermissionDao;
 use Han\Utils\Service;
+use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Context;
 
 class AclService extends Service
 {
@@ -34,6 +37,30 @@ class AclService extends Service
         return $groups;
     }
 
+    public function hasAccess(int $userId, Project $project, string $access): bool
+    {
+        if (in_array($access, [Permission::PROJECT_VIEW, Permission::PROJECT_MANAGE]) && $project->isPrincipal($userId)) {
+            return true;
+        }
+
+        $permissions = $this->getPermissionsFromContext($userId, $project);
+
+        if ($access === Permission::PROJECT_VIEW) {
+            return (bool) $permissions;
+        }
+
+        return in_array($access, $permissions);
+    }
+
+    public function getPermissionsFromContext(int $userId, Project $project): array
+    {
+        return Context::getOrSet('permission:' . $userId . ':' . $project->id, function () use ($userId, $project) {
+            var_dump(123);
+            return $this->getPermissions($userId, $project);
+        });
+    }
+
+    #[Cacheable(prefix: 'permission', value: '#{userId}:#{project.id}', ttl: 120)]
     public function getPermissions(int $userId, Project $project): array
     {
         $groups = $this->getBoundGroups($userId);
