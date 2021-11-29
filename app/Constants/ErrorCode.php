@@ -146,4 +146,14 @@ class ErrorCode extends AbstractConstants
      * @Message("文件系统 Domain 设置非法")
      */
     public const FILE_DOMAIN_INVALID = -17000;
+
+    /**
+     * @Message("密码不能为空")
+     */
+    public const PAWWSORD_NOT_EMPTY = -15001;
+
+    /**
+     * @Message("密码不正确")
+     */
+    public const PASSWORD_INCORRECT = -15002;
 }

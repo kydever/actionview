@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\User;
 use App\Model\UserSetting;
 use App\Service\Dao\UserDao;
@@ -70,6 +72,27 @@ class UserSettingService extends Service
         $user->save();
 
         return $this->showUser($user);
+    }
+
+    public function resetPwd(string $password, string $newPassword, User $user): User
+    {
+        $userModel = new User();
+        $user = di()->get(UserDao::class)->first($user->id, true);
+
+        // 用户不存在
+        if (empty($user)) {
+            throw new BusinessException(ErrorCode::USER_NOT_EXISTS);
+        }
+
+        // 密码不正确
+        if (! $user?->verify($password)) {
+            throw new BusinessException(ErrorCode::PASSWORD_INCORRECT);
+        }
+
+        $user->password = $userModel->hash($newPassword);
+        $user->save();
+
+        return $user;
     }
 
     private function showUser(User $user): array

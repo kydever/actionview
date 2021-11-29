@@ -31,7 +31,7 @@ Router::addGroup('/', function () {
     Router::post('mysetting/avatar', App\Controller\MySettingController::class . '::setAvatar');
     Router::post('mysetting/notify', App\Controller\MySettingController::class . '::setNotifications');
     // Route::post('mysetting/account', 'MysettingController@updAccounts');
-    // Route::post('mysetting/resetpwd', 'MysettingController@resetPwd');
+    Router::post('mysetting/resetpwd', App\Controller\MySettingController::class . '::resetPwd');
     // Route::post('mysetting/favorite', 'MysettingController@setFavorites');
 
     Router::get('user/search', App\Controller\UserController::class . '::search');

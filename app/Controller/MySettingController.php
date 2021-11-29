@@ -55,4 +55,19 @@ class MySettingController extends Controller
             'notifications' => $model->notifications,
         ]);
     }
+
+    public function resetPwd()
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $password = $this->request->input('password');
+        $newPassword = $this->request->input('new_password');
+
+        if (empty($password) || empty($newPassword)) {
+            throw new BusinessException(ErrorCode::PASSWORD_NOT_EXIST);
+        }
+
+        $result = $this->service->resetPwd($password, $newPassword, $user);
+
+        return $this->response->success($result);
+    }
 }
