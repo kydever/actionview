@@ -14,8 +14,10 @@ namespace App\Service;
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Han\Utils\Service;
 use Hyperf\Config\Annotation\Value;
+use Hyperf\Utils\Filesystem\Filesystem;
 
 class FileService extends Service
 {
@@ -33,17 +35,20 @@ class FileService extends Service
             return $path;
         }
 
+        di()->get(Filesystem::class)->makeDirectory(dirname($path), 0755, true, true);
+
         $client = new Client([
             'base_uri' => $this->domain,
         ]);
-        $client->get($object, [
-            'sink' => $path,
+        $response = $client->get($object, [
+            RequestOptions::SINK => $path,
+            RequestOptions::HTTP_ERRORS => false,
         ]);
 
-        if (! file_exists($path)) {
-            throw new BusinessException(ErrorCode::FILE_DOMAIN_INVALID);
+        if ($response->getStatusCode() === 200) {
+            return $path;
         }
 
-        return $path;
+        return BASE_PATH . '/storage/hyperf.png';
     }
 }
