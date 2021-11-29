@@ -32,8 +32,8 @@ class ProjectStoreRequest extends FormRequest
         return [
             'key' => 'required',
             'name' => 'required',
-            'description' => 'required',
-            'principal' => 'required',
+            'description' => 'string',
+            // 'principal' => 'string',
         ];
     }
 
