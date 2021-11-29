@@ -17,6 +17,14 @@ use Han\Utils\Service;
 
 class AccessProjectLogDao extends Service
 {
+    public function create(string $projectKey, int $userId): void
+    {
+        AccessProjectLog::query()->where('project_key', $projectKey)
+            ->where('user_id', $userId)
+            ->delete();
+        AccessProjectLog::query()->create(['project_key' => $projectKey, 'user_id' => $userId, 'latest_access_time' => time()]);
+    }
+
     public function latest(int $userId): ?AccessProjectLog
     {
         $datetime = Carbon::now()->subDays(14);

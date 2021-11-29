@@ -72,7 +72,7 @@ class User extends Model
 
     public function isSuperAdmin(): bool
     {
-        return $this->id === 1;
+        return UserConstant::isSuperAdmin($this->id);
     }
 
     public function isInvalid(): bool

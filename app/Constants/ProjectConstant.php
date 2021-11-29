@@ -30,4 +30,12 @@ class ProjectConstant
     public const SORT_KEY_CREATE_TIME_ASC = 'create_time_asc';
 
     public const SORT_KEY_CREATE_TIME_DESC = 'create_time_desc';
+
+    /**
+     * 项目KEY值，默认增加 p_ 前缀
+     */
+    public static function formatProjectKey(string $key): string
+    {
+        return sprintf('p_%s', $key);
+    }
 }

@@ -15,7 +15,7 @@ namespace App\Model;
  * @property int $id
  * @property string $project_key
  * @property int $role_id
- * @property string $permissions
+ * @property array $permissions
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -40,5 +40,5 @@ class AclRolePermission extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'role_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'role_id' => 'integer', 'permissions' => 'array', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

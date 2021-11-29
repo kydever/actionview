@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Constants\ProjectConstant;
 use App\Constants\StatusConstant;
 use App\Request\PaginationRequest;
 use App\Request\ProjectMiniRequest;
@@ -50,7 +51,7 @@ class ProjectController extends Controller
 
     public function checkKey(string $key)
     {
-        $isExisted = $this->dao->exists($key);
+        $isExisted = $this->dao->exists(ProjectConstant::formatProjectKey($key));
 
         return $this->response->success([
             'flag' => $isExisted ? StatusConstant::UN_AVAILABLE : StatusConstant::AVAILABLE,
@@ -87,6 +88,19 @@ class ProjectController extends Controller
             'options' => [
                 'total' => $count,
                 'sizePerPage' => $request->limit(),
+            ],
+        ]);
+    }
+
+    public function show(string $key)
+    {
+        $userId = UserAuth::instance()->build()->getUserId();
+
+        [$result, $permissions] = $this->service->show($key, $userId);
+
+        return $this->response->success($result, [
+            'options' => [
+                'permissions' => $permissions,
             ],
         ]);
     }

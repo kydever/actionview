@@ -215,7 +215,7 @@ class ProjectService extends Service
         }
 
         $name = $input['name'];
-        $key = $input['key'];
+        $key = ProjectConstant::formatProjectKey($input['key']);
         $principalId = (string) ($input['principal'] ?? null);
         $description = $input['description'] ?? '';
         $creator = [
@@ -285,5 +285,22 @@ class ProjectService extends Service
         $result = $this->formatter->formatList($projects);
 
         return [$count, $result];
+    }
+
+    public function show(string $key, int $userId)
+    {
+        $model = $this->dao->firstByKey($key, true);
+
+        $permissions = di()->get(AclService::class)->getPermissions($userId, $model);
+
+        // record the project access date
+        if (in_array('view_project', $permissions) && $model->isActive()) {
+            di()->get(AccessProjectLogDao::class)->create(
+                $key,
+                $userId
+            );
+        }
+
+        return [$this->formatter->base($model), $permissions];
     }
 }

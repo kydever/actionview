@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\Project;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
@@ -38,9 +40,14 @@ class ProjectDao extends Service
         return Project::query()->where('key', $key)->exists();
     }
 
-    public function firstByKey(string $key): ?Project
+    public function firstByKey(string $key, bool $throw = false): ?Project
     {
-        return Project::query()->where('key', $key)->first();
+        $model = Project::query()->where('key', $key)->first();
+        if (empty($model) && $throw) {
+            throw new BusinessException(ErrorCode::PROJECT_KEY_NOT_EXIST);
+        }
+
+        return $model;
     }
 
     /**

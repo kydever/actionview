@@ -27,6 +27,7 @@ Router::addGroup('/', function () {
     Router::get('project/checkkey/{key}', App\Controller\ProjectController::class . '::checkKey');
     Router::post('project', App\Controller\ProjectController::class . '::store');
     Router::put('project/{id:\d+}', App\Controller\ProjectController::class . '::update');
+    Router::get('project/p_{key}', App\Controller\ProjectController::class . '::show');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
     Router::post('mysetting/avatar', App\Controller\MySettingController::class . '::setAvatar');
