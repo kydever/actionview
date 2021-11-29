@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-28 06:42:17 +0000
+# Generation Time: 2021-11-29 01:53:27 +0000
 # ************************************************************
 
 
@@ -651,7 +651,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `invalid_flag`, `directory`, `phone`, `avatar`, `created_at`, `updated_at`)
 VALUES
-	(1,'l@hyperf.io','系统管理员','$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'','','','2021-01-01 00:00:00','2021-01-01 00:00:00');
+	(1,'l@hyperf.io','系统管理员','$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'','','default.png','2021-01-01 00:00:00','2021-11-29 09:52:39');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

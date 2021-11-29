@@ -39,13 +39,13 @@ class FileService extends Service
 
         $client = new Client([
             'base_uri' => $this->domain,
-        ]);
-        $response = $client->get($object, [
-            RequestOptions::SINK => $path,
             RequestOptions::HTTP_ERRORS => false,
         ]);
 
+        $response = $client->get($object);
+
         if ($response->getStatusCode() === 200) {
+            file_put_contents($path, $response->getBody());
             return $path;
         }
 
