@@ -79,13 +79,8 @@ class UserSettingService extends Service
         $userModel = new User();
         $user = di()->get(UserDao::class)->first($user->id, true);
 
-        // 用户不存在
-        if (empty($user)) {
-            throw new BusinessException(ErrorCode::USER_NOT_EXISTS);
-        }
-
         // 密码不正确
-        if (! $user?->verify($password)) {
+        if (! $user->verify($password)) {
             throw new BusinessException(ErrorCode::PASSWORD_INCORRECT);
         }
 
