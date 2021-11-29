@@ -42,4 +42,9 @@ class UserGroupProject extends Model
      * @var array
      */
     protected $casts = ['id' => 'int', 'ug_id' => 'integer', 'link_count' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function isGroup(): bool
+    {
+        return $this->type === 'group';
+    }
 }

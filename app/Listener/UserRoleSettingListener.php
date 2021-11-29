@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Listener;
 
 use App\Event\AddUserToRoleEvent;
+use App\Event\DelUserFromRoleEvent;
 use App\Model\UserGroupProject;
 use App\Service\Dao\UserGroupProjectDao;
 use Hyperf\Event\Annotation\Listener;
@@ -29,6 +30,7 @@ class UserRoleSettingListener implements ListenerInterface
     {
         return [
             AddUserToRoleEvent::class,
+            DelUserFromRoleEvent::class,
         ];
     }
 
@@ -36,6 +38,20 @@ class UserRoleSettingListener implements ListenerInterface
     {
         if ($event instanceof AddUserToRoleEvent) {
             $this->linkUserWithProject($event->getUserIds(), $event->getProjectKey());
+        }
+
+        if ($event instanceof DelUserFromRoleEvent) {
+            $this->unlinkUserWithProject($event->getUserIds(), $event->getProjectKey());
+        }
+    }
+
+    public function unlinkUserWithProject(array $userIds, string $projectKey)
+    {
+        foreach ($userIds as $userId) {
+            $link = di()->get(UserGroupProjectDao::class)->firstByUserId($userId, $projectKey);
+            if ($link->link_count > 0) {
+                $link?->decrement('link_count');
+            }
         }
     }
 

@@ -103,9 +103,14 @@ class ErrorCode extends AbstractConstants
     public const PROJECT_PRINCIPAL_NOT_EXIST = -14003;
 
     /**
-     * @Message("项目KEY不存在")
+     * @Message("项目不存在")
      */
-    public const PROJECT_KEY_NOT_EXIST = -14004;
+    public const PROJECT_NOT_EXIST = -14004;
+
+    /**
+     * @Message("项目 principal 必填")
+     */
+    public const PROJECT_PRINCIPAL_CANNOT_EMPTY = -14005;
 
     /**
      * @Message("项目已被废弃")

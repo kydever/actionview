@@ -28,6 +28,7 @@ class ProjectFormatter extends Service
     public function base(Project $model)
     {
         $result = [
+            'id' => $model->id,
             'key' => $model->key,
             'name' => $model->name,
             'principal' => $model->principal,

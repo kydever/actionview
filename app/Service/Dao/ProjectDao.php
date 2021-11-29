@@ -20,6 +20,15 @@ use function Han\Utils\sort;
 
 class ProjectDao extends Service
 {
+    public function first(int $id, bool $throw = false)
+    {
+        $model = Project::findFromCache($id);
+        if (empty($model) && $throw) {
+            throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
+        }
+        return $model;
+    }
+
     public function create(string $key, string $name, string $description, array $creator, array $principal)
     {
         $model = new Project();
@@ -44,7 +53,7 @@ class ProjectDao extends Service
     {
         $model = Project::query()->where('key', $key)->first();
         if (empty($model) && $throw) {
-            throw new BusinessException(ErrorCode::PROJECT_KEY_NOT_EXIST);
+            throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
         }
 
         return $model;

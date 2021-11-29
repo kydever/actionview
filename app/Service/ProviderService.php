@@ -11,9 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Acl\Eloquent\Group;
+use App\Service\Dao\AclGroupDao;
+use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
-use Cartalyst\Sentinel\Users\EloquentUser;
+use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 
 /**
@@ -25,33 +26,23 @@ class ProviderService extends Service
     {
         $projects = di()->get(UserGroupProjectDao::class)->findByProjectKey($key);
 
-        $user_ids = [];
-        $group_ids = [];
-        foreach ($user_group_ids as $value) {
-            if (isset($value->type) && $value->type === 'group') {
-                $group_ids[] = $value->ug_id;
-            } else {
-                $user_ids[] = $value->ug_id;
-            }
+        $userIds = [];
+        $groupIds = [];
+        foreach ($projects as $project) {
+            $project->isGroup() ? $groupIds[] = $project->ug_id : $userIds[] = $project->ug_id;
         }
 
-        if ($group_ids) {
-            $groups = Group::find($group_ids);
+        if ($groupIds) {
+            $groups = di()->get(AclGroupDao::class)->findMany($groupIds);
             foreach ($groups as $group) {
-                $user_ids = array_merge($user_ids, isset($group->users) && $group->users ? $group->users : []);
+                $userIds = array_merge($userIds, $group->users);
             }
         }
-        $user_ids = array_unique($user_ids);
 
-        $user_list = [];
-        $users = EloquentUser::find($user_ids);
-        foreach ($users as $user) {
-            if (isset($user->invalid_flag) && $user->invalid_flag === 1) {
-                continue;
-            }
-            $user_list[] = ['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email];
-        }
+        $userIds = array_values(array_unique($userIds));
 
-        return $user_list;
+        $models = di()->get(UserDao::class)->findMany($userIds);
+
+        return di()->get(UserFormatter::class)->formatList($models);
     }
 }

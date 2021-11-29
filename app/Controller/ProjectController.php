@@ -16,6 +16,7 @@ use App\Constants\StatusConstant;
 use App\Request\PaginationRequest;
 use App\Request\ProjectMiniRequest;
 use App\Request\ProjectStoreRequest;
+use App\Request\ProjectUpdateRequest;
 use App\Service\Dao\ProjectDao;
 use App\Service\ProjectService;
 use App\Service\UserAuth;
@@ -68,12 +69,14 @@ class ProjectController extends Controller
         );
     }
 
-    public function update(ProjectStoreRequest $request, int $id)
+    public function update(ProjectUpdateRequest $request, int $id)
     {
         $input = $request->all();
-        $userId = UserAuth::instance()->build()->getUserId();
+        $user = UserAuth::instance()->build()->getUser();
 
-        return $this->response->success();
+        return $this->response->success(
+            $this->service->update($id, $input, $user)
+        );
     }
 
     public function stats()
