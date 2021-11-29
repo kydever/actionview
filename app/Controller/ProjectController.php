@@ -96,6 +96,8 @@ class ProjectController extends Controller
     {
         $userId = UserAuth::instance()->build()->getUserId();
 
+        $key = ProjectConstant::formatProjectKey($key);
+
         [$result, $permissions] = $this->service->show($key, $userId);
 
         return $this->response->success($result, [

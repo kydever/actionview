@@ -36,6 +36,10 @@ class ProjectConstant
      */
     public static function formatProjectKey(string $key): string
     {
+        if (str_starts_with($key, 'p_')) {
+            return $key;
+        }
+
         return sprintf('p_%s', $key);
     }
 }
