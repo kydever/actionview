@@ -15,6 +15,7 @@ use App\Model\Project;
 use App\Model\User;
 use Han\Utils\Service;
 use Hyperf\Cache\Annotation\Cacheable;
+use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\Di\Annotation\Inject;
 
 class IssueService extends Service
@@ -28,6 +29,17 @@ class IssueService extends Service
 
     #[Cacheable(prefix: 'issue:options', value: '#{$project->id}', ttl: 86400, offset: 3600)]
     public function getOptions(Project $project)
+    {
+        return $this->options($project);
+    }
+
+    #[CachePut(prefix: 'issue:options', value: '#{$project->id}', ttl: 86400, offset: 3600)]
+    public function putOptions(Project $project)
+    {
+        return $this->options($project);
+    }
+
+    public function options(Project $project)
     {
         $users = $this->provider->getUserList($project->key);
 

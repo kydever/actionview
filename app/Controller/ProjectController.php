@@ -79,6 +79,15 @@ class ProjectController extends Controller
         );
     }
 
+    public function createIndex(int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+
+        $result = $this->service->createIndex($id, $user);
+
+        return $this->response->success($result);
+    }
+
     public function stats()
     {
         return $this->response->success();

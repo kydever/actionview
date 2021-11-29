@@ -337,10 +337,23 @@ class ProjectService extends Service
     {
         $model = $this->dao->firstByKey($key, true);
 
-        return $this->showProject($model, $userId)
+        return $this->showProject($model, $userId);
     }
 
-    protected function showProject(Project $model, int $userId){
+    public function createIndex(int $id, User $user)
+    {
+        $model = $this->dao->first($id, true);
+        if (! $model->isPrincipal($user->id) && ! $user->hasAccess(Permission::SYS_ADMIN)) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        di()->get(IssueService::class)->putOptions($model);
+
+        return $this->formatter->base($model);
+    }
+
+    protected function showProject(Project $model, int $userId)
+    {
         $permissions = di()->get(AclService::class)->getPermissions($userId, $model);
 
         // record the project access date
