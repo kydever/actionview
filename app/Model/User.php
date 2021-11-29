@@ -21,9 +21,9 @@ use Hyperf\Database\Model\Relations\HasMany;
 
 /**
  * @property int $id
- * @property string $email
- * @property string $first_name
- * @property string $password
+ * @property string $email 邮箱
+ * @property string $first_name 姓名
+ * @property string $password 密码
  * @property string $last_login
  * @property array $permissions
  * @property int $invalid_flag
@@ -100,12 +100,10 @@ class User extends Model
                 if ($projectAuth->getProjectKey() === ProjectConstant::SYS) {
                     return $this->hasAccess(Permission::SYS_ADMIN);
                 }
-
                 $isAllowed = di()->get(AclService::class)->hasAccess($this->id, $projectAuth->getCurrent(), $access);
                 if ($isAllowed) {
                     continue;
                 }
-
                 return false;
             }
         }

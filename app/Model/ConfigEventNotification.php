@@ -13,9 +13,9 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property string $project_key
- * @property int $event_id
- * @property string $notifications
+ * @property string $project_key 项目KEY
+ * @property int $event_id 事件ID
+ * @property string $notifications 通知
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */

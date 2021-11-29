@@ -13,10 +13,10 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property string $code
- * @property int $user_id
- * @property int $completed
- * @property string $completed_at
+ * @property string $code 代码
+ * @property int $user_id 用户ID
+ * @property int $completed 是否完成
+ * @property string $completed_at 完成时间
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */

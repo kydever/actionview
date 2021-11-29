@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $user_id
+ * @property int $user_id 用户ID
  * @property array $notifications
  * @property array $favorites
  * @property \Carbon\Carbon $created_at

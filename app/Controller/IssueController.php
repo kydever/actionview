@@ -29,4 +29,8 @@ class IssueController extends Controller
         return $this->response->success([]);
         [$count, $result] = $this->service->index($project, $user);
     }
+
+    public function getOptions()
+    {
+    }
 }

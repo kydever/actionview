@@ -13,9 +13,9 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property string $project_key
- * @property int $role_id
- * @property array $permissions
+ * @property string $project_key 项目KEY
+ * @property int $role_id 角色ID
+ * @property array $permissions 权限表
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */

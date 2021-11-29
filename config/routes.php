@@ -77,6 +77,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('summary', App\Controller\SummaryController::class . '::index');
 
     Router::get('issue', App\Controller\IssueController::class . '::index');
+    Router::get('issue/options', App\Controller\IssueController::class . '::getOptions');
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
