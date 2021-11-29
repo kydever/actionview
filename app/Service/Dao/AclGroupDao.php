@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Constants\ErrorCode;
+use App\Constants\StatusConstant;
 use App\Exception\BusinessException;
 use App\Model\AclGroup;
 use Han\Utils\Service;
@@ -26,6 +27,14 @@ class AclGroupDao extends Service
         }
 
         return $model;
+    }
+
+    /**
+     * @return AclGroup[]|\Hyperf\Database\Model\Collection
+     */
+    public function findMany(array $ids)
+    {
+        return AclGroup::findManyFromCache($ids);
     }
 
     /**
@@ -57,10 +66,9 @@ class AclGroupDao extends Service
         }
 
         if ($scope = $input['public_scope'] ?? null) {
-            // TODO: 不知道干嘛用的，后期优化
-            if ($scope == 1) {
-                $query->where('public_scope', '<>', 2)->where('public_scope', '<>', 3);
-            } elseif (in_array($scope, [2, 3])) {
+            if ($scope == StatusConstant::SCOPE_PUBLIC) {
+                $query->where('public_scope', '<>', StatusConstant::SCOPE_PRIVATE)->where('public_scope', '<>', StatusConstant::SCOPE_MEMBER);
+            } elseif (in_array($scope, [StatusConstant::SCOPE_PRIVATE, StatusConstant::SCOPE_MEMBER])) {
                 $query->where('public_scope', $scope);
             }
         }

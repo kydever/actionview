@@ -20,4 +20,9 @@ class UserConstant
     public const ACTIVE = 'active';
 
     public const INVALID = 'invalid';
+
+    public static function isSuperAdmin(int $userId): bool
+    {
+        return $userId === 1;
+    }
 }

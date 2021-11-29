@@ -40,4 +40,14 @@ class UserGroupProjectDao extends Service
             ->where('project_key', $key)
             ->first();
     }
+
+    /**
+     * @return \Hyperf\Database\Model\Collection|UserGroupProject[]
+     */
+    public function findByProjectKey(string $key)
+    {
+        return UserGroupProject::query()->where('project_key', $key)
+            ->where('link_count', '>', 0)
+            ->get();
+    }
 }

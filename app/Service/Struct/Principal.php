@@ -26,7 +26,7 @@ class Principal implements Arrayable
 
     private string $principal;
 
-    public function __construct(mixed $principal, private User $user)
+    public function __construct(mixed $principal, private ?User $user = null)
     {
         if ($principal === null) {
             $this->changed = false;
@@ -40,15 +40,26 @@ class Principal implements Arrayable
         return $this->changed;
     }
 
+    public function getPrincipal(): string
+    {
+        return $this->principal;
+    }
+
     public function toArray(): array
     {
         $principal = $this->principal;
         return match ($this->principal) {
-            'self', '' => [
-                'id' => $this->user->id,
-                'name' => $this->user->first_name,
-                'email' => $this->user->email,
-            ],
+            'self', '' => value(static function () {
+                if ($this->user === null) {
+                    throw new BusinessException(ErrorCode::PROJECT_PRINCIPAL_CANNOT_EMPTY);
+                }
+
+                return [
+                    'id' => $this->user->id,
+                    'name' => $this->user->first_name,
+                    'email' => $this->user->email,
+                ];
+            }),
             default => value(
                 static function () use ($principal) {
                     $model = di()->get(UserDao::class)->first((int) $principal, false);

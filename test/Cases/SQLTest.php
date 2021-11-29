@@ -11,8 +11,11 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
+use App\Constants\Permission;
+use App\Constants\ProjectConstant;
 use App\Service\Dao\AccessProjectLogDao;
 use App\Service\Dao\AclGroupDao;
+use App\Service\Dao\AclRolePermissionDao;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\UserDao;
 use Hyperf\Database\Model\Builder;
@@ -30,6 +33,11 @@ class SQLTest extends HttpTestCase
         $res = di()->get(AclGroupDao::class)->findByUserId(1);
 
         $this->assertInstanceOf(Collection::class, $res);
+
+        $res = di()->get(AclRolePermissionDao::class)->findProjectPermissions(Permission::ISSUE_ASSIGNED, ProjectConstant::SYS);
+
+        $this->assertInstanceOf(Collection::class, $res);
+        $this->assertTrue($res->isNotEmpty());
     }
 
     public function testORMJsonContainsRelation()

@@ -62,4 +62,12 @@ class Project extends Model
     {
         return $this->principal;
     }
+
+    /**
+     * 是否为项目负责人.
+     */
+    public function isPrincipal(int $userId): bool
+    {
+        return ($this->getPrincipal()['id'] ?? null) === $userId;
+    }
 }

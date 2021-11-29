@@ -15,7 +15,7 @@ namespace App\Model;
  * @property int $id
  * @property string $project_key
  * @property int $ug_id
- * @property int $type
+ * @property string $type
  * @property int $link_count
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -41,5 +41,10 @@ class UserGroupProject extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'ug_id' => 'integer', 'type' => 'integer', 'link_count' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'ug_id' => 'integer', 'link_count' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function isGroup(): bool
+    {
+        return $this->type === 'group';
+    }
 }

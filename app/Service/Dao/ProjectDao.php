@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\Project;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
@@ -18,6 +20,15 @@ use function Han\Utils\sort;
 
 class ProjectDao extends Service
 {
+    public function first(int $id, bool $throw = false)
+    {
+        $model = Project::findFromCache($id);
+        if (empty($model) && $throw) {
+            throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
+        }
+        return $model;
+    }
+
     public function create(string $key, string $name, string $description, array $creator, array $principal)
     {
         $model = new Project();
@@ -38,9 +49,14 @@ class ProjectDao extends Service
         return Project::query()->where('key', $key)->exists();
     }
 
-    public function firstByKey(string $key): ?Project
+    public function firstByKey(string $key, bool $throw = false): ?Project
     {
-        return Project::query()->where('key', $key)->first();
+        $model = Project::query()->where('key', $key)->first();
+        if (empty($model) && $throw) {
+            throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
+        }
+
+        return $model;
     }
 
     /**

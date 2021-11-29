@@ -13,7 +13,7 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property string $project_key
+ * @property string $project_key 项目KEY
  * @property string $name
  * @property int $latest_modifier
  * @property string $latest_modified_time

@@ -13,10 +13,10 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property string $project_key
- * @property string $key
- * @property string $name
- * @property string $sn
+ * @property string $project_key 项目KEY
+ * @property string $key KEY
+ * @property string $name 名字
+ * @property string $sn 版本
  * @property int $default
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at

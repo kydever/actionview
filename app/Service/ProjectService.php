@@ -16,9 +16,11 @@ use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Constants\StatusConstant;
 use App\Event\AddUserToRoleEvent;
+use App\Event\DelUserFromRoleEvent;
 use App\Exception\BusinessException;
 use App\Model\ConfigType;
 use App\Model\Project;
+use App\Model\User;
 use App\Service\Dao\AccessProjectLogDao;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\ActivityDao;
@@ -200,6 +202,50 @@ class ProjectService extends Service
 
     /**
      * @param $input = [
+     *     'name' => 'required',
+     *     'description' => 'required',
+     *     'principal' => 'required',
+     *     'status' => 'active',
+     * ]
+     */
+    public function update(int $id, array $input, User $user)
+    {
+        $name = $input['name'] ?? null;
+        $principal = new Principal($input['principal'] ?? null);
+        $description = $input['description'] ?? null;
+        $status = $input['status'] ?? null;
+
+        $model = $this->dao->first($id, true);
+        if (! $model->isPrincipal($user->id) && ! $user->hasAccess(Permission::SYS_ADMIN)) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        $principalId = $model->getPrincipal()['id'] ?? null;
+
+        isset($name) && $model->name = $name;
+        $principal->isChanged() && $model->principal = $principal->toArray();
+        isset($description) && $model->description = $description;
+        isset($status) && $model->status = $status;
+
+        Db::beginTransaction();
+        try {
+            $model->save();
+
+            if ($principalId != $principal->getPrincipal()) {
+                di()->get(EventDispatcherInterface::class)->dispatch(new AddUserToRoleEvent([$principal->getPrincipal()], $model->key));
+                di()->get(EventDispatcherInterface::class)->dispatch(new DelUserFromRoleEvent([$principalId], $model->key));
+            }
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
+        }
+
+        return $this->showProject($model, $user->id);
+    }
+
+    /**
+     * @param $input = [
      *     'key' => 'required',
      *     'name' => 'required',
      *     'description' => 'required',
@@ -215,7 +261,7 @@ class ProjectService extends Service
         }
 
         $name = $input['name'];
-        $key = $input['key'];
+        $key = ProjectConstant::formatProjectKey($input['key']);
         $principalId = (string) ($input['principal'] ?? null);
         $description = $input['description'] ?? '';
         $creator = [
@@ -284,9 +330,40 @@ class ProjectService extends Service
 
         $result = $this->formatter->formatList($projects);
 
-        return [
-            $result,
-            ['total' => $count, 'sizePerPage' => $limit],
-        ];
+        return [$count, $result];
+    }
+
+    public function show(string $key, int $userId)
+    {
+        $model = $this->dao->firstByKey($key, true);
+
+        return $this->showProject($model, $userId);
+    }
+
+    public function createIndex(int $id, User $user)
+    {
+        $model = $this->dao->first($id, true);
+        if (! $model->isPrincipal($user->id) && ! $user->hasAccess(Permission::SYS_ADMIN)) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        di()->get(IssueService::class)->putOptions($model);
+
+        return $this->formatter->base($model);
+    }
+
+    protected function showProject(Project $model, int $userId)
+    {
+        $permissions = di()->get(AclService::class)->getPermissions($userId, $model);
+
+        // record the project access date
+        if (in_array('view_project', $permissions) && $model->isActive()) {
+            di()->get(AccessProjectLogDao::class)->create(
+                $model->key,
+                $userId
+            );
+        }
+
+        return [$this->formatter->base($model), $permissions];
     }
 }

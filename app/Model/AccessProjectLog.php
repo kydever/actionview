@@ -20,6 +20,8 @@ namespace App\Model;
  */
 class AccessProjectLog extends Model
 {
+    public $timestamps = false;
+
     /**
      * The table associated with the model.
      *

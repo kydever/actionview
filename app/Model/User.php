@@ -11,15 +11,19 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use App\Constants\Permission;
+use App\Constants\ProjectConstant;
 use App\Constants\UserConstant;
+use App\Service\AclService;
+use App\Service\ProjectAuth;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
 use Hyperf\Database\Model\Relations\HasMany;
 
 /**
  * @property int $id
- * @property string $email
- * @property string $first_name
- * @property string $password
+ * @property string $email 邮箱
+ * @property string $first_name 姓名
+ * @property string $password 密码
  * @property string $last_login
  * @property array $permissions
  * @property int $invalid_flag
@@ -72,7 +76,7 @@ class User extends Model
 
     public function isSuperAdmin(): bool
     {
-        return $this->id === 1;
+        return UserConstant::isSuperAdmin($this->id);
     }
 
     public function isInvalid(): bool
@@ -87,8 +91,19 @@ class User extends Model
 
     public function mustContainsAccesses(array $accesses): bool
     {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
         foreach ($accesses as $access) {
             if (! $this->hasAccess($access)) {
+                $projectAuth = ProjectAuth::instance();
+                if ($projectAuth->getProjectKey() === ProjectConstant::SYS) {
+                    return $this->hasAccess(Permission::SYS_ADMIN);
+                }
+                $isAllowed = di()->get(AclService::class)->hasAccess($this->id, $projectAuth->getCurrent(), $access);
+                if ($isAllowed) {
+                    continue;
+                }
                 return false;
             }
         }

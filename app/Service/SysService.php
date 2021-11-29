@@ -9,15 +9,15 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace App\Constants;
+namespace App\Service;
 
-class Permission
+use App\Service\Dao\AclRolePermissionDao;
+use Han\Utils\Service;
+
+class SysService extends Service
 {
-    public const SYS_ADMIN = 'sys_admin';
-
-    public const PROJECT_VIEW = 'view_project';
-
-    public const PROJECT_MANAGE = 'manage_project';
-
-    public const ISSUE_ASSIGNED = 'assigned_issue';
+    public function flushCache()
+    {
+        di()->get(AclRolePermissionDao::class)->putDefaultPermissions();
+    }
 }

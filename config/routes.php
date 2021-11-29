@@ -26,6 +26,9 @@ Router::addGroup('/', function () {
     Router::get('project/stats', App\Controller\ProjectController::class . '::stats');
     Router::get('project/checkkey/{key}', App\Controller\ProjectController::class . '::checkKey');
     Router::post('project', App\Controller\ProjectController::class . '::store');
+    Router::put('project/{id:\d+}', App\Controller\ProjectController::class . '::update');
+    Router::get('project/p_{key}', App\Controller\ProjectController::class . '::show');
+    Router::get('project/{id:\d+}/createindex', App\Controller\ProjectController::class . '::createIndex');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
     Router::post('mysetting/avatar', App\Controller\MySettingController::class . '::setAvatar');
@@ -69,4 +72,22 @@ Router::addGroup('/', function () {
     ]);
 }, [
     'middleware' => [App\Middleware\AuthorizeMiddleware::class],
+]);
+
+Router::addGroup('/project/{project_key}/', function () {
+    Router::get('summary', App\Controller\SummaryController::class . '::index');
+
+    Router::get('issue', App\Controller\IssueController::class . '::index');
+    Router::get('issue/options', App\Controller\IssueController::class . '::getOptions');
+}, [
+    'middleware' => [
+        App\Middleware\AuthorizeMiddleware::class,
+        App\Middleware\ProjectAuthMiddleware::class,
+        App\Middleware\PrivilegeMiddleware::class,
+    ],
+    'options' => [
+        App\Middleware\PrivilegeMiddleware::class => [
+            'view_project',
+        ],
+    ],
 ]);

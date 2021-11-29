@@ -11,10 +11,12 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Constants\ProjectConstant;
 use App\Constants\StatusConstant;
 use App\Request\PaginationRequest;
 use App\Request\ProjectMiniRequest;
 use App\Request\ProjectStoreRequest;
+use App\Request\ProjectUpdateRequest;
 use App\Service\Dao\ProjectDao;
 use App\Service\ProjectService;
 use App\Service\UserAuth;
@@ -50,7 +52,7 @@ class ProjectController extends Controller
 
     public function checkKey(string $key)
     {
-        $isExisted = $this->dao->exists($key);
+        $isExisted = $this->dao->exists(ProjectConstant::formatProjectKey($key));
 
         return $this->response->success([
             'flag' => $isExisted ? StatusConstant::UN_AVAILABLE : StatusConstant::AVAILABLE,
@@ -67,6 +69,25 @@ class ProjectController extends Controller
         );
     }
 
+    public function update(ProjectUpdateRequest $request, int $id)
+    {
+        $input = $request->all();
+        $user = UserAuth::instance()->build()->getUser();
+
+        return $this->response->success(
+            $this->service->update($id, $input, $user)
+        );
+    }
+
+    public function createIndex(int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+
+        $result = $this->service->createIndex($id, $user);
+
+        return $this->response->success($result);
+    }
+
     public function stats()
     {
         return $this->response->success();
@@ -74,9 +95,28 @@ class ProjectController extends Controller
 
     public function index(PaginationRequest $request)
     {
-        [$result, $options] = $this->service->index($request->all(), $request->offset(), $request->limit());
+        [$count, $result] = $this->service->index($request->all(), $request->offset(), $request->limit());
+        return $this->response->success($result, [
+            'options' => [
+                'total' => $count,
+                'sizePerPage' => $request->limit(),
+            ],
+        ]);
+    }
 
-        return $this->response->success($result, ['options' => $options]);
+    public function show(string $key)
+    {
+        $userId = UserAuth::instance()->build()->getUserId();
+
+        $key = ProjectConstant::formatProjectKey($key);
+
+        [$result, $permissions] = $this->service->show($key, $userId);
+
+        return $this->response->success($result, [
+            'options' => [
+                'permissions' => $permissions,
+            ],
+        ]);
     }
 
     public function getOptions()

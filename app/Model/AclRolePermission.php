@@ -13,9 +13,9 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property string $project_key
- * @property int $role_id
- * @property string $permissions
+ * @property string $project_key 项目KEY
+ * @property int $role_id 角色ID
+ * @property array $permissions 权限表
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -40,5 +40,10 @@ class AclRolePermission extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'role_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'role_id' => 'integer', 'permissions' => 'array', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function hasAccess(string $permission): bool
+    {
+        return in_array($permission, $this->permissions, true);
+    }
 }

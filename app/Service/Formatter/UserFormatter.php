@@ -43,6 +43,15 @@ class UserFormatter extends Service
         ];
     }
 
+    public function formatSmalls($models): array
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $result[] = $this->small($model);
+        }
+        return $result;
+    }
+
     /**
      * @param User[] $models
      */

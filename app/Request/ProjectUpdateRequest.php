@@ -14,7 +14,7 @@ namespace App\Request;
 use App\Constants\ErrorCode;
 use Hyperf\Validation\Request\FormRequest;
 
-class ProjectStoreRequest extends FormRequest
+class ProjectUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,10 +30,10 @@ class ProjectStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'key' => 'required',
             'name' => 'required',
+            'principal' => 'required',
             'description' => 'string',
-            // 'principal' => 'string',
+            'status' => 'string',
         ];
     }
 
@@ -41,7 +41,7 @@ class ProjectStoreRequest extends FormRequest
     {
         return [
             'name.required' => (string) ErrorCode::PROJECT_NAME_CANNOT_BE_EMPTY,
-            'key.required' => (string) ErrorCode::PROJECT_KEY_CANNOT_BE_EMPTY,
+            'principal.required' => (string) ErrorCode::PROJECT_PRINCIPAL_CANNOT_EMPTY,
         ];
     }
 }

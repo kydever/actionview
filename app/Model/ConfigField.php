@@ -13,15 +13,15 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property string $project_key
- * @property string $name
- * @property string $key
- * @property string $type
- * @property string $description
- * @property string $option_values
- * @property string $default_value
- * @property string $min_value
- * @property string $max_value
+ * @property string $project_key 项目KEY
+ * @property string $name 字段名
+ * @property string $key 字段KEY
+ * @property string $type 字段类型
+ * @property string $description 字段描述
+ * @property string $option_values 选项值
+ * @property string $default_value 默认值
+ * @property string $min_value 默认最小值
+ * @property string $max_value 默认最大值
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */

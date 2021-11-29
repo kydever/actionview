@@ -19,13 +19,13 @@ use Hyperf\Database\Model\Relations\HasMany;
 /**
  * @property int $id
  * @property string $name
- * @property array $users
- * @property array $principal
+ * @property array $users 用户ID列表
+ * @property array $principal 负责人
  * @property int $public_scope
  * @property string $description
- * @property string $directory
- * @property string $ldap_dn
- * @property string $sync_flag
+ * @property string $directory Unknown
+ * @property string $ldap_dn Unknown
+ * @property string $sync_flag Unknown
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Hyperf\Database\Model\Collection|User[] $userModels
