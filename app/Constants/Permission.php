@@ -18,4 +18,6 @@ class Permission
     public const PROJECT_VIEW = 'view_project';
 
     public const PROJECT_MANAGE = 'manage_project';
+
+    public const ISSUE_ASSIGNED = 'assigned_issue';
 }

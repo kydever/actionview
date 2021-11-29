@@ -41,4 +41,9 @@ class AclRolePermission extends Model
      * @var array
      */
     protected $casts = ['id' => 'integer', 'role_id' => 'integer', 'permissions' => 'array', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function hasAccess(string $permission): bool
+    {
+        return in_array($permission, $this->permissions, true);
+    }
 }

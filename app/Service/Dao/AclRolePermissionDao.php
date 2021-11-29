@@ -63,4 +63,22 @@ class AclRolePermissionDao extends Service
         }
         return $result;
     }
+
+    /**
+     * @return AclRolePermission[]|\Hyperf\Database\Model\Collection
+     */
+    public function findProjectPermissions(string $permission, string $key)
+    {
+        return AclRolePermission::query()->where('project_key', $key)
+            ->whereJsonContains('permissions', $permission)
+            ->get();
+    }
+
+    /**
+     * @return AclRolePermission[]|\Hyperf\Database\Model\Collection
+     */
+    public function findByProject(string $key)
+    {
+        return AclRolePermission::query()->where('project_key', $key)->get();
+    }
 }

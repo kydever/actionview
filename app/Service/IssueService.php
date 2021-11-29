@@ -42,6 +42,7 @@ class IssueService extends Service
     public function options(Project $project)
     {
         $users = $this->provider->getUserList($project->key);
+        $assignees = $this->provider->getAssignedUsers($project->key);
 
         return [
             'user' => $users,

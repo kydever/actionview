@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Acl\Eloquent\Group;
+use App\Acl\Eloquent\Roleactor;
 use App\Constants\Permission;
 use App\Constants\UserConstant;
 use App\Model\Project;
@@ -92,5 +94,48 @@ class AclService extends Service
         }
 
         return array_values(array_unique($result));
+    }
+
+    public function getUserIdsByPermission($access, $key)
+    {
+        $permissions = di()->get(AclRolePermissionDao::class)->findByProject($key);
+        $defaultPermissions = di()->get(AclRolePermissionDao::class)->getDefaultPermissions();
+
+        $projectRoleIds = $permissions->columns('role_id')->toArray();
+        $roleIds = [];
+        foreach ($defaultPermissions as $roleId => $permission) {
+            if (! in_array($roleId, $projectRoleIds) && in_array($access, $permission)) {
+                $roleIds[] = $roleId;
+            }
+        }
+
+        foreach ($permissions as $permission) {
+            if ($permission->hasAccess($access)) {
+                $roleIds[] = $permission->role_id;
+            }
+        }
+
+        di()->get(AclRoleactorDao::class)->findByProjectKey();
+
+        $user_ids = [];
+        $group_ids = [];
+        $role_actors = Roleactor::whereRaw(['project_key' => $project_key, 'role_id' => ['$in' => $role_ids]])->get();
+        foreach ($role_actors as $actor) {
+            if (isset($actor->user_ids) && $actor->user_ids) {
+                $user_ids = array_merge($user_ids, $actor->user_ids);
+            }
+            if (isset($actor->group_ids) && $actor->group_ids) {
+                $group_ids = array_merge($group_ids, $actor->group_ids);
+            }
+        }
+
+        foreach ($group_ids as $group_id) {
+            $group = Group::find($group_id);
+            if ($group && isset($group->users) && $group->users) {
+                $user_ids = array_merge($user_ids, $group->users);
+            }
+        }
+
+        return array_values(array_unique($user_ids));
     }
 }

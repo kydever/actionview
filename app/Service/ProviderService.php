@@ -11,7 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Service\Dao\AclGroupDao;
+use App\Constants\Permission;
+use App\Service\Context\GroupContext;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\UserFormatter;
@@ -33,7 +34,7 @@ class ProviderService extends Service
         }
 
         if ($groupIds) {
-            $groups = di()->get(AclGroupDao::class)->findMany($groupIds);
+            $groups = GroupContext::instance()->find($groupIds);
             foreach ($groups as $group) {
                 $userIds = array_merge($userIds, $group->users);
             }
@@ -44,5 +45,10 @@ class ProviderService extends Service
         $models = di()->get(UserDao::class)->findMany($userIds);
 
         return di()->get(UserFormatter::class)->formatList($models);
+    }
+
+    public function getAssignedUsers(string $key)
+    {
+        di()->get(AclService::class)->getUserIdsByPermission(Permission::ISSUE_ASSIGNED, $key);
     }
 }
