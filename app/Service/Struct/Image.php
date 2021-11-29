@@ -53,7 +53,7 @@ class Image
         $scale = $width < $height ? $height : $width;
         $thumbnailsWidth = (int) floor(150 * $width / $scale);
         $thumbnailsHeight = (int) floor(150 * $height / $scale);
-        $thumbnailsFilename = $this->getPathWithoutExtension() . '_' . uniqid() . '.' . $this->getExtension();
+        $thumbnailsFilename = $this->getPathWithoutExtension() . '_resize.' . $this->getExtension();
 
         if ($scale <= 150) {
             $this->filesystem->copy($this->path, $thumbnailsFilename);

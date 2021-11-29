@@ -13,6 +13,7 @@ namespace App\Kernel\Http;
 
 use Hyperf\HttpMessage\Cookie\Cookie;
 use Hyperf\HttpMessage\Exception\HttpException;
+use Hyperf\HttpMessage\Stream\SwooleFileStream;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Utils\Context;
@@ -52,6 +53,15 @@ class Response
             'ecode' => $code,
             'message' => $message,
         ]);
+    }
+
+    public function image(string $pathname): PsrResponseInterface
+    {
+        // header("Content-type: application/octet-stream");
+        // header("Accept-Ranges: bytes");
+        // header("Accept-Length:" . filesize($filename));
+        // header("Content-Disposition: attachment; filename=" . $displayname);
+        return $this->response()->withBody(new SwooleFileStream($pathname));
     }
 
     public function redirect($url, int $status = 302): PsrResponseInterface

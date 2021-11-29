@@ -20,7 +20,7 @@ class ErrorCode extends AbstractConstants
     /**
      * @Message("Server Error")
      */
-    public const SERVER_ERROR = 500;
+    public const SERVER_ERROR = -99999;
 
     /**
      * @Message("邮箱或密码错误")
@@ -133,7 +133,17 @@ class ErrorCode extends AbstractConstants
     public const AVATAR_TYPE_INVALID = -15007;
 
     /**
+     * @Message("头像ID不能为空")
+     */
+    public const AVATAR_ID_NOT_EMPTY = -15100;
+
+    /**
      * @Message("邮件服务配置有误")
      */
     public const MAIL_INVALID = -15203;
+
+    /**
+     * @Message("文件系统 Domain 设置非法")
+     */
+    public const FILE_DOMAIN_INVALID = -17000;
 }

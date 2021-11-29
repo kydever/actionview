@@ -35,6 +35,8 @@ Router::addGroup('/', function () {
     Router::put('group/{id:\d+}', App\Controller\GroupController::class . '::update');
     Router::delete('group/{id:\d+}', App\Controller\GroupController::class . '::destroy');
 
+    Router::get('getavatar', App\Controller\FileController::class . '::getAvatar');
+
     Router::addGroup('', function () {
         Router::get('project', App\Controller\ProjectController::class . '::index');
         Router::get('project/options', App\Controller\ProjectController::class . '::getOptions');

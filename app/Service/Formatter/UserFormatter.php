@@ -28,7 +28,7 @@ class UserFormatter extends Service
             // unactivated
             'status' => $model->isInvalid() ? UserConstant::INVALID : UserConstant::ACTIVE,
             'phone' => $model->phone ?: '',
-            // 'avatar' => '',
+            'avatar' => $model->avatar,
             'permissions' => $model->permissions,
             // 'latest_access_url' => '/project/boba/summary'
         ];

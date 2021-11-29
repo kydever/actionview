@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 return [
     'default' => env('FILESYSTEM_DEFAULT_STORAGE', 'local'),
+    'domain' => env('FILESYSTEM_DEFAULT_DOMAIN', ''),
     'storage' => [
         'local' => [
             'driver' => \Hyperf\Filesystem\Adapter\LocalAdapterFactory::class,

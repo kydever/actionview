@@ -31,13 +31,8 @@ class UserSettingService extends Service
     public function show(int $userId)
     {
         $user = di()->get(UserDao::class)->first($userId, true);
-        $userSetting = $this->dao->first($userId);
 
-        return [
-            'notifications' => $userSetting?->notifications ?? ['mail_notify' => true],
-            'favorites' => $userSetting?->favorites,
-            'accounts' => di()->get(UserFormatter::class)->base($user),
-        ];
+        return $this->showUser($user);
     }
 
     public function setAvatar(string $data, User $user)
@@ -52,10 +47,19 @@ class UserSettingService extends Service
 
         fclose($stream);
 
-        $user->avatar = env('QINIU_DOMAIN') . '/' . $path;
+        $user->avatar = $path;
         $user->save();
 
+        return $this->showUser($user);
+    }
+
+    private function showUser(User $user): array
+    {
+        $userSetting = $this->dao->first($user->id);
+
         return [
+            'notifications' => $userSetting?->notifications ?? ['mail_notify' => true],
+            'favorites' => $userSetting?->favorites,
             'accounts' => di()->get(UserFormatter::class)->base($user),
         ];
     }
