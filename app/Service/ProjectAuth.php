@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Service\Dao\ProjectDao;
 use Hyperf\Utils\Traits\StaticInstance;
@@ -41,5 +43,14 @@ class ProjectAuth
     public function getProjectKey(): string
     {
         return $this->projectKey;
+    }
+
+    public function build()
+    {
+        if ($this->project === null) {
+            throw new BusinessException(ErrorCode::PROJECT_KEY_NOT_EXIST);
+        }
+
+        return $this;
     }
 }

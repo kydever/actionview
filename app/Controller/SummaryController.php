@@ -11,8 +11,14 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Service\ProjectSummaryService;
+use Hyperf\Di\Annotation\Inject;
+
 class SummaryController extends Controller
 {
+    #[Inject]
+    protected ProjectSummaryService $service;
+
     public function index()
     {
         return $this->response->success();
