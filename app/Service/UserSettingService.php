@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Model\User;
+use App\Model\UserSetting;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserSettingDao;
 use App\Service\Formatter\UserFormatter;
@@ -33,6 +34,24 @@ class UserSettingService extends Service
         $user = di()->get(UserDao::class)->first($userId, true);
 
         return $this->showUser($user);
+    }
+
+    public function setNotifications(array $notifications, User $user): UserSetting
+    {
+        $model = $this->dao->first($user->id);
+        if ($model) {
+            $notifications = array_replace($model->notifications, $notifications);
+        } else {
+            $model = new UserSetting();
+            $model->user_id = $user->id;
+            $model->notifications = [];
+            $model->favorites = [];
+        }
+
+        $model->notifications = $notifications;
+        $model->save();
+
+        return $model;
     }
 
     public function setAvatar(string $data, User $user)

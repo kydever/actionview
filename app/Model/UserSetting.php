@@ -20,6 +20,8 @@ namespace App\Model;
  */
 class UserSetting extends Model
 {
+    public $incrementing = false;
+
     protected $primaryKey = 'user_id';
 
     /**

@@ -44,4 +44,15 @@ class MySettingController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function setNotifications()
+    {
+        $user = UserAuth::instance()->build()->getUser();
+
+        $model = $this->service->setNotifications($this->request->all(), $user);
+
+        return $this->response->success([
+            'notifications' => $model->notifications,
+        ]);
+    }
 }

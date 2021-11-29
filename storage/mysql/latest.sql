@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-29 01:53:27 +0000
+# Generation Time: 2021-11-29 02:45:26 +0000
 # ************************************************************
 
 
@@ -622,6 +622,15 @@ CREATE TABLE `user_setting` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+LOCK TABLES `user_setting` WRITE;
+/*!40000 ALTER TABLE `user_setting` DISABLE KEYS */;
+
+INSERT INTO `user_setting` (`user_id`, `notifications`, `favorites`, `created_at`, `updated_at`)
+VALUES
+	(1,'{\"mail_notify\": true, \"daily_notify\": false, \"mobile_notify\": false, \"weekly_notify\": false}','[]','2021-11-29 10:44:15','2021-11-29 10:45:08');
+
+/*!40000 ALTER TABLE `user_setting` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table users
