@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8134922af409ba67e7bd2ce1e8089bab",
+    "content-hash": "d05c8739944d1b01e2e4ab97bd349d64",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2825,24 +2825,26 @@
         },
         {
             "name": "limingxinleo/hyperf-orm-json-relation",
-            "version": "v0.1.4",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/limingxinleo/hyperf-orm-json-relation.git",
-                "reference": "723afa54c50d5a388559b534df97d6ef8352de28"
+                "reference": "e95ddd46620d9ed6487509625fa1511383af266e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/limingxinleo/hyperf-orm-json-relation/zipball/723afa54c50d5a388559b534df97d6ef8352de28",
-                "reference": "723afa54c50d5a388559b534df97d6ef8352de28",
+                "url": "https://api.github.com/repos/limingxinleo/hyperf-orm-json-relation/zipball/e95ddd46620d9ed6487509625fa1511383af266e",
+                "reference": "e95ddd46620d9ed6487509625fa1511383af266e",
                 "shasum": ""
             },
             "require": {
                 "hyperf/database": "^2.2|^3.0",
+                "hyperf/engine": "^1.2",
                 "php": ">=8.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
+                "hyperf/event": "^2.2|^3.0",
                 "mockery/mockery": "^1.0",
                 "phpstan/phpstan": "^1.0",
                 "phpunit/phpunit": ">=7.0",
@@ -2871,9 +2873,9 @@
             ],
             "support": {
                 "issues": "https://github.com/limingxinleo/hyperf-orm-json-relation/issues",
-                "source": "https://github.com/limingxinleo/hyperf-orm-json-relation/tree/v0.1.4"
+                "source": "https://github.com/limingxinleo/hyperf-orm-json-relation/tree/v0.2.0"
             },
-            "time": "2021-11-27T07:08:09+00:00"
+            "time": "2021-11-29T11:27:45+00:00"
         },
         {
             "name": "limingxinleo/hyperf-utils",
