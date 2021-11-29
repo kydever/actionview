@@ -35,6 +35,8 @@ Router::addGroup('/', function () {
     // Route::post('mysetting/favorite', 'MysettingController@setFavorites');
 
     Router::get('user/search', App\Controller\UserController::class . '::search');
+
+    Router::get('mygroup', App\Controller\GroupController::class . '::mygroup');
     Router::post('group', App\Controller\GroupController::class . '::store');
     Router::put('group/{id:\d+}', App\Controller\GroupController::class . '::update');
     Router::delete('group/{id:\d+}', App\Controller\GroupController::class . '::destroy');

@@ -139,4 +139,23 @@ class GroupService extends Service
 
         return $id;
     }
+
+    public function mygroup(array $input, int $userId, int $offset, int $limit)
+    {
+        if ($scale = $input['scale'] ?? null) {
+            $input['scale'] = match ($scale) {
+                'myprincipal' => ['myprincipal', $userId],
+                'myjoin' => ['myjoin', $userId],
+                default => ['', $userId],
+            };
+        }
+
+        [$total, $models] = $this->dao->find($input, $offset, $limit);
+
+        $models->load('userModels');
+
+        $result = $this->formatter->formatList($models);
+
+        return [$total, $result];
+    }
 }

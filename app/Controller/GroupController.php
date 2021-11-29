@@ -63,4 +63,19 @@ class GroupController extends Controller
             'id' => $id,
         ]);
     }
+
+    public function mygroup(PaginationRequest $request)
+    {
+        $userId = UserAuth::instance()->build()->getUserId();
+        $input = $request->all();
+
+        [$count, $result] = $this->service->mygroup($input, $userId, $request->offset(), $request->limit());
+
+        return $this->response->success($result, [
+            'options' => [
+                'total' => $count,
+                'sizePerPage' => $request->limit(),
+            ],
+        ]);
+    }
 }

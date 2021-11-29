@@ -41,6 +41,7 @@ class AclGroupDao extends Service
      *     'name' => '',
      *     'directory' => '',
      *     'public_scope' => 1,
+     *     'scale' => ['myprincipal', 1],
      * ]
      */
     public function find(array $input, int $offset, int $limit)
@@ -62,6 +63,22 @@ class AclGroupDao extends Service
             } elseif (in_array($scope, [2, 3])) {
                 $query->where('public_scope', $scope);
             }
+        }
+
+        if ($scale = $input['scale'] ?? null) {
+            [$scale, $userId] = $scale;
+            $query = match ($scale) {
+                'myprincipal' => $query->where('principal->id', $userId),
+                'myjoin' => $query->whereRaw('JSON_CONTAINS(users, ?, ?)', [$userId, '&']),
+                default => $query,
+            };
+
+            $query->where(static function ($query) use ($userId) {
+                $query->where('principal->id', $userId)
+                    ->orWhere(function ($query) {
+                        $query->where('public_scope', '<>', '2')->whereRaw('JSON_CONTAINS(users, ?, ?)', [$userId, '&']);
+                    });
+            });
         }
 
         return $this->factory->model->pagination($query, $offset, $limit);
