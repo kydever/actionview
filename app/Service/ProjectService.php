@@ -284,9 +284,6 @@ class ProjectService extends Service
 
         $result = $this->formatter->formatList($projects);
 
-        return [
-            $result,
-            ['total' => $count, 'sizePerPage' => $limit],
-        ];
+        return [$count, $result];
     }
 }

@@ -67,6 +67,14 @@ class ProjectController extends Controller
         );
     }
 
+    public function update(ProjectStoreRequest $request, int $id)
+    {
+        $input = $request->all();
+        $userId = UserAuth::instance()->build()->getUserId();
+
+        return $this->response->success();
+    }
+
     public function stats()
     {
         return $this->response->success();
@@ -74,9 +82,13 @@ class ProjectController extends Controller
 
     public function index(PaginationRequest $request)
     {
-        [$result, $options] = $this->service->index($request->all(), $request->offset(), $request->limit());
-
-        return $this->response->success($result, ['options' => $options]);
+        [$count, $result] = $this->service->index($request->all(), $request->offset(), $request->limit());
+        return $this->response->success($result, [
+            'options' => [
+                'total' => $count,
+                'sizePerPage' => $request->limit(),
+            ],
+        ]);
     }
 
     public function getOptions()
