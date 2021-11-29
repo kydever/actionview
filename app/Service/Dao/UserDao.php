@@ -39,7 +39,7 @@ class UserDao extends Service
      */
     public function findByKeyword(string $keyword)
     {
-        return User::query()->where('invalid_flag', UserConstant::INVALID_FLAG)
+        return User::query()->where('invalid_flag', UserConstant::VALID_FLAG)
             ->where(static function (Builder $query) use ($keyword) {
                 $query->where('first_name', 'like', "%{$keyword}%")
                     ->orWhere('email', 'like', "%{$keyword}%");

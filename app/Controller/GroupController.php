@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Request\GroupSearchRequest;
 use App\Request\GroupStoreRequest;
+use App\Request\GroupUpdateRequest;
 use App\Request\PaginationRequest;
 use App\Service\GroupService;
 use App\Service\UserAuth;
@@ -45,7 +46,7 @@ class GroupController extends Controller
         );
     }
 
-    public function update(GroupStoreRequest $request, int $id)
+    public function update(GroupUpdateRequest $request, int $id)
     {
         $user = UserAuth::instance()->build()->getUser();
 

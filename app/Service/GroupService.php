@@ -59,14 +59,14 @@ class GroupService extends Service
      */
     public function store(int $id, array $input, User $user)
     {
-        $name = $input['name'];
+        $name = $input['name'] ?? null;
         $principal = $input['principal'] ?? null;
-        $scope = $input['public_scope'] ?? StatusConstant::SCOPE_PUBLIC;
-        $description = $input['description'] ?? '';
+        $scope = $input['public_scope'] ?? null;
+        $description = $input['description'] ?? null;
         $sourceId = $input['source_id'] ?? null;
-        $users = $input['users'] ?? [];
+        $users = $input['users'] ?? null;
 
-        $principal = new Principal((string) $principal, $user);
+        $principal = new Principal($principal, $user);
 
         if ($sourceId) {
             $group = $this->dao->first($sourceId, true);
@@ -84,13 +84,16 @@ class GroupService extends Service
             }
         } else {
             $model = new AclGroup();
+            $scope = $scope ?? StatusConstant::SCOPE_PUBLIC;
+            $description = $description ?? '';
+            $users = $users ?? [];
         }
 
-        $model->name = $name;
-        $model->principal = $principal->toArray();
-        $model->public_scope = $scope;
-        $model->description = $description;
-        $model->users = $users;
+        isset($name) && $model->name = $name;
+        $principal->isChanged() && $model->principal = $principal->toArray();
+        isset($scope) && $model->public_scope = $scope;
+        isset($description) && $model->description = $description;
+        isset($users) && $model->users = $users;
         $model->save();
 
         return $this->formatter->detail($model);

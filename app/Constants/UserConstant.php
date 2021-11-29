@@ -15,6 +15,8 @@ class UserConstant
 {
     public const INVALID_FLAG = 1;
 
+    public const VALID_FLAG = 0;
+
     public const ACTIVE = 'active';
 
     public const INVALID = 'invalid';

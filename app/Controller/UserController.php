@@ -61,7 +61,9 @@ class UserController extends Controller
     {
         $keyword = $this->request->input('s');
 
-        return $this->service->search($keyword);
+        return $this->response->success(
+            $this->service->search($keyword)
+        );
     }
 
     public function index(UserSearchRequest $request, PaginationRequest $page)

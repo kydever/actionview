@@ -11,10 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Request;
 
-use App\Constants\ErrorCode;
 use Hyperf\Validation\Request\FormRequest;
 
-class GroupStoreRequest extends FormRequest
+class GroupUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,19 +29,12 @@ class GroupStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            // 'principal' => 'required',
+            'name' => 'string',
+            // 'principal' => 'string|integer',
             'description' => 'string',
             'source_id' => 'integer',
             'users' => 'array',
             'public_scope' => 'in:1,2,3',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'name.required' => (string) ErrorCode::GROUP_NAME_NOT_EMPTY,
         ];
     }
 }

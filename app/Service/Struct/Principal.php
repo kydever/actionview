@@ -22,8 +22,22 @@ use Hyperf\Contract\Arrayable;
  */
 class Principal implements Arrayable
 {
-    public function __construct(private string $principal, private User $user)
+    private bool $changed = true;
+
+    private string $principal;
+
+    public function __construct(mixed $principal, private User $user)
     {
+        if ($principal === null) {
+            $this->changed = false;
+        }
+
+        $this->principal = (string) $principal;
+    }
+
+    public function isChanged(): bool
+    {
+        return $this->changed;
     }
 
     public function toArray(): array
