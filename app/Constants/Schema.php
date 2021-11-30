@@ -24,4 +24,14 @@ class Schema
     public const EPIC = 'epic';
 
     public const LABELS = 'labels';
+
+    public const FIELD_TIME_TRACKING = 'TimeTracking';
+
+    public const FIELD_DATE_PICKER = 'DatePicker';
+
+    public const FIELD_DATE_TIME_PICKER = 'DateTimePicker';
+
+    public const FIELD_SINGLE_USER = 'SingleUser';
+
+    public const FIELD_MULTI_USER = 'MultiUser';
 }

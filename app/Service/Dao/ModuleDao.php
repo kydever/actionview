@@ -11,11 +11,23 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\Module;
 use Han\Utils\Service;
 
 class ModuleDao extends Service
 {
+    public function first(int $id, bool $throw = false): ?Module
+    {
+        $model = Module::findFromCache($id);
+        if (empty($model) && $throw) {
+            throw new BusinessException(ErrorCode::SERVER_ERROR);
+        }
+
+        return $model;
+    }
+
     /**
      * @return \Hyperf\Database\Model\Collection|Module[]
      */
