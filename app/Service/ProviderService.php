@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\Permission;
+use App\Constants\Schema;
 use App\Model\ConfigPriority;
 use App\Model\ConfigPriorityProperty;
 use App\Model\ConfigResolution;
@@ -34,6 +35,8 @@ use App\Service\Dao\VersionDao;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
+use Hyperf\Utils\Arr;
+use Hyperf\Utils\Context;
 use JetBrains\PhpStorm\ArrayShape;
 use function Han\Utils\sort;
 
@@ -73,6 +76,14 @@ class ProviderService extends Service
         $models = di()->get(UserDao::class)->findMany($userIds);
 
         return di()->get(UserFormatter::class)->formatSmalls($models);
+    }
+
+    public function getAssignedUsersFromContext(string $key)
+    {
+        $key = sprintf('assigned.users.for.%s', $key);
+        return Context::getOrSet($key, function () use ($key) {
+            return $this->getAssignedUsers($key);
+        });
     }
 
     public function getStateListOptions(string $key): array
@@ -189,21 +200,21 @@ class ProviderService extends Service
     {
         $models = di(ModuleDao::class)->getModuleList($key);
 
-        return $models->columns('name')->toArray();
+        return $models->columns(['id', 'name'])->toArray();
     }
 
     public function getEpicList(string $key): array
     {
         $models = di(EpicDao::class)->getEpicList($key);
 
-        return $models->columns('name')->toArray();
+        return $models->columns(['id', 'name', 'bgColor'])->toArray();
     }
 
     public function getVersionList(string $key)
     {
         $versions = di()->get(VersionDao::class)->findByProjectKey($key);
 
-        return $versions->columns(['name'])->toArray();
+        return $versions->columns(['id', 'name'])->toArray();
     }
 
     public function getLabelOptions(string $key): array
@@ -220,74 +231,70 @@ class ProviderService extends Service
         return $this->getScreenSchema($type->project_key, $typeId, $type->screen);
     }
 
-    public function getScreenSchema(string $key, int $typeId, ConfigScreen $screen)
+    public function getScreenSchema(string $projectKey, int $typeId, ConfigScreen $screen)
     {
-        $new_schema = [];
+        $newSchema = [];
         $versions = null;
         $users = null;
         foreach ($screen->schema ?: [] as $key => $val) {
             if (isset($val['applyToTypes'])) {
-                if ($val['applyToTypes'] && ! in_array($type_id, explode(',', $val['applyToTypes'] ?: ''))) {
+                if (! in_array($typeId, explode(',', (string) $val['applyToTypes']))) {
                     continue;
                 }
                 unset($val['applyToTypes']);
             }
 
-            if ($val['key'] == 'assignee') {
-                $users = self::getAssignedUsers($project_key);
+            if ($val['key'] == Schema::ASSIGNEE) {
+                $users = $this->getAssignedUsersFromContext($projectKey);
                 foreach ($users as $key => $user) {
                     $users[$key]['name'] = $user['name'] . '(' . $user['email'] . ')';
                 }
-                $val['optionValues'] = self::pluckFields($users, ['id', 'name']);
-            } elseif ($val['key'] == 'resolution') {
-                $resolutions = self::getResolutionOptions($project_key);
-                $val['optionValues'] = self::pluckFields($resolutions, ['_id', 'name']);
-                foreach ($resolutions as $key2 => $val2) {
-                    if (isset($val2['default']) && $val2['default']) {
-                        $val['defaultValue'] = $val2['_id'];
+                $val['optionValues'] = Arr::only($users, ['id', 'name']);
+            } elseif ($val['key'] == Schema::RESOLUTION) {
+                $resolutions = $this->getResolutionOptions($projectKey);
+                $val['optionValues'] = $resolutions;
+                foreach ($resolutions as $v) {
+                    if ($v['default'] ?? null) {
+                        $val['defaultValue'] = $v['id'];
                         break;
                     }
                 }
-            } elseif ($val['key'] == 'priority') {
-                $priorities = self::getPriorityOptions($project_key);
-                $val['optionValues'] = self::pluckFields($priorities, ['_id', 'name']);
-                foreach ($priorities as $key2 => $val2) {
-                    if (isset($val2['default']) && $val2['default']) {
-                        $val['defaultValue'] = $val2['_id'];
+            } elseif ($val['key'] == Schema::PRIORITY) {
+                $priorities = $this->getPriorityOptions($projectKey);
+                $val['optionValues'] = Arr::only($priorities, ['id', 'name']);
+                foreach ($priorities as $v) {
+                    if ($v['default'] ?? null) {
+                        $val['defaultValue'] = $v['id'];
                         break;
                     }
                 }
-            } elseif ($val['key'] == 'module') {
-                $modules = self::getModuleList($project_key);
-                $val['optionValues'] = self::pluckFields($modules, ['_id', 'name']);
-            } elseif ($val['key'] == 'epic') {
-                $epics = self::getEpicList($project_key);
-                $val['optionValues'] = self::pluckFields($epics, ['_id', 'name', 'bgColor']);
-            } elseif ($val['key'] == 'labels') {
-                $labels = self::getLabelOptions($project_key);
-                $couple_labels = [];
+            } elseif ($val['key'] == Schema::MODULE) {
+                $modules = $this->getModuleList($projectKey);
+                $val['optionValues'] = $modules;
+            } elseif ($val['key'] == Schema::EPIC) {
+                $epics = Arr::only($this->getEpicList($projectKey), ['id', 'name', 'bgColor']);
+                $val['optionValues'] = $epics;
+            } elseif ($val['key'] == Schema::LABELS) {
+                $labels = $this->getLabelOptions($projectKey);
+                $coupleLabels = [];
                 foreach ($labels as $label) {
-                    $couple_labels[] = ['id' => $label['name'], 'name' => $label['name']];
+                    $coupleLabels[] = ['id' => $label['name'], 'name' => $label['name']];
                 }
-                $val['optionValues'] = $couple_labels;
+                $val['optionValues'] = $coupleLabels;
             } elseif ($val['type'] == 'SingleVersion' || $val['type'] == 'MultiVersion') {
-                $versions === null && $versions = self::getVersionList($project_key);
-                $val['optionValues'] = self::pluckFields($versions, ['_id', 'name']);
+                $versions === null && $versions = $this->getVersionList($projectKey);
+                $val['optionValues'] = Arr::only($versions, ['id', 'name']);
             } elseif ($val['type'] == 'SingleUser' || $val['type'] == 'MultiUser') {
-                $users === null && $users = self::getUserList($project_key);
+                $users === null && $users = $this->getUserList($projectKey);
                 foreach ($users as $key => $user) {
                     $users[$key]['name'] = $user['name'] . '(' . $user['email'] . ')';
                 }
-                $val['optionValues'] = self::pluckFields($users, ['id', 'name']);
+                $val['optionValues'] = Arr::only($users, ['id', 'name']);
             }
 
-            if (isset($val['_id'])) {
-                unset($val['_id']);
-            }
-
-            $new_schema[] = $val;
+            $newSchema[] = $val;
         }
 
-        return $new_schema;
+        return $newSchema;
     }
 }
