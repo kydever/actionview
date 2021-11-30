@@ -12,9 +12,14 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\Permission;
+use App\Model\ConfigPriority;
+use App\Model\ConfigPriorityProperty;
 use App\Model\ConfigResolution;
+use App\Model\ConfigResolutionProperty;
 use App\Model\ConfigState;
 use App\Service\Context\GroupContext;
+use App\Service\Dao\ConfigPriorityDao;
+use App\Service\Dao\ConfigPriorityPropertyDao;
 use App\Service\Dao\ConfigResolutionDao;
 use App\Service\Dao\ConfigResolutionPropertyDao;
 use App\Service\Dao\ConfigStateDao;
@@ -24,6 +29,7 @@ use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
+use JetBrains\PhpStorm\ArrayShape;
 use function Han\Utils\sort;
 
 /**
@@ -96,6 +102,7 @@ class ProviderService extends Service
         return $states;
     }
 
+    #[ArrayShape([Collection::class, ConfigResolutionProperty::class])]
     public function getResolutionList(string $key): array
     {
         $resolutions = di()->get(ConfigResolutionDao::class)->findOrByProjectKey($key);
@@ -110,6 +117,47 @@ class ProviderService extends Service
         }
 
         return [$resolutions, $property];
+    }
+
+    #[ArrayShape([Collection::class, ConfigPriorityProperty::class])]
+    public function getPriorityList(string $key)
+    {
+        $priorities = di()->get(ConfigPriorityDao::class)->findOrByProjectKey($key);
+
+        $property = di()->get(ConfigPriorityPropertyDao::class)->firstByProjectKey($key);
+
+        if ($sequence = $property?->sequence) {
+            $sequence = array_flip($sequence);
+            $result = sort($priorities, static function (ConfigPriority $model) use ($sequence) {
+                return -($sequence[$model->id] ?? 999);
+            })->toArray();
+
+            $priorities = new Collection($result);
+        }
+
+        return [$priorities, $property];
+    }
+
+    public function getPriorityOptions(string $key)
+    {
+        [$priorities, $property] = $this->getPriorityList($key);
+
+        $options = [];
+        /** @var ConfigPriority $priority */
+        foreach ($priorities as $priority) {
+            $item = [
+                'id' => $priority->key ?: $priority->id,
+                'name' => trim($priority->name ?? ''),
+                'color' => $priority->color,
+            ];
+
+            if ($property?->default_value == $priority->id) {
+                $item['default'] = true;
+            }
+
+            $options[] = $item;
+        }
+        return $options;
     }
 
     public function getResolutionOptions(string $key)
