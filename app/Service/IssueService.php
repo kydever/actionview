@@ -186,18 +186,8 @@ class IssueService extends Service
         $epics = $this->provider->getEpicList($project->key);
         $versions = $this->provider->getVersionList($project->key);
         $labels = $this->provider->getLabelOptions($project->key);
-        $data = [
-            'user' => $users,
-            'assignee' => $assignees,
-            'state' => $states,
-            'resolution' => $resolutions,
-            'priority' => $priorities,
-            'version' => $versions,
-            'module' => $modules,
-            'epic' => $epics,
-            'labels' => $labels,
-        ];
-        $types = $this->provider->getTypeListExt($project->key, $data);
+        $types = $this->provider->getTypeListExt($project->key);
+        $sprints = $this->provider->getSprintList($project->key);
 
         return [
             'user' => $users,
@@ -209,6 +199,8 @@ class IssueService extends Service
             'epics' => $epics,
             'versions' => $versions,
             'labels' => $labels,
+            'types' => $types,
+            'sprints' => $sprints,
         ];
     }
 }

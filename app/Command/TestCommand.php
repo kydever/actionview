@@ -32,9 +32,10 @@ class TestCommand extends HyperfCommand
 
     public function handle()
     {
-        $modules = di(ProviderService::class)->getModuleList('');
-        $epics = di(ProviderService::class)->getEpicList('');
-        $versions = di(ProviderService::class)->getVersionList('');
-        $labels = di(ProviderService::class)->getLabelOptions('');
+        $modules = di(ProviderService::class)->getModuleList('$_sys_$');
+        $epics = di(ProviderService::class)->getEpicList('$_sys_$');
+        $versions = di(ProviderService::class)->getVersionList('$_sys_$');
+        $labels = di(ProviderService::class)->getLabelOptions('$_sys_$');
+        $type = di(ProviderService::class)->getTypeListExt('$_sys_$');
     }
 }

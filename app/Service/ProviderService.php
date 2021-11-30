@@ -30,11 +30,13 @@ use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\EpicDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
+use App\Service\Dao\SprintDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\ConfigTypeFormatter;
 use App\Service\Formatter\LabelFormatter;
+use App\Service\Formatter\SprintFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
@@ -226,26 +228,40 @@ class ProviderService extends Service
         return di(LabelFormatter::class)->formatList($models);
     }
 
-    /**
-     * @param $data = [
-     *      'user' => $users,
-     *      'assignee' => $assignees,
-     *      'state' => $states,
-     *      'resolution' => $resolutions,
-     *      'priority' => $priorities,
-     *      'version' => $versions,
-     *      'module' => $modules,
-     *      'epic' => $epics,
-     *      'labels' => $labels
-     * ];
-     */
-    public function getTypeListExt(string $key, array $data): array
+    public function getTypeListExt(string $key): array
     {
-        $models = di(ConfigTypeDao::class)->getTypeList($key);
+        $models = di(ConfigTypeDao::class)->getTypeList($key, ['screen']);
 
+        $typeOptions = [];
         foreach ($models as $model) {
-            $base = di(ConfigTypeFormatter::class)->small($model);
+            $schema = $this->getScreenSchema($key, $model->id, $model->screen);
+            $type = di(ConfigTypeFormatter::class)->small($model);
+            $type['schema'] = $schema;
+            $typeOptions[] = $type;
         }
+        return $typeOptions;
+    }
+
+    public function getSprintList(string $key, bool $isNew = true): array
+    {
+        $models = di(SprintDao::class)->getSprintList($key);
+        $result = [];
+        foreach ($models as $model) {
+            $sprint = di(SprintFormatter::class)->base($model);
+            if (empty($sprint['name'])) {
+                $sprint['name'] = 'Sprint ' . $sprint['no'];
+            }
+            if ($isNew) {
+                $result[] = [
+                    'no' => $sprint['no'],
+                    'name' => $sprint['name'],
+                ];
+            } else {
+                $result[] = $sprint;
+            }
+        }
+
+        return $result;
     }
 
     public function getSchemaByType(int $typeId): array

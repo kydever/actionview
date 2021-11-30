@@ -23,6 +23,7 @@ class ConfigTypeFormatter extends Service
             'name' => $model->name,
             'abb' => $model->abb,
             'disabled' => (bool) $model->disabled,
+            'default' => (bool) $model->default,
             'type' => $model->type == 'subtask' ? 'subtask' : 'standard',
         ];
     }
