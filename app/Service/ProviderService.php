@@ -26,6 +26,8 @@ use App\Service\Dao\ConfigResolutionPropertyDao;
 use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Dao\ConfigTypeDao;
+use App\Service\Dao\EpicDao;
+use App\Service\Dao\ModuleDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Dao\VersionDao;
@@ -183,11 +185,29 @@ class ProviderService extends Service
         return $options;
     }
 
+    public function getModuleList(string $key): array
+    {
+        $models = di(ModuleDao::class)->getModuleList($key);
+
+        return $models->columns('name')->toArray();
+    }
+
+    public function getEpicList(string $key): array
+    {
+        $models = di(EpicDao::class)->getEpicList($key);
+
+        return $models->columns('name')->toArray();
+    }
+
     public function getVersionList(string $key)
     {
         $versions = di()->get(VersionDao::class)->findByProjectKey($key);
 
         return $versions->columns(['name'])->toArray();
+    }
+
+    public function getLabelOptions(string $key): array
+    {
     }
 
     public function getSchemaByType(int $typeId): array

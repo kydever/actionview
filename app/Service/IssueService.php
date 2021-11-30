@@ -182,7 +182,10 @@ class IssueService extends Service
         $states = $this->provider->getStateListOptions($project->key);
         $resolutions = $this->provider->getResolutionOptions($project->key);
         $priorities = $this->provider->getPriorityOptions($project->key);
+        $modules = $this->provider->getModuleList($project->key);
+        $epics = $this->provider->getEpicList($project->key);
         $versions = $this->provider->getVersionList($project->key);
+        $labels = $this->provider->getLabelOptions($project->key);
 
         return [
             'user' => $users,
@@ -190,7 +193,10 @@ class IssueService extends Service
             'states' => $states,
             'resolutions' => $resolutions,
             'priorities' => $priorities,
+            'modules' => $modules,
+            'epics' => $epics,
             'versions' => $versions,
+            'labels' => $labels,
         ];
     }
 }
