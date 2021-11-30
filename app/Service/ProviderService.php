@@ -26,6 +26,7 @@ use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
+use App\Service\Dao\VersionDao;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
@@ -178,5 +179,12 @@ class ProviderService extends Service
             $options[] = $item;
         }
         return $options;
+    }
+
+    public function getVersionList(string $key)
+    {
+        $versions = di()->get(VersionDao::class)->findByProjectKey($key);
+
+        return $versions->columns(['name'])->toArray();
     }
 }

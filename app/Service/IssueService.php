@@ -46,6 +46,7 @@ class IssueService extends Service
         $states = $this->provider->getStateListOptions($project->key);
         $resolutions = $this->provider->getResolutionOptions($project->key);
         $priorities = $this->provider->getPriorityOptions($project->key);
+        $versions = $this->provider->getVersionList($project->key);
 
         return [
             'user' => $users,
@@ -53,6 +54,7 @@ class IssueService extends Service
             'states' => $states,
             'resolutions' => $resolutions,
             'priorities' => $priorities,
+            'versions' => $versions,
         ];
     }
 }
