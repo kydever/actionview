@@ -11,8 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use App\Constants\ErrorCode;
-use App\Exception\BusinessException;
+use App\Request\MySettingResetPwdRequest;
+use App\Request\MySettingSetAvatarRequest;
+use App\Request\MySettingUpdAccountsRequest;
 use App\Service\UserAuth;
 use App\Service\UserSettingService;
 use Hyperf\Di\Annotation\Inject;
@@ -31,14 +32,10 @@ class MySettingController extends Controller
         );
     }
 
-    public function setAvatar()
+    public function setAvatar(MySettingSetAvatarRequest $request)
     {
         $user = UserAuth::instance()->build()->getUser();
-        $data = $this->request->input('data');
-
-        if (empty($data)) {
-            throw new BusinessException(ErrorCode::AVATAR_CANNOT_EMPTY);
-        }
+        $data = $request->input('data');
 
         $result = $this->service->setAvatar($data, $user);
 
@@ -56,17 +53,20 @@ class MySettingController extends Controller
         ]);
     }
 
-    public function resetPwd()
+    public function resetPwd(MySettingResetPwdRequest $request)
     {
+        $input = $request->all();
         $user = UserAuth::instance()->build()->getUser();
-        $password = $this->request->input('password');
-        $newPassword = $this->request->input('new_password');
+        $result = $this->service->resetPwd($input, $user);
 
-        if (empty($password) || empty($newPassword)) {
-            throw new BusinessException(ErrorCode::PASSWORD_NOT_EXIST);
-        }
+        return $this->response->success($result);
+    }
 
-        $result = $this->service->resetPwd($password, $newPassword, $user);
+    public function updAccounts(MySettingUpdAccountsRequest $request)
+    {
+        $input = $request->all();
+        $user = UserAuth::instance()->build()->getUser();
+        $result = $this->service->updAccounts($input, $user);
 
         return $this->response->success($result);
     }

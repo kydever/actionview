@@ -74,20 +74,31 @@ class UserSettingService extends Service
         return $this->showUser($user);
     }
 
-    public function resetPwd(string $password, string $newPassword, User $user): User
+    public function resetPwd(array $input, User $user): User
     {
         $userModel = new User();
         $user = di()->get(UserDao::class)->first($user->id, true);
 
         // 密码不正确
-        if (! $user->verify($password)) {
+        if (! $user->verify($input['password'])) {
             throw new BusinessException(ErrorCode::PASSWORD_INCORRECT);
         }
 
-        $user->password = $userModel->hash($newPassword);
+        $user->password = $userModel->hash($input['new_password']);
         $user->save();
 
         return $user;
+    }
+
+    public function updAccounts(array $input, User $user): User
+    {
+        $model = di(UserDao::class)->first($user->id, true);
+        $model->first_name = $input['first_name'];
+        $model->department = $input['department'] ?? '';
+        $model->position = $input['position'] ?? '';
+        $model->save();
+
+        return $model;
     }
 
     private function showUser(User $user): array

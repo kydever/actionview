@@ -163,12 +163,22 @@ class ErrorCode extends AbstractConstants
     public const FILE_DOMAIN_INVALID = -17000;
 
     /**
-     * @Message("密码不能为空")
+     * @Message("旧密码不能为空")
      */
-    public const PAWWSORD_NOT_EMPTY = -15001;
+    public const PASSWORD_OLD_NOT_EMPTY = -15001;
 
     /**
      * @Message("密码不正确")
      */
     public const PASSWORD_INCORRECT = -15002;
+
+    /**
+     * @Message("密码不能为空")
+     */
+    public const PASSWORD_NOT_EMPTY = -15003;
+
+    /**
+     * @Message("个人资料姓名不能为空")
+     */
+    public const FIRST_NAME_NOT_EXIST = -15005;
 }
