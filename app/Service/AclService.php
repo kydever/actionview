@@ -11,11 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Acl\Eloquent\Group;
-use App\Acl\Eloquent\Roleactor;
 use App\Constants\Permission;
 use App\Constants\UserConstant;
 use App\Model\Project;
+use App\Service\Context\GroupContext;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\AclRoleactorDao;
 use App\Service\Dao\AclRolePermissionDao;
@@ -115,27 +114,20 @@ class AclService extends Service
             }
         }
 
-        di()->get(AclRoleactorDao::class)->findByProjectKey();
+        $userIds = [];
+        $groupIds = [];
+        $actors = di()->get(AclRoleactorDao::class)->findByRoleIds($key, $roleIds);
 
-        $user_ids = [];
-        $group_ids = [];
-        $role_actors = Roleactor::whereRaw(['project_key' => $project_key, 'role_id' => ['$in' => $role_ids]])->get();
-        foreach ($role_actors as $actor) {
-            if (isset($actor->user_ids) && $actor->user_ids) {
-                $user_ids = array_merge($user_ids, $actor->user_ids);
-            }
-            if (isset($actor->group_ids) && $actor->group_ids) {
-                $group_ids = array_merge($group_ids, $actor->group_ids);
-            }
+        foreach ($actors as $actor) {
+            $userIds = array_merge($userIds, $actor->user_ids ?? []);
+            $groupIds = array_merge($groupIds, $actor->group_ids ?? []);
         }
 
-        foreach ($group_ids as $group_id) {
-            $group = Group::find($group_id);
-            if ($group && isset($group->users) && $group->users) {
-                $user_ids = array_merge($user_ids, $group->users);
-            }
+        $groups = GroupContext::instance()->find($groupIds);
+        foreach ($groups as $group) {
+            $userIds = array_merge($userIds, $group->users ?? []);
         }
 
-        return array_values(array_unique($user_ids));
+        return array_values(array_unique($userIds));
     }
 }

@@ -34,15 +34,25 @@ class AclRoleactorDao extends Service
         if (! empty($userId) || ! empty($orGroupIds)) {
             $query->where(static function (Builder $query) use ($userId, $orGroupIds) {
                 if ($userId > 0) {
-                    $query->orWhereRaw('JSON_CONTAINS(user_ids, ?, ?)', [$userId, '$']);
+                    $query->orWhereJsonContains('user_ids', $userId);
                 }
 
                 foreach ($orGroupIds as $groupId) {
-                    $query->orWhereRaw('JSON_CONTAINS(group_ids, ?, ?)', [$groupId, '$']);
+                    $query->orWhereJsonContains('group_ids', $groupId);
                 }
             });
         }
 
         return $query->get();
+    }
+
+    /**
+     * @return AclRoleactor[]|\Hyperf\Database\Model\Collection
+     */
+    public function findByRoleIds(string $projectKey, array $roleIds)
+    {
+        return AclRoleactor::query()->where('project_key', $projectKey)
+            ->whereIn('role_id', $roleIds)
+            ->get();
     }
 }

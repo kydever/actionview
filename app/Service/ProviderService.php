@@ -44,11 +44,15 @@ class ProviderService extends Service
 
         $models = di()->get(UserDao::class)->findMany($userIds);
 
-        return di()->get(UserFormatter::class)->formatList($models);
+        return di()->get(UserFormatter::class)->formatSmalls($models);
     }
 
     public function getAssignedUsers(string $key)
     {
-        di()->get(AclService::class)->getUserIdsByPermission(Permission::ISSUE_ASSIGNED, $key);
+        $userIds = di()->get(AclService::class)->getUserIdsByPermission(Permission::ISSUE_ASSIGNED, $key);
+
+        $models = di()->get(UserDao::class)->findMany($userIds);
+
+        return di()->get(UserFormatter::class)->formatSmalls($models);
     }
 }

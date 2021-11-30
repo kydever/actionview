@@ -35,6 +35,9 @@ class GroupContext
         return $this->groups[$id] ?? null;
     }
 
+    /**
+     * @return AclGroup[]|Collection
+     */
     public function find(array $ids): Collection
     {
         $items = [];

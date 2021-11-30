@@ -15,7 +15,7 @@ namespace App\Model;
  * @property int $id
  * @property int $role_id
  * @property string $project_key
- * @property string $user_ids
+ * @property array $user_ids
  * @property array $group_ids
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -41,5 +41,5 @@ class AclRoleactor extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'role_id' => 'integer', 'group_ids' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'role_id' => 'integer', 'user_ids' => 'json', 'group_ids' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
