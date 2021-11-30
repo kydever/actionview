@@ -34,5 +34,7 @@ class TestCommand extends HyperfCommand
     {
         $modules = di(ProviderService::class)->getModuleList('');
         $epics = di(ProviderService::class)->getEpicList('');
+        $versions = di(ProviderService::class)->getVersionList('');
+        $labels = di(ProviderService::class)->getLabelOptions('');
     }
 }

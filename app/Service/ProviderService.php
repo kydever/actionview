@@ -27,10 +27,13 @@ use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\EpicDao;
+use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Dao\VersionDao;
+use App\Service\Formatter\ConfigTypeFormatter;
+use App\Service\Formatter\LabelFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
@@ -208,6 +211,30 @@ class ProviderService extends Service
 
     public function getLabelOptions(string $key): array
     {
+        $models = di(LabelDao::class)->getLabelOptions($key);
+        return di(LabelFormatter::class)->formatList($models);
+    }
+
+    /**
+     * @param $data = [
+     *      'user' => $users,
+     *      'assignee' => $assignees,
+     *      'state' => $states,
+     *      'resolution' => $resolutions,
+     *      'priority' => $priorities,
+     *      'version' => $versions,
+     *      'module' => $modules,
+     *      'epic' => $epics,
+     *      'labels' => $labels
+     * ];
+     */
+    public function getTypeListExt(string $key, array $data): array
+    {
+        $models = di(ConfigTypeDao::class)->getTypeList($key);
+
+        foreach ($models as $model) {
+            $base = di(ConfigTypeFormatter::class)->small($model);
+        }
     }
 
     public function getSchemaByType(int $typeId): array
