@@ -715,6 +715,42 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table module
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `module`;
+
+CREATE TABLE `module` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`name` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$_sys_$' COMMENT '项目KEY',
+`principal` json NOT NULL COMMENT '负责人',
+`default_assignee` json NOT NULL COMMENT '默认指定人',
+`creator` json NOT NULL COMMENT '创建者',
+`description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '描述',
+`sn` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '版本',
+`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+# Dump of table epic
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `epic`;
+
+CREATE TABLE `epic` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`name` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+`bgColor` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '背景色',
+`description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '描述',
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '项目key',
+`sn` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '版本号',
+`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

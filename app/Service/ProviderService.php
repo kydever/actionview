@@ -24,6 +24,8 @@ use App\Service\Dao\ConfigResolutionDao;
 use App\Service\Dao\ConfigResolutionPropertyDao;
 use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
+use App\Service\Dao\EpicDao;
+use App\Service\Dao\ModuleDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\UserFormatter;
@@ -179,4 +181,25 @@ class ProviderService extends Service
         }
         return $options;
     }
+
+    public function getModuleList(string $key): array
+    {
+        $models = di(ModuleDao::class)->getModuleList($key);
+        $result = [];
+        foreach ($models as $model) {
+            $result[] = $model->name;
+        }
+        return $result;
+    }
+
+    public function getEpicList(string $key): array
+    {
+        $models = di(EpicDao::class)->getEpicList($key);
+        $result = [];
+        foreach ($models as $model) {
+            $result[] = $model->name;
+        }
+        return $result;
+    }
+
 }
