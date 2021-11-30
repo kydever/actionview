@@ -698,6 +698,8 @@ CREATE TABLE `users` (
   `directory` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `phone` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `avatar` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `department` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `position` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   PRIMARY KEY (`id`),
@@ -707,12 +709,30 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `invalid_flag`, `directory`, `phone`, `avatar`, `created_at`, `updated_at`)
+INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `invalid_flag`, `directory`, `phone`, `avatar`, `department`, `position`, `created_at`, `updated_at`)
 VALUES
-	(1,'l@hyperf.io','系统管理员','$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'','','default.png','2021-01-01 00:00:00','2021-11-29 09:52:39');
+	(1,'l@hyperf.io','系统管理员','$2y$10$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'','','default.png','','','2021-01-01 00:00:00','2021-11-29 09:52:39');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `version`;
+
+CREATE TABLE `version` (
+                           `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+                           `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                           `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                           `start_time` int(10) unsigned NOT NULL DEFAULT '0',
+                           `end_time` int(10) unsigned NOT NULL DEFAULT '0',
+                           `released_time` int(10) unsigned NOT NULL DEFAULT '0',
+                           `status` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                           `description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                           `creator` json NOT NULL,
+                           `created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+                           `updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+                           PRIMARY KEY (`id`),
+                           KEY `INDEX_PROJECT_KEY` (`project_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 # Dump of table module

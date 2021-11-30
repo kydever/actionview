@@ -25,6 +25,7 @@ namespace App\Model;
  * @property int $disabled
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property ConfigScreen $screen
  */
 class ConfigType extends Model
 {
@@ -48,4 +49,9 @@ class ConfigType extends Model
      * @var array
      */
     protected $casts = ['id' => 'integer', 'sn' => 'integer', 'screen_id' => 'integer', 'workflow_id' => 'integer', 'default' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'disabled' => 'integer'];
+
+    public function screen()
+    {
+        return $this->hasOne(ConfigScreen::class, 'id', 'screen_id');
+    }
 }

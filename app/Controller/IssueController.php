@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\IssueStoreRequest;
 use App\Service\IssueService;
 use App\Service\ProjectAuth;
 use App\Service\UserAuth;
@@ -36,6 +37,17 @@ class IssueController extends Controller
         $project = ProjectAuth::instance()->build()->getCurrent();
 
         $result = $this->service->getOptions($project);
+
+        return $this->response->success($result);
+    }
+
+    public function store(IssueStoreRequest $request)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $input = $request->all();
+
+        $result = $this->service->store($input, $user, $project);
 
         return $this->response->success($result);
     }

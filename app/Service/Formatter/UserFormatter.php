@@ -30,6 +30,8 @@ class UserFormatter extends Service
             'phone' => $model->phone ?: '',
             'avatar' => $model->avatar,
             'permissions' => $model->permissions,
+            'department' => $model->department,
+            'position' => $model->position,
             // 'latest_access_url' => '/project/boba/summary'
         ];
     }
