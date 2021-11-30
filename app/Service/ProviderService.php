@@ -12,7 +12,10 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\Permission;
+use App\Customization\Eloquent\State;
+use App\Customization\Eloquent\StateProperty;
 use App\Service\Context\GroupContext;
+use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\UserFormatter;
@@ -54,5 +57,34 @@ class ProviderService extends Service
         $models = di()->get(UserDao::class)->findMany($userIds);
 
         return di()->get(UserFormatter::class)->formatSmalls($models);
+    }
+
+    /**
+     * get state list.
+     *
+     * @param string $project_key
+     * @param array $fields
+     * @param mixed $key
+     * @return collection
+     */
+    public static function getStateList($key, $fields = [])
+    {
+        $states = di()->get(ConfigStateDao::class)->findOrByProjectKey($key);
+
+        $stateProperty = StateProperty::Where('project_key', $project_key)->first();
+        if ($stateProperty) {
+            if ($sequence = $stateProperty->sequence) {
+                $func = function ($v1, $v2) use ($sequence) {
+                    $i1 = array_search($v1['_id'], $sequence);
+                    $i1 = $i1 !== false ? $i1 : 998;
+                    $i2 = array_search($v2['_id'], $sequence);
+                    $i2 = $i2 !== false ? $i2 : 999;
+                    return $i1 >= $i2 ? 1 : -1;
+                };
+                usort($states, $func);
+            }
+        }
+
+        return $states;
     }
 }

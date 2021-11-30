@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-29 02:45:26 +0000
+# Generation Time: 2021-11-30 02:03:53 +0000
 # ************************************************************
 
 
@@ -455,6 +455,20 @@ VALUES
 
 /*!40000 ALTER TABLE `config_state` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+# Dump of table config_state_property
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `config_state_property`;
+
+CREATE TABLE `config_state_property` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `sequence` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table config_type
