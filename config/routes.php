@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+use App\Constants\Permission;
 use Hyperf\HttpServer\Router\Router;
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController::index');
@@ -79,6 +80,13 @@ Router::addGroup('/project/{project_key}/', function () {
 
     Router::get('issue', App\Controller\IssueController::class . '::index');
     Router::get('issue/options', App\Controller\IssueController::class . '::getOptions');
+    Router::post('issue', App\Controller\IssueController::class . '::store', [
+        'options' => [
+            App\Middleware\PrivilegeMiddleware::class => [
+                Permission::ISSUE_CREATE,
+            ],
+        ],
+    ]);
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
@@ -87,7 +95,7 @@ Router::addGroup('/project/{project_key}/', function () {
     ],
     'options' => [
         App\Middleware\PrivilegeMiddleware::class => [
-            'view_project',
+            Permission::PROJECT_VIEW,
         ],
     ],
 ]);

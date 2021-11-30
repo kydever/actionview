@@ -20,4 +20,6 @@ class Permission
     public const PROJECT_MANAGE = 'manage_project';
 
     public const ISSUE_ASSIGNED = 'assigned_issue';
+
+    public const ISSUE_CREATE = 'create_issue';
 }

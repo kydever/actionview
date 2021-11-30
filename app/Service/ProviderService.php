@@ -24,6 +24,7 @@ use App\Service\Dao\ConfigResolutionDao;
 use App\Service\Dao\ConfigResolutionPropertyDao;
 use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
+use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Dao\VersionDao;
@@ -186,5 +187,15 @@ class ProviderService extends Service
         $versions = di()->get(VersionDao::class)->findByProjectKey($key);
 
         return $versions->columns(['name'])->toArray();
+    }
+
+    public static function getSchemaByType(int $typeId): array
+    {
+        $type = di()->get(ConfigTypeDao::class)->first($typeId, false);
+        if (! $type) {
+            return [];
+        }
+
+        return $this->getScreenSchema($type->project_key, $typeId, $type->screen);
     }
 }
