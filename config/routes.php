@@ -87,6 +87,24 @@ Router::addGroup('/project/{project_key}/', function () {
             ],
         ],
     ]);
+
+    // Route::get('wiki/dirtree', 'WikiController@getDirTree');
+    // Route::get('wiki/{id}/dirs', 'WikiController@getDirChildren');
+    // Route::post('wiki/{id}/favorite', 'WikiController@favorite');
+    // Route::post('wiki/{id}/upload', 'WikiController@upload');
+    // Route::get('wiki/{id}/download', 'WikiController@download2');
+    // Route::get('wiki/{id}/file/{fid}/download', 'WikiController@download');
+    // Route::delete('wiki/{id}/file/{fid}', 'WikiController@remove');
+    // Route::get('wiki/directory/{id}', 'WikiController@index');
+    // Route::get('wiki/search/path', 'WikiController@searchPath');
+    // Route::get('wiki/{id}', 'WikiController@show');
+    // Route::post('wiki/move', 'WikiController@move');
+    // Route::post('wiki/copy', 'WikiController@copy');
+    // Route::post('wiki', 'WikiController@create');
+    // Route::put('wiki/{id}', 'WikiController@update');
+    // Route::get('wiki/{id}/checkin', 'WikiController@checkin');
+    // Route::get('wiki/{id}/checkout', 'WikiController@checkout');
+    // Route::delete('wiki/{id}', 'WikiController@destroy');
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
