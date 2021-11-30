@@ -465,7 +465,7 @@ DROP TABLE IF EXISTS `config_state_property`;
 CREATE TABLE `config_state_property` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `sequence` int(11) NOT NULL,
+  `sequence` json NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

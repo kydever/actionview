@@ -12,14 +12,16 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\Permission;
-use App\Customization\Eloquent\State;
-use App\Customization\Eloquent\StateProperty;
+use App\Model\ConfigState;
 use App\Service\Context\GroupContext;
 use App\Service\Dao\ConfigStateDao;
+use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
+use function Han\Utils\sort;
 
 /**
  * TODO: 不懂为什么叫这个名字.
@@ -59,32 +61,29 @@ class ProviderService extends Service
         return di()->get(UserFormatter::class)->formatSmalls($models);
     }
 
-    /**
-     * get state list.
-     *
-     * @param string $project_key
-     * @param array $fields
-     * @param mixed $key
-     * @return collection
-     */
-    public static function getStateList($key, $fields = [])
+    public function getStateList($key)
     {
         $states = di()->get(ConfigStateDao::class)->findOrByProjectKey($key);
 
-        $stateProperty = StateProperty::Where('project_key', $project_key)->first();
-        if ($stateProperty) {
-            if ($sequence = $stateProperty->sequence) {
-                $func = function ($v1, $v2) use ($sequence) {
-                    $i1 = array_search($v1['_id'], $sequence);
-                    $i1 = $i1 !== false ? $i1 : 998;
-                    $i2 = array_search($v2['_id'], $sequence);
-                    $i2 = $i2 !== false ? $i2 : 999;
-                    return $i1 >= $i2 ? 1 : -1;
-                };
-                usort($states, $func);
-            }
+        $property = di()->get(ConfigStatePropertyDao::class)->firstByProjectKey($key);
+        if ($sequence = $property?->sequence) {
+            $sequence = array_flip($sequence);
+            $result = sort($states, static function (ConfigState $model) use ($sequence) {
+                return -($sequence[$model->id] ?? 999);
+            })->toArray();
+
+            $states = new Collection($result);
         }
 
-        return $states;
+        $result = [];
+        foreach ($states as $state) {
+            $result[] = [
+                'id' => $state->key ?: $state->id,
+                'name' => trim($state->name),
+                'category' => $state->category,
+            ];
+        }
+
+        return $result;
     }
 }

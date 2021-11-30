@@ -27,13 +27,13 @@ class IssueService extends Service
     {
     }
 
-    #[Cacheable(prefix: 'issue:options', value: '#{$project->id}', ttl: 86400, offset: 3600)]
+    #[Cacheable(prefix: 'issue:options', value: '#{$project.id}', ttl: 86400, offset: 3600)]
     public function getOptions(Project $project)
     {
         return $this->options($project);
     }
 
-    #[CachePut(prefix: 'issue:options', value: '#{$project->id}', ttl: 86400, offset: 3600)]
+    #[CachePut(prefix: 'issue:options', value: '#{$project.id}', ttl: 86400, offset: 3600)]
     public function putOptions(Project $project)
     {
         return $this->options($project);
@@ -43,10 +43,12 @@ class IssueService extends Service
     {
         $users = $this->provider->getUserList($project->key);
         $assignees = $this->provider->getAssignedUsers($project->key);
+        $states = $this->provider->getStateList($project->key);
 
         return [
             'user' => $users,
             'assignees' => $assignees,
+            'states' => $states,
         ];
     }
 }

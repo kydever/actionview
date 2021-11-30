@@ -14,7 +14,7 @@ namespace App\Model;
 /**
  * @property int $id
  * @property string $project_key
- * @property int $sequence
+ * @property array $sequence
  */
 class ConfigStateProperty extends Model
 {
@@ -37,5 +37,5 @@ class ConfigStateProperty extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'sequence' => 'integer'];
+    protected $casts = ['id' => 'int', 'sequence' => 'integer', 'sequence' => 'json'];
 }
