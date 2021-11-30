@@ -56,7 +56,6 @@ class AclService extends Service
     public function getPermissionsFromContext(int $userId, Project $project): array
     {
         return Context::getOrSet('permission:' . $userId . ':' . $project->id, function () use ($userId, $project) {
-            var_dump(123);
             return $this->getPermissions($userId, $project);
         });
     }

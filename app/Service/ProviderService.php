@@ -31,6 +31,7 @@ use App\Service\Dao\EpicDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\SprintDao;
+use App\Service\Dao\ProjectDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Dao\VersionDao;
@@ -224,6 +225,7 @@ class ProviderService extends Service
 
     public function getLabelOptions(string $key): array
     {
+
         $models = di(LabelDao::class)->getLabelOptions($key);
         return di(LabelFormatter::class)->formatList($models);
     }
@@ -260,7 +262,6 @@ class ProviderService extends Service
                 $result[] = $sprint;
             }
         }
-
         return $result;
     }
 
@@ -274,7 +275,7 @@ class ProviderService extends Service
         return $this->getScreenSchema($type->project_key, $typeId, $type->screen);
     }
 
-    public function getScreenSchema(string $projectKey, int $typeId, ConfigScreen $screen)
+    public function getScreenSchema(string $projectKey, int $typeId, ConfigScreen $screen): array
     {
         $newSchema = [];
         $versions = null;
@@ -339,5 +340,19 @@ class ProviderService extends Service
         }
 
         return $newSchema;
+    }
+
+    public function getModuleById(int $id): array
+    {
+        $model = di()->get(ModuleDao::class)->first($id);
+
+        return $model?->toArray() ?? [];
+    }
+
+    public static function getProjectPrincipal(string $key)
+    {
+        $project = di()->get(ProjectDao::class)->firstByKey($key);
+
+        return $project?->getPrincipal();
     }
 }

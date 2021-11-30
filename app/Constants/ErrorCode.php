@@ -93,6 +93,26 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_TYPE_SCHEMA_NOT_EXIST = -11101;
 
     /**
+     * @Message("TimeTracking 非法")
+     */
+    public const ISSUE_TIME_TRACKING_INVALID = -11102;
+
+    /**
+     * @Message("负责人没有 assigned-issue 权限")
+     */
+    public const ASSIGNED_USER_PERMISSION_DENIED = -11118;
+
+    /**
+     * @Message("当前问题类型存在必填的字段")
+     */
+    public const ISSUE_TYPE_SCHEMA_REQUIRED = -11121;
+
+    /**
+     * @Message("日期选择器格式非法")
+     */
+    public const ISSUE_DATE_TIME_PICKER_INVALID = -11122;
+
+    /**
      * @Message("项目名称不能为空")
      */
     public const PROJECT_NAME_CANNOT_BE_EMPTY = -14000;
