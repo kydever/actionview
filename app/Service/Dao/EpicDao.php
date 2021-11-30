@@ -17,7 +17,7 @@ use Han\Utils\Service;
 class EpicDao extends Service
 {
     /**
-     * @return \Hyperf\Database\Model\Collection|Epic[]
+     * @return Epic[]|\Hyperf\Database\Model\Collection
      */
     public function getEpicList(string $key)
     {

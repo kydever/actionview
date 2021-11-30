@@ -88,7 +88,7 @@ Router::addGroup('/project/{project_key}/', function () {
         ],
     ]);
 
-    // Route::get('wiki/dirtree', 'WikiController@getDirTree');
+// Route::get('wiki/dirtree', 'WikiController@getDirTree');
     // Route::get('wiki/{id}/dirs', 'WikiController@getDirChildren');
     // Route::post('wiki/{id}/favorite', 'WikiController@favorite');
     // Route::post('wiki/{id}/upload', 'WikiController@upload');
