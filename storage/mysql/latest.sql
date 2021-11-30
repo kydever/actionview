@@ -735,10 +735,30 @@ CREATE TABLE `version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+# Dump of table wiki
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `wiki`;
+CREATE TABLE `wiki` (
+                        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                        `wid` bigint(20) unsigned NOT NULL DEFAULT '0',
+                        `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$_sys_$' COMMENT '项目KEY',
+                        `d` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                        `del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                        `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                        `pt` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                        `parent` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                        `contents` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                        `version` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                        `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+                        `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+                        PRIMARY KEY (`id`),
+                        KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
