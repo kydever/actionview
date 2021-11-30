@@ -43,12 +43,14 @@ class IssueService extends Service
     {
         $users = $this->provider->getUserList($project->key);
         $assignees = $this->provider->getAssignedUsers($project->key);
-        $states = $this->provider->getStateList($project->key);
+        $states = $this->provider->getStateListOptions($project->key);
+        $resolutions = $this->provider->getResolutionOptions($project->key);
 
         return [
             'user' => $users,
             'assignees' => $assignees,
             'states' => $states,
+            'resolutions' => $resolutions,
         ];
     }
 }

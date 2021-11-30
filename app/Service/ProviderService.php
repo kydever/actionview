@@ -12,8 +12,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\Permission;
+use App\Model\ConfigResolution;
 use App\Model\ConfigState;
 use App\Service\Context\GroupContext;
+use App\Service\Dao\ConfigResolutionDao;
+use App\Service\Dao\ConfigResolutionPropertyDao;
 use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Dao\UserDao;
@@ -61,7 +64,22 @@ class ProviderService extends Service
         return di()->get(UserFormatter::class)->formatSmalls($models);
     }
 
-    public function getStateList($key)
+    public function getStateListOptions(string $key): array
+    {
+        $states = $this->getStateList($key);
+        $result = [];
+        foreach ($states as $state) {
+            $result[] = [
+                'id' => $state->key ?: $state->id,
+                'name' => trim($state->name),
+                'category' => $state->category,
+            ];
+        }
+
+        return $result;
+    }
+
+    public function getStateList(string $key): Collection
     {
         $states = di()->get(ConfigStateDao::class)->findOrByProjectKey($key);
 
@@ -75,15 +93,42 @@ class ProviderService extends Service
             $states = new Collection($result);
         }
 
-        $result = [];
-        foreach ($states as $state) {
-            $result[] = [
-                'id' => $state->key ?: $state->id,
-                'name' => trim($state->name),
-                'category' => $state->category,
-            ];
+        return $states;
+    }
+
+    public function getResolutionList(string $key): array
+    {
+        $resolutions = di()->get(ConfigResolutionDao::class)->findOrByProjectKey($key);
+        $property = di()->get(ConfigResolutionPropertyDao::class)->firstByProjectKey($key);
+        if ($sequence = $property?->sequence) {
+            $sequence = array_flip($sequence);
+            $result = sort($resolutions, static function (ConfigResolution $model) use ($sequence) {
+                return -($sequence[$model->id] ?? 999);
+            })->toArray();
+
+            $resolutions = new Collection($result);
         }
 
-        return $result;
+        return [$resolutions, $property];
+    }
+
+    public function getResolutionOptions(string $key)
+    {
+        [$resolutions, $property] = $this->getResolutionList($key);
+        $options = [];
+        /** @var ConfigResolution $resolution */
+        foreach ($resolutions as $resolution) {
+            $item = [
+                'id' => $resolution->key ?: $resolution->id,
+                'name' => trim($resolution->name ?? ''),
+            ];
+
+            if ($property?->default_value == $resolution->id) {
+                $item['default'] = true;
+            }
+
+            $options[] = $item;
+        }
+        return $options;
     }
 }

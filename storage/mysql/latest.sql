@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-30 02:03:53 +0000
+# Generation Time: 2021-11-30 05:47:29 +0000
 # ************************************************************
 
 
@@ -394,6 +394,22 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table config_resolution_property
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `config_resolution_property`;
+
+CREATE TABLE `config_resolution_property` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `sequence` json NOT NULL,
+  `default_value` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `INDEX_PROJECT_KEY` (`project_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 # Dump of table config_screen
 # ------------------------------------------------------------
 
@@ -466,7 +482,8 @@ CREATE TABLE `config_state_property` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `sequence` json NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `INDEX_PROJECT_KEY` (`project_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
