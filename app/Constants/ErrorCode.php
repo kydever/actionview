@@ -88,6 +88,11 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_TYPE_NOT_EMPTY = -11100;
 
     /**
+     * @Message("当前问题类型不存在 Schema")
+     */
+    public const ISSUE_TYPE_SCHEMA_NOT_EXIST = -11101;
+
+    /**
      * @Message("项目名称不能为空")
      */
     public const PROJECT_NAME_CANNOT_BE_EMPTY = -14000;
@@ -128,46 +133,6 @@ class ErrorCode extends AbstractConstants
     public const USER_NOT_EXISTS = -15000;
 
     /**
-     * @Message("邮件发送失败")
-     */
-    public const MAIL_SEND_FAILED = -15200;
-
-    /**
-     * @Message("邮件接收者不允许为空")
-     */
-    public const MAIL_RECIPIENTS_CANNOT_BE_EMPTY = -15201;
-
-    /**
-     * @Message("邮件标题不允许为空")
-     */
-    public const MAIL_SUBJECT_CANNOT_BE_EMPTY = -15202;
-
-    /**
-     * @Message("上传的头像不能为空")
-     */
-    public const AVATAR_CANNOT_EMPTY = -15006;
-
-    /**
-     * @Message("头像格式非法")
-     */
-    public const AVATAR_TYPE_INVALID = -15007;
-
-    /**
-     * @Message("头像ID不能为空")
-     */
-    public const AVATAR_ID_NOT_EMPTY = -15100;
-
-    /**
-     * @Message("邮件服务配置有误")
-     */
-    public const MAIL_INVALID = -15203;
-
-    /**
-     * @Message("文件系统 Domain 设置非法")
-     */
-    public const FILE_DOMAIN_INVALID = -17000;
-
-    /**
      * @Message("旧密码不能为空")
      */
     public const PASSWORD_OLD_NOT_EMPTY = -15001;
@@ -186,4 +151,44 @@ class ErrorCode extends AbstractConstants
      * @Message("个人资料姓名不能为空")
      */
     public const FIRST_NAME_NOT_EXIST = -15005;
+
+    /**
+     * @Message("上传的头像不能为空")
+     */
+    public const AVATAR_CANNOT_EMPTY = -15006;
+
+    /**
+     * @Message("头像格式非法")
+     */
+    public const AVATAR_TYPE_INVALID = -15007;
+
+    /**
+     * @Message("头像ID不能为空")
+     */
+    public const AVATAR_ID_NOT_EMPTY = -15100;
+
+    /**
+     * @Message("邮件发送失败")
+     */
+    public const MAIL_SEND_FAILED = -15200;
+
+    /**
+     * @Message("邮件接收者不允许为空")
+     */
+    public const MAIL_RECIPIENTS_CANNOT_BE_EMPTY = -15201;
+
+    /**
+     * @Message("邮件标题不允许为空")
+     */
+    public const MAIL_SUBJECT_CANNOT_BE_EMPTY = -15202;
+
+    /**
+     * @Message("邮件服务配置有误")
+     */
+    public const MAIL_INVALID = -15203;
+
+    /**
+     * @Message("文件系统 Domain 设置非法")
+     */
+    public const FILE_DOMAIN_INVALID = -17000;
 }

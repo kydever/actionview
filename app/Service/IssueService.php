@@ -11,7 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
 use App\Events\IssueEvent;
+use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Project\Provider;
@@ -35,11 +37,9 @@ class IssueService extends Service
     {
         $type = $input['type'];
 
-        // $this->provider->getSc
-
-        $schema = Provider::getSchemaByType($issue_type);
+        $schema = $this->provider->getSchemaByType($type);
         if (! $schema) {
-            throw new \UnexpectedValueException('the schema of the type is not existed.', -11101);
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
         }
 
         if (! $this->requiredCheck($schema, $request->all(), 'create')) {
