@@ -39,8 +39,7 @@ class IssueService extends Service
 
         $schema = $this->provider->getSchemaByType($type);
         if (! $schema) {
-            throw new BusinessException(ErrorCode::)
-            throw new \UnexpectedValueException('the schema of the type is not existed.', -11101);
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
         }
 
         if (! $this->requiredCheck($schema, $request->all(), 'create')) {
