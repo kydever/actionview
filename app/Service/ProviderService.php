@@ -20,6 +20,7 @@ use App\Model\ConfigResolutionProperty;
 use App\Model\ConfigScreen;
 use App\Model\ConfigState;
 use App\Service\Context\GroupContext;
+use App\Service\Dao\ConfigFieldDao;
 use App\Service\Dao\ConfigPriorityDao;
 use App\Service\Dao\ConfigPriorityPropertyDao;
 use App\Service\Dao\ConfigResolutionDao;
@@ -30,11 +31,12 @@ use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\EpicDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
-use App\Service\Dao\SprintDao;
 use App\Service\Dao\ProjectDao;
+use App\Service\Dao\SprintDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Dao\VersionDao;
+use App\Service\Formatter\ConfigFieldFormatter;
 use App\Service\Formatter\ConfigTypeFormatter;
 use App\Service\Formatter\LabelFormatter;
 use App\Service\Formatter\SprintFormatter;
@@ -225,7 +227,6 @@ class ProviderService extends Service
 
     public function getLabelOptions(string $key): array
     {
-
         $models = di(LabelDao::class)->getLabelOptions($key);
         return di(LabelFormatter::class)->formatList($models);
     }
@@ -263,6 +264,12 @@ class ProviderService extends Service
             }
         }
         return $result;
+    }
+
+    public function getFieldList(string $key): array
+    {
+        $models = di(ConfigFieldDao::class)->getFieldList($key);
+        return di(ConfigFieldFormatter::class)->formatList($models);
     }
 
     public function getSchemaByType(int $typeId): array

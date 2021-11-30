@@ -37,5 +37,6 @@ class TestCommand extends HyperfCommand
         $versions = di(ProviderService::class)->getVersionList('$_sys_$');
         $labels = di(ProviderService::class)->getLabelOptions('$_sys_$');
         $type = di(ProviderService::class)->getTypeListExt('$_sys_$');
+        $field = di(ProviderService::class)->getFieldList('$_sys_$');
     }
 }

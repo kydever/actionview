@@ -218,6 +218,7 @@ class IssueService extends Service
         $labels = $this->provider->getLabelOptions($project->key);
         $types = $this->provider->getTypeListExt($project->key);
         $sprints = $this->provider->getSprintList($project->key);
+        $field = $this->provider->getFieldList($project->key);
 
         return [
             'user' => $users,
@@ -231,6 +232,7 @@ class IssueService extends Service
             'labels' => $labels,
             'types' => $types,
             'sprints' => $sprints,
+            'field' => $field,
         ];
     }
 }
