@@ -778,22 +778,46 @@ PRIMARY KEY (`id`)
 
 DROP TABLE IF EXISTS `wiki`;
 CREATE TABLE `wiki` (
-                        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                        `wid` bigint(20) unsigned NOT NULL DEFAULT '0',
-                        `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$_sys_$' COMMENT '项目KEY',
-                        `d` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                        `del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                        `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                        `pt` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                        `parent` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                        `contents` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                        `version` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-                        `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-                        `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-                        PRIMARY KEY (`id`),
-                        KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
+`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+`wid` bigint(20) unsigned NOT NULL DEFAULT '0',
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$_sys_$' COMMENT '项目KEY',
+`d` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`pt` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`parent` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`contents` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`version` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+PRIMARY KEY (`id`),
+KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+# Dump of table sprint
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `sprint`;
+
+CREATE TABLE `sprint` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '项目key',
+`no` int(11) unsigned NOT NULL DEFAULT '0',
+`name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+`status` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`start_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '开始时间',
+`complete_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '完成时间',
+`description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '描述',
+`real_complete_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '真实完成时间',
+`issues` json NOT NULL,
+`origin_issues` json NOT NULL,
+`completed_issues` json NOT NULL,
+`incompleted_issues` json NOT NULL,
+`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
