@@ -49,7 +49,7 @@ class Principal implements Arrayable
     {
         $principal = $this->principal;
         return match ($this->principal) {
-            'self', '' => value(static function () {
+            'self', '' => value(function () {
                 if ($this->user === null) {
                     throw new BusinessException(ErrorCode::PROJECT_PRINCIPAL_CANNOT_EMPTY);
                 }
