@@ -46,6 +46,7 @@ class IssueService extends Service
 
         return [
             'user' => $users,
+            'assignees' => $assignees,
         ];
     }
 }
