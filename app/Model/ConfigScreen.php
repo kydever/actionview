@@ -16,7 +16,7 @@ namespace App\Model;
  * @property string $project_key 项目KEY
  * @property string $name 界面名
  * @property string $description 描述
- * @property string $schema SCHEMA
+ * @property array $schema SCHEMA
  * @property string $field_ids 字段ID列表
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -42,5 +42,5 @@ class ConfigScreen extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'schema' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

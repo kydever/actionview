@@ -16,6 +16,7 @@ use App\Model\ConfigPriority;
 use App\Model\ConfigPriorityProperty;
 use App\Model\ConfigResolution;
 use App\Model\ConfigResolutionProperty;
+use App\Model\ConfigScreen;
 use App\Model\ConfigState;
 use App\Service\Context\GroupContext;
 use App\Service\Dao\ConfigPriorityDao;
@@ -189,7 +190,7 @@ class ProviderService extends Service
         return $versions->columns(['name'])->toArray();
     }
 
-    public static function getSchemaByType(int $typeId): array
+    public function getSchemaByType(int $typeId): array
     {
         $type = di()->get(ConfigTypeDao::class)->first($typeId, false);
         if (! $type) {
@@ -197,5 +198,76 @@ class ProviderService extends Service
         }
 
         return $this->getScreenSchema($type->project_key, $typeId, $type->screen);
+    }
+
+    public function getScreenSchema(string $key, int $typeId, ConfigScreen $screen)
+    {
+        $new_schema = [];
+        $versions = null;
+        $users = null;
+        foreach ($screen->schema ?: [] as $key => $val) {
+            if (isset($val['applyToTypes'])) {
+                if ($val['applyToTypes'] && ! in_array($type_id, explode(',', $val['applyToTypes'] ?: ''))) {
+                    continue;
+                }
+                unset($val['applyToTypes']);
+            }
+
+            if ($val['key'] == 'assignee') {
+                $users = self::getAssignedUsers($project_key);
+                foreach ($users as $key => $user) {
+                    $users[$key]['name'] = $user['name'] . '(' . $user['email'] . ')';
+                }
+                $val['optionValues'] = self::pluckFields($users, ['id', 'name']);
+            } elseif ($val['key'] == 'resolution') {
+                $resolutions = self::getResolutionOptions($project_key);
+                $val['optionValues'] = self::pluckFields($resolutions, ['_id', 'name']);
+                foreach ($resolutions as $key2 => $val2) {
+                    if (isset($val2['default']) && $val2['default']) {
+                        $val['defaultValue'] = $val2['_id'];
+                        break;
+                    }
+                }
+            } elseif ($val['key'] == 'priority') {
+                $priorities = self::getPriorityOptions($project_key);
+                $val['optionValues'] = self::pluckFields($priorities, ['_id', 'name']);
+                foreach ($priorities as $key2 => $val2) {
+                    if (isset($val2['default']) && $val2['default']) {
+                        $val['defaultValue'] = $val2['_id'];
+                        break;
+                    }
+                }
+            } elseif ($val['key'] == 'module') {
+                $modules = self::getModuleList($project_key);
+                $val['optionValues'] = self::pluckFields($modules, ['_id', 'name']);
+            } elseif ($val['key'] == 'epic') {
+                $epics = self::getEpicList($project_key);
+                $val['optionValues'] = self::pluckFields($epics, ['_id', 'name', 'bgColor']);
+            } elseif ($val['key'] == 'labels') {
+                $labels = self::getLabelOptions($project_key);
+                $couple_labels = [];
+                foreach ($labels as $label) {
+                    $couple_labels[] = ['id' => $label['name'], 'name' => $label['name']];
+                }
+                $val['optionValues'] = $couple_labels;
+            } elseif ($val['type'] == 'SingleVersion' || $val['type'] == 'MultiVersion') {
+                $versions === null && $versions = self::getVersionList($project_key);
+                $val['optionValues'] = self::pluckFields($versions, ['_id', 'name']);
+            } elseif ($val['type'] == 'SingleUser' || $val['type'] == 'MultiUser') {
+                $users === null && $users = self::getUserList($project_key);
+                foreach ($users as $key => $user) {
+                    $users[$key]['name'] = $user['name'] . '(' . $user['email'] . ')';
+                }
+                $val['optionValues'] = self::pluckFields($users, ['id', 'name']);
+            }
+
+            if (isset($val['_id'])) {
+                unset($val['_id']);
+            }
+
+            $new_schema[] = $val;
+        }
+
+        return $new_schema;
     }
 }
