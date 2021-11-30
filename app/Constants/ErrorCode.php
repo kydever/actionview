@@ -83,6 +83,11 @@ class ErrorCode extends AbstractConstants
     public const GROUP_FROM_EXTERNAL_DIRECTION = -10203;
 
     /**
+     * @Message("问题类型必填")
+     */
+    public const ISSUE_TYPE_NOT_EMPTY = -11100;
+
+    /**
      * @Message("项目名称不能为空")
      */
     public const PROJECT_NAME_CANNOT_BE_EMPTY = -14000;

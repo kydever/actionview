@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-29 02:45:26 +0000
+# Generation Time: 2021-11-30 06:22:18 +0000
 # ************************************************************
 
 
@@ -360,6 +360,22 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table config_priority_property
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `config_priority_property`;
+
+CREATE TABLE `config_priority_property` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `sequence` json NOT NULL,
+  `default_value` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `INDEX_PROJECT_KEY` (`project_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 # Dump of table config_resolution
 # ------------------------------------------------------------
 
@@ -392,6 +408,22 @@ VALUES
 
 /*!40000 ALTER TABLE `config_resolution` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+# Dump of table config_resolution_property
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `config_resolution_property`;
+
+CREATE TABLE `config_resolution_property` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `sequence` json NOT NULL,
+  `default_value` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `INDEX_PROJECT_KEY` (`project_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table config_screen
@@ -455,6 +487,21 @@ VALUES
 
 /*!40000 ALTER TABLE `config_state` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+# Dump of table config_state_property
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `config_state_property`;
+
+CREATE TABLE `config_state_property` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `sequence` json NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `INDEX_PROJECT_KEY` (`project_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table config_type
@@ -668,6 +715,24 @@ VALUES
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `version`;
+
+CREATE TABLE `version` (
+                           `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+                           `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                           `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                           `start_time` int(10) unsigned NOT NULL DEFAULT '0',
+                           `end_time` int(10) unsigned NOT NULL DEFAULT '0',
+                           `released_time` int(10) unsigned NOT NULL DEFAULT '0',
+                           `status` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                           `description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                           `creator` json NOT NULL,
+                           `created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+                           `updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+                           PRIMARY KEY (`id`),
+                           KEY `INDEX_PROJECT_KEY` (`project_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 
