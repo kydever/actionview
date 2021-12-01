@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Command;
 
+use App\Constants\IssueFiltersConstant;
+use App\Service\Dao\IssueFilterDao;
+use App\Service\Formatter\IssueFilterFormatter;
 use App\Service\ProviderService;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
@@ -32,11 +35,17 @@ class TestCommand extends HyperfCommand
 
     public function handle()
     {
-        $modules = di(ProviderService::class)->getModuleList('$_sys_$');
-        $epics = di(ProviderService::class)->getEpicList('$_sys_$');
-        $versions = di(ProviderService::class)->getVersionList('$_sys_$');
-        $labels = di(ProviderService::class)->getLabelOptions('$_sys_$');
-        $type = di(ProviderService::class)->getTypeListExt('$_sys_$');
-        $field = di(ProviderService::class)->getFieldList('$_sys_$');
+//        $modules = di(ProviderService::class)->getModuleList('$_sys_$');
+//        $epics = di(ProviderService::class)->getEpicList('$_sys_$');
+//        $versions = di(ProviderService::class)->getVersionList('$_sys_$');
+//        $labels = di(ProviderService::class)->getLabelOptions('$_sys_$');
+//        $type = di(ProviderService::class)->getTypeListExt('$_sys_$');
+//        $field = di(ProviderService::class)->getFieldList('$_sys_$');
+//        $customizeFilterModels = di(IssueFilterDao::class)->getIssueFilters('$_sys_$', 2);
+        $filters = IssueFiltersConstant::DEFAULT_ISSUE_FILTERS;
+        $customizeFilterModels = di(IssueFilterDao::class)->getIssueFilters('$_sys_$', 1);
+        $customizeFilters = di(IssueFilterFormatter::class)->formatList($customizeFilterModels);
+        $filters = array_merge($filters, $customizeFilters);
+        var_dump($filters);
     }
 }

@@ -12,39 +12,33 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property string $id
+ * @property int $id
  * @property string $project_key 项目key
- * @property string $name 名称
- * @property array $query
- * @property string $scope
- * @property array $creator
+ * @property array $user
+ * @property array $sequence
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class IssueFilter extends Model
+class UserIssueFilter extends Model
 {
-    public $incrementing = false;
-
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'issue_filters';
-
-    protected $keyType = 'string';
+    protected $table = 'user_issue_filters';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'query', 'scope', 'creator', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'user', 'sequence', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'string', 'creator' => 'json', 'query' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'user' => 'json', 'sequence' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

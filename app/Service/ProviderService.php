@@ -30,6 +30,7 @@ use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\EpicDao;
+use App\Service\Dao\IssueFilterDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\ProjectDao;
@@ -39,6 +40,7 @@ use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\ConfigFieldFormatter;
 use App\Service\Formatter\ConfigTypeFormatter;
+use App\Service\Formatter\IssueFilterFormatter;
 use App\Service\Formatter\LabelFormatter;
 use App\Service\Formatter\SprintFormatter;
 use App\Service\Formatter\UserFormatter;
@@ -276,6 +278,9 @@ class ProviderService extends Service
     public function getIssueFilters(string $key, int $userId): array
     {
         $filters = IssueFiltersConstant::DEFAULT_ISSUE_FILTERS;
+        $customizeFilterModels = di(IssueFilterDao::class)->getIssueFilters($key, $userId);
+        $customizeFilters = di(IssueFilterFormatter::class)->formatList($customizeFilterModels);
+        $filters = array_merge($filters, $customizeFilters);
     }
 
     public function getSchemaByType(int $typeId): array
