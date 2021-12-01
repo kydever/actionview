@@ -278,6 +278,7 @@ class ProviderService extends Service
     public function getIssueFilters(string $key, int $userId): array
     {
         $filters = IssueFiltersConstant::DEFAULT_ISSUE_FILTERS;
+
         $customizeFilterModels = di(IssueFilterDao::class)->getIssueFilters($key, $userId);
         $customizeFilters = di(IssueFilterFormatter::class)->formatList($customizeFilterModels);
         $filters = array_merge($filters, $customizeFilters);

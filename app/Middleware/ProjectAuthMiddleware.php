@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Constants\ErrorCode;
-use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Service\ProjectAuth;
 use Hyperf\HttpServer\Router\Dispatched;
@@ -38,7 +37,7 @@ class ProjectAuthMiddleware implements MiddlewareInterface
         }
 
         $projectAuth = ProjectAuth::instance([$key]);
-        if (strtoupper($request->getMethod()) === 'GET' && $key !== ProjectConstant::SYS) {
+        if (strtoupper($request->getMethod()) === 'GET' && ! $projectAuth->isSYS()) {
             if (! $projectAuth->isActive()) {
                 throw new BusinessException(ErrorCode::PROJECT_ARCHIVED);
             }

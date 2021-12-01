@@ -22,7 +22,7 @@ class AclRoleactorDao extends Service
      */
     public function findByGroupId(int $groupId)
     {
-        return AclRoleactor::query()->whereRaw('JSON_CONTAINS(group_ids, ?, ?)', [$groupId, '$'])->get();
+        return AclRoleactor::query()->whereJsonContains('group_ids', $groupId)->get();
     }
 
     /**
@@ -54,5 +54,12 @@ class AclRoleactorDao extends Service
         return AclRoleactor::query()->where('project_key', $projectKey)
             ->whereIn('role_id', $roleIds)
             ->get();
+    }
+
+    public function firstByRoleId(string $projectKey, int $roleId): ?AclRoleactor
+    {
+        return AclRoleactor::query()->where('project_key', $projectKey)
+            ->where('role_id', $roleId)
+            ->first();
     }
 }

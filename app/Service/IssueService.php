@@ -154,6 +154,7 @@ class IssueService extends Service
         $model->assignee = $assignee;
         $model->reporter = di()->get(UserFormatter::class)->small($user);
         $model->no = $maxNumber;
+        $model->data = $insValues;
         $model->save();
 
         return [];
@@ -195,13 +196,13 @@ class IssueService extends Service
         return array_merge($result, $this->otherOptions($userId, $project));
     }
 
-    #[Cacheable(prefix: 'issue:options', value: '#{project.id}', ttl: 86400, offset: 3600)]
+    #[Cacheable(prefix: 'issue:options', value: '#{project.id}', ttl: 8640000, offset: 3600)]
     public function getOptions(Project $project)
     {
         return $this->options($project);
     }
 
-    #[CachePut(prefix: 'issue:options', value: '#{project.id}', ttl: 86400, offset: 3600)]
+    #[CachePut(prefix: 'issue:options', value: '#{project.id}', ttl: 8640000, offset: 3600)]
     public function putOptions(Project $project)
     {
         return $this->options($project);

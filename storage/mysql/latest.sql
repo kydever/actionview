@@ -574,6 +574,7 @@ CREATE TABLE `issue` (
 `assignee` json NOT NULL,
 `reporter` json NOT NULL,
 `no` int(10) unsigned NOT NULL DEFAULT '0',
+`data` json NOT NULL,
 `created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
 `updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
 PRIMARY KEY (`id`)
