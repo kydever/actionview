@@ -276,6 +276,8 @@ class ProviderService extends Service
     public function getIssueFilters(string $key, int $userId): array
     {
         $filters = IssueFiltersConstant::DEFAULT_ISSUE_FILTERS;
+
+        return [];
     }
 
     public function getSchemaByType(int $typeId): array
