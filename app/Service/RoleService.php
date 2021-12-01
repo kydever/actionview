@@ -11,9 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Acl\Eloquent\RolePermissions;
 use App\Constants\ErrorCode;
 use App\Constants\Permission;
+use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Model\AclRoleactor;
 use App\Model\AclRolePermission;
@@ -79,7 +79,7 @@ class RoleService extends Service
     {
         $permissions = $input['permissions'] ?? null;
         $role = $this->dao->first($roleId, true);
-        if ($role->project_key !== $project->key) {
+        if ($role->project_key != ProjectConstant::SYS && $role->project_key !== $project->key) {
             throw new BusinessException(ErrorCode::ROLE_NOT_EXISTS);
         }
 
@@ -104,8 +104,9 @@ class RoleService extends Service
             $model->save();
         }
 
-        $role->permissions = $this->getPermissions($project_key, $id);
-        return Response()->json(['ecode' => 0, 'data' => $role]);
+        $result = di()->get(RoleFormatter::class)->base($role);
+        $result['permissions'] = $permissions;
+        return $result;
     }
 
     public function getGroupsAndUsers(string $projectKey, int $roleId): array
