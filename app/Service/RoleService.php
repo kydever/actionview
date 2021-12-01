@@ -58,7 +58,7 @@ class RoleService extends Service
                 $item['groups'] = $groups['groups'];
             }
 
-            $item['permissions'] = $permissions[$role->id]?->permissions ?? $defaultPermissions ?? [];
+            $item['permissions'] = $permissions[$role->id]?->permissions ?? $defaultPermissions[$role->id] ?? [];
             $result[] = $item;
         }
 
