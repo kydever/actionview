@@ -154,6 +154,7 @@ class IssueService extends Service
         $model->assignee = $assignee;
         $model->reporter = di()->get(UserFormatter::class)->small($user);
         $model->no = $maxNumber;
+        $model->data = $insValues;
         $model->save();
 
         return [];
