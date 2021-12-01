@@ -846,6 +846,19 @@ CREATE TABLE `wiki` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+# Dump of table wiki
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `wiki_cate`;
+
+CREATE TABLE `wiki_cate` (
+`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`w_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'wiki_id',
+`p_id` int(10) unsigned NOT NULL DEFAULT '0',
+`name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
