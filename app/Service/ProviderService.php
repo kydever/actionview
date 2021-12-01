@@ -50,9 +50,8 @@ use App\Service\Formatter\LabelFormatter;
 use App\Service\Formatter\SprintFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
+use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Database\Model\Collection;
-use Hyperf\Utils\Arr;
-use Hyperf\Utils\Context;
 use JetBrains\PhpStorm\ArrayShape;
 use function Han\Utils\sort;
 
@@ -61,6 +60,7 @@ use function Han\Utils\sort;
  */
 class ProviderService extends Service
 {
+    #[Cacheable(prefix: 'user', group: 'context')]
     public function getUserList(string $key): array
     {
         $projects = di()->get(UserGroupProjectDao::class)->findByProjectKey($key);
@@ -85,6 +85,7 @@ class ProviderService extends Service
         return di()->get(UserFormatter::class)->formatSmalls($models);
     }
 
+    #[Cacheable(prefix: 'assigned:users', group: 'context')]
     public function getAssignedUsers(string $key)
     {
         $userIds = di()->get(AclService::class)->getUserIdsByPermission(Permission::ASSIGNED_ISSUE, $key);
@@ -92,14 +93,6 @@ class ProviderService extends Service
         $models = di()->get(UserDao::class)->findMany($userIds);
 
         return di()->get(UserFormatter::class)->formatSmalls($models);
-    }
-
-    public function getAssignedUsersFromContext(string $key)
-    {
-        $key = sprintf('assigned.users.for.%s', $key);
-        return Context::getOrSet($key, function () use ($key) {
-            return $this->getAssignedUsers($key);
-        });
     }
 
     public function getStateListOptions(string $key): array
@@ -170,6 +163,7 @@ class ProviderService extends Service
         return [$priorities, $property];
     }
 
+    #[Cacheable(prefix: 'priority', group: 'context')]
     public function getPriorityOptions(string $key)
     {
         [$priorities, $property] = $this->getPriorityList($key);
@@ -192,6 +186,7 @@ class ProviderService extends Service
         return $options;
     }
 
+    #[Cacheable(prefix: 'resolution', group: 'context')]
     public function getResolutionOptions(string $key)
     {
         [$resolutions, $property] = $this->getResolutionList($key);
@@ -212,6 +207,7 @@ class ProviderService extends Service
         return $options;
     }
 
+    #[Cacheable(prefix: 'module', group: 'context')]
     public function getModuleList(string $key): array
     {
         $models = di(ModuleDao::class)->getModuleList($key);
@@ -219,6 +215,7 @@ class ProviderService extends Service
         return $models->columns(['id', 'name'])->toArray();
     }
 
+    #[Cacheable(prefix: 'epic', group: 'context')]
     public function getEpicList(string $key): array
     {
         $models = di(EpicDao::class)->getEpicList($key);
@@ -226,6 +223,7 @@ class ProviderService extends Service
         return $models->columns(['id', 'name', 'bgColor'])->toArray();
     }
 
+    #[Cacheable(prefix: 'version', group: 'context')]
     public function getVersionList(string $key)
     {
         $versions = di()->get(VersionDao::class)->findByProjectKey($key);
@@ -233,6 +231,7 @@ class ProviderService extends Service
         return $versions->columns(['id', 'name'])->toArray();
     }
 
+    #[Cacheable(prefix: 'label', group: 'context')]
     public function getLabelOptions(string $key): array
     {
         $models = di(LabelDao::class)->getLabelOptions($key);
@@ -362,11 +361,11 @@ class ProviderService extends Service
             }
 
             if ($val['key'] == Schema::ASSIGNEE) {
-                $users = $this->getAssignedUsersFromContext($projectKey);
+                $users = $this->getAssignedUsers($projectKey);
                 foreach ($users as $key => $user) {
                     $users[$key]['name'] = $user['name'] . '(' . $user['email'] . ')';
                 }
-                $val['optionValues'] = Arr::only($users, ['id', 'name']);
+                $val['optionValues'] = $users;
             } elseif ($val['key'] == Schema::RESOLUTION) {
                 $resolutions = $this->getResolutionOptions($projectKey);
                 $val['optionValues'] = $resolutions;
@@ -378,7 +377,7 @@ class ProviderService extends Service
                 }
             } elseif ($val['key'] == Schema::PRIORITY) {
                 $priorities = $this->getPriorityOptions($projectKey);
-                $val['optionValues'] = Arr::only($priorities, ['id', 'name']);
+                $val['optionValues'] = $priorities;
                 foreach ($priorities as $v) {
                     if ($v['default'] ?? null) {
                         $val['defaultValue'] = $v['id'];
@@ -389,7 +388,7 @@ class ProviderService extends Service
                 $modules = $this->getModuleList($projectKey);
                 $val['optionValues'] = $modules;
             } elseif ($val['key'] == Schema::EPIC) {
-                $epics = Arr::only($this->getEpicList($projectKey), ['id', 'name', 'bgColor']);
+                $epics = $this->getEpicList($projectKey);
                 $val['optionValues'] = $epics;
             } elseif ($val['key'] == Schema::LABELS) {
                 $labels = $this->getLabelOptions($projectKey);
@@ -400,13 +399,13 @@ class ProviderService extends Service
                 $val['optionValues'] = $coupleLabels;
             } elseif ($val['type'] == 'SingleVersion' || $val['type'] == 'MultiVersion') {
                 $versions === null && $versions = $this->getVersionList($projectKey);
-                $val['optionValues'] = Arr::only($versions, ['id', 'name']);
+                $val['optionValues'] = $versions;
             } elseif ($val['type'] == 'SingleUser' || $val['type'] == 'MultiUser') {
                 $users === null && $users = $this->getUserList($projectKey);
                 foreach ($users as $key => $user) {
                     $users[$key]['name'] = $user['name'] . '(' . $user['email'] . ')';
                 }
-                $val['optionValues'] = Arr::only($users, ['id', 'name']);
+                $val['optionValues'] = $users;
             }
 
             $newSchema[] = $val;
