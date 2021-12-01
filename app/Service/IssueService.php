@@ -155,6 +155,7 @@ class IssueService extends Service
         try {
             $model = new Issue();
             $model->project_key = $project->key;
+            $model->type = $type;
             $model->del_flg = StatusConstant::NOT_DELETED;
             $model->resolution = $resolution ?: StatusConstant::STATUS_UNRESOLVED;
             $model->assignee = $assignee;
