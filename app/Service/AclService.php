@@ -40,13 +40,13 @@ class AclService extends Service
 
     public function hasAccess(int $userId, Project $project, string $access): bool
     {
-        if (in_array($access, [Permission::PROJECT_VIEW, Permission::PROJECT_MANAGE]) && $project->isPrincipal($userId)) {
+        if (in_array($access, [Permission::VIEW_PROJECT, Permission::MANAGE_PROJECT]) && $project->isPrincipal($userId)) {
             return true;
         }
 
         $permissions = $this->getPermissionsFromContext($userId, $project);
 
-        if ($access === Permission::PROJECT_VIEW) {
+        if ($access === Permission::VIEW_PROJECT) {
             return (bool) $permissions;
         }
 

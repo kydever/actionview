@@ -91,7 +91,7 @@ Router::addGroup('/project/{project_key}/', function () {
     ],
     'options' => [
         App\Middleware\PrivilegeMiddleware::class => [
-            Permission::PROJECT_MANAGE,
+            Permission::MANAGE_PROJECT,
         ],
     ],
 ]);
@@ -104,7 +104,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('issue', App\Controller\IssueController::class . '::store', [
         'options' => [
             App\Middleware\PrivilegeMiddleware::class => [
-                Permission::ISSUE_CREATE,
+                Permission::CREATE_ISSUE,
             ],
         ],
     ]);
@@ -139,7 +139,7 @@ Router::addGroup('/project/{project_key}/', function () {
     ],
     'options' => [
         App\Middleware\PrivilegeMiddleware::class => [
-            Permission::PROJECT_VIEW,
+            Permission::VIEW_PROJECT,
         ],
     ],
 ]);

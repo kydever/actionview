@@ -87,7 +87,7 @@ class ProviderService extends Service
 
     public function getAssignedUsers(string $key)
     {
-        $userIds = di()->get(AclService::class)->getUserIdsByPermission(Permission::ISSUE_ASSIGNED, $key);
+        $userIds = di()->get(AclService::class)->getUserIdsByPermission(Permission::ASSIGNED_ISSUE, $key);
 
         $models = di()->get(UserDao::class)->findMany($userIds);
 

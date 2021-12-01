@@ -12,8 +12,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Acl\Eloquent\RolePermissions;
+use App\Constants\ErrorCode;
+use App\Constants\Permission;
+use App\Exception\BusinessException;
 use App\Model\AclRoleactor;
+use App\Model\AclRolePermission;
 use App\Model\Project;
+use App\Model\User;
 use App\Service\Context\RoleactorContext;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\AclRoleactorDao;
@@ -65,8 +70,42 @@ class RoleService extends Service
         return $result;
     }
 
-    public function setPermissions(Project $project, int $roleId){
+    /**
+     * @param $input = [
+     *     'permissions' => [],
+     * ]
+     */
+    public function setPermissions(array $input, int $roleId, Project $project, User $user)
+    {
+        $permissions = $input['permissions'] ?? null;
+        $role = $this->dao->first($roleId, true);
+        if ($role->project_key !== $project->key) {
+            throw new BusinessException(ErrorCode::ROLE_NOT_EXISTS);
+        }
 
+        if (isset($permissions)) {
+            $allPermissions = Permission::all();
+            if (array_diff($permissions, $allPermissions)) {
+                throw new BusinessException(ErrorCode::ROLE_INVALID);
+            }
+
+            if (! $user->mustContainsAccesses([Permission::MANAGE_PROJECT])) {
+                throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+            }
+
+            $model = di()->get(AclRolePermissionDao::class)->firstByProjectRoleId($project->key, $roleId);
+            if (empty($model)) {
+                $model = new AclRolePermission();
+                $model->project_key = $project->key;
+                $model->role_id = $roleId;
+            }
+
+            $model->permissions = $permissions;
+            $model->save();
+        }
+
+        $role->permissions = $this->getPermissions($project_key, $id);
+        return Response()->json(['ecode' => 0, 'data' => $role]);
     }
 
     public function getGroupsAndUsers(string $projectKey, int $roleId): array

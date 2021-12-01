@@ -34,7 +34,7 @@ class SQLTest extends HttpTestCase
 
         $this->assertInstanceOf(Collection::class, $res);
 
-        $res = di()->get(AclRolePermissionDao::class)->findProjectPermissions(Permission::ISSUE_ASSIGNED, ProjectConstant::SYS);
+        $res = di()->get(AclRolePermissionDao::class)->findProjectPermissions(Permission::ASSIGNED_ISSUE, ProjectConstant::SYS);
 
         $this->assertInstanceOf(Collection::class, $res);
         $this->assertTrue($res->isNotEmpty());
