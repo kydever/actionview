@@ -28,4 +28,13 @@ class RoleController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function setPermissions(int $id)
+    {
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->setPermissions($project, $id);
+
+        return $this->response->success($result);
+    }
 }

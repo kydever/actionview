@@ -1101,12 +1101,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/contract.git",
-                "reference": "cf53ce967c603ed1e4fc8b18e9d22966baaa66e5"
+                "reference": "93e99159979ac4708aef707b80ee60ccab9564d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/contract/zipball/cf53ce967c603ed1e4fc8b18e9d22966baaa66e5",
-                "reference": "cf53ce967c603ed1e4fc8b18e9d22966baaa66e5",
+                "url": "https://api.github.com/repos/hyperf/contract/zipball/93e99159979ac4708aef707b80ee60ccab9564d1",
+                "reference": "93e99159979ac4708aef707b80ee60ccab9564d1",
                 "shasum": ""
             },
             "require": {
@@ -1140,7 +1140,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-11-23T12:00:06+00:00"
+            "time": "2021-12-01T08:19:47+00:00"
         },
         {
             "name": "hyperf/coordinator",
@@ -1830,12 +1830,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/http-server.git",
-                "reference": "2081f1a08579ebc67c73bfcaf8cf99b036831f2b"
+                "reference": "77ab0bc49765f5467fc1b296636050707e247918"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/http-server/zipball/2081f1a08579ebc67c73bfcaf8cf99b036831f2b",
-                "reference": "2081f1a08579ebc67c73bfcaf8cf99b036831f2b",
+                "url": "https://api.github.com/repos/hyperf/http-server/zipball/77ab0bc49765f5467fc1b296636050707e247918",
+                "reference": "77ab0bc49765f5467fc1b296636050707e247918",
                 "shasum": ""
             },
             "require": {
@@ -1887,7 +1887,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-11-25T02:32:04+00:00"
+            "time": "2021-12-01T08:19:47+00:00"
         },
         {
             "name": "hyperf/logger",
@@ -2400,12 +2400,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/utils.git",
-                "reference": "61a87fb020e07f4d26ba31b185fdd15a8f3cb779"
+                "reference": "aa765d4201eef80ff8a23035fb70b1a282fa09b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/utils/zipball/61a87fb020e07f4d26ba31b185fdd15a8f3cb779",
-                "reference": "61a87fb020e07f4d26ba31b185fdd15a8f3cb779",
+                "url": "https://api.github.com/repos/hyperf/utils/zipball/aa765d4201eef80ff8a23035fb70b1a282fa09b6",
+                "reference": "aa765d4201eef80ff8a23035fb70b1a282fa09b6",
                 "shasum": ""
             },
             "require": {
@@ -2459,7 +2459,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-12-01T06:12:08+00:00"
+            "time": "2021-12-01T08:19:47+00:00"
         },
         {
             "name": "hyperf/validation",
@@ -5801,12 +5801,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/ide-helper.git",
-                "reference": "faf502351683f97bf6a805def653e4fefe19339e"
+                "reference": "6c545a0ac4e2bcd56ccb206c2bd2dfdeef45953c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/ide-helper/zipball/faf502351683f97bf6a805def653e4fefe19339e",
-                "reference": "faf502351683f97bf6a805def653e4fefe19339e",
+                "url": "https://api.github.com/repos/hyperf/ide-helper/zipball/6c545a0ac4e2bcd56ccb206c2bd2dfdeef45953c",
+                "reference": "6c545a0ac4e2bcd56ccb206c2bd2dfdeef45953c",
                 "shasum": ""
             },
             "type": "library",
@@ -5833,7 +5833,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-11-08T07:49:45+00:00"
+            "time": "2021-12-01T08:19:47+00:00"
         },
         {
             "name": "hyperf/testing",
@@ -7894,12 +7894,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swoole/ide-helper.git",
-                "reference": "63e19521c232adb1e86472bf2c4e94bff6189c8f"
+                "reference": "3ac4971814273889933b871e03b2a6b340e58f79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/63e19521c232adb1e86472bf2c4e94bff6189c8f",
-                "reference": "63e19521c232adb1e86472bf2c4e94bff6189c8f",
+                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/3ac4971814273889933b871e03b2a6b340e58f79",
+                "reference": "3ac4971814273889933b871e03b2a6b340e58f79",
                 "shasum": ""
             },
             "default-branch": true,
@@ -7917,7 +7917,7 @@
             "description": "IDE help files for Swoole.",
             "support": {
                 "issues": "https://github.com/swoole/ide-helper/issues",
-                "source": "https://github.com/swoole/ide-helper/tree/4.8.2"
+                "source": "https://github.com/swoole/ide-helper/tree/4.8.3"
             },
             "funding": [
                 {
@@ -7929,7 +7929,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-11-17T05:43:38+00:00"
+            "time": "2021-12-01T08:11:40+00:00"
         },
         {
             "name": "symfony/event-dispatcher",

@@ -65,14 +65,8 @@ class RoleService extends Service
         return $result;
     }
 
-    public function getPermissions($project_key, $role_id)
-    {
-        // di()->get(AclRolePermissionDao::class)->findByRoleIds();
-        $rp = RolePermissions::where(['project_key' => $project_key, 'role_id' => $role_id])->first();
-        if (! $rp && $project_key !== '$_sys_$') {
-            $rp = RolePermissions::where(['project_key' => '$_sys_$', 'role_id' => $role_id])->first();
-        }
-        return $rp && isset($rp->permissions) ? $rp->permissions : [];
+    public function setPermissions(Project $project, int $roleId){
+
     }
 
     public function getGroupsAndUsers(string $projectKey, int $roleId): array
