@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\ProjectRoleActorSaveRequest;
 use App\Request\RolePermissionSaveRequest;
 use App\Service\ProjectAuth;
 use App\Service\RoleService;
@@ -37,6 +38,15 @@ class RoleController extends Controller
         $user = UserAuth::instance()->build()->getUser();
 
         $result = $this->service->setPermissions($request->all(), $id, $project, $user);
+
+        return $this->response->success($result);
+    }
+
+    public function setActor(ProjectRoleActorSaveRequest $request, int $id)
+    {
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->setActor($request->all(), $id, $project);
 
         return $this->response->success($result);
     }

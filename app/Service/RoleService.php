@@ -14,6 +14,8 @@ namespace App\Service;
 use App\Constants\ErrorCode;
 use App\Constants\Permission;
 use App\Constants\ProjectConstant;
+use App\Event\AddUserToRoleEvent;
+use App\Event\DelUserFromRoleEvent;
 use App\Exception\BusinessException;
 use App\Model\AclRoleactor;
 use App\Model\AclRolePermission;
@@ -30,6 +32,7 @@ use App\Service\Formatter\RoleFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class RoleService extends Service
 {
@@ -38,6 +41,9 @@ class RoleService extends Service
 
     #[Inject]
     protected ProviderService $provider;
+
+    #[Inject]
+    protected RoleFormatter $formatter;
 
     public function index(Project $project)
     {
@@ -66,6 +72,43 @@ class RoleService extends Service
             $item['permissions'] = $permissions[$role->id]?->permissions ?? $defaultPermissions[$role->id] ?? [];
             $result[] = $item;
         }
+
+        return $result;
+    }
+
+    /**
+     * @param $input = [
+     *     'users' => []
+     * ]
+     */
+    public function setActor(array $input, int $id, Project $project)
+    {
+        $userIds = $input['users'] ?? null;
+        $role = $this->dao->first($id, true);
+
+        if (isset($userIds)) {
+            $actor = di()->get(AclRoleactorDao::class)->firstByRoleId($project->key, $role->id);
+            $oldUserIds = $actor?->user_ids ?? [];
+
+            if (empty($actor)) {
+                $actor = new AclRoleactor();
+                $actor->project_key = $project->key;
+                $actor->role_id = $role->id;
+                $actor->user_ids = [];
+                $actor->group_ids = [];
+            }
+
+            $actor->user_ids = $userIds;
+            $actor->save();
+
+            di()->get(EventDispatcherInterface::class)->dispatch(new AddUserToRoleEvent(array_diff($userIds, $oldUserIds), $project->key));
+            di()->get(EventDispatcherInterface::class)->dispatch(new DelUserFromRoleEvent(array_diff($oldUserIds, $userIds), $project->key));
+        }
+
+        $groups = $this->getGroupsAndUsers($project->key, $role->id);
+        $result = $this->formatter->base($role);
+        $result['users'] = $groups['users'];
+        $result['groups'] = $groups['groups'];
 
         return $result;
     }

@@ -63,6 +63,10 @@ class AclService extends Service
     #[Cacheable(prefix: 'permission', value: '#{userId}:#{project.id}', ttl: 120)]
     public function getPermissions(int $userId, Project $project): array
     {
+        if (UserConstant::isSuperAdmin($userId)) {
+            return Permission::all();
+        }
+
         $groups = $this->getBoundGroups($userId);
         $groupIds = array_column($groups, 'id');
 
@@ -82,7 +86,7 @@ class AclService extends Service
             }
         }
 
-        if ($project->isPrincipal($userId) || UserConstant::isSuperAdmin($userId)) {
+        if ($project->isPrincipal($userId)) {
             ! in_array('view_project', $result) && $result[] = 'view_project';
             ! in_array('manage_project', $result) && $result[] = 'manage_project';
         }

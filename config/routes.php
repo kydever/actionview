@@ -81,6 +81,7 @@ Router::addGroup('/project/{project_key}/', function () {
     // Router::post('role/{id}/actor', 'RoleController@setActor');
     // Router::post('role/{id}/groupactor', 'RoleController@setGroupActor');
     Router::get('role', App\Controller\RoleController::class . '::index');
+    Router::post('role/{id}/actor', App\Controller\RoleController::class . '::setActor');
 // Router::resource('role', 'RoleController');
     // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
 }, [
@@ -127,10 +128,12 @@ Router::addGroup('/project/{project_key}/', function () {
     // Route::post('wiki/move', 'WikiController@move');
     // Route::post('wiki/copy', 'WikiController@copy');
     Router::post('wiki', App\Controller\WikiController::class . '::create');
-// Route::put('wiki/{id}', 'WikiController@update');
+    // Route::put('wiki/{id}', 'WikiController@update');
     // Route::get('wiki/{id}/checkin', 'WikiController@checkin');
     // Route::get('wiki/{id}/checkout', 'WikiController@checkout');
     // Route::delete('wiki/{id}', 'WikiController@destroy');
+
+    Router::get('team', App\Controller\RoleController::class . '::index');
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
