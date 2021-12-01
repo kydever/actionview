@@ -23,6 +23,11 @@ class IssueDao extends Service
         return Issue::query()->whereIn('project_key', $keys);
     }
 
+    public function count(string $projectKey): int
+    {
+        return Issue::query()->where('project_key', $projectKey)->count();
+    }
+
     public function countGroupByProjectKeys(array $keys, string $resolution = '', int $userId = 0): array
     {
         $query = $this->getQuery($keys)

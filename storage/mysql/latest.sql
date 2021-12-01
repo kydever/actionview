@@ -567,14 +567,17 @@ CREATE TABLE `epic` (
 DROP TABLE IF EXISTS `issue`;
 
 CREATE TABLE `issue` (
-  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
-  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `del_flg` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `resolution` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `assignee` json NOT NULL,
-  PRIMARY KEY (`id`)
+`id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`del_flg` tinyint(3) unsigned NOT NULL DEFAULT '0',
+`resolution` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`assignee` json NOT NULL,
+`reporter` json NOT NULL,
+`no` int(10) unsigned NOT NULL DEFAULT '0',
+`created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 
 # Dump of table labels

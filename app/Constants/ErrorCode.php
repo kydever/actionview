@@ -78,7 +78,7 @@ class ErrorCode extends AbstractConstants
     public const GROUP_NOT_EXSIT = -10201;
 
     /**
-     * @Message("The group come from external directroy")
+     * @Message("该小组来自外部董事会")
      */
     public const GROUP_FROM_EXTERNAL_DIRECTION = -10203;
 
@@ -211,4 +211,24 @@ class ErrorCode extends AbstractConstants
      * @Message("文件系统 Domain 设置非法")
      */
     public const FILE_DOMAIN_INVALID = -17000;
+
+    /**
+     * @Message("父目录不能为空")
+     */
+    public const PARENT_NOT_EMPTY = -11950;
+
+    /**
+     * @Message("父目录不存在")
+     */
+    public const PARENT_NOT_EXIST = -11951;
+
+    /**
+     * @Message("名称不能为空")
+     */
+    public const SS = -11952;
+
+    /**
+     * @Message("名称不能重复")
+     */
+    public const SSS = -11953;
 }
