@@ -158,9 +158,10 @@ class IssueService extends Service
         $model->data = $insValues;
         $model->save();
 
+        // TODO: Support History
+        // Provider::snap2His($project_key, $id, $schema);
+
         return [];
-        // add to histroy table
-        Provider::snap2His($project_key, $id, $schema);
         // trigger event of issue created
         Event::fire(new IssueEvent($project_key, $id->__toString(), $insValues['reporter'], ['event_key' => 'create_issue']));
 
@@ -227,7 +228,7 @@ class IssueService extends Service
         $relations = $this->provider->getLinkRelations();
 
         return [
-            'user' => $users,
+            'users' => $users,
             'assignees' => $assignees,
             'states' => $states,
             'resolutions' => $resolutions,
@@ -238,7 +239,7 @@ class IssueService extends Service
             'labels' => $labels,
             'types' => $types,
             'sprints' => $sprints,
-            'field' => $field,
+            'fields' => $field,
             'timetrack' => $timeTrack,
             'relations' => $relations,
         ];

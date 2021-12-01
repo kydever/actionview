@@ -24,9 +24,10 @@ class ConfigFieldFormatter extends Service
             'name' => $model->name,
             'project_key' => $model->project_key,
             'key' => $model->key,
+            'type' => $model->type,
             'description' => $model->description,
-            'option_values' => $model->option_values,
-            'default_value' => $model->default_value,
+            'optionValues' => $model->option_values,
+            'defaultValue' => $model->default_value,
             'min_value' => $model->min_value,
             'max_value' => $model->max_value,
         ];
