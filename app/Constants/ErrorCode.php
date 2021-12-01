@@ -231,5 +231,4 @@ class ErrorCode extends AbstractConstants
      * @Message("名称不能重复")
      */
     public const SSS = -11953;
-
 }

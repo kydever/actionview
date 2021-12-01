@@ -17,6 +17,10 @@ namespace App\Model;
  * @property int $del_flg
  * @property string $resolution
  * @property string $assignee
+ * @property string $reporter
+ * @property int $no
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class Issue extends Model
 {
@@ -32,12 +36,12 @@ class Issue extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'del_flg', 'resolution', 'assignee'];
+    protected $fillable = ['id', 'project_key', 'del_flg', 'resolution', 'assignee', 'reporter', 'no', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'del_flg' => 'integer'];
+    protected $casts = ['id' => 'int', 'del_flg' => 'integer', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

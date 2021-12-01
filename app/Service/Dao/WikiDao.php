@@ -11,10 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
-use App\Model\Wiki;
 use Han\Utils\Service;
 
 class WikiDao extends Service
 {
-
 }

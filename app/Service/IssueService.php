@@ -14,11 +14,14 @@ namespace App\Service;
 use App\Constants\ErrorCode;
 use App\Constants\Permission;
 use App\Constants\Schema;
+use App\Constants\StatusConstant;
 use App\Events\IssueEvent;
 use App\Exception\BusinessException;
+use App\Model\Issue;
 use App\Model\Project;
 use App\Model\User;
 use App\Project\Provider;
+use App\Service\Dao\IssueDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
@@ -135,18 +138,7 @@ class IssueService extends Service
             $assignee = di()->get(UserFormatter::class)->small($user);
         }
 
-        $insValues['assignee'] = $assignee;
-
-        if (empty($resolution)) {
-            $insValues['resolution'] = 'Unresolved';
-        }
-
-        $insValues['reporter'] = di()->get(UserFormatter::class)->small($user);
-        $insValues['updated_at'] = $insValues['created_at'] = time();
-
-        $table = 'issue_' . $project_key;
-        $max_no = DB::collection($table)->count() + 1;
-        $insValues['no'] = $max_no;
+        $maxNumber = di()->get(IssueDao::class)->count($project->key) + 1;
 
         // TODO: Support Workflow
         // $workflow = $this->initializeWorkflow($issue_type);
@@ -155,12 +147,16 @@ class IssueService extends Service
         $valid_keys = $this->getValidKeysBySchema($schema);
         $insValues = $insValues + array_only($input, $valid_keys);
 
-        var_dump($insValues);
+        $model = new Issue();
+        $model->project_key = $project->key;
+        $model->del_flg = StatusConstant::NOT_DELETED;
+        $model->resolution = $resolution ?: StatusConstant::STATUS_UNRESOLVED;
+        $model->assignee = $assignee;
+        $model->reporter = di()->get(UserFormatter::class)->small($user);
+        $model->no = $maxNumber;
+        $model->save();
 
         return [];
-        // insert into the table
-        $id = DB::collection($table)->insertGetId($insValues);
-
         // add to histroy table
         Provider::snap2His($project_key, $id, $schema);
         // trigger event of issue created
