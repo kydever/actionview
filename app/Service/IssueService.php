@@ -29,6 +29,7 @@ use Han\Utils\Service;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Arr;
 use Illuminate\Support\Facades\Event;
 
 class IssueService extends Service
@@ -145,7 +146,7 @@ class IssueService extends Service
         // $insValues = $insValues + $workflow;
 
         $valid_keys = $this->getValidKeysBySchema($schema);
-        $insValues = $insValues + array_only($input, $valid_keys);
+        $insValues = $insValues + Arr::only($input, $valid_keys);
 
         $model = new Issue();
         $model->project_key = $project->key;
