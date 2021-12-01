@@ -114,13 +114,17 @@ class User extends Model
 
     public function addPermission(string $permission)
     {
-        $this->permissions[$permission] = true;
+        $permissions = $this->permissions;
+        $permissions[$permission] = true;
+        $this->permissions = $permissions;
         return $this;
     }
 
     public function removePermission(string $permission)
     {
-        $this->permissions[$permission] = false;
+        $permissions = $this->permissions;
+        $permissions[$permission] = true;
+        $this->permissions = false;
         return $this;
     }
 }
