@@ -14,6 +14,7 @@ namespace App\Model;
 /**
  * @property int $id
  * @property string $project_key
+ * @property int $type
  * @property int $del_flg
  * @property string $resolution
  * @property array $assignee
@@ -37,14 +38,14 @@ class Issue extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'del_flg', 'resolution', 'assignee', 'reporter', 'no', 'data', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'type', 'del_flg', 'resolution', 'assignee', 'reporter', 'no', 'data', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer'];
     //
     // public function type()
     // {

@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-12-01 10:59:01 +0000
+# Generation Time: 2021-12-01 11:00:06 +0000
 # ************************************************************
 
 
@@ -569,6 +569,7 @@ DROP TABLE IF EXISTS `issue`;
 CREATE TABLE `issue` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `type` int(10) unsigned NOT NULL,
   `del_flg` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `resolution` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `assignee` json NOT NULL,
