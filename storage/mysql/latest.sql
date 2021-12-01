@@ -567,19 +567,20 @@ CREATE TABLE `epic` (
 DROP TABLE IF EXISTS `issue`;
 
 CREATE TABLE `issue` (
-  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
-  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `type` int(10) unsigned NOT NULL,
-  `del_flg` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `resolution` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `assignee` json NOT NULL,
-  `reporter` json NOT NULL,
-  `no` int(10) unsigned NOT NULL DEFAULT '0',
-  `data` json NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
-  `updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+`id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`type` int(10) unsigned NOT NULL,
+`parent_id` int(10) unsigned NOT NULL DEFAULT '0',
+`del_flg` tinyint(3) unsigned NOT NULL DEFAULT '0',
+`resolution` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`assignee` json NOT NULL,
+`reporter` json NOT NULL,
+`no` int(10) unsigned NOT NULL DEFAULT '0',
+`data` json NOT NULL,
+`created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 

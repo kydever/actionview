@@ -27,6 +27,7 @@ use App\Service\Dao\IssueDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\UserDao;
+use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Cache\Annotation\Cacheable;
@@ -42,6 +43,9 @@ class IssueService extends Service
 
     #[Inject]
     protected ProviderService $provider;
+
+    #[Inject]
+    protected IssueFormatter $formatter;
 
     public function requiredCheck(array $schema, array $data, string $mode = 'create'): bool
     {
@@ -191,85 +195,77 @@ class IssueService extends Service
             throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
         }
 
-        if (isset($issue['assignee']['id'])) {
-            $user = Sentinel::findById($issue['assignee']['id']);
-            $issue['assignee']['avatar'] = isset($user->avatar) ? $user->avatar : '';
-        }
+        $result = di()->get(IssueFormatter::class)->base($issue);
+        $result['assignee']['avatar'] = $issue->assigneeModel?->avatar ?? '';
 
         foreach ($schema as $field) {
-            if ($field['type'] === 'File' && isset($issue[$field['key']]) && $issue[$field['key']]) {
-                foreach ($issue[$field['key']] as $key => $fid) {
-                    $issue[$field['key']][$key] = File::find($fid);
-                }
+            if ($field['type'] === Schema::FIELD_FILE && ! empty($result[$field['key']])) {
+                foreach ($result[$field['key']] as $key => $fid);
+                // TODO: 处理文件
+                    // $result[$field['key']][$key] = File::find($fid);
             }
         }
 
-        // get avaliable actions for wf
-        if (isset($issue['entry_id']) && $issue['entry_id'] && $this->isPermissionAllowed($project_key, 'exec_workflow')) {
-            try {
-                $wf = new Workflow($issue['entry_id']);
-                $issue['wfactions'] = $wf->getAvailableActions(['project_key' => $project_key, 'issue_id' => $id, 'caller' => $this->user->id]);
-            } catch (Exception $e) {
-                $issue['wfactions'] = [];
-            }
+        // TODO: 获取可用的 workflow
+        // if (isset($issue['entry_id']) && $issue['entry_id'] && $this->isPermissionAllowed($project_key, 'exec_workflow')) {
+        //     try {
+        //         $wf = new Workflow($issue['entry_id']);
+        //         $issue['wfactions'] = $wf->getAvailableActions(['project_key' => $project_key, 'issue_id' => $id, 'caller' => $this->user->id]);
+        //     } catch (Exception $e) {
+        //         $issue['wfactions'] = [];
+        //     }
+        //
+        //     foreach ($issue['wfactions'] as $key => $action) {
+        //         if (isset($action['screen']) && $action['screen'] && $action['screen'] != 'comments') {
+        //             $issue['wfactions'][$key]['schema'] = Provider::getSchemaByScreenId($project_key, $issue['type'], $action['screen']);
+        //         }
+        //     }
+        // }
 
-            foreach ($issue['wfactions'] as $key => $action) {
-                if (isset($action['screen']) && $action['screen'] && $action['screen'] != 'comments') {
-                    $issue['wfactions'][$key]['schema'] = Provider::getSchemaByScreenId($project_key, $issue['type'], $action['screen']);
-                }
-            }
-        }
-
-        if (isset($issue['parent_id']) && $issue['parent_id']) {
-            $issue['parent'] = DB::collection('issue_' . $project_key)
-                ->where('_id', $issue['parent_id'])
-                ->first(['no', 'type', 'title', 'state']);
+        if ($issue->parent_id > 0) {
+            $result['parent'] = $this->formatter->base($issue->parent);
         } else {
-            $issue['hasSubtasks'] = DB::collection('issue_' . $project_key)
-                ->where('parent_id', $id)
-                ->where('del_flg', '<>', 1)
-                ->exists();
+            $result['hasSubtasks'] = $issue->children->isNotEmpty();
         }
 
-        $issue['subtasks'] = DB::collection('issue_' . $project_key)
-            ->where('parent_id', $id)
-            ->where('del_flg', '<>', 1)
-            ->orderBy('created_at', 'asc')
-            ->get(['no', 'type', 'title', 'state']);
+        $result['subtasks'] = $this->formatter->formatList($issue->children);
 
-        $issue['links'] = $this->getLinks($project_key, $issue);
+        // TODO: 后期再做
+        // $issue['links'] = $this->getLinks($project_key, $issue);
 
-        $issue['watchers'] = array_column(Watch::where('issue_id', $id)->orderBy('_id', 'desc')->get()->toArray(), 'user');
-        foreach ($issue['watchers'] as $key => $watch) {
-            $user = EloquentUser::find($watch['id']);
-            if (isset($user->avatar) && $user->avatar) {
-                $issue['watchers'][$key]['avatar'] = $user->avatar;
-            }
-        }
+        // $issue['watchers'] = array_column(Watch::where('issue_id', $id)->orderBy('_id', 'desc')->get()->toArray(), 'user');
+        // foreach ($issue['watchers'] as $key => $watch) {
+        //     $user = EloquentUser::find($watch['id']);
+        //     if (isset($user->avatar) && $user->avatar) {
+        //         $issue['watchers'][$key]['avatar'] = $user->avatar;
+        //     }
+        // }
+        //
+        // if (Watch::where('issue_id', $id)->where('user.id', $this->user->id)->exists()) {
+        //     $issue['watching'] = true;
+        // }
+        //
+        // $comments_num = 0;
+        // $comments = DB::collection('comments_' . $project_key)
+        //     ->where('issue_id', $id)
+        //     ->get();
+        // foreach ($comments as $comment) {
+        //     ++$comments_num;
+        //     if (isset($comment['reply'])) {
+        //         $comments_num += count($comment['reply']);
+        //     }
+        // }
+        // $issue['comments_num'] = $comments_num;
+        //
+        // $issue['gitcommits_num'] = DB::collection('git_commits_' . $project_key)
+        //     ->where('issue_id', $id)
+        //     ->count();
+        //
+        // $issue['worklogs_num'] = Worklog::Where('project_key', $project_key)
+        //     ->where('issue_id', $id)
+        //     ->count();
 
-        if (Watch::where('issue_id', $id)->where('user.id', $this->user->id)->exists()) {
-            $issue['watching'] = true;
-        }
-
-        $comments_num = 0;
-        $comments = DB::collection('comments_' . $project_key)
-            ->where('issue_id', $id)
-            ->get();
-        foreach ($comments as $comment) {
-            ++$comments_num;
-            if (isset($comment['reply'])) {
-                $comments_num += count($comment['reply']);
-            }
-        }
-        $issue['comments_num'] = $comments_num;
-
-        $issue['gitcommits_num'] = DB::collection('git_commits_' . $project_key)
-            ->where('issue_id', $id)
-            ->count();
-
-        $issue['worklogs_num'] = Worklog::Where('project_key', $project_key)
-            ->where('issue_id', $id)
-            ->count();
+        return $result;
     }
 
     public function createLabels(string $key, array $labels)

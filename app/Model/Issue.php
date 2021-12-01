@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use App\Constants\StatusConstant;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
 use Hyperf\Database\Model\Relations\HasOne;
 
@@ -18,6 +19,7 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property int $id
  * @property string $project_key
  * @property int $type
+ * @property int $parent_id
  * @property int $del_flg
  * @property string $resolution
  * @property array $assignee
@@ -27,6 +29,8 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property User $assigneeModel
+ * @property \Hyperf\Database\Model\Collection|Issue[] $children
+ * @property Issue $parent
  * @property ConfigType $typeModel
  */
 class Issue extends Model
@@ -45,14 +49,14 @@ class Issue extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'type', 'del_flg', 'resolution', 'assignee', 'reporter', 'no', 'data', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'no', 'data', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer'];
+    protected $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer'];
 
     public function typeModel()
     {
@@ -62,5 +66,16 @@ class Issue extends Model
     public function assigneeModel(): HasOne
     {
         return $this->hasOneInJsonObject(User::class, 'id', 'assignee->id');
+    }
+
+    public function parent()
+    {
+        return $this->hasOne(Issue::class, 'id', 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Issue::class, 'parent_id', 'id')
+            ->where('del_flg', '<>', StatusConstant::DELETED);
     }
 }
