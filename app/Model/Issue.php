@@ -45,4 +45,9 @@ class Issue extends Model
      * @var array
      */
     protected $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    //
+    // public function type()
+    // {
+    //     return $this->hasOne()
+    // }
 }

@@ -18,16 +18,20 @@ use App\Constants\StatusConstant;
 use App\Events\IssueEvent;
 use App\Exception\BusinessException;
 use App\Model\Issue;
+use App\Model\Label;
 use App\Model\Project;
 use App\Model\User;
+use App\Project\Eloquent\Labels;
 use App\Project\Provider;
 use App\Service\Dao\IssueDao;
+use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
+use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
 use Illuminate\Support\Facades\Event;
@@ -145,32 +149,145 @@ class IssueService extends Service
         // $workflow = $this->initializeWorkflow($issue_type);
         // $insValues = $insValues + $workflow;
 
-        $valid_keys = $this->getValidKeysBySchema($schema);
-        $insValues = $insValues + Arr::only($input, $valid_keys);
+        $insValues = $insValues + Arr::only($input, $this->getValidKeysBySchema($schema));
 
-        $model = new Issue();
-        $model->project_key = $project->key;
-        $model->del_flg = StatusConstant::NOT_DELETED;
-        $model->resolution = $resolution ?: StatusConstant::STATUS_UNRESOLVED;
-        $model->assignee = $assignee;
-        $model->reporter = di()->get(UserFormatter::class)->small($user);
-        $model->no = $maxNumber;
-        $model->data = $insValues;
-        $model->save();
+        Db::beginTransaction();
+        try {
+            $model = new Issue();
+            $model->project_key = $project->key;
+            $model->del_flg = StatusConstant::NOT_DELETED;
+            $model->resolution = $resolution ?: StatusConstant::STATUS_UNRESOLVED;
+            $model->assignee = $assignee;
+            $model->reporter = di()->get(UserFormatter::class)->small($user);
+            $model->no = $maxNumber;
+            $model->data = $insValues;
+            $model->save();
 
-        // TODO: Support History
-        // Provider::snap2His($project_key, $id, $schema);
+            // create the Labels for project
+            if (isset($insValues['labels']) && $insValues['labels']) {
+                $this->createLabels($project->key, $insValues['labels']);
+            }
 
-        return [];
-        // trigger event of issue created
-        Event::fire(new IssueEvent($project_key, $id->__toString(), $insValues['reporter'], ['event_key' => 'create_issue']));
+            // TODO: Support History
+            // Provider::snap2His($project_key, $id, $schema);
 
-        // create the Labels for project
-        if (isset($insValues['labels']) && $insValues['labels']) {
-            $this->createLabels($project_key, $insValues['labels']);
+            // TODO: IssueEvent 通知 Activity 和 Webhook
+            // Event::fire(new IssueEvent($project_key, $id->__toString(), $insValues['reporter'], ['event_key' => 'create_issue']));
+
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
         }
 
-        return $this->show($project_key, $id->__toString());
+        return $this->show($model);
+    }
+
+    public function show(Issue $issue): array
+    {
+        $schema = Provider::getSchemaByType($issue['type']);
+        if (! $schema) {
+            throw new \UnexpectedValueException('the schema of the type is not existed.', -11101);
+        }
+
+        if (isset($issue['assignee']['id'])) {
+            $user = Sentinel::findById($issue['assignee']['id']);
+            $issue['assignee']['avatar'] = isset($user->avatar) ? $user->avatar : '';
+        }
+
+        foreach ($schema as $field) {
+            if ($field['type'] === 'File' && isset($issue[$field['key']]) && $issue[$field['key']]) {
+                foreach ($issue[$field['key']] as $key => $fid) {
+                    $issue[$field['key']][$key] = File::find($fid);
+                }
+            }
+        }
+
+        // get avaliable actions for wf
+        if (isset($issue['entry_id']) && $issue['entry_id'] && $this->isPermissionAllowed($project_key, 'exec_workflow')) {
+            try {
+                $wf = new Workflow($issue['entry_id']);
+                $issue['wfactions'] = $wf->getAvailableActions(['project_key' => $project_key, 'issue_id' => $id, 'caller' => $this->user->id]);
+            } catch (Exception $e) {
+                $issue['wfactions'] = [];
+            }
+
+            foreach ($issue['wfactions'] as $key => $action) {
+                if (isset($action['screen']) && $action['screen'] && $action['screen'] != 'comments') {
+                    $issue['wfactions'][$key]['schema'] = Provider::getSchemaByScreenId($project_key, $issue['type'], $action['screen']);
+                }
+            }
+        }
+
+        if (isset($issue['parent_id']) && $issue['parent_id']) {
+            $issue['parent'] = DB::collection('issue_' . $project_key)
+                ->where('_id', $issue['parent_id'])
+                ->first(['no', 'type', 'title', 'state']);
+        } else {
+            $issue['hasSubtasks'] = DB::collection('issue_' . $project_key)
+                ->where('parent_id', $id)
+                ->where('del_flg', '<>', 1)
+                ->exists();
+        }
+
+        $issue['subtasks'] = DB::collection('issue_' . $project_key)
+            ->where('parent_id', $id)
+            ->where('del_flg', '<>', 1)
+            ->orderBy('created_at', 'asc')
+            ->get(['no', 'type', 'title', 'state']);
+
+        $issue['links'] = $this->getLinks($project_key, $issue);
+
+        $issue['watchers'] = array_column(Watch::where('issue_id', $id)->orderBy('_id', 'desc')->get()->toArray(), 'user');
+        foreach ($issue['watchers'] as $key => $watch) {
+            $user = EloquentUser::find($watch['id']);
+            if (isset($user->avatar) && $user->avatar) {
+                $issue['watchers'][$key]['avatar'] = $user->avatar;
+            }
+        }
+
+        if (Watch::where('issue_id', $id)->where('user.id', $this->user->id)->exists()) {
+            $issue['watching'] = true;
+        }
+
+        $comments_num = 0;
+        $comments = DB::collection('comments_' . $project_key)
+            ->where('issue_id', $id)
+            ->get();
+        foreach ($comments as $comment) {
+            ++$comments_num;
+            if (isset($comment['reply'])) {
+                $comments_num += count($comment['reply']);
+            }
+        }
+        $issue['comments_num'] = $comments_num;
+
+        $issue['gitcommits_num'] = DB::collection('git_commits_' . $project_key)
+            ->where('issue_id', $id)
+            ->count();
+
+        $issue['worklogs_num'] = Worklog::Where('project_key', $project_key)
+            ->where('issue_id', $id)
+            ->count();
+    }
+
+    public function createLabels(string $key, array $labels)
+    {
+        $models = di()->get(LabelDao::class)->findByName($key, $labels);
+        $createdLabels = [];
+        foreach ($models as $model) {
+            $createdLabels[] = $model->name;
+        }
+
+        // get uncreated labels
+        $labels = array_diff($labels, $createdLabels);
+        foreach ($labels as $label) {
+            $model = new Label();
+            $model->project_key = $key;
+            $model->name = $label;
+            $model->save();
+        }
+        return true;
     }
 
     public function getValidKeysBySchema($schema = [])
