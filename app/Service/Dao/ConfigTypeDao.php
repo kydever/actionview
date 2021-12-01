@@ -35,4 +35,16 @@ class ConfigTypeDao extends Service
         }
         return $model;
     }
+
+    /**
+     * @return ConfigType[]|\Hyperf\Database\Model\Collection
+     */
+    public function getTypeList(string $key, array $with = [])
+    {
+        $query = ConfigType::query();
+        if ($with) {
+            $query->with(...$with);
+        }
+        return $query->where('project_key', $key)->orderBy('sn')->get();
+    }
 }

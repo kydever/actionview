@@ -15,7 +15,7 @@ namespace App\Model;
  * @property int $id
  * @property string $name 名称
  * @property string $project_key 项目KEY
- * @property string $principal 负责人
+ * @property array $principal 负责人
  * @property string $default_assignee 默认指定人
  * @property string $creator 创建者
  * @property string $description 描述
@@ -44,5 +44,5 @@ class Module extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'principal' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

@@ -78,7 +78,7 @@ class ErrorCode extends AbstractConstants
     public const GROUP_NOT_EXSIT = -10201;
 
     /**
-     * @Message("The group come from external directroy")
+     * @Message("该小组来自外部董事会")
      */
     public const GROUP_FROM_EXTERNAL_DIRECTION = -10203;
 
@@ -86,6 +86,31 @@ class ErrorCode extends AbstractConstants
      * @Message("问题类型必填")
      */
     public const ISSUE_TYPE_NOT_EMPTY = -11100;
+
+    /**
+     * @Message("当前问题类型不存在 Schema")
+     */
+    public const ISSUE_TYPE_SCHEMA_NOT_EXIST = -11101;
+
+    /**
+     * @Message("TimeTracking 非法")
+     */
+    public const ISSUE_TIME_TRACKING_INVALID = -11102;
+
+    /**
+     * @Message("负责人没有 assigned-issue 权限")
+     */
+    public const ASSIGNED_USER_PERMISSION_DENIED = -11118;
+
+    /**
+     * @Message("当前问题类型存在必填的字段")
+     */
+    public const ISSUE_TYPE_SCHEMA_REQUIRED = -11121;
+
+    /**
+     * @Message("日期选择器格式非法")
+     */
+    public const ISSUE_DATE_TIME_PICKER_INVALID = -11122;
 
     /**
      * @Message("项目名称不能为空")
@@ -128,46 +153,6 @@ class ErrorCode extends AbstractConstants
     public const USER_NOT_EXISTS = -15000;
 
     /**
-     * @Message("邮件发送失败")
-     */
-    public const MAIL_SEND_FAILED = -15200;
-
-    /**
-     * @Message("邮件接收者不允许为空")
-     */
-    public const MAIL_RECIPIENTS_CANNOT_BE_EMPTY = -15201;
-
-    /**
-     * @Message("邮件标题不允许为空")
-     */
-    public const MAIL_SUBJECT_CANNOT_BE_EMPTY = -15202;
-
-    /**
-     * @Message("上传的头像不能为空")
-     */
-    public const AVATAR_CANNOT_EMPTY = -15006;
-
-    /**
-     * @Message("头像格式非法")
-     */
-    public const AVATAR_TYPE_INVALID = -15007;
-
-    /**
-     * @Message("头像ID不能为空")
-     */
-    public const AVATAR_ID_NOT_EMPTY = -15100;
-
-    /**
-     * @Message("邮件服务配置有误")
-     */
-    public const MAIL_INVALID = -15203;
-
-    /**
-     * @Message("文件系统 Domain 设置非法")
-     */
-    public const FILE_DOMAIN_INVALID = -17000;
-
-    /**
      * @Message("旧密码不能为空")
      */
     public const PASSWORD_OLD_NOT_EMPTY = -15001;
@@ -188,6 +173,46 @@ class ErrorCode extends AbstractConstants
     public const FIRST_NAME_NOT_EXIST = -15005;
 
     /**
+     * @Message("上传的头像不能为空")
+     */
+    public const AVATAR_CANNOT_EMPTY = -15006;
+
+    /**
+     * @Message("头像格式非法")
+     */
+    public const AVATAR_TYPE_INVALID = -15007;
+
+    /**
+     * @Message("头像ID不能为空")
+     */
+    public const AVATAR_ID_NOT_EMPTY = -15100;
+
+    /**
+     * @Message("邮件发送失败")
+     */
+    public const MAIL_SEND_FAILED = -15200;
+
+    /**
+     * @Message("邮件接收者不允许为空")
+     */
+    public const MAIL_RECIPIENTS_CANNOT_BE_EMPTY = -15201;
+
+    /**
+     * @Message("邮件标题不允许为空")
+     */
+    public const MAIL_SUBJECT_CANNOT_BE_EMPTY = -15202;
+
+    /**
+     * @Message("邮件服务配置有误")
+     */
+    public const MAIL_INVALID = -15203;
+
+    /**
+     * @Message("文件系统 Domain 设置非法")
+     */
+    public const FILE_DOMAIN_INVALID = -17000;
+
+    /**
      * @Message("父目录不能为空")
      */
     public const PARENT_NOT_EMPTY = -11950;
@@ -206,6 +231,5 @@ class ErrorCode extends AbstractConstants
      * @Message("名称不能重复")
      */
     public const SSS = -11953;
-
 
 }

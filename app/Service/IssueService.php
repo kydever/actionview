@@ -11,10 +11,17 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Constants\Permission;
+use App\Constants\Schema;
 use App\Events\IssueEvent;
+use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Project\Provider;
+use App\Service\Dao\ModuleDao;
+use App\Service\Dao\UserDao;
+use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
@@ -23,8 +30,28 @@ use Illuminate\Support\Facades\Event;
 
 class IssueService extends Service
 {
+    use TimeTrackTrait;
+
     #[Inject]
     protected ProviderService $provider;
+
+    public function requiredCheck(array $schema, array $data, string $mode = 'create'): bool
+    {
+        foreach ($schema as $field) {
+            if (isset($field['required']) && $field['required']) {
+                if ($mode == 'update') {
+                    if (isset($data[$field['key']]) && ! $data[$field['key']] && $data[$field['key']] !== 0) {
+                        return false;
+                    }
+                } else {
+                    if (! isset($data[$field['key']]) || ! $data[$field['key']] && $data[$field['key']] !== 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * @param $input = [
@@ -34,115 +61,103 @@ class IssueService extends Service
     public function store(array $input, User $user, Project $project)
     {
         $type = $input['type'];
+        $assigneeId = $input['assignee'] ?? null;
+        $moduleIds = $input['module'] ?? null;
+        $resolution = $input['resolution'] ?? null;
 
-        // $this->provider->getSc
-
-        $schema = Provider::getSchemaByType($issue_type);
+        $schema = $this->provider->getSchemaByType($type);
         if (! $schema) {
-            throw new \UnexpectedValueException('the schema of the type is not existed.', -11101);
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
         }
 
-        if (! $this->requiredCheck($schema, $request->all(), 'create')) {
-            throw new \UnexpectedValueException('the required field is empty.', -11121);
+        if (! $this->requiredCheck($schema, $input)) {
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_REQUIRED);
         }
 
-        // handle timetracking
         $insValues = [];
         foreach ($schema as $field) {
-            $fieldValue = $request->input($field['key']);
-            if (! isset($fieldValue) || ! $fieldValue) {
+            $fieldValue = $input[$field['key']] ?? null;
+            if (empty($fieldValue)) {
                 continue;
             }
 
-            if ($field['type'] == 'TimeTracking') {
+            if ($field['type'] == Schema::FIELD_TIME_TRACKING) {
                 if (! $this->ttCheck($fieldValue)) {
-                    throw new \UnexpectedValueException('the format of timetracking is incorrect.', -11102);
+                    throw new BusinessException(ErrorCode::ISSUE_TIME_TRACKING_INVALID);
                 }
                 $insValues[$field['key']] = $this->ttHandle($fieldValue);
                 $insValues[$field['key'] . '_m'] = $this->ttHandleInM($insValues[$field['key']]);
-            } elseif ($field['type'] == 'DatePicker' || $field['type'] == 'DateTimePicker') {
+            } elseif ($field['type'] == Schema::FIELD_DATE_PICKER || $field['type'] == Schema::FIELD_DATE_TIME_PICKER) {
                 if ($this->isTimestamp($fieldValue) === false) {
-                    throw new \UnexpectedValueException('the format of datepicker field is incorrect.', -11122);
+                    throw new BusinessException(ErrorCode::ISSUE_DATE_TIME_PICKER_INVALID);
                 }
-            } elseif ($field['type'] == 'SingleUser') {
-                $user_info = Sentinel::findById($fieldValue);
-                if ($user_info) {
-                    $insValues[$field['key']] = ['id' => $fieldValue, 'name' => $user_info->first_name, 'email' => $user_info->email];
+            } elseif ($field['type'] == Schema::FIELD_SINGLE_USER) {
+                $userInfo = di()->get(UserDao::class)->first((int) $fieldValue);
+                if ($userInfo) {
+                    $insValues[$field['key']] = di()->get(UserFormatter::class)->small($user);
                 }
-            } elseif ($field['type'] == 'MultiUser') {
-                $user_ids = $fieldValue;
-                $new_user_ids = [];
-                $insValues[$field['key']] = [];
-                foreach ($user_ids as $uid) {
-                    $user_info = Sentinel::findById($uid);
-                    if ($user_info) {
-                        array_push($insValues[$field['key']], ['id' => $uid, 'name' => $user_info->first_name, 'email' => $user_info->email]);
-                        $new_user_ids[] = $uid;
-                    }
+            } elseif ($field['type'] == Schema::FIELD_MULTI_USER) {
+                $users = di()->get(UserDao::class)->findMany($fieldValue);
+                $userIds = [];
+                foreach ($users as $user) {
+                    $insValues[$field['key']][] = di()->get(UserFormatter::class)->small($user);
+                    $userIds[] = $user->id;
                 }
-                $insValues[$field['key'] . '_ids'] = $new_user_ids;
+                $insValues[$field['key'] . '_ids'] = $userIds;
             }
         }
 
         // handle assignee
         $assignee = [];
-        $assignee_id = $request->input('assignee');
-        if (! $assignee_id) {
-            $module_ids = $request->input('module');
-            if ($module_ids) {
-                //$module_ids = explode(',', $module_ids);
-                $module = Provider::getModuleById($module_ids[0]);
-                if (isset($module['defaultAssignee']) && $module['defaultAssignee'] === 'modulePrincipal') {
-                    $assignee2 = $module['principal'] ?: '';
-                    $assignee_id = isset($assignee2['id']) ? $assignee2['id'] : '';
-                } elseif (isset($module['defaultAssignee']) && $module['defaultAssignee'] === 'projectPrincipal') {
-                    $assignee2 = Provider::getProjectPrincipal($project_key) ?: '';
-                    $assignee_id = isset($assignee2['id']) ? $assignee2['id'] : '';
+        if (! $assigneeId) {
+            if ($moduleIds) {
+                $module = di()->get(ModuleDao::class)->first((int) $moduleIds[0]);
+                if ($module?->default_assignee === 'modulePrincipal') {
+                    $assigneeId = $module->principal['id'] ?? '';
+                } elseif ($module?->default_assignee === 'projectPrincipal') {
+                    $assigneeId = $this->provider->getProjectPrincipal($project->key)['id'] ?? '';
                 }
             }
         }
-        if ($assignee_id) {
-            if ($assignee_id != $this->user->id && ! $this->isPermissionAllowed($project_key, 'assigned_issue', $assignee_id)) {
-                return Response()->json(['ecode' => -11118, 'emsg' => 'the assigned user has not assigned-issue permission.']);
+
+        if ($assigneeId) {
+            if ($assigneeId !== $user->id && ! di()->get(AclService::class)->hasAccess($assigneeId, $project, Permission::ISSUE_ASSIGNED)) {
+                throw new BusinessException(ErrorCode::ASSIGNED_USER_PERMISSION_DENIED);
             }
 
-            $user_info = Sentinel::findById($assignee_id);
-            if ($user_info) {
-                $assignee = ['id' => $assignee_id, 'name' => $user_info->first_name, 'email' => $user_info->email];
+            $userInfo = di()->get(UserDao::class)->first($assigneeId);
+            if ($userInfo) {
+                $assignee = di()->get(UserFormatter::class)->small($userInfo);
             }
         }
+
         if (! $assignee) {
-            $assignee = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
+            $assignee = di()->get(UserFormatter::class)->small($user);
         }
+
         $insValues['assignee'] = $assignee;
 
-        //$priority = $request->input('priority');
-        //if (!isset($priority) || !$priority)
-        //{
-        //    $insValues['priority'] = Provider::getDefaultPriority($project_key);
-        //}
-
-        $resolution = $request->input('resolution');
-        if (! isset($resolution) || ! $resolution) {
+        if (empty($resolution)) {
             $insValues['resolution'] = 'Unresolved';
         }
 
-        // get reporter(creator)
-        $insValues['reporter'] = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
+        $insValues['reporter'] = di()->get(UserFormatter::class)->small($user);
         $insValues['updated_at'] = $insValues['created_at'] = time();
 
         $table = 'issue_' . $project_key;
         $max_no = DB::collection($table)->count() + 1;
         $insValues['no'] = $max_no;
 
-        // workflow initialize
-        $workflow = $this->initializeWorkflow($issue_type);
-        $insValues = $insValues + $workflow;
+        // TODO: Support Workflow
+        // $workflow = $this->initializeWorkflow($issue_type);
+        // $insValues = $insValues + $workflow;
 
         $valid_keys = $this->getValidKeysBySchema($schema);
-        // merge all fields
-        $insValues = $insValues + array_only($request->all(), $valid_keys);
+        $insValues = $insValues + array_only($input, $valid_keys);
 
+        var_dump($insValues);
+
+        return [];
         // insert into the table
         $id = DB::collection($table)->insertGetId($insValues);
 
@@ -159,17 +174,32 @@ class IssueService extends Service
         return $this->show($project_key, $id->__toString());
     }
 
+    public function getValidKeysBySchema($schema = [])
+    {
+        $valid_keys = array_merge(array_column($schema, 'key'), ['type', 'assignee', 'descriptions', 'labels', 'parent_id', 'resolution', 'priority', 'progress', 'expect_start_time', 'expect_complete_time']);
+
+        foreach ($schema as $field) {
+            if ($field['type'] == Schema::FIELD_MULTI_USER) {
+                $valid_keys[] = $field['key'] . '_ids';
+            } elseif ($field['type'] == Schema::FIELD_TIME_TRACKING) {
+                $valid_keys[] = $field['key'] . '_m';
+            }
+        }
+
+        return $valid_keys;
+    }
+
     public function index(Project $project, User $user)
     {
     }
 
-    #[Cacheable(prefix: 'issue:options', value: '#{$project.id}', ttl: 86400, offset: 3600)]
+    #[Cacheable(prefix: 'issue:options', value: '#{project.id}', ttl: 86400, offset: 3600)]
     public function getOptions(Project $project)
     {
         return $this->options($project);
     }
 
-    #[CachePut(prefix: 'issue:options', value: '#{$project.id}', ttl: 86400, offset: 3600)]
+    #[CachePut(prefix: 'issue:options', value: '#{project.id}', ttl: 86400, offset: 3600)]
     public function putOptions(Project $project)
     {
         return $this->options($project);
@@ -186,6 +216,9 @@ class IssueService extends Service
         $epics = $this->provider->getEpicList($project->key);
         $versions = $this->provider->getVersionList($project->key);
         $labels = $this->provider->getLabelOptions($project->key);
+        $types = $this->provider->getTypeListExt($project->key);
+        $sprints = $this->provider->getSprintList($project->key);
+        $field = $this->provider->getFieldList($project->key);
 
         return [
             'user' => $users,
@@ -197,6 +230,9 @@ class IssueService extends Service
             'epics' => $epics,
             'versions' => $versions,
             'labels' => $labels,
+            'types' => $types,
+            'sprints' => $sprints,
+            'field' => $field,
         ];
     }
 }
