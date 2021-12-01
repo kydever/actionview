@@ -186,9 +186,9 @@ class IssueService extends Service
 
     public function show(Issue $issue): array
     {
-        $schema = Provider::getSchemaByType($issue['type']);
+        $schema = $this->provider->getSchemaByType($issue->type);
         if (! $schema) {
-            throw new \UnexpectedValueException('the schema of the type is not existed.', -11101);
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
         }
 
         if (isset($issue['assignee']['id'])) {

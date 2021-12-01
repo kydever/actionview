@@ -2825,16 +2825,16 @@
         },
         {
             "name": "limingxinleo/hyperf-orm-json-relation",
-            "version": "v0.2.0",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/limingxinleo/hyperf-orm-json-relation.git",
-                "reference": "e95ddd46620d9ed6487509625fa1511383af266e"
+                "reference": "3972e507d8fef48308aa736223d046b1fa056efd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/limingxinleo/hyperf-orm-json-relation/zipball/e95ddd46620d9ed6487509625fa1511383af266e",
-                "reference": "e95ddd46620d9ed6487509625fa1511383af266e",
+                "url": "https://api.github.com/repos/limingxinleo/hyperf-orm-json-relation/zipball/3972e507d8fef48308aa736223d046b1fa056efd",
+                "reference": "3972e507d8fef48308aa736223d046b1fa056efd",
                 "shasum": ""
             },
             "require": {
@@ -2873,9 +2873,9 @@
             ],
             "support": {
                 "issues": "https://github.com/limingxinleo/hyperf-orm-json-relation/issues",
-                "source": "https://github.com/limingxinleo/hyperf-orm-json-relation/tree/v0.2.0"
+                "source": "https://github.com/limingxinleo/hyperf-orm-json-relation/tree/v0.2.1"
             },
-            "time": "2021-11-29T11:27:45+00:00"
+            "time": "2021-12-01T11:53:49+00:00"
         },
         {
             "name": "limingxinleo/hyperf-utils",

@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use Hao\ORMJsonRelation\HasORMJsonRelations;
+use Hyperf\Database\Model\Relations\HasOne;
+
 /**
  * @property int $id
  * @property string $project_key
@@ -23,9 +26,13 @@ namespace App\Model;
  * @property array $data
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property User $assigneeModel
+ * @property ConfigType $typeModel
  */
 class Issue extends Model
 {
+    use HasORMJsonRelations;
+
     /**
      * The table associated with the model.
      *
@@ -46,9 +53,14 @@ class Issue extends Model
      * @var array
      */
     protected $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer'];
-    //
-    // public function type()
-    // {
-    //     return $this->hasOne()
-    // }
+
+    public function typeModel()
+    {
+        return $this->hasOne(ConfigType::class, 'id', 'type');
+    }
+
+    public function assigneeModel(): HasOne
+    {
+        return $this->hasOneInJsonObject(User::class, 'id', 'assignee->id');
+    }
 }
