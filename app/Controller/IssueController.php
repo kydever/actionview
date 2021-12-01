@@ -36,7 +36,7 @@ class IssueController extends Controller
         $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
 
-        $result = $this->service->getOptions($project);
+        $result = $this->service->getAllOptions($user->id, $project);
 
         return $this->response->success($result);
     }

@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\IssueFiltersConstant;
 use App\Constants\Permission;
 use App\Constants\Schema;
 use App\Model\ConfigPriority;
@@ -270,6 +271,11 @@ class ProviderService extends Service
     {
         $models = di(ConfigFieldDao::class)->getFieldList($key);
         return di(ConfigFieldFormatter::class)->formatList($models);
+    }
+
+    public function getIssueFilters(string $key, int $userId): array
+    {
+        $filters = IssueFiltersConstant::DEFAULT_ISSUE_FILTERS;
     }
 
     public function getSchemaByType(int $typeId): array

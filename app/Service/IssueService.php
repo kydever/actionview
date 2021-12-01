@@ -193,6 +193,12 @@ class IssueService extends Service
     {
     }
 
+    public function getAllOptions(int $userId, Project $project): array
+    {
+        $result = $this->getOptions($project);
+        return array_merge($result, $this->otherOptions($userId, $project));
+    }
+
     #[Cacheable(prefix: 'issue:options', value: '#{project.id}', ttl: 86400, offset: 3600)]
     public function getOptions(Project $project)
     {
@@ -233,6 +239,15 @@ class IssueService extends Service
             'types' => $types,
             'sprints' => $sprints,
             'field' => $field,
+        ];
+    }
+
+    public function otherOptions(int $userId, Project $project): array
+    {
+        $filters = $this->provider->getIssueFilters($project->key, $userId);
+
+        return [
+            'filters' => $filters,
         ];
     }
 }
