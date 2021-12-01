@@ -186,4 +186,26 @@ class ErrorCode extends AbstractConstants
      * @Message("个人资料姓名不能为空")
      */
     public const FIRST_NAME_NOT_EXIST = -15005;
+
+    /**
+     * @Message("父目录不能为空")
+     */
+    public const PARENT_NOT_EMPTY = -11950;
+
+    /**
+     * @Message("父目录不存在")
+     */
+    public const PARENT_NOT_EXIST = -11951;
+
+    /**
+     * @Message("名称不能为空")
+     */
+    public const SS = -11952;
+
+    /**
+     * @Message("名称不能重复")
+     */
+    public const SSS = -11953;
+
+
 }
