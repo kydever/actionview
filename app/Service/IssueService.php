@@ -222,6 +222,8 @@ class IssueService extends Service
         $types = $this->provider->getTypeListExt($project->key);
         $sprints = $this->provider->getSprintList($project->key);
         $field = $this->provider->getFieldList($project->key);
+        $timeTrack = $this->provider->getTimeTrackSetting();
+        $relations = $this->provider->getLinkRelations();
 
         return [
             'user' => $users,
@@ -236,15 +238,18 @@ class IssueService extends Service
             'types' => $types,
             'sprints' => $sprints,
             'field' => $field,
+            'timetrack' => $timeTrack,
+            'relations' => $relations,
         ];
     }
 
     public function otherOptions(int $userId, Project $project): array
     {
         $filters = $this->provider->getIssueFilters($project->key, $userId);
-
+        $displayColumns = $this->provider->getIssueDisplayColumns($project->key, $userId);
         return [
             'filters' => $filters,
+            'display_columns' => $displayColumns,
         ];
     }
 }

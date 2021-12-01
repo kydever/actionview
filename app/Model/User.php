@@ -30,8 +30,8 @@ use Hyperf\Database\Model\Relations\HasMany;
  * @property string $directory
  * @property string $phone
  * @property string $avatar
- * @property string $department 部门
- * @property string $position 职位
+ * @property string $department
+ * @property string $position
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property AclGroup[]|\Hyperf\Database\Model\Collection $groups

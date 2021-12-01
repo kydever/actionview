@@ -24,7 +24,7 @@ class IssueFilterDao extends Service
         return IssueFilter::query()
             ->where('project_key', $key)
             ->where(function ($query) use ($userId) {
-                $query->where('creator->$.id', $userId)
+                $query->where('creator->id', $userId)
                     ->orWhere('scope', 'public');
             })
             ->get();

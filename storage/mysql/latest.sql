@@ -881,6 +881,29 @@ CREATE TABLE `user_issue_filters` (
 `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE `project_issue_list_columns` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目key',
+`column_keys` json NOT NULL,
+`columns` json NOT NULL,
+`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE `user_issue_list_columns` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目key',
+`user` json NOT NULL,
+`column_keys` json NOT NULL,
+`columns` json NOT NULL,
+`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
