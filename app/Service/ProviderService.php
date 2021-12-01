@@ -13,6 +13,7 @@ namespace App\Service;
 
 use App\Constants\IssueFiltersConstant;
 use App\Constants\Permission;
+use App\Constants\ProjectIssueListColumnConstant;
 use App\Constants\Schema;
 use App\Model\ConfigPriority;
 use App\Model\ConfigPriorityProperty;
@@ -34,9 +35,13 @@ use App\Service\Dao\IssueFilterDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\ProjectDao;
+use App\Service\Dao\ProjectIssueListColumnDao;
 use App\Service\Dao\SprintDao;
+use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
+use App\Service\Dao\UserIssueFilterDao;
+use App\Service\Dao\UserIssueListColumnDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\ConfigFieldFormatter;
 use App\Service\Formatter\ConfigTypeFormatter;
@@ -282,6 +287,55 @@ class ProviderService extends Service
         $customizeFilterModels = di(IssueFilterDao::class)->getIssueFilters($key, $userId);
         $customizeFilters = di(IssueFilterFormatter::class)->formatList($customizeFilterModels);
         $filters = array_merge($filters, $customizeFilters);
+        $userFilter = di(UserIssueFilterDao::class)->getUserFilter($key, $userId);
+        if ($userFilter) {
+            $sequence = $userFilter->sequence;
+            $func = function ($v1, $v2) use ($sequence) {
+                $i1 = array_search($v1['id'], $sequence);
+                $i1 = $i1 !== false ? $i1 : 998;
+                $i2 = array_search($v2['id'], $sequence);
+                $i2 = $i2 !== false ? $i2 : 999;
+                return $i1 >= $i2 ? 1 : -1;
+            };
+            usort($filters, $func);
+        }
+
+        return $filters;
+    }
+
+    public function getIssueDisplayColumns(string $key, int $userId): array
+    {
+        $userIssueListColumnModel = di(UserIssueListColumnDao::class)->getUserDisplayColumns($key, $userId);
+        if ($columns = $userIssueListColumnModel?->columns) {
+            return $columns;
+        }
+
+        $projectIssueListColumnModel = di(ProjectIssueListColumnDao::class)->getDisplayColumns($key);
+        if ($columns = $projectIssueListColumnModel?->columns) {
+            return $columns;
+        }
+        return ProjectIssueListColumnConstant::DEFAULT_DISPLAY_COLUMNS;
+    }
+
+    public function getTimeTrackSetting(): array
+    {
+        $options = ['w2d' => 5, 'd2h' => 8];
+        $model = di(SysSettingDao::class)->first();
+        if ($properties = $model?->properties) {
+            $options['w2d'] = $properties['week2day'] ?? $options['w2d'];
+            $options['d2h'] = $properties['day2hour'] ?? $options['d2h'];
+        }
+        return $options;
+    }
+
+    public function getLinkRelations(): array
+    {
+        return [
+            ['id' => 'blocks', 'out' => 'blocks', 'in' => 'is blocked by'],
+            ['id' => 'clones', 'out' => 'clones', 'in' => 'is cloned by'],
+            ['id' => 'duplicates', 'out' => 'duplicates', 'in' => 'is duplicated by'],
+            ['id' => 'relates', 'out' => 'relates to', 'in' => 'relates to'],
+        ];
     }
 
     public function getSchemaByType(int $typeId): array
