@@ -76,6 +76,27 @@ Router::addGroup('/', function () {
 ]);
 
 Router::addGroup('/project/{project_key}/', function () {
+    // Router::get('role/{id}/reset', 'RoleController@reset');
+    // Router::post('role/{id}/permissions', 'RoleController@setPermissions');
+    // Router::post('role/{id}/actor', 'RoleController@setActor');
+    // Router::post('role/{id}/groupactor', 'RoleController@setGroupActor');
+    Router::get('role', App\Controller\RoleController::class . '::index');
+// Router::resource('role', 'RoleController');
+    // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
+}, [
+    'middleware' => [
+        App\Middleware\AuthorizeMiddleware::class,
+        App\Middleware\ProjectAuthMiddleware::class,
+        App\Middleware\PrivilegeMiddleware::class,
+    ],
+    'options' => [
+        App\Middleware\PrivilegeMiddleware::class => [
+            Permission::PROJECT_MANAGE,
+        ],
+    ],
+]);
+
+Router::addGroup('/project/{project_key}/', function () {
     Router::get('summary', App\Controller\SummaryController::class . '::index');
 
     Router::get('issue', App\Controller\IssueController::class . '::index');
