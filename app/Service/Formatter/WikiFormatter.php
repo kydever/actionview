@@ -21,8 +21,8 @@ class WikiFormatter extends Service
     {
         return [
             'id' => $model->id,
-//            'directory' => $model->directory ?: 'self',
-//            'status' => $model->isInvalid() ? WikiConstant::INVALID : WikiConstant::ACTIVE,
+            //            'directory' => $model->directory ?: 'self',
+            //            'status' => $model->isInvalid() ? WikiConstant::INVALID : WikiConstant::ACTIVE,
         ];
     }
 

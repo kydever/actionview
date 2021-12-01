@@ -823,42 +823,26 @@ CREATE TABLE `version` (
 
 
 
-# Dump of table wiki
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `wiki`;
-
+OP TABLE IF EXISTS `wiki`;
 CREATE TABLE `wiki` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `wid` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$_sys_$' COMMENT '项目KEY',
-  `d` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `pt` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `parent` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `contents` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `version` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-# Dump of table wiki
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `wiki_cate`;
-
-CREATE TABLE `wiki_cate` (
-`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-`w_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'wiki_id',
-`p_id` int(10) unsigned NOT NULL DEFAULT '0',
-`name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-`del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+	  `wid` bigint(20) unsigned NOT NULL DEFAULT '0',
+	  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$_sys_$' COMMENT '项目KEY',
+	  `d` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `pt` json NOT NULL,
+	  `user` json NOT NULL,
+	  `parent` int(11) NOT NULL,
+	  `contents` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `version` int(11) NOT NULL DEFAULT '0',
+	  `creator` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `editor` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+	  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+	  PRIMARY KEY (`id`),
+	  KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
