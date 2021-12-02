@@ -21,7 +21,6 @@ use App\Service\Dao\AclRolePermissionDao;
 use Han\Utils\Service;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Utils\Context;
 
 class AclService extends Service
 {
@@ -53,11 +52,10 @@ class AclService extends Service
         return in_array($access, $permissions);
     }
 
+    #[Cacheable(prefix: 'permission', value: '#{userId}:#{project.id}', group: 'context')]
     public function getPermissionsFromContext(int $userId, Project $project): array
     {
-        return Context::getOrSet('permission:' . $userId . ':' . $project->id, function () use ($userId, $project) {
-            return $this->getPermissions($userId, $project);
-        });
+        return $this->getPermissions($userId, $project);
     }
 
     #[Cacheable(prefix: 'permission', value: '#{userId}:#{project.id}', ttl: 120)]
@@ -134,9 +132,9 @@ class AclService extends Service
         return array_values(array_unique($userIds));
     }
 
-    public function isAllowed($userId, $permission, $project)
+    public function isAllowed(int $userId, string $permission, Project $project)
     {
-        $permissions = $this->getPermissions($userId, $project);
+        $permissions = $this->getPermissionsFromContext($userId, $project);
         if ($permission == 'view_project') {
             return (bool) $permissions;
         }

@@ -776,31 +776,18 @@ class IssueService extends Service
         return $bool;
     }
 
-    public function setAssignee(int $id, string $assigneeId, User $user)
+    public function setAssignee(int $id, string $assigneeId, User $user, Project $project)
     {
         $issue = $this->dao->first($id, true);
-        $isAllowed = di()->get(AclService::class)->isAllowed($user->id, Permission::ASSIGN_ISSUE, $issue->project_key);
+        $isAllowed = di()->get(AclService::class)->isAllowed($user->id, Permission::ASSIGN_ISSUE, $project);
 
         if (! $isAllowed) {
             throw new BusinessException(ErrorCode::ASSIGN_ASSIGNEE_DENIED);
         }
 
-        $updValues = [];
-        $assignee = [];
-
-        $assigneeId = match ($assigneeId) {
-            'me' => $user->id,
-            default => (int) $assigneeId
-        };
-
-        if ($issue->assignee['id'] === $assigneeId) {
-            return $this->show($issue);
-        }
-
-        $userModel = $assigneeId === $user->id ? $user : di()->get(UserDao::class)->first($assigneeId, true);
-        $isAllowed = di()->get(AclService::class)->isAllowed($userModel->id, Permission::ASSIGNED_ISSUE, $issue->project_key);
-        if (! $isAllowed) {
-            throw new BusinessException(ErrorCode::ASSIGNED_ASSIGNEE_DENIED);
+        $userModel = $this->getAssignee($assigneeId, $issue, $user, $project);
+        if (is_array($userModel)) {
+            return $userModel;
         }
 
         $assignee = di()->get(UserFormatter::class)->small($userModel);
@@ -820,5 +807,30 @@ class IssueService extends Service
         }
 
         return $this->show($issue);
+    }
+
+    public function resetState(array $input, int $id, User $user, Project $project)
+    {
+
+    }
+
+    private function getAssignee(string $assigneeId, Issue $issue, User $user, Project $project): array|User
+    {
+        $assigneeId = match ($assigneeId) {
+            'me' => $user->id,
+            default => (int) $assigneeId
+        };
+
+        if ($issue->assignee['id'] === $assigneeId) {
+            return $this->show($issue);
+        }
+
+        $userModel = $assigneeId === $user->id ? $user : di()->get(UserDao::class)->first($assigneeId, true);
+        $isAllowed = di()->get(AclService::class)->isAllowed($userModel->id, Permission::ASSIGNED_ISSUE, $project);
+        if (! $isAllowed) {
+            throw new BusinessException(ErrorCode::ASSIGNED_ASSIGNEE_DENIED);
+        }
+
+        return $userModel;
     }
 }

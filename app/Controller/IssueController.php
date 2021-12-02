@@ -70,13 +70,24 @@ class IssueController extends Controller
 
     public function setAssignee(int $id)
     {
-        $user = UserAuth::instance()->build()->getUser();
         $assigneeId = (string) $this->request->input('assignee');
         if (empty($assigneeId)) {
             throw new BusinessException(ErrorCode::ISSUE_ASSIGNEE_CANNOT_EMPTY);
         }
 
-        $result = $this->service->setAssignee($id, $assigneeId, $user);
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $result = $this->service->setAssignee($id, $assigneeId, $user, $project);
+
+        return $this->response->success($result);
+    }
+
+    public function resetState(int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->resetState($this->request->all(), $id, $user, $project);
 
         return $this->response->success($result);
     }
