@@ -15,7 +15,7 @@ use App\Constants\ErrorCode;
 use App\Constants\Permission;
 use App\Constants\Schema;
 use App\Constants\StatusConstant;
-use App\Events\IssueEvent;
+use App\Event\IssueEvent;
 use App\Exception\BusinessException;
 use App\Model\Issue;
 use App\Model\Label;
@@ -30,12 +30,14 @@ use App\Service\Dao\UserDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
+use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
 use Illuminate\Support\Facades\Event;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class IssueService extends Service
 {
@@ -178,6 +180,7 @@ class IssueService extends Service
 
             // TODO: IssueEvent 通知 Activity 和 Webhook
             // Event::fire(new IssueEvent($project_key, $id->__toString(), $insValues['reporter'], ['event_key' => 'create_issue']));
+            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($model));
 
             Db::commit();
         } catch (\Throwable $exception) {
@@ -202,7 +205,7 @@ class IssueService extends Service
             if ($field['type'] === Schema::FIELD_FILE && ! empty($result[$field['key']])) {
                 foreach ($result[$field['key']] as $key => $fid);
                 // TODO: 处理文件
-                    // $result[$field['key']][$key] = File::find($fid);
+                // $result[$field['key']][$key] = File::find($fid);
             }
         }
 
@@ -367,5 +370,13 @@ class IssueService extends Service
             'filters' => $filters,
             'display_columns' => $displayColumns,
         ];
+    }
+
+    #[AsyncQueueMessage(delay: 5)]
+    public function pushToSearch(int $id): void
+    {
+        $model = di()->get(IssueDao::class)->first($id, false);
+
+        $model?->pushToSearch();
     }
 }

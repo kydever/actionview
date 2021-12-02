@@ -11,13 +11,25 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
+use App\Constants\ErrorCode;
 use App\Constants\StatusConstant;
+use App\Exception\BusinessException;
 use App\Model\Issue;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Builder;
 
 class IssueDao extends Service
 {
+    public function first(int $id, bool $throw = false): ?Issue
+    {
+        $model = Issue::findFromCache($id);
+        if (empty($model) && $throw) {
+            throw new BusinessException(ErrorCode::SERVER_ERROR, 'ISSUE 不存在');
+        }
+
+        return $model;
+    }
+
     public function getQuery(array $keys): Builder
     {
         return Issue::query()->whereIn('project_key', $keys);

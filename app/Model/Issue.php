@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App\Constants\StatusConstant;
+use App\Service\Client\IssueSearch;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
 use Hyperf\Database\Model\Relations\HasOne;
 
@@ -77,5 +78,10 @@ class Issue extends Model
     {
         return $this->hasMany(Issue::class, 'parent_id', 'id')
             ->where('del_flg', '<>', StatusConstant::DELETED);
+    }
+
+    public function pushToSearch(): void
+    {
+        di()->get(IssueSearch::class)->put($this);
     }
 }
