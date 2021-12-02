@@ -17,7 +17,6 @@ return [
     ],
     'context' => [
         'driver' => Hyperf\Cache\Driver\CoroutineMemoryDriver::class,
-        'packer' => Hyperf\Utils\Packer\PhpSerializerPacker::class,
         'prefix' => 'c:',
     ],
 ];

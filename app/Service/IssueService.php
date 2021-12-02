@@ -340,7 +340,7 @@ class IssueService extends Service
         $labels = $this->provider->getLabelOptions($project->key);
         $types = $this->provider->getTypeListExt($project->key);
         $sprints = $this->provider->getSprintList($project->key);
-        $field = $this->provider->getFieldList($project->key);
+        $field = $this->provider->getFieldListOptions($project->key);
         $timeTrack = $this->provider->getTimeTrackSetting();
         $relations = $this->provider->getLinkRelations();
 
@@ -378,5 +378,224 @@ class IssueService extends Service
         $model = di()->get(IssueDao::class)->first($id, false);
 
         $model?->pushToSearch();
+    }
+
+    public function getBoolSearch(string $projectKey, array $query, int $userId): array
+    {
+        $specialFields = [
+            ['key' => 'no', 'type' => 'Number'],
+            ['key' => 'type', 'type' => 'Select'],
+            ['key' => 'state', 'type' => 'Select'],
+            ['key' => 'assignee', 'type' => 'SingleUser'],
+            ['key' => 'reporter', 'type' => 'SingleUser'],
+            ['key' => 'resolver', 'type' => 'SingleUser'],
+            ['key' => 'closer', 'type' => 'SingleUser'],
+
+            ['key' => 'created_at', 'type' => 'Duration'],
+            ['key' => 'updated_at', 'type' => 'Duration'],
+            ['key' => 'resolved_at', 'type' => 'Duration'],
+            ['key' => 'closed_at', 'type' => 'Duration'],
+
+            ['key' => 'sprints', 'type' => 'Select'],
+        ];
+
+        $fields = $this->provider->getFieldList($projectKey);
+        $fieldsArray = $fields->columns(['key', 'name', 'type'])->toArray();
+
+        // merge into the all valid fields in the project
+        $allFields = array_merge($fieldsArray, $specialFields);
+        // convert into key-type array
+        // $key_type_fields
+        $fieldsMapping = [];
+        foreach ($allFields as $val) {
+            $fieldsMapping[$val['key']] = $val['type'];
+        }
+        // get the query where value
+        $where = array_only($query, array_column($allFields, 'key'));
+
+        $and = [];
+        $bool = [];
+        foreach ($where as $key => $val) {
+            if ($key === 'no') {
+                $bool['must'][] = ['term' => ['id' => intval($val)]];
+            } elseif ($key === 'title') {
+                if (is_numeric($val) && ! str_contains($val, '.')) {
+                    $bool['must'][] = [
+                        'bool' => [
+                            'should' => [
+                                [
+                                    'term' => ['id' => intval($val)],
+                                ],
+                                [
+                                    'match' => ['data.title' => $val],
+                                ],
+                            ],
+                        ],
+                    ];
+                } elseif (str_contains($val, ',')) {
+                    $nos = explode(',', $val);
+                    $ids = [];
+                    foreach ($nos as $no) {
+                        if ($no && is_numeric($no)) {
+                            $ids[] = intval($no);
+                        }
+                    }
+                    $bool['must'][] = [
+                        'bool' => [
+                            'should' => [
+                                [
+                                    'terms' => ['id' => $ids],
+                                ],
+                                [
+                                    'match' => ['data.title' => $val],
+                                ],
+                            ],
+                        ],
+                    ];
+                } else {
+                    $bool['must'][] = ['match' => ['data.title' => $val]];
+                }
+            } elseif ($key === 'sprints') {
+                $bool['must'][] = ['term' => ['data.sprints' => intval($val)]];
+            } elseif ($fieldsMapping[$key] === Schema::FIELD_SINGLE_USER) {
+                $userIds = explode(',', $val);
+                if (in_array('me', $userIds) && $userId) {
+                    array_push($userIds, $userId);
+                }
+                $bool['must'][] = ['terms' => ['data.' . $key . '.' . 'id' => $userIds]];
+            } elseif ($fieldsMapping[$key] === Schema::FIELD_MULTI_USER) {
+                $userIds = [];
+                $vals = explode(',', $val);
+                foreach ($vals as $v) {
+                    $userIds[] = $v == 'me' ? $userId : $v;
+                }
+                $bool['must'][] = [
+                    'bool' => [
+                        'should' => [
+                            [
+                                'terms' => ['data.' . $key . '_ids' => $userIds],
+                            ],
+                        ],
+                    ],
+                ];
+            } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_SELECT, Schema::FIELD_SINGLE_VERSION, Schema::FIELD_RADIO_GROUP])) {
+                $bool['must'][] = [
+                    'terms' => ['data.' . $key => explode(',', $val)],
+                ];
+            } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_MULTI_SELECT, Schema::FIELD_MULTI_VERSION, Schema::FIELD_CHECKBOX_GROUP])) {
+                $bool['must'][] = [
+                    'bool' => [
+                        'should' => [
+                            [
+                                'terms' => ['data.' . $key => $vals],
+                            ],
+                        ],
+                    ],
+                ];
+            } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_DURATION, Schema::FIELD_DATE_PICKER, Schema::FIELD_DATE_TIME_PICKER])) {
+                if (in_array($val, ['0d', '0w', '0m', '0y'])) {
+                    if ($val == '0d') {
+                        $gte = strtotime(date('Y-m-d'));
+                        $lte = strtotime(date('Y-m-d') . ' 23:59:59');
+                    } elseif ($val == '0w') {
+                        $gte = mktime(0, 0, 0, date('m'), date('d') - date('w') + 1, date('Y'));
+                        $lte = mktime(23, 59, 59, date('m'), date('d') - date('w') + 7, date('Y'));
+                    } elseif ($val == '0m') {
+                        $gte = mktime(0, 0, 0, date('m'), 1, date('Y'));
+                        $lte = mktime(23, 59, 59, date('m'), date('t'), date('Y'));
+                    } else {
+                        $gte = mktime(0, 0, 0, 1, 1, date('Y'));
+                        $lte = mktime(23, 59, 59, 12, 31, date('Y'));
+                    }
+                    $bool['must'][] = [
+                        'range' => ['data.' . $key => ['gte' => $gte, 'lte' => $lte]],
+                    ];
+                } else {
+                    $dateRange = [];
+                    $unitMap = ['d' => 'day', 'w' => 'week', 'm' => 'month', 'y' => 'year'];
+                    $sections = explode('~', $val);
+                    if ($sections[0]) {
+                        $v = $sections[0];
+                        $unit = substr($v, -1);
+                        if (in_array($unit, ['d', 'w', 'm', 'y'])) {
+                            $direct = substr($v, 0, 1);
+                            $vv = abs((float) substr($v, 0, -1));
+                            $dateRange['gte'] = strtotime(date('Ymd', strtotime(($direct === '-' ? '-' : '+') . $vv . ' ' . $unitMap[$unit])));
+                        } else {
+                            $dateRange['gte'] = strtotime($v);
+                        }
+                    }
+
+                    if (isset($sections[1]) && $sections[1]) {
+                        $v = $sections[1];
+                        $unit = substr($v, -1);
+                        if (in_array($unit, ['d', 'w', 'm', 'y'])) {
+                            $direct = substr($v, 0, 1);
+                            $vv = abs((float) substr($v, 0, -1));
+                            $dateRange['lte'] = strtotime(date('Y-m-d', strtotime(($direct === '-' ? '-' : '+') . $vv . ' ' . $unitMap[$unit])) . ' 23:59:59');
+                        } else {
+                            $dateRange['lte'] = strtotime($v . ' 23:59:59');
+                        }
+                    }
+                    $bool['must'][] = [
+                        'range' => ['data.' . $key => $dateRange],
+                    ];
+                }
+            } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_TEXT, Schema::FIELD_TEXT_AREA, Schema::FIELD_RICH_TEXT_EDITOR, Schema::FIELD_URL])) {
+                $bool['must'][] = [
+                    'match' => ['data.' . $key => $val],
+                ];
+            } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_NUMBER, Schema::FIELD_INTEGER])) {
+                if (str_contains($val, '~')) {
+                    $sections = explode('~', $val);
+                    if ($sections[0]) {
+                        $bool['must'][] = [
+                            'range' => ['data.' . $key => ['gte' => intval($sections[0])]],
+                        ];
+                    }
+                    if ($sections[1]) {
+                        $bool['must'][] = [
+                            'range' => ['data.' . $key => ['lte' => intval($sections[1])]],
+                        ];
+                    }
+                }
+            } elseif ($fieldsMapping[$key] === Schema::FIELD_TIME_TRACKING) {
+                if (str_contains($val, '~')) {
+                    $sections = explode('~', $val);
+                    if ($sections[0]) {
+                        $bool['must'][] = [
+                            'range' => ['data.' . $key . '_m' => ['gte' => $this->ttHandleInM($sections[0])]],
+                        ];
+                    }
+                    if ($sections[1]) {
+                        $bool['must'][] = [
+                            'range' => ['data.' . $key . '_m' => ['lte' => $this->ttHandleInM($sections[0])]],
+                        ];
+                    }
+                }
+            }
+        }
+
+        if (isset($query['watcher']) && $query['watcher']) {
+            // TODO: 支持 Watcher
+            // $watcher = $query['watcher'] === 'me' ? $this->user->id : $query['watcher'];
+            //
+            // $watched_issues = Watch::where('project_key', $project_key)
+            //     ->where('user.id', $watcher)
+            //     ->get()
+            //     ->toArray();
+            // $watched_issue_ids = array_column($watched_issues, 'issue_id');
+            //
+            // $watchedIds = [];
+            // foreach ($watched_issue_ids as $id) {
+            //     $watchedIds[] = new ObjectID($id);
+            // }
+            // $and[] = ['_id' => ['$in' => $watchedIds]];
+        }
+
+        $bool['must_not'][] = [
+            'term' => ['del_flg' => StatusConstant::DELETED],
+        ];
+        return $bool;
     }
 }
