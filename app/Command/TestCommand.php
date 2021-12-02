@@ -11,9 +11,13 @@ declare(strict_types=1);
  */
 namespace App\Command;
 
-use App\Service\ProviderService;
+use App\Model\Project;
+use App\Service\IssueService;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
+use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\DbConnection\Db;
+use Hyperf\Utils\Codec\Json;
 use Psr\Container\ContainerInterface;
 
 #[Command]
@@ -32,12 +36,11 @@ class TestCommand extends HyperfCommand
 
     public function handle()
     {
-//        $modules = di(ProviderService::class)->getModuleList('$_sys_$');
-//        $epics = di(ProviderService::class)->getEpicList('$_sys_$');
-//        $versions = di(ProviderService::class)->getVersionList('$_sys_$');
-//        $labels = di(ProviderService::class)->getLabelOptions('$_sys_$');
-//        $type = di(ProviderService::class)->getTypeListExt('$_sys_$');
-//        $field = di(ProviderService::class)->getFieldList('$_sys_$');
-        $filters = di(ProviderService::class)->getIssueFilters('$_sys_$', 1);
+        $unresolvedModels = Db::select('select resolve_version, count(*) as num from issue where project_key = "p_open_source" and del_flg != 1 and resolution = "Unresolved" group by resolve_version');
+        $unresolved = [];
+        foreach ($unresolvedModels as $unresolvedModel) {
+            $unresolved[$unresolvedModel->resolve_version] = $unresolvedModel->num;
+        }
+        var_dump($unresolved);
     }
 }
