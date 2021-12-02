@@ -16,7 +16,6 @@ use App\Service\Dao\ConfigFieldDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\VersionFormatter;
 use Han\Utils\Service;
-use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 
 class VersionService extends Service

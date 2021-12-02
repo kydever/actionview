@@ -11,13 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Command;
 
-use App\Model\Project;
-use App\Service\IssueService;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
-use Hyperf\Utils\Codec\Json;
 use Psr\Container\ContainerInterface;
 
 #[Command]
