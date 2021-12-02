@@ -173,6 +173,7 @@ class IssueService extends Service
             $model->resolution = $resolution ?: StatusConstant::STATUS_UNRESOLVED;
             $model->assignee = $assignee;
             $model->reporter = di()->get(UserFormatter::class)->small($user);
+            $model->modifier = di()->get(UserFormatter::class)->small($user);
             $model->no = $maxNumber;
             $model->data = $insValues;
             $model->save();
@@ -773,5 +774,51 @@ class IssueService extends Service
             'term' => ['del_flg' => StatusConstant::DELETED],
         ];
         return $bool;
+    }
+
+    public function setAssignee(int $id, string $assigneeId, User $user)
+    {
+        $issue = $this->dao->first($id, true);
+        $isAllowed = di()->get(AclService::class)->isAllowed($user->id, Permission::ASSIGN_ISSUE, $issue->project_key);
+
+        if (! $isAllowed) {
+            throw new BusinessException(ErrorCode::ASSIGN_ASSIGNEE_DENIED);
+        }
+
+        $updValues = [];
+        $assignee = [];
+
+        $assigneeId = match ($assigneeId) {
+            'me' => $user->id,
+            default => (int) $assigneeId
+        };
+
+        if ($issue->assignee['id'] === $assigneeId) {
+            return $this->show($issue);
+        }
+
+        $userModel = $assigneeId === $user->id ? $user : di()->get(UserDao::class)->first($assigneeId, true);
+        $isAllowed = di()->get(AclService::class)->isAllowed($userModel->id, Permission::ASSIGNED_ISSUE, $issue->project_key);
+        if (! $isAllowed) {
+            throw new BusinessException(ErrorCode::ASSIGNED_ASSIGNEE_DENIED);
+        }
+
+        $assignee = di()->get(UserFormatter::class)->small($userModel);
+        $modifier = di()->get(UserFormatter::class)->small($user);
+
+        $issue->assignee = $assignee;
+        $issue->modifier = $modifier;
+
+        Db::beginTransaction();
+        try {
+            $issue->save();
+            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
+        }
+
+        return $this->show($issue);
     }
 }

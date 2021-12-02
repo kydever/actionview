@@ -38,6 +38,13 @@ class IssueSearch extends ElasticSearch
                     'email' => ['type' => 'text'],
                 ],
             ],
+            'modifier' => [
+                'properties' => [
+                    'id' => ['type' => 'long'],
+                    'name' => ['type' => 'text'],
+                    'email' => ['type' => 'text'],
+                ],
+            ],
             // 'data' => ['type' => 'array']
         ];
     }

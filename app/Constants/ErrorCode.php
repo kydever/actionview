@@ -98,6 +98,26 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_TIME_TRACKING_INVALID = -11102;
 
     /**
+     * @Message("问题不存在")
+     */
+    public const ISSUE_NOT_EXIST = -11103;
+
+    /**
+     * @Message("负责人必填")
+     */
+    public const ISSUE_ASSIGNEE_CANNOT_EMPTY = -11104;
+
+    /**
+     * @Message("您没有分配负责人的权限")
+     */
+    public const ASSIGN_ASSIGNEE_DENIED = -11116;
+
+    /**
+     * @Message("您没有分配负责人的权限")
+     */
+    public const ASSIGNED_ASSIGNEE_DENIED = -11117;
+
+    /**
      * @Message("负责人没有 assigned-issue 权限")
      */
     public const ASSIGNED_USER_PERMISSION_DENIED = -11118;

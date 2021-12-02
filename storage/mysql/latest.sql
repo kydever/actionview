@@ -575,12 +575,13 @@ CREATE TABLE `issue` (
 `resolution` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
 `assignee` json NOT NULL,
 `reporter` json NOT NULL,
+`modifier` json NOT NULL,
 `no` int(10) unsigned NOT NULL DEFAULT '0',
 `data` json NOT NULL,
 `created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
 `updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
 PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 

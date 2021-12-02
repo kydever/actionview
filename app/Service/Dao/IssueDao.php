@@ -24,7 +24,7 @@ class IssueDao extends Service
     {
         $model = Issue::findFromCache($id);
         if (empty($model) && $throw) {
-            throw new BusinessException(ErrorCode::SERVER_ERROR, 'ISSUE 不存在');
+            throw new BusinessException(ErrorCode::ISSUE_NOT_EXIST);
         }
 
         return $model;

@@ -11,8 +11,11 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Request\IssueStoreRequest;
 use App\Request\PaginationRequest;
+use App\Service\Dao\IssueDao;
 use App\Service\IssueService;
 use App\Service\ProjectAuth;
 use App\Service\UserAuth;
@@ -35,6 +38,15 @@ class IssueController extends Controller
         ]);
     }
 
+    public function show(int $id)
+    {
+        $issue = di()->get(IssueDao::class)->first($id);
+
+        $result = $this->service->show($issue);
+
+        return $this->response->success($result);
+    }
+
     public function getOptions()
     {
         $user = UserAuth::instance()->build()->getUser();
@@ -52,6 +64,19 @@ class IssueController extends Controller
         $input = $request->all();
 
         $result = $this->service->store($input, $user, $project);
+
+        return $this->response->success($result);
+    }
+
+    public function setAssignee(int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $assigneeId = (string) $this->request->input('assignee');
+        if (empty($assigneeId)) {
+            throw new BusinessException(ErrorCode::ISSUE_ASSIGNEE_CANNOT_EMPTY);
+        }
+
+        $result = $this->service->setAssignee($id, $assigneeId, $user);
 
         return $this->response->success($result);
     }
