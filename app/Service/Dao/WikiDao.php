@@ -94,8 +94,6 @@ class WikiDao extends Service
     }
 
     /**
-     * @param string $projectKey
-     * @param array $pt
      * @return \Hyperf\Database\Model\Collection|Wiki[]
      */
     public function getName(string $projectKey, array $pt)

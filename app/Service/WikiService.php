@@ -27,7 +27,6 @@ class WikiService extends Service
     #[Inject]
     protected WikiDao $dao;
 
-
     public function createDoc(array $input, User $user)
     {
         $insValues = [];
@@ -87,13 +86,12 @@ class WikiService extends Service
         return $pt;
     }
 
-
     public function isPermissionAllowed($projectKey, $permission, User $user)
     {
         $uid = $user->id;
 
         $project = di(ProjectDao::class)->firstByKey($projectKey);
-        $isAllowed =di(AclService::class)->isAllowed($uid, $permission, $project);
+        $isAllowed = di(AclService::class)->isAllowed($uid, $permission, $project);
         if (! $isAllowed && in_array($permission, ['view_project', 'manage_project'])) {
             if ($user->email === 'admin@action.view') {
                 return true;
@@ -140,8 +138,7 @@ class WikiService extends Service
         array_unshift($newest, $document['versions']);
 
         $path = $this->getPathTreeDetail($input['project_key'], Json::decode($document['pt']));
-        return [$this->arrange($document),$path];
-
+        return [$this->arrange($document), $path];
     }
 
     public function getPathTreeDetail($projectKey, $pt)
@@ -181,20 +178,20 @@ class WikiService extends Service
         $insValues = [];
 
         $parent = $input['parent'];
-        if (!isset($parent)) {
-            throw  new BusinessException(ErrorCode::PARENT_NOT_EMPTY);
+        if (! isset($parent)) {
+            throw new BusinessException(ErrorCode::PARENT_NOT_EMPTY);
         }
         $insValues['parent'] = $parent;
 
         if ($parent !== '0') {
-            if (!$this->dao->existsParent($input['project_key'], $parent)) {
-                throw  new BusinessException(ErrorCode::PARENT_NOT_EXIST);
+            if (! $this->dao->existsParent($input['project_key'], $parent)) {
+                throw new BusinessException(ErrorCode::PARENT_NOT_EXIST);
             }
         }
 
-        $name =  $input['name'] ?? '';
-        if (!isset($name) || !$name) {
-            throw  new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
+        $name = $input['name'] ?? '';
+        if (! isset($name) || ! $name) {
+            throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
         $insValues['name'] = $name;
 
@@ -205,15 +202,13 @@ class WikiService extends Service
 
         $insValues['pt'] = Json::encode($this->getPathTree($input['project_key'], $parent));
         $insValues['d'] = 1;
-        $insValues['creator'] = Json::encode([ 'id' => $user->id, 'name' => $user->first_name, 'email' => $user->email ]);
+        $insValues['creator'] = Json::encode(['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email]);
         $insValues['created_at'] = Carbon::now()->toDateTimeString();
         $insValues['user'] = Json::encode($user);
         $insValues['editor'] = '{}';
 
         $model = new Wiki();
         $id = $model->insertGetId($insValues);
-        $data = $this->dao->first($id);
-        return $data;
+        return $this->dao->first($id);
     }
-
 }

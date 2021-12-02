@@ -137,14 +137,10 @@ class AclService extends Service
     public function isAllowed($userId, $permission, $project)
     {
         $permissions = $this->getPermissions($userId, $project);
-        if ($permission == 'view_project')
-        {
-            return !!$permissions;
+        if ($permission == 'view_project') {
+            return (bool) $permissions;
         }
-        else
-        {
-            return in_array($permission, $permissions);
-        }
-    }
 
+        return in_array($permission, $permissions);
+    }
 }

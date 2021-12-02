@@ -23,6 +23,7 @@ class WikiController extends Controller
 {
     #[Inject]
     protected WikiService $service;
+
     protected Response $response;
 
     public function create(WikiCreateRequest $request, $project_key)
@@ -40,7 +41,6 @@ class WikiController extends Controller
         }
 
         [$data,$option] = $this->service->createDoc($input, $user);
-        return $this->response->success($data,['option'=>['path'=>$option]]);
-
+        return $this->response->success($data, ['option' => ['path' => $option]]);
     }
 }
