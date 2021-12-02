@@ -11,9 +11,16 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Acl\Eloquent\RolePermissions;
+use App\Constants\ErrorCode;
+use App\Constants\Permission;
+use App\Constants\ProjectConstant;
+use App\Event\AddUserToRoleEvent;
+use App\Event\DelUserFromRoleEvent;
+use App\Exception\BusinessException;
 use App\Model\AclRoleactor;
+use App\Model\AclRolePermission;
 use App\Model\Project;
+use App\Model\User;
 use App\Service\Context\RoleactorContext;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\AclRoleactorDao;
@@ -25,6 +32,7 @@ use App\Service\Formatter\RoleFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class RoleService extends Service
 {
@@ -33,6 +41,9 @@ class RoleService extends Service
 
     #[Inject]
     protected ProviderService $provider;
+
+    #[Inject]
+    protected RoleFormatter $formatter;
 
     public function index(Project $project)
     {
@@ -65,8 +76,80 @@ class RoleService extends Service
         return $result;
     }
 
-    public function setPermissions(Project $project, int $roleId){
+    /**
+     * @param $input = [
+     *     'users' => []
+     * ]
+     */
+    public function setActor(array $input, int $id, Project $project)
+    {
+        $userIds = $input['users'] ?? null;
+        $role = $this->dao->first($id, true);
 
+        if (isset($userIds)) {
+            $actor = di()->get(AclRoleactorDao::class)->firstByRoleId($project->key, $role->id);
+            $oldUserIds = $actor?->user_ids ?? [];
+
+            if (empty($actor)) {
+                $actor = new AclRoleactor();
+                $actor->project_key = $project->key;
+                $actor->role_id = $role->id;
+                $actor->user_ids = [];
+                $actor->group_ids = [];
+            }
+
+            $actor->user_ids = $userIds;
+            $actor->save();
+
+            di()->get(EventDispatcherInterface::class)->dispatch(new AddUserToRoleEvent(array_diff($userIds, $oldUserIds), $project->key));
+            di()->get(EventDispatcherInterface::class)->dispatch(new DelUserFromRoleEvent(array_diff($oldUserIds, $userIds), $project->key));
+        }
+
+        $groups = $this->getGroupsAndUsers($project->key, $role->id);
+        $result = $this->formatter->base($role);
+        $result['users'] = $groups['users'];
+        $result['groups'] = $groups['groups'];
+
+        return $result;
+    }
+
+    /**
+     * @param $input = [
+     *     'permissions' => [],
+     * ]
+     */
+    public function setPermissions(array $input, int $roleId, Project $project, User $user)
+    {
+        $permissions = $input['permissions'] ?? null;
+        $role = $this->dao->first($roleId, true);
+        if ($role->project_key != ProjectConstant::SYS && $role->project_key !== $project->key) {
+            throw new BusinessException(ErrorCode::ROLE_NOT_EXISTS);
+        }
+
+        if (isset($permissions)) {
+            $allPermissions = Permission::all();
+            if (array_diff($permissions, $allPermissions)) {
+                throw new BusinessException(ErrorCode::ROLE_INVALID);
+            }
+
+            if (! $user->mustContainsAccesses([Permission::MANAGE_PROJECT])) {
+                throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+            }
+
+            $model = di()->get(AclRolePermissionDao::class)->firstByProjectRoleId($project->key, $roleId);
+            if (empty($model)) {
+                $model = new AclRolePermission();
+                $model->project_key = $project->key;
+                $model->role_id = $roleId;
+            }
+
+            $model->permissions = $permissions;
+            $model->save();
+        }
+
+        $result = di()->get(RoleFormatter::class)->base($role);
+        $result['permissions'] = $permissions;
+        return $result;
     }
 
     public function getGroupsAndUsers(string $projectKey, int $roleId): array

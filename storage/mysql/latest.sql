@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-11-30 12:14:57 +0000
+# Generation Time: 2021-12-01 11:00:06 +0000
 # ************************************************************
 
 
@@ -569,6 +569,8 @@ DROP TABLE IF EXISTS `issue`;
 CREATE TABLE `issue` (
 `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
 `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`type` int(10) unsigned NOT NULL,
+`parent_id` int(10) unsigned NOT NULL DEFAULT '0',
 `del_flg` tinyint(3) unsigned NOT NULL DEFAULT '0',
 `resolution` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
 `assignee` json NOT NULL,
@@ -578,7 +580,27 @@ CREATE TABLE `issue` (
 `created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
 `updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
 PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+# Dump of table issue_filters
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `issue_filters`;
+
+CREATE TABLE `issue_filters` (
+  `id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '项目key',
+  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+  `query` json NOT NULL,
+  `scope` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `creator` json NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 # Dump of table labels
@@ -673,6 +695,23 @@ CREATE TABLE `project` (
 
 
 
+# Dump of table project_issue_list_columns
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `project_issue_list_columns`;
+
+CREATE TABLE `project_issue_list_columns` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目key',
+  `column_keys` json NOT NULL,
+  `columns` json NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 # Dump of table sprint
 # ------------------------------------------------------------
 
@@ -740,6 +779,41 @@ CREATE TABLE `user_group_project` (
   `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `INDEX_PROJECT_KEY` (`project_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+# Dump of table user_issue_filters
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_issue_filters`;
+
+CREATE TABLE `user_issue_filters` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '项目key',
+  `user` json NOT NULL,
+  `sequence` json NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+# Dump of table user_issue_list_columns
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_issue_list_columns`;
+
+CREATE TABLE `user_issue_list_columns` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目key',
+  `user` json NOT NULL,
+  `column_keys` json NOT NULL,
+  `columns` json NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -827,83 +901,44 @@ CREATE TABLE `version` (
 
 
 
-# Dump of table wiki
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `wiki`;
-
+OP TABLE IF EXISTS `wiki`;
 CREATE TABLE `wiki` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `wid` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$_sys_$' COMMENT '项目KEY',
-  `d` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+	  `wid` bigint(20) unsigned NOT NULL DEFAULT '0',
+	  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '$_sys_$' COMMENT '项目KEY',
+	  `d` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `pt` json NOT NULL,
+	  `user` json NOT NULL,
+	  `parent` int(11) NOT NULL,
+	  `contents` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `version` int(11) NOT NULL DEFAULT '0',
+	  `creator` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `editor` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+	  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+	  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
+	  PRIMARY KEY (`id`),
+	  KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+# Dump of table wiki_cate
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `wiki_cate`;
+
+CREATE TABLE `wiki_cate` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `w_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'wiki_id',
+  `p_id` int(10) unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `pt` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `parent` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `contents` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `version` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-  `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-# Dump of table issue_filters
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `issue_filters`;
-
-CREATE TABLE `issue_filters` (
-`id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '项目key',
-`name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
-`query` json NOT NULL,
-`scope` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-`creator` json NOT NULL,
-`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-# Dump of table user_issue_filters
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `user_issue_filters`;
-
-CREATE TABLE `user_issue_filters` (
-`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '项目key',
-`user` json NOT NULL,
-`sequence` json NOT NULL,
-`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-CREATE TABLE `project_issue_list_columns` (
-`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-`project_key` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目key',
-`column_keys` json NOT NULL,
-`columns` json NOT NULL,
-`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-CREATE TABLE `user_issue_list_columns` (
-`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-`project_key` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目key',
-`user` json NOT NULL,
-`column_keys` json NOT NULL,
-`columns` json NOT NULL,
-`created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-`updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

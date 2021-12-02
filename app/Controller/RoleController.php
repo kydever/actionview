@@ -11,8 +11,11 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\ProjectRoleActorSaveRequest;
+use App\Request\RolePermissionSaveRequest;
 use App\Service\ProjectAuth;
 use App\Service\RoleService;
+use App\Service\UserAuth;
 use Hyperf\Di\Annotation\Inject;
 
 class RoleController extends Controller
@@ -29,11 +32,21 @@ class RoleController extends Controller
         return $this->response->success($result);
     }
 
-    public function setPermissions(int $id)
+    public function setPermissions(RolePermissionSaveRequest $request, int $id)
+    {
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $user = UserAuth::instance()->build()->getUser();
+
+        $result = $this->service->setPermissions($request->all(), $id, $project, $user);
+
+        return $this->response->success($result);
+    }
+
+    public function setActor(ProjectRoleActorSaveRequest $request, int $id)
     {
         $project = ProjectAuth::instance()->build()->getCurrent();
 
-        $result = $this->service->setPermissions($project, $id);
+        $result = $this->service->setActor($request->all(), $id, $project);
 
         return $this->response->success($result);
     }

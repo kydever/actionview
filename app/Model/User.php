@@ -127,4 +127,12 @@ class User extends Model
         $this->permissions = false;
         return $this;
     }
+
+    public function getPermissions(): array
+    {
+        // if ($this->hasAccess(Permission::SYS_ADMIN)) {
+        //     return Permission::all();
+        // }
+        return $this->permissions;
+    }
 }

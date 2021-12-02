@@ -13,14 +13,20 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Model\User;
+use App\Model\Wiki;
+use App\Service\Dao\WikiDao;
 use Han\Utils\Service;
+use Hyperf\Di\Annotation\Inject;
 
 class WikiService extends Service
 {
-    public function createDoc(array $input)
+    #[Inject]
+    protected WikiDao $dao;
+
+    public function createDoc(array $input, User $user)
     {
         $insValues = [];
-
         $parent = $input['parent'] ?? '';
         $projectKey = $input['project_key'] ?? '';
         if (! isset($parent)) {
@@ -29,47 +35,38 @@ class WikiService extends Service
         $insValues['parent'] = $parent;
 
         if ($parent !== '0') {
-            $isExists = DB::collection('wiki_' . $projectKey)
-                ->where('_id', $parent)
-                ->where('d', 1)
-                ->where('del_flag', '<>', 1)
-                ->exists();
-            if (! $isExists) {
+            if ($this->dao->existsParent($projectKey, $parent)) {
                 throw new BusinessException(ErrorCode::PARENT_NOT_EXIST);
             }
         }
 
         $name = $input['name'] ?? '';
         if (! isset($name) || empty($name)) {
-            throw new \UnexpectedValueException('the name can not be empty.', -11952);
+            throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
+
         $insValues['name'] = $name;
-
-        $isExists = DB::collection('wiki_' . $projectKey)
-            ->where('parent', $parent)
-            ->where('name', $name)
-            ->where('d', '<>', 1)
-            ->where('del_flag', '<>', 1)
-            ->exists();
-        if ($isExists) {
-            throw new \UnexpectedValueException('the name cannot be repeated.', -11953);
+        if ($this->dao->existsParentName($projectKey, $parent, $name)) {
+            throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
         }
 
-        $contents = $request->input('contents');
+        $contents = $input['contents'];
         if (isset($contents) && $contents) {
             $insValues['contents'] = $contents;
         }
 
         $insValues['pt'] = $this->getPathTree($projectKey, $parent);
         $insValues['version'] = 1;
-        $insValues['creator'] = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
+        $insValues['creator'] = ['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email];
         $insValues['created_at'] = time();
-        $id = DB::collection('wiki_' . $projectKey)->insertGetId($insValues);
 
-        $isSendMsg = $request->input('isSendMsg') && true;
-        Event::fire(new WikiEvent($projectKey, $insValues['creator'], ['event_key' => 'create_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id->__toString()]]));
+        $model = new Wiki();
+        $id = $model->insertGetId($insValues);
 
-        return $this->show($request, $projectKey, $id);
+//         TODO 需要需改
+//        $isSendMsg = $input['isSendMsg'] && true;
+//        Event::fire(new WikiEvent($projectKey, $insValues['creator'], ['event_key' => 'create_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id->__toString()]]));
+        return $this->show($input, $id, $user);
     }
 
     public function getPathTree($projectKey, $directory)
@@ -78,14 +75,13 @@ class WikiService extends Service
         if ($directory === '0') {
             $pt = ['0'];
         } else {
-            $d = DB::collection('wiki_' . $projectKey)
-                ->where('_id', $directory)
-                ->first();
+            $d = $this->dao->firstParent($projectKey, $directory);
             $pt = array_merge($d['pt'], [$directory]);
         }
         return $pt;
     }
 
+    // 未开始
     public function isPermissionAllowed($project_key, $permission, User $user)
     {
         $uid = isset($user_id) && $user_id ? $user_id : $this->user->id;
@@ -102,5 +98,73 @@ class WikiService extends Service
             }
         }
         return $isAllowed;
+    }
+
+    public function show($input, int $id, User $user)
+    {
+        $document = $this->dao->first($id, true);
+
+        if ($this->dao->existsWidUser($id, $user->id)) {
+            $document['favorited'] = true;
+        }
+
+        $newest = [];
+        $newest['name'] = $document['name'];
+        $newest['editor'] = isset($document['editor']) ? $document['editor'] : $document['creator'];
+        $newest['updated_at'] = isset($document['updated_at']) ? $document['updated_at'] : $document['created_at'];
+        $newest['version'] = $document['version'];
+
+        $v = $input('v');
+        if (isset($v) && intval($v) != $document['version']) {
+            // 传过来的版本如果和数据表存储的不相等
+            $wiki = $this->dao->firstVersion($input['project_key'], $id, $v);
+            if ($wiki) {
+                throw new \UnexpectedValueException('the version does not exist.', -11957);
+            }
+            $document['name'] = $wiki['name'];
+            $document['contents'] = $wiki['contents'];
+            $document['editor'] = $wiki['editor'];
+            $document['updated_at'] = $wiki['updated_at'];
+            $document['version'] = $wiki['version'];
+        }
+
+        $document['versions'] = $this->dao->search($input, $id);
+        array_unshift($document['versions'], $newest);
+
+        $path = $this->getPathTreeDetail($input['project_key'], $document['pt']);
+
+        return Response()->json(['ecode' => 0, 'data' => $this->arrange($document), 'options' => ['path' => $path]]);
+    }
+
+    public function getPathTreeDetail($projectKey, $pt)
+    {
+        $parents = [];
+        $ps = $this->dao->getName($projectKey, $pt);
+        foreach ($ps as $val) {
+            $parents[$val['_id']->__toString()] = $val['name'];
+        }
+
+        $path = [];
+        foreach ($pt as $pid) {
+            if ($pid === '0') {
+                $path[] = ['id' => '0', 'name' => 'root'];
+            } elseif (isset($parents[$pid])) {
+                $path[] = ['id' => $pid, 'name' => $parents[$pid]];
+            }
+        }
+        return $path;
+    }
+
+    public function arrange($data)
+    {
+        if (! is_array($data)) {
+            return $data;
+        }
+
+        foreach ($data as $k => $val) {
+            $data[$k] = $this->arrange($val);
+        }
+
+        return $data;
     }
 }

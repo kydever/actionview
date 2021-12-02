@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\WikiCreateRequest;
+use App\Service\UserAuth;
 use App\Service\WikiService;
 use Hyperf\Di\Annotation\Inject;
 
@@ -33,19 +34,20 @@ class WikiController extends Controller
     #[Inject]
     protected WikiService $service;
 
-    public function create(WikiCreateRequest $request)
+    public function create(WikiCreateRequest $request, $project_key)
     {
+        $user = UserAuth::instance()->build()->getUser();
         $input = $request->all();
+        $input['project_key'] = $project_key;
+
         if (isset($input['d']) && $input['d'] == 1) {
+            // d
             $s = $this->service->isPermissionAllowed($input['project_key'], 'manage_project');
             if (! $this->service->isPermissionAllowed($input['project_key'], 'manage_project')) {
-                $result = ['ecode' => -10002, 'emsg' => 'permission denied.'];
-            } else {
-                $result = $this->service->createFolder($input);
+                return ['ecode' => -10002, 'emsg' => 'permission denied.'];
             }
-        } else {
-            $result = $this->service->createDoc($input);
+            return $this->service->createFolder($input);
         }
-        return $this->response->success($result);
+        return $this->service->createDoc($input, $user);
     }
 }
