@@ -15,14 +15,18 @@ use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\User;
 use App\Model\Wiki;
+use App\Service\Dao\ProjectDao;
 use App\Service\Dao\WikiDao;
+use Carbon\Carbon;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Codec\Json;
 
 class WikiService extends Service
 {
     #[Inject]
     protected WikiDao $dao;
+
 
     public function createDoc(array $input, User $user)
     {
@@ -55,10 +59,12 @@ class WikiService extends Service
             $insValues['contents'] = $contents;
         }
 
-        $insValues['pt'] = $this->getPathTree($projectKey, $parent);
+        $insValues['pt'] = Json::encode($this->getPathTree($projectKey, $parent));
         $insValues['version'] = 1;
-        $insValues['creator'] = ['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email];
-        $insValues['created_at'] = time();
+        $insValues['creator'] = Json::encode(['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email]);
+        $insValues['editor'] = '{}';
+        $insValues['created_at'] = Carbon::now()->toDateTimeString();
+        $insValues['user'] = Json::encode($user);
 
 
         $model = new Wiki();
@@ -70,7 +76,7 @@ class WikiService extends Service
         return $this->show($input, $id, $user);
     }
 
-    public function getPathTree($projectKey, $directory)
+    public function getPathTree(string $projectKey, string $directory)
     {
         $pt = [];
         if ($directory === '0') {
@@ -82,18 +88,18 @@ class WikiService extends Service
         return $pt;
     }
 
-    // 未开始
-    public function isPermissionAllowed($project_key, $permission, User $user)
-    {
-        $uid = isset($user_id) && $user_id ? $user_id : $this->user->id;
 
-        $isAllowed = Acl::isAllowed($uid, $permission, $project_key);
+    public function isPermissionAllowed($projectKey, $permission, User $user)
+    {
+        $uid = $user->id;
+
+        $project = di(ProjectDao::class)->firstByKey($projectKey);
+        $isAllowed =di(AclService::class)->isAllowed($uid, $permission, $project);
         if (! $isAllowed && in_array($permission, ['view_project', 'manage_project'])) {
-            if ($this->user->email === 'admin@action.view') {
+            if ($user->email === 'admin@action.view') {
                 return true;
             }
-
-            $project = Project::where(['key' => $project_key])->first();
+            $project = di(ProjectDao::class)->firstByKey($projectKey);
             if ($project && isset($project->principal, $project->principal['id']) && $uid === $project->principal['id']) {
                 return true;
             }
@@ -104,38 +110,40 @@ class WikiService extends Service
 
     public function show($input, int $id, User $user)
     {
-        $document = $this->dao->first($id, true);
+        $document = $this->dao->first($id, true)->toArray();
 
         if ($this->dao->existsWidUser($id, $user->id)) {
             $document['favorited'] = true;
         }
-
         $newest = [];
         $newest['name'] = $document['name'];
-        $newest['editor'] = isset($document['editor']) ? $document['editor'] : $document['creator'];
+        $newest['editor'] = isset($document['editor']) ? JSON::decode($document['editor']) : JSON::decode($document['creator']);
         $newest['updated_at'] = isset($document['updated_at']) ? $document['updated_at'] : $document['created_at'];
         $newest['version'] = $document['version'];
 
-        $v = $input('v');
-        if (isset($v) && intval($v) != $document['version']) {
-            // 传过来的版本如果和数据表存储的不相等
-            $wiki = $this->dao->firstVersion($input['project_key'], $id, $v);
-            if ($wiki) {
-                throw new \UnexpectedValueException('the version does not exist.', -11957);
-            }
-            $document['name'] = $wiki['name'];
-            $document['contents'] = $wiki['contents'];
-            $document['editor'] = $wiki['editor'];
-            $document['updated_at'] = $wiki['updated_at'];
-            $document['version'] = $wiki['version'];
-        }
+//         TODO 先注释后续再看
+//        $v = $input['v'] ?? '';
+//
+//        if (isset($v) && intval($v) != $document['version']) {
+//            // 传过来的版本如果和数据表存储的不相等
+//            $wiki = $this->dao->firstVersion($input['project_key'], $id, $v);
+//            if ($wiki) {
+//                throw new \UnexpectedValueException('the version does not exist.', -11957);
+//            }
+//            $document['name'] = $wiki['name'];
+//            $document['contents'] = $wiki['contents'];
+//            $document['editor'] = $wiki['editor'];
+//            $document['updated_at'] = $wiki['updated_at'];
+//            $document['version'] = $wiki['version'];
+//        }
 
         $document['versions'] = $this->dao->search($input, $id);
-        array_unshift($document['versions'], $newest);
 
-        $path = $this->getPathTreeDetail($input['project_key'], $document['pt']);
+        array_unshift($newest, $document['versions']);
 
-        return Response()->json(['ecode' => 0, 'data' => $this->arrange($document), 'options' => ['path' => $path]]);
+        $path = $this->getPathTreeDetail($input['project_key'], Json::decode($document['pt']));
+        return [$this->arrange($document),$path];
+
     }
 
     public function getPathTreeDetail($projectKey, $pt)
@@ -169,4 +177,45 @@ class WikiService extends Service
 
         return $data;
     }
+
+    public function createFolder(array $input, User $user)
+    {
+        $insValues = [];
+
+        $parent = $input['parent'];
+        if (!isset($parent)) {
+            throw  new BusinessException(ErrorCode::PARENT_NOT_EMPTY);
+        }
+        $insValues['parent'] = $parent;
+
+        if ($parent !== '0') {
+            if (!$this->dao->existsParent($input['project_key'], $parent)) {
+                throw  new BusinessException(ErrorCode::PARENT_NOT_EXIST);
+            }
+        }
+
+        $name =  $input['name'] ?? '';
+        if (!isset($name) || !$name) {
+            throw  new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
+        }
+        $insValues['name'] = $name;
+
+        $isExists = $this->dao->existsParentName($input['project_key'], $parent, $name);
+        if ($isExists) {
+            throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
+        }
+
+        $insValues['pt'] = Json::encode($this->getPathTree($input['project_key'], $parent));
+        $insValues['d'] = 1;
+        $insValues['creator'] = Json::encode([ 'id' => $user->id, 'name' => $user->first_name, 'email' => $user->email ]);
+        $insValues['created_at'] = Carbon::now()->toDateTimeString();
+        $insValues['user'] = Json::encode($user);
+        $insValues['editor'] = '{}';
+
+        $model = new Wiki();
+        $id = $model->insertGetId($insValues);
+        $data = $this->dao->first($id);
+        return $data;
+    }
+
 }
