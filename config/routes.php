@@ -128,7 +128,7 @@ Router::addGroup('/project/{project_key}/', function () {
     // Route::post('wiki/move', 'WikiController@move');
     // Route::post('wiki/copy', 'WikiController@copy');
     Router::post('wiki', App\Controller\WikiController::class . '::create');
-// Route::put('wiki/{id}', 'WikiController@update');
+    // Route::put('wiki/{id}', 'WikiController@update');
     // Route::get('wiki/{id}/checkin', 'WikiController@checkin');
     // Route::get('wiki/{id}/checkout', 'WikiController@checkout');
     // Route::delete('wiki/{id}', 'WikiController@destroy');

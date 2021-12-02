@@ -246,5 +246,4 @@ class ErrorCode extends AbstractConstants
      * @Message("WIKI对象不存在")
      */
     public const WIKI_OBJECT_NOT_EXIST = -11954;
-
 }

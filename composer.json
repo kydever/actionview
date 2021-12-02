@@ -19,6 +19,7 @@
         "ext-pdo_mysql": "*",
         "ext-redis": "*",
         "ext-swoole": ">=4.5",
+        "elasticsearch/elasticsearch": "^7.15",
         "hyperf/async-queue": "3.0.*",
         "hyperf/cache": "3.0.*",
         "hyperf/command": "3.0.*",

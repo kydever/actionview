@@ -93,11 +93,6 @@ class WikiDao extends Service
         return $query->get();
     }
 
-    /**
-     * @param string $projectKey
-     * @param array $pt
-     * @return Wiki|null
-     */
     public function getName(string $projectKey, array $pt): ?Wiki
     {
         return Wiki::query()

@@ -50,5 +50,4 @@ class WikiController extends Controller
         }
         return $this->service->createDoc($input, $user);
     }
-
 }
