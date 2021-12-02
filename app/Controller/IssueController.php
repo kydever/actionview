@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\IssueStoreRequest;
+use App\Request\PaginationRequest;
 use App\Service\IssueService;
 use App\Service\ProjectAuth;
 use App\Service\UserAuth;
@@ -22,13 +23,16 @@ class IssueController extends Controller
     #[Inject]
     protected IssueService $service;
 
-    public function index()
+    public function index(PaginationRequest $request)
     {
         $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
 
-        return $this->response->success([]);
-        [$count, $result] = $this->service->index($project, $user);
+        [, $result, $options] = $this->service->index($request->all(), $project, $user, $request->offset(), $request->limit());
+
+        return $this->response->success($result, [
+            'options' => $options,
+        ]);
     }
 
     public function getOptions()

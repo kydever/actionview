@@ -64,4 +64,12 @@ class IssueDao extends Service
 
         return $result;
     }
+
+    /**
+     * @return \Hyperf\Database\Model\Collection|Issue[]
+     */
+    public function findMany(array $ids)
+    {
+        return Issue::findManyFromCache($ids);
+    }
 }
