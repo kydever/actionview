@@ -24,12 +24,20 @@ class IssueSearch extends ElasticSearch
             'parent_id' => ['type' => 'long'],
             'del_flg' => ['type' => 'byte'],
             'resolution' => ['type' => 'keyword'],
-            'assignee.id' => ['type' => 'long'],
-            'assignee.name' => ['type' => 'text'],
-            'assignee.email' => ['type' => 'text'],
-            'reporter.id' => ['type' => 'long'],
-            'reporter.name' => ['type' => 'text'],
-            'reporter.email' => ['type' => 'text'],
+            'assignee' => [
+                'properties' => [
+                    'id' => ['type' => 'long'],
+                    'name' => ['type' => 'text'],
+                    'email' => ['type' => 'text'],
+                ],
+            ],
+            'reporter' => [
+                'properties' => [
+                    'id' => ['type' => 'long'],
+                    'name' => ['type' => 'text'],
+                    'email' => ['type' => 'text'],
+                ],
+            ],
             // 'data' => ['type' => 'array']
         ];
     }
@@ -42,5 +50,10 @@ class IssueSearch extends ElasticSearch
     public function type(): string
     {
         return 'doc';
+    }
+
+    protected function check($data): bool
+    {
+        return true;
     }
 }

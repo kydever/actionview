@@ -34,7 +34,7 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property Issue $parent
  * @property ConfigType $typeModel
  */
-class Issue extends Model
+class Issue extends Model implements Searchable
 {
     use HasORMJsonRelations;
 
@@ -83,5 +83,10 @@ class Issue extends Model
     public function pushToSearch(): void
     {
         di()->get(IssueSearch::class)->put($this);
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }
