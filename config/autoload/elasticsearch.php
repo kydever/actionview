@@ -11,12 +11,6 @@ declare(strict_types=1);
  */
 return [
     'default' => [
-        'driver' => Hyperf\Cache\Driver\RedisDriver::class,
-        'packer' => Hyperf\Utils\Packer\PhpSerializerPacker::class,
-        'prefix' => 'c:',
-    ],
-    'context' => [
-        'driver' => Hyperf\Cache\Driver\CoroutineMemoryDriver::class,
-        'prefix' => 'c:',
+        'host' => env('ELASTIC_SEARCH_HOST', '127.0.0.1:9200'),
     ],
 ];

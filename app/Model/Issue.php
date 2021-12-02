@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App\Constants\StatusConstant;
+use App\Service\Client\IssueSearch;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
 use Hyperf\Database\Model\Relations\HasOne;
 
@@ -33,7 +34,7 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property Issue $parent
  * @property ConfigType $typeModel
  */
-class Issue extends Model
+class Issue extends Model implements Searchable
 {
     use HasORMJsonRelations;
 
@@ -75,7 +76,16 @@ class Issue extends Model
 
     public function children()
     {
-        return $this->hasMany(Issue::class, 'parent_id', 'id')
-            ->where('del_flg', '<>', StatusConstant::DELETED);
+        return $this->hasMany(Issue::class, 'parent_id', 'id')->where('del_flg', '<>', StatusConstant::DELETED);
+    }
+
+    public function pushToSearch(): void
+    {
+        di()->get(IssueSearch::class)->put($this);
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

@@ -43,5 +43,4 @@ class WikiController extends Controller
         return $this->response->success($data,['option'=>['path'=>$option]]);
 
     }
-
 }

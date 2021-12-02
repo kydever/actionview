@@ -273,9 +273,16 @@ class ProviderService extends Service
         return $result;
     }
 
-    public function getFieldList(string $key): array
+    #[Cacheable(prefix: 'field', group: 'context')]
+    public function getFieldList(string $key)
     {
-        $models = di(ConfigFieldDao::class)->getFieldList($key);
+        return di()->get(ConfigFieldDao::class)->getFieldList($key);
+    }
+
+    public function getFieldListOptions(string $key): array
+    {
+        $models = $this->getFieldList($key);
+
         return di(ConfigFieldFormatter::class)->formatList($models);
     }
 

@@ -36,4 +36,30 @@ class Schema
     public const FIELD_MULTI_USER = 'MultiUser';
 
     public const FIELD_FILE = 'File';
+
+    public const FIELD_SELECT = 'Select';
+
+    public const FIELD_SINGLE_VERSION = 'SingleVersion';
+
+    public const FIELD_RADIO_GROUP = 'RadioGroup';
+
+    public const FIELD_MULTI_SELECT = 'MultiSelect';
+
+    public const FIELD_MULTI_VERSION = 'MultiVersion';
+
+    public const FIELD_CHECKBOX_GROUP = 'CheckboxGroup';
+
+    public const FIELD_DURATION = 'Duration';
+
+    public const FIELD_TEXT = 'Text';
+
+    public const FIELD_TEXT_AREA = 'TextArea';
+
+    public const FIELD_RICH_TEXT_EDITOR = 'RichTextEditor';
+
+    public const FIELD_URL = 'Url';
+
+    public const FIELD_NUMBER = 'Number';
+
+    public const FIELD_INTEGER = 'Integer';
 }

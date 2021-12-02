@@ -39,7 +39,7 @@ class WikiService extends Service
         $insValues['parent'] = $parent;
 
         if ($parent !== '0') {
-            if ($this->dao->existsParent($projectKey, $parent)){
+            if ($this->dao->existsParent($projectKey, $parent)) {
                 throw new BusinessException(ErrorCode::PARENT_NOT_EXIST);
             }
         }
@@ -65,7 +65,6 @@ class WikiService extends Service
         $insValues['editor'] = '{}';
         $insValues['created_at'] = Carbon::now()->toDateTimeString();
         $insValues['user'] = Json::encode($user);
-
 
         $model = new Wiki();
         $id = $model->insertGetId($insValues);
@@ -106,7 +105,6 @@ class WikiService extends Service
         }
         return $isAllowed;
     }
-
 
     public function show($input, int $id, User $user)
     {
