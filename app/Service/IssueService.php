@@ -811,7 +811,6 @@ class IssueService extends Service
 
     public function resetState(array $input, int $id, User $user, Project $project)
     {
-
     }
 
     private function getAssignee(string $assigneeId, Issue $issue, User $user, Project $project): array|User
