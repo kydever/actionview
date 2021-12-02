@@ -76,8 +76,7 @@ class Issue extends Model implements Searchable
 
     public function children()
     {
-        return $this->hasMany(Issue::class, 'parent_id', 'id')
-            ->where('del_flg', '<>', StatusConstant::DELETED);
+        return $this->hasMany(Issue::class, 'parent_id', 'id')->where('del_flg', '<>', StatusConstant::DELETED);
     }
 
     public function pushToSearch(): void

@@ -19,9 +19,12 @@ namespace App\Model;
  * @property string $del_flag
  * @property string $name
  * @property string $pt
- * @property string $parent
+ * @property string $user
+ * @property int $parent
  * @property string $contents
- * @property string $version
+ * @property int $version
+ * @property string $creator
+ * @property string $editor
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -39,12 +42,12 @@ class Wiki extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'wid', 'project_key', 'd', 'del_flag', 'name', 'pt', 'parent', 'contents', 'version', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'wid', 'project_key', 'd', 'del_flag', 'name', 'pt', 'user', 'parent', 'contents', 'version', 'creator', 'editor', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'wid' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'wid' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'parent' => 'integer', 'version' => 'integer'];
 }

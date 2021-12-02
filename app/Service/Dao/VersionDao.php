@@ -28,4 +28,15 @@ class VersionDao extends Service
             ->orderBy('created_at', 'desc')
             ->get();
     }
+
+    public function index(string $key, int $limit, int $offset): array
+    {
+        $query = Version::query()
+            ->where(['project_key' => $key])
+            ->orderBy('status', 'desc')
+            ->orderBy('released_time', 'desc')
+            ->orderBy('end_time', 'desc')
+            ->orderBy('created_at', 'desc');
+        return $this->factory->model->pagination($query, $offset, $limit);
+    }
 }
