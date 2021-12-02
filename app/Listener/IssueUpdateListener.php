@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Listener;
 
 use App\Event\IssueEvent;
+use App\Service\IssueService;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
@@ -35,5 +36,8 @@ class IssueUpdateListener implements ListenerInterface
      */
     public function process(object $event)
     {
+        $issue = $event->getIssue();
+        // 同步到搜索引擎
+        di()->get(IssueService::class)->pushToSearch($issue->id);
     }
 }
