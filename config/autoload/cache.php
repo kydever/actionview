@@ -15,4 +15,9 @@ return [
         'packer' => Hyperf\Utils\Packer\PhpSerializerPacker::class,
         'prefix' => 'c:',
     ],
+    'context' => [
+        'driver' => Hyperf\Cache\Driver\CoroutineMemoryDriver::class,
+        'packer' => Hyperf\Utils\Packer\PhpSerializerPacker::class,
+        'prefix' => 'c:',
+    ],
 ];

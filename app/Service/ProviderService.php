@@ -11,7 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\IssueFiltersConstant;
 use App\Constants\Permission;
+use App\Constants\ProjectIssueListColumnConstant;
 use App\Constants\Schema;
 use App\Model\ConfigPriority;
 use App\Model\ConfigPriorityProperty;
@@ -29,22 +31,27 @@ use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\EpicDao;
+use App\Service\Dao\IssueFilterDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\ProjectDao;
+use App\Service\Dao\ProjectIssueListColumnDao;
 use App\Service\Dao\SprintDao;
+use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
+use App\Service\Dao\UserIssueFilterDao;
+use App\Service\Dao\UserIssueListColumnDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\ConfigFieldFormatter;
 use App\Service\Formatter\ConfigTypeFormatter;
+use App\Service\Formatter\IssueFilterFormatter;
 use App\Service\Formatter\LabelFormatter;
 use App\Service\Formatter\SprintFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
+use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Database\Model\Collection;
-use Hyperf\Utils\Arr;
-use Hyperf\Utils\Context;
 use JetBrains\PhpStorm\ArrayShape;
 use function Han\Utils\sort;
 
@@ -53,6 +60,7 @@ use function Han\Utils\sort;
  */
 class ProviderService extends Service
 {
+    #[Cacheable(prefix: 'user', group: 'context')]
     public function getUserList(string $key): array
     {
         $projects = di()->get(UserGroupProjectDao::class)->findByProjectKey($key);
@@ -77,21 +85,14 @@ class ProviderService extends Service
         return di()->get(UserFormatter::class)->formatSmalls($models);
     }
 
+    #[Cacheable(prefix: 'assigned:users', group: 'context')]
     public function getAssignedUsers(string $key)
     {
-        $userIds = di()->get(AclService::class)->getUserIdsByPermission(Permission::ISSUE_ASSIGNED, $key);
+        $userIds = di()->get(AclService::class)->getUserIdsByPermission(Permission::ASSIGNED_ISSUE, $key);
 
         $models = di()->get(UserDao::class)->findMany($userIds);
 
         return di()->get(UserFormatter::class)->formatSmalls($models);
-    }
-
-    public function getAssignedUsersFromContext(string $key)
-    {
-        $key = sprintf('assigned.users.for.%s', $key);
-        return Context::getOrSet($key, function () use ($key) {
-            return $this->getAssignedUsers($key);
-        });
     }
 
     public function getStateListOptions(string $key): array
@@ -162,6 +163,7 @@ class ProviderService extends Service
         return [$priorities, $property];
     }
 
+    #[Cacheable(prefix: 'priority', group: 'context')]
     public function getPriorityOptions(string $key)
     {
         [$priorities, $property] = $this->getPriorityList($key);
@@ -184,6 +186,7 @@ class ProviderService extends Service
         return $options;
     }
 
+    #[Cacheable(prefix: 'resolution', group: 'context')]
     public function getResolutionOptions(string $key)
     {
         [$resolutions, $property] = $this->getResolutionList($key);
@@ -204,6 +207,7 @@ class ProviderService extends Service
         return $options;
     }
 
+    #[Cacheable(prefix: 'module', group: 'context')]
     public function getModuleList(string $key): array
     {
         $models = di(ModuleDao::class)->getModuleList($key);
@@ -211,6 +215,7 @@ class ProviderService extends Service
         return $models->columns(['id', 'name'])->toArray();
     }
 
+    #[Cacheable(prefix: 'epic', group: 'context')]
     public function getEpicList(string $key): array
     {
         $models = di(EpicDao::class)->getEpicList($key);
@@ -218,6 +223,7 @@ class ProviderService extends Service
         return $models->columns(['id', 'name', 'bgColor'])->toArray();
     }
 
+    #[Cacheable(prefix: 'version', group: 'context')]
     public function getVersionList(string $key)
     {
         $versions = di()->get(VersionDao::class)->findByProjectKey($key);
@@ -225,6 +231,7 @@ class ProviderService extends Service
         return $versions->columns(['id', 'name'])->toArray();
     }
 
+    #[Cacheable(prefix: 'label', group: 'context')]
     public function getLabelOptions(string $key): array
     {
         $models = di(LabelDao::class)->getLabelOptions($key);
@@ -272,6 +279,64 @@ class ProviderService extends Service
         return di(ConfigFieldFormatter::class)->formatList($models);
     }
 
+    public function getIssueFilters(string $key, int $userId): array
+    {
+        $filters = IssueFiltersConstant::DEFAULT_ISSUE_FILTERS;
+
+        $customizeFilterModels = di(IssueFilterDao::class)->getIssueFilters($key, $userId);
+        $customizeFilters = di(IssueFilterFormatter::class)->formatList($customizeFilterModels);
+        $filters = array_merge($filters, $customizeFilters);
+        $userFilter = di(UserIssueFilterDao::class)->getUserFilter($key, $userId);
+        if ($userFilter) {
+            $sequence = $userFilter->sequence;
+            $func = function ($v1, $v2) use ($sequence) {
+                $i1 = array_search($v1['id'], $sequence);
+                $i1 = $i1 !== false ? $i1 : 998;
+                $i2 = array_search($v2['id'], $sequence);
+                $i2 = $i2 !== false ? $i2 : 999;
+                return $i1 >= $i2 ? 1 : -1;
+            };
+            usort($filters, $func);
+        }
+
+        return $filters;
+    }
+
+    public function getIssueDisplayColumns(string $key, int $userId): array
+    {
+        $userIssueListColumnModel = di(UserIssueListColumnDao::class)->getUserDisplayColumns($key, $userId);
+        if ($columns = $userIssueListColumnModel?->columns) {
+            return $columns;
+        }
+
+        $projectIssueListColumnModel = di(ProjectIssueListColumnDao::class)->getDisplayColumns($key);
+        if ($columns = $projectIssueListColumnModel?->columns) {
+            return $columns;
+        }
+        return ProjectIssueListColumnConstant::DEFAULT_DISPLAY_COLUMNS;
+    }
+
+    public function getTimeTrackSetting(): array
+    {
+        $options = ['w2d' => 5, 'd2h' => 8];
+        $model = di(SysSettingDao::class)->first();
+        if ($properties = $model?->properties) {
+            $options['w2d'] = $properties['week2day'] ?? $options['w2d'];
+            $options['d2h'] = $properties['day2hour'] ?? $options['d2h'];
+        }
+        return $options;
+    }
+
+    public function getLinkRelations(): array
+    {
+        return [
+            ['id' => 'blocks', 'out' => 'blocks', 'in' => 'is blocked by'],
+            ['id' => 'clones', 'out' => 'clones', 'in' => 'is cloned by'],
+            ['id' => 'duplicates', 'out' => 'duplicates', 'in' => 'is duplicated by'],
+            ['id' => 'relates', 'out' => 'relates to', 'in' => 'relates to'],
+        ];
+    }
+
     public function getSchemaByType(int $typeId): array
     {
         $type = di()->get(ConfigTypeDao::class)->first($typeId, false);
@@ -296,11 +361,11 @@ class ProviderService extends Service
             }
 
             if ($val['key'] == Schema::ASSIGNEE) {
-                $users = $this->getAssignedUsersFromContext($projectKey);
+                $users = $this->getAssignedUsers($projectKey);
                 foreach ($users as $key => $user) {
                     $users[$key]['name'] = $user['name'] . '(' . $user['email'] . ')';
                 }
-                $val['optionValues'] = Arr::only($users, ['id', 'name']);
+                $val['optionValues'] = $users;
             } elseif ($val['key'] == Schema::RESOLUTION) {
                 $resolutions = $this->getResolutionOptions($projectKey);
                 $val['optionValues'] = $resolutions;
@@ -312,7 +377,7 @@ class ProviderService extends Service
                 }
             } elseif ($val['key'] == Schema::PRIORITY) {
                 $priorities = $this->getPriorityOptions($projectKey);
-                $val['optionValues'] = Arr::only($priorities, ['id', 'name']);
+                $val['optionValues'] = $priorities;
                 foreach ($priorities as $v) {
                     if ($v['default'] ?? null) {
                         $val['defaultValue'] = $v['id'];
@@ -323,7 +388,7 @@ class ProviderService extends Service
                 $modules = $this->getModuleList($projectKey);
                 $val['optionValues'] = $modules;
             } elseif ($val['key'] == Schema::EPIC) {
-                $epics = Arr::only($this->getEpicList($projectKey), ['id', 'name', 'bgColor']);
+                $epics = $this->getEpicList($projectKey);
                 $val['optionValues'] = $epics;
             } elseif ($val['key'] == Schema::LABELS) {
                 $labels = $this->getLabelOptions($projectKey);
@@ -334,13 +399,13 @@ class ProviderService extends Service
                 $val['optionValues'] = $coupleLabels;
             } elseif ($val['type'] == 'SingleVersion' || $val['type'] == 'MultiVersion') {
                 $versions === null && $versions = $this->getVersionList($projectKey);
-                $val['optionValues'] = Arr::only($versions, ['id', 'name']);
+                $val['optionValues'] = $versions;
             } elseif ($val['type'] == 'SingleUser' || $val['type'] == 'MultiUser') {
                 $users === null && $users = $this->getUserList($projectKey);
                 foreach ($users as $key => $user) {
                     $users[$key]['name'] = $user['name'] . '(' . $user['email'] . ')';
                 }
-                $val['optionValues'] = Arr::only($users, ['id', 'name']);
+                $val['optionValues'] = $users;
             }
 
             $newSchema[] = $val;

@@ -23,4 +23,15 @@ class LabelDao extends Service
     {
         return Label::query()->where('project_key', $key)->orderBy('id')->get();
     }
+
+    /**
+     * @return \Hyperf\Database\Model\Collection|Label[]
+     */
+    public function findByName(string $key, array $names)
+    {
+        return Label::query()->where('project_key', $key)
+            ->whereIn('name', $names)
+            ->orderBy('id')
+            ->get();
+    }
 }

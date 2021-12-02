@@ -81,4 +81,9 @@ class AclRolePermissionDao extends Service
     {
         return AclRolePermission::query()->where('project_key', $key)->get();
     }
+
+    public function firstByProjectRoleId(string $key, int $roleId): ?AclRolePermission
+    {
+        return AclRolePermission::query()->where('project_key', $key)->where('role_id', $roleId)->first();
+    }
 }

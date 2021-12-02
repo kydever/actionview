@@ -39,6 +39,7 @@ class WikiController extends Controller
         $user = UserAuth::instance()->build()->getUser();
         $input = $request->all();
         $input['project_key'] = $project_key;
+
         if (isset($input['d']) && $input['d'] == 1) {
             // d
             $s = $this->service->isPermissionAllowed($input['project_key'], 'manage_project');
@@ -50,44 +51,4 @@ class WikiController extends Controller
         return $this->service->createDoc($input, $user);
     }
 
-    public function getDirTree()
-    {
-        // d 父级  1文件夹   否则就是文件（文档）
-        // id 字符串
-        // currentnode  传root 或者没有这个字段
-        // parent 为"0"时候 代表为根目录  否则存储是  id
-        // pt 默认为 ["0"],["0","12313"]
-
-        $dt = ['id' => '0', 'name' => '根目录', 'd' => 1];
-
-        $curnode = $this->request->input('currentnode');
-        if (! $curnode) {
-            $curnode = '0';
-        }
-
-        $pt = ['0'];
-        if ($curnode !== '0') {
-            $node = DB::collection('wiki_' . $project_key)
-                ->where('_id', $curnode)
-                ->first();
-
-            if ($node) {
-                $pt = $node['pt'];
-                if (isset($node['d']) && $node['d'] == 1) {
-                    array_push($pt, $curnode);
-                }
-            }
-        }
-
-        foreach ($pt as $val) {
-            $sub_dirs = DB::collection('wiki_' . $project_key)
-                ->where('parent', $val)
-                ->where('del_flag', '<>', 1)
-                ->get();
-
-            $this->addChildren2Tree($dt, $val, $sub_dirs);
-        }
-
-        return $this->response->success($dt);
-    }
 }

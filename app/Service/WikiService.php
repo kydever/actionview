@@ -29,14 +29,13 @@ class WikiService extends Service
         $insValues = [];
         $parent = $input['parent'] ?? '';
         $projectKey = $input['project_key'] ?? '';
-
         if (! isset($parent)) {
             throw new BusinessException(ErrorCode::PARENT_NOT_EMPTY);
         }
         $insValues['parent'] = $parent;
 
         if ($parent !== '0') {
-            if ($this->dao->existsParent($projectKey, $parent)) {
+            if ($this->dao->existsParent($projectKey, $parent)){
                 throw new BusinessException(ErrorCode::PARENT_NOT_EXIST);
             }
         }
@@ -61,13 +60,13 @@ class WikiService extends Service
         $insValues['creator'] = ['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email];
         $insValues['created_at'] = time();
 
+
         $model = new Wiki();
         $id = $model->insertGetId($insValues);
 
 //         TODO 需要需改
 //        $isSendMsg = $input['isSendMsg'] && true;
 //        Event::fire(new WikiEvent($projectKey, $insValues['creator'], ['event_key' => 'create_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id->__toString()]]));
-
         return $this->show($input, $id, $user);
     }
 
@@ -83,6 +82,7 @@ class WikiService extends Service
         return $pt;
     }
 
+    // 未开始
     public function isPermissionAllowed($project_key, $permission, User $user)
     {
         $uid = isset($user_id) && $user_id ? $user_id : $this->user->id;
@@ -100,6 +100,7 @@ class WikiService extends Service
         }
         return $isAllowed;
     }
+
 
     public function show($input, int $id, User $user)
     {

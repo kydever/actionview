@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use App\Constants\ProjectConstant;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -69,5 +70,10 @@ class Project extends Model
     public function isPrincipal(int $userId): bool
     {
         return ($this->getPrincipal()['id'] ?? null) === $userId;
+    }
+
+    public function isSYS(): bool
+    {
+        return $this->key === ProjectConstant::SYS;
     }
 }

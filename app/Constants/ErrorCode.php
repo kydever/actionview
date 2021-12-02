@@ -113,6 +113,16 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_DATE_TIME_PICKER_INVALID = -11122;
 
     /**
+     * @Message("角色非法")
+     */
+    public const ROLE_INVALID = -12701;
+
+    /**
+     * @Message("角色不存在")
+     */
+    public const ROLE_NOT_EXISTS = -12702;
+
+    /**
      * @Message("项目名称不能为空")
      */
     public const PROJECT_NAME_CANNOT_BE_EMPTY = -14000;
@@ -236,4 +246,5 @@ class ErrorCode extends AbstractConstants
      * @Message("WIKI对象不存在")
      */
     public const WIKI_OBJECT_NOT_EXIST = -11954;
+
 }

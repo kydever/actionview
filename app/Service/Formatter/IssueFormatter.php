@@ -11,32 +11,30 @@ declare(strict_types=1);
  */
 namespace App\Service\Formatter;
 
-use App\Model\ConfigField;
+use App\Model\Issue;
 use Han\Utils\Service;
-use Hyperf\Database\Model\Collection;
 
-class ConfigFieldFormatter extends Service
+class IssueFormatter extends Service
 {
-    public function base(ConfigField $model): array
+    public function base(Issue $model)
     {
-        return [
+        $result = [
             'id' => $model->id,
-            'name' => $model->name,
             'project_key' => $model->project_key,
-            'key' => $model->key,
             'type' => $model->type,
-            'description' => $model->description,
-            'optionValues' => $model->option_values,
-            'defaultValue' => $model->default_value,
-            'min_value' => $model->min_value,
-            'max_value' => $model->max_value,
+            'del_flg' => $model->del_flg,
+            'resolution' => $model->resolution,
+            'assignee' => $model->assignee,
+            'reporter' => $model->reporter,
+            'no' => $model->no,
         ];
+
+        return array_replace($model->data, $result);
     }
 
-    public function formatList(Collection $models)
+    public function formatList($models)
     {
         $result = [];
-        /** @var ConfigField[] $models */
         foreach ($models as $model) {
             $result[] = $this->base($model);
         }

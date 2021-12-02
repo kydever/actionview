@@ -11,43 +11,42 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use App\Request\IssueStoreRequest;
-use App\Service\IssueService;
+use App\Request\ProjectRoleActorSaveRequest;
+use App\Request\RolePermissionSaveRequest;
 use App\Service\ProjectAuth;
+use App\Service\RoleService;
 use App\Service\UserAuth;
 use Hyperf\Di\Annotation\Inject;
 
-class IssueController extends Controller
+class RoleController extends Controller
 {
     #[Inject]
-    protected IssueService $service;
+    protected RoleService $service;
 
     public function index()
     {
-        $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
 
-        return $this->response->success([]);
-        [$count, $result] = $this->service->index($project, $user);
-    }
-
-    public function getOptions()
-    {
-        $user = UserAuth::instance()->build()->getUser();
-        $project = ProjectAuth::instance()->build()->getCurrent();
-
-        $result = $this->service->getAllOptions($user->id, $project);
+        $result = $this->service->index($project);
 
         return $this->response->success($result);
     }
 
-    public function store(IssueStoreRequest $request)
+    public function setPermissions(RolePermissionSaveRequest $request, int $id)
     {
-        $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
-        $input = $request->all();
+        $user = UserAuth::instance()->build()->getUser();
 
-        $result = $this->service->store($input, $user, $project);
+        $result = $this->service->setPermissions($request->all(), $id, $project, $user);
+
+        return $this->response->success($result);
+    }
+
+    public function setActor(ProjectRoleActorSaveRequest $request, int $id)
+    {
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->setActor($request->all(), $id, $project);
 
         return $this->response->success($result);
     }

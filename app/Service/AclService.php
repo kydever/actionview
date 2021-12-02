@@ -40,13 +40,13 @@ class AclService extends Service
 
     public function hasAccess(int $userId, Project $project, string $access): bool
     {
-        if (in_array($access, [Permission::PROJECT_VIEW, Permission::PROJECT_MANAGE]) && $project->isPrincipal($userId)) {
+        if (in_array($access, [Permission::VIEW_PROJECT, Permission::MANAGE_PROJECT]) && $project->isPrincipal($userId)) {
             return true;
         }
 
         $permissions = $this->getPermissionsFromContext($userId, $project);
 
-        if ($access === Permission::PROJECT_VIEW) {
+        if ($access === Permission::VIEW_PROJECT) {
             return (bool) $permissions;
         }
 
@@ -63,6 +63,10 @@ class AclService extends Service
     #[Cacheable(prefix: 'permission', value: '#{userId}:#{project.id}', ttl: 120)]
     public function getPermissions(int $userId, Project $project): array
     {
+        if (UserConstant::isSuperAdmin($userId)) {
+            return Permission::all();
+        }
+
         $groups = $this->getBoundGroups($userId);
         $groupIds = array_column($groups, 'id');
 
@@ -82,7 +86,7 @@ class AclService extends Service
             }
         }
 
-        if ($project->isPrincipal($userId) || UserConstant::isSuperAdmin($userId)) {
+        if ($project->isPrincipal($userId)) {
             ! in_array('view_project', $result) && $result[] = 'view_project';
             ! in_array('manage_project', $result) && $result[] = 'manage_project';
         }

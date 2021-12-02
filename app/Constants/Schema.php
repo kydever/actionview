@@ -34,4 +34,6 @@ class Schema
     public const FIELD_SINGLE_USER = 'SingleUser';
 
     public const FIELD_MULTI_USER = 'MultiUser';
+
+    public const FIELD_FILE = 'File';
 }

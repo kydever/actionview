@@ -75,7 +75,29 @@ Router::addGroup('/', function () {
     'middleware' => [App\Middleware\AuthorizeMiddleware::class],
 ]);
 
-    Router::addGroup('/project/{project_key}/', function () {
+Router::addGroup('/project/{project_key}/', function () {
+    // Router::get('role/{id}/reset', 'RoleController@reset');
+    Router::post('role/{id:\d+}/permissions', App\Controller\RoleController::class . '::setPermissions');
+    // Router::post('role/{id}/actor', 'RoleController@setActor');
+    // Router::post('role/{id}/groupactor', 'RoleController@setGroupActor');
+    Router::get('role', App\Controller\RoleController::class . '::index');
+    Router::post('role/{id}/actor', App\Controller\RoleController::class . '::setActor');
+// Router::resource('role', 'RoleController');
+    // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
+}, [
+    'middleware' => [
+        App\Middleware\AuthorizeMiddleware::class,
+        App\Middleware\ProjectAuthMiddleware::class,
+        App\Middleware\PrivilegeMiddleware::class,
+    ],
+    'options' => [
+        App\Middleware\PrivilegeMiddleware::class => [
+            Permission::MANAGE_PROJECT,
+        ],
+    ],
+]);
+
+Router::addGroup('/project/{project_key}/', function () {
     Router::get('summary', App\Controller\SummaryController::class . '::index');
 
     Router::get('issue', App\Controller\IssueController::class . '::index');
@@ -83,10 +105,15 @@ Router::addGroup('/', function () {
     Router::post('issue', App\Controller\IssueController::class . '::store', [
         'options' => [
             App\Middleware\PrivilegeMiddleware::class => [
-                Permission::ISSUE_CREATE,
+                Permission::CREATE_ISSUE,
             ],
         ],
     ]);
+
+    // Route::post('version/merge', 'VersionController@merge');
+    // Route::post('version/{id}/release', 'VersionController@release');
+    // Route::post('version/{id}/delete', 'VersionController@delete');
+    // Route::resource('version', 'VersionController');
 
     // Route::get('wiki/dirtree', 'WikiController@getDirTree');
     // Route::get('wiki/{id}/dirs', 'WikiController@getDirChildren');
@@ -105,6 +132,8 @@ Router::addGroup('/', function () {
     // Route::get('wiki/{id}/checkin', 'WikiController@checkin');
     // Route::get('wiki/{id}/checkout', 'WikiController@checkout');
     // Route::delete('wiki/{id}', 'WikiController@destroy');
+
+    Router::get('team', App\Controller\RoleController::class . '::index');
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
@@ -113,7 +142,7 @@ Router::addGroup('/', function () {
     ],
     'options' => [
         App\Middleware\PrivilegeMiddleware::class => [
-            Permission::PROJECT_VIEW,
+            Permission::VIEW_PROJECT,
         ],
     ],
 ]);

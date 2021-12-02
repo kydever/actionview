@@ -13,6 +13,8 @@ namespace App\Constants;
 
 class StatusConstant
 {
+    public const NOT_DELETED = 0;
+
     public const DELETED = 1;
 
     public const ASC = 'asc';
@@ -31,4 +33,6 @@ class StatusConstant
 
     // 成员可见
     public const SCOPE_MEMBER = 3;
+
+    public const STATUS_UNRESOLVED = 'Unresolved';
 }

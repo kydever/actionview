@@ -13,6 +13,8 @@ namespace HyperfTest\Cases;
 
 use App\Constants\Permission;
 use App\Constants\ProjectConstant;
+use App\Model\Issue;
+use App\Model\User;
 use App\Service\Dao\AccessProjectLogDao;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\AclRolePermissionDao;
@@ -34,7 +36,7 @@ class SQLTest extends HttpTestCase
 
         $this->assertInstanceOf(Collection::class, $res);
 
-        $res = di()->get(AclRolePermissionDao::class)->findProjectPermissions(Permission::ISSUE_ASSIGNED, ProjectConstant::SYS);
+        $res = di()->get(AclRolePermissionDao::class)->findProjectPermissions(Permission::ASSIGNED_ISSUE, ProjectConstant::SYS);
 
         $this->assertInstanceOf(Collection::class, $res);
         $this->assertTrue($res->isNotEmpty());
@@ -88,5 +90,16 @@ class SQLTest extends HttpTestCase
 
         $res = di()->get(IssueDao::class)->countGroupByProjectKeys(['test', 'test2'], '', 1);
         $this->assertIsArray($res);
+    }
+
+    public function testIssueWithAssignee()
+    {
+        /** @var Issue $issue */
+        $issue = Issue::query()->find(1);
+        if (! $issue) {
+            $this->markTestSkipped('Issue not exists.');
+        }
+
+        $this->assertInstanceOf(User::class, $issue->assigneeModel);
     }
 }

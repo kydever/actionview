@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\ErrorCode;
+use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Service\Dao\ProjectDao;
@@ -21,13 +22,27 @@ class ProjectAuth
 {
     use StaticInstance;
 
-    public ?Project $project = null;
+    private ?Project $project = null;
 
     public function __construct(private ?string $projectKey = null)
     {
-        if ($projectKey) {
-            $this->project = di()->get(ProjectDao::class)->firstByKey($projectKey, true);
+        if (! $projectKey) {
+            return;
         }
+
+        if ($this->isSYS()) {
+            $this->project = tap(new Project(), function (Project $project) {
+                $project->key = $this->projectKey;
+            });
+            return;
+        }
+
+        $this->project = di()->get(ProjectDao::class)->firstByKey($projectKey, true);
+    }
+
+    public function isSYS(): bool
+    {
+        return $this->projectKey === ProjectConstant::SYS;
     }
 
     public function isActive(): bool
