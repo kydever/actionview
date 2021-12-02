@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
+use App\Kernel\Http\Response;
 use App\Request\WikiCreateRequest;
 use App\Service\UserAuth;
 use App\Service\WikiService;
@@ -18,21 +21,9 @@ use Hyperf\Di\Annotation\Inject;
 
 class WikiController extends Controller
 {
-    //if (isset($d) && $d == 1)
-    //{
-    //if (!$this->isPermissionAllowed($project_key, 'manage_project'))
-    //{
-    //return Response()->json(['ecode' => -10002, 'emsg' => 'permission denied.']);
-    //}
-    //return $this->createFolder($request, $project_key);
-    //}
-    //else
-    //{
-//    return $this->createDoc($request, $project_key);
-    //}
-
     #[Inject]
     protected WikiService $service;
+    protected Response $response;
 
     public function create(WikiCreateRequest $request, $project_key)
     {
@@ -41,13 +32,15 @@ class WikiController extends Controller
         $input['project_key'] = $project_key;
 
         if (isset($input['d']) && $input['d'] == 1) {
-            // d
-            $s = $this->service->isPermissionAllowed($input['project_key'], 'manage_project');
-            if (! $this->service->isPermissionAllowed($input['project_key'], 'manage_project')) {
-                return ['ecode' => -10002, 'emsg' => 'permission denied.'];
+            if (! $this->service->isPermissionAllowed($input['project_key'], 'manage_project', $user)) {
+                throw new BusinessException(ErrorCode::PERMISSION_DENIED);
             }
-            return $this->service->createFolder($input);
+            $result = $this->service->createFolder($input, $user);
+            return $this->response->success($result);
         }
-        return $this->service->createDoc($input, $user);
+
+        [$data,$option] = $this->service->createDoc($input, $user);
+        return $this->response->success($data,['option'=>['path'=>$option]]);
+
     }
 }

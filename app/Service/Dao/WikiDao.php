@@ -28,7 +28,7 @@ class WikiDao extends Service
             ->exists();
     }
 
-    public function existsParentName(string $projectKey, int $parent, string $name): bool
+    public function existsParentName(string $projectKey, string $parent, string $name): bool
     {
         return Wiki::query()
             ->where('project_key', $projectKey)
@@ -49,7 +49,7 @@ class WikiDao extends Service
 
     public function first(int $id, bool $throw = false): ?Wiki
     {
-        $model = Wiki::first($id);
+        $model = Wiki::find($id);
         if ($throw && empty($model)) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
@@ -60,7 +60,7 @@ class WikiDao extends Service
     {
         return Wiki::query()
             ->where('wid', $wid)
-            ->where('user.id', $id)
+            ->where('user->id', $id)
             ->exists();
     }
 
@@ -93,7 +93,12 @@ class WikiDao extends Service
         return $query->get();
     }
 
-    public function getName(string $projectKey, array $pt): ?Wiki
+    /**
+     * @param string $projectKey
+     * @param array $pt
+     * @return \Hyperf\Database\Model\Collection|Wiki[]
+     */
+    public function getName(string $projectKey, array $pt)
     {
         return Wiki::query()
             ->where('name', '<>', '')
