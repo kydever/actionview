@@ -129,7 +129,11 @@ class VersionService extends Service
 
     public function show(Version $version)
     {
-        return $this->formatter->base($version);
+        $result = $this->formatter->base($version);
+        $result['is_used'] = false;
+        $result['all_cnt'] = 0;
+        $result['unresolved_cnt'] = 0;
+        return $result;
     }
 
     public function index(Project $project, int $offset, int $limit): array

@@ -23,12 +23,14 @@ class VersionFormatter extends Service
             'id' => $model->id,
             'name' => $model->name,
             'project_key' => $model->project_key,
-            'type' => $model->start_time,
+            'start_time' => $model->start_time,
             'end_time' => $model->end_time,
             'creator' => $model->creator,
             'status' => $model->status,
             'description' => $model->description,
             'released_time' => $model->released_time,
+            'created_at' => $model->created_at->toDateTimeString(),
+            'updated_at' => $model->updated_at->toDateTimeString(),
         ];
     }
 
