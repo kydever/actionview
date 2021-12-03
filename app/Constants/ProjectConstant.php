@@ -31,6 +31,10 @@ class ProjectConstant
 
     public const SORT_KEY_CREATE_TIME_DESC = 'create_time_desc';
 
+    public const WIKI_FOLDER = 1;
+
+    public const WIKI_CONTENTS = 0;
+
     /**
      * 项目KEY值，默认增加 p_ 前缀
      */

@@ -12,34 +12,36 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Constants\ErrorCode;
+use App\Constants\ProjectConstant;
+use App\Constants\StatusConstant;
 use App\Exception\BusinessException;
 use App\Model\Wiki;
 use Han\Utils\Service;
 
 class WikiDao extends Service
 {
-    public function existsParent(string $projectKey, int $parent): bool
+    public function exists(string $key, int $id): bool
     {
         return Wiki::query()
-            ->where('project_key', $projectKey)
-            ->where('id', $parent)
-            ->where('d', 1)
-            ->where('del_flag', '<>', 1)
+            ->where('project_key', $key)
+            ->where('id', $id)
+            ->where('d', ProjectConstant::WIKI_FOLDER)
+            ->where('del_flag', '<>', StatusConstant::DELETED)
             ->exists();
     }
 
-    public function existsParentName(string $projectKey, string $parent, string $name): bool
+    public function existsNameInSameParent(string $key, int $parent, string $name): bool
     {
         return Wiki::query()
-            ->where('project_key', $projectKey)
+            ->where('project_key', $key)
             ->where('parent', $parent)
             ->where('name', $name)
-            ->where('d', '<>', 1)
-            ->where('del_flag', '<>', 1)
+            ->where('d', '<>', ProjectConstant::WIKI_FOLDER)
+            ->where('del_flag', '<>', StatusConstant::DELETED)
             ->exists();
     }
 
-    public function firstParent(string $projectKey, string $directory): ?Wiki
+    public function firstParent(string $projectKey, int $directory): ?Wiki
     {
         return Wiki::query()
             ->where('project_key', $projectKey)

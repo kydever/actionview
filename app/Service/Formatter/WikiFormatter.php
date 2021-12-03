@@ -21,8 +21,20 @@ class WikiFormatter extends Service
     {
         return [
             'id' => $model->id,
-            //            'directory' => $model->directory ?: 'self',
-            //            'status' => $model->isInvalid() ? WikiConstant::INVALID : WikiConstant::ACTIVE,
+            'wid' => $model->wid,
+            'project_key' => $model->project_key,
+            'd' => $model->d,
+            'del_flag' => $model->del_flag,
+            'name' => $model->name,
+            'pt' => $model->pt,
+            'user' => $model->user,
+            'parent' => $model->parent,
+            'contents' => $model->contents,
+            'version' => $model->version,
+            'creator' => $model->creator,
+            'editor' => $model->editor,
+            'created_at' => $model->created_at->toDateTimeString(),
+            'updated_at' => $model->updated_at->toDateTimeString(),
         ];
     }
 

@@ -18,13 +18,13 @@ namespace App\Model;
  * @property string $d
  * @property string $del_flag
  * @property string $name
- * @property string $pt
+ * @property array $pt
  * @property string $user
  * @property int $parent
  * @property string $contents
  * @property int $version
- * @property string $creator
- * @property string $editor
+ * @property array $creator
+ * @property array $editor
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -49,5 +49,5 @@ class Wiki extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'wid' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'parent' => 'integer', 'version' => 'integer'];
+    protected $casts = ['id' => 'int', 'wid' => 'integer', 'pt' => 'json', 'creator' => 'json', 'editor' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'parent' => 'integer', 'version' => 'integer'];
 }

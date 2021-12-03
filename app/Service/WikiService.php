@@ -12,12 +12,16 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\ErrorCode;
+use App\Constants\ProjectConstant;
+use App\Constants\StatusConstant;
 use App\Exception\BusinessException;
+use App\Model\Project;
 use App\Model\User;
 use App\Model\Wiki;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\WikiDao;
-use Carbon\Carbon;
+use App\Service\Formatter\UserFormatter;
+use App\Service\Formatter\WikiFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Codec\Json;
@@ -27,63 +31,50 @@ class WikiService extends Service
     #[Inject]
     protected WikiDao $dao;
 
-    public function createDoc(array $input, User $user)
+    #[Inject]
+    protected WikiFormatter $formatter;
+
+    public function createDoc(array $input, User $user, Project $project)
     {
-        $insValues = [];
-        $parent = $input['parent'] ?? '';
+        $parentId = (int) ($input['parent'] ?? null);
         $projectKey = $input['project_key'] ?? '';
-        if (! isset($parent)) {
-            throw new BusinessException(ErrorCode::PARENT_NOT_EMPTY);
-        }
-        $insValues['parent'] = $parent;
-
-        if ($parent !== '0') {
-            if ($this->dao->existsParent($projectKey, $parent)) {
-                throw new BusinessException(ErrorCode::PARENT_NOT_EXIST);
-            }
-        }
-
         $name = $input['name'] ?? '';
-        if (! isset($name) || empty($name)) {
+        $contents = $input['contents'] ?? '';
+
+        $parent = $this->dao->first($parentId, true);
+
+        if (empty($name)) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
 
-        $insValues['name'] = $name;
-        if ($this->dao->existsParentName($projectKey, $parent, $name)) {
+        if ($this->dao->existsNameInSameParent($projectKey, $parent->id, $name)) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
         }
 
-        $contents = $input['contents'];
-        if (isset($contents) && $contents) {
-            $insValues['contents'] = $contents;
-        }
-
-        $insValues['pt'] = Json::encode($this->getPathTree($projectKey, $parent));
-        $insValues['version'] = 1;
-        $insValues['creator'] = Json::encode(['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email]);
-        $insValues['editor'] = '{}';
-        $insValues['created_at'] = Carbon::now()->toDateTimeString();
-        $insValues['user'] = Json::encode($user);
-
         $model = new Wiki();
-        $id = $model->insertGetId($insValues);
+        $model->project_key = $project->key;
+        $model->d = ProjectConstant::WIKI_CONTENTS;
+        $model->del_flag = StatusConstant::NOT_DELETED;
+        $model->name = $name;
+        $model->pt = $this->getPathTree($parent);
+        $model->version = 1;
+        $model->creator = di()->get(UserFormatter::class)->base($user);
+        $model->editor = [];
+        $model->contents = $contents;
 
-//         TODO 需要需改
-//        $isSendMsg = $input['isSendMsg'] && true;
-//        Event::fire(new WikiEvent($projectKey, $insValues['creator'], ['event_key' => 'create_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id->__toString()]]));
+        //         TODO 需要需改
+        //        $isSendMsg = $input['isSendMsg'] && true;
+        //        Event::fire(new WikiEvent($projectKey, $insValues['creator'], ['event_key' => 'create_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id->__toString()]]));
         return $this->show($input, $id, $user);
     }
 
-    public function getPathTree(string $projectKey, string $directory)
+    public function getPathTree(?Wiki $parent): array
     {
-        $pt = [];
-        if ($directory === '0') {
-            $pt = ['0'];
-        } else {
-            $d = $this->dao->firstParent($projectKey, $directory);
-            $pt = array_merge($d['pt'], [$directory]);
+        if ($parent === null) {
+            return [0];
         }
-        return $pt;
+
+        return array_merge($parent->pt, [$parent->id]);
     }
 
     public function isPermissionAllowed($projectKey, $permission, User $user)
@@ -117,21 +108,21 @@ class WikiService extends Service
         $newest['updated_at'] = isset($document['updated_at']) ? $document['updated_at'] : $document['created_at'];
         $newest['version'] = $document['version'];
 
-//         TODO 先注释后续再看
-//        $v = $input['v'] ?? '';
-//
-//        if (isset($v) && intval($v) != $document['version']) {
-//            // 传过来的版本如果和数据表存储的不相等
-//            $wiki = $this->dao->firstVersion($input['project_key'], $id, $v);
-//            if ($wiki) {
-//                throw new \UnexpectedValueException('the version does not exist.', -11957);
-//            }
-//            $document['name'] = $wiki['name'];
-//            $document['contents'] = $wiki['contents'];
-//            $document['editor'] = $wiki['editor'];
-//            $document['updated_at'] = $wiki['updated_at'];
-//            $document['version'] = $wiki['version'];
-//        }
+        //         TODO 先注释后续再看
+        //        $v = $input['v'] ?? '';
+        //
+        //        if (isset($v) && intval($v) != $document['version']) {
+        //            // 传过来的版本如果和数据表存储的不相等
+        //            $wiki = $this->dao->firstVersion($input['project_key'], $id, $v);
+        //            if ($wiki) {
+        //                throw new \UnexpectedValueException('the version does not exist.', -11957);
+        //            }
+        //            $document['name'] = $wiki['name'];
+        //            $document['contents'] = $wiki['contents'];
+        //            $document['editor'] = $wiki['editor'];
+        //            $document['updated_at'] = $wiki['updated_at'];
+        //            $document['version'] = $wiki['version'];
+        //        }
 
         $document['versions'] = $this->dao->search($input, $id);
 
@@ -173,42 +164,39 @@ class WikiService extends Service
         return $data;
     }
 
-    public function createFolder(array $input, User $user)
+    public function createFolder(array $input, User $user, Project $project)
     {
-        $insValues = [];
-
-        $parent = $input['parent'];
-        if (! isset($parent)) {
+        $parentId = $input['parent'] ?? null;
+        if (! isset($parentId)) {
             throw new BusinessException(ErrorCode::PARENT_NOT_EMPTY);
         }
-        $insValues['parent'] = $parent;
-
-        if ($parent !== '0') {
-            if (! $this->dao->existsParent($input['project_key'], $parent)) {
-                throw new BusinessException(ErrorCode::PARENT_NOT_EXIST);
-            }
-        }
-
         $name = $input['name'] ?? '';
-        if (! isset($name) || ! $name) {
+        if (! $name) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
-        $insValues['name'] = $name;
 
-        $isExists = $this->dao->existsParentName($input['project_key'], $parent, $name);
+        $parentId = (int) $parentId;
+        $parent = null;
+        if ($parentId > 0) {
+            $parent = $this->dao->first($parentId, true);
+        }
+
+        $isExists = $this->dao->existsNameInSameParent($project->key, $parent->id, $name);
         if ($isExists) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
         }
 
-        $insValues['pt'] = Json::encode($this->getPathTree($input['project_key'], $parent));
-        $insValues['d'] = 1;
-        $insValues['creator'] = Json::encode(['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email]);
-        $insValues['created_at'] = Carbon::now()->toDateTimeString();
-        $insValues['user'] = Json::encode($user);
-        $insValues['editor'] = '{}';
-
         $model = new Wiki();
-        $id = $model->insertGetId($insValues);
-        return $this->dao->first($id);
+        $model->project_key = $project->key;
+        $model->parent = $parentId;
+        $model->name = $name;
+        $model->pt = $this->getPathTree($parent);
+        $model->d = ProjectConstant::WIKI_FOLDER;
+        $model->creator = di()->get(UserFormatter::class)->small($user);
+        $model->editor = [];
+        $model->del_flag = StatusConstant::NOT_DELETED;
+        $model->save();
+
+        return $this->formatter->base($model);
     }
 }
