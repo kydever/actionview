@@ -57,6 +57,9 @@ class IssueService extends Service
     #[Inject]
     protected IssueSearch $search;
 
+    #[Inject]
+    protected AclService $acl;
+
     public function requiredCheck(array $schema, array $data, string $mode = 'create'): bool
     {
         foreach ($schema as $field) {
@@ -73,6 +76,109 @@ class IssueService extends Service
             }
         }
         return true;
+    }
+
+    public function update(int $id, array $input, User $user, Project $project)
+    {
+        $issue = $this->dao->first($id, true);
+        if (empty($input)) {
+            return $this->show($issue);
+        }
+
+        $type = $input['type'] ?? $issue->type;
+        $assigneeId = intval($input['assignee'] ?? null);
+        $assignee = null;
+        $resolution = $input['resolution'] ?? null;
+
+        $isAllowed = $this->acl->isAllowed($user->id, Permission::EDIT_ISSUE, $project)
+            || ($this->acl->isAllowed($user->id, Permission::EDIT_SELF_ISSUE, $project) && ($issue->reporter['id'] ?? null) == $user->id)
+            || $this->acl->isAllowed($user->id, Permission::EXEC_WORKFLOW, $project);
+
+        if (! $isAllowed) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        $schema = $this->provider->getSchemaByType($type);
+        if (! $schema) {
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
+        }
+
+        if (! $this->requiredCheck($schema, $input, 'update')) {
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_REQUIRED);
+        }
+
+        $updValues = $issue->data;
+        foreach ($schema as $field) {
+            $fieldValue = $input[$field['key']] ?? null;
+            if (! $fieldValue) {
+                continue;
+            }
+
+            if ($field['type'] == Schema::FIELD_TIME_TRACKING) {
+                if (! $this->ttCheck($fieldValue)) {
+                    throw new BusinessException(ErrorCode::ISSUE_TIME_TRACKING_INVALID);
+                }
+
+                $updValues[$field['key']] = $this->ttHandle($fieldValue);
+                $updValues[$field['key'] . '_m'] = $this->ttHandleInM($updValues[$field['key']]);
+            } elseif ($field['type'] == Schema::FIELD_DATE_PICKER || $field['type'] == Schema::FIELD_DATE_TIME_PICKER) {
+                if ($this->isTimestamp($fieldValue) === false) {
+                    throw new BusinessException(ErrorCode::ISSUE_DATE_TIME_PICKER_INVALID);
+                }
+            } elseif ($field['type'] == Schema::FIELD_SINGLE_USER) {
+                $userModel = di()->get(UserDao::class)->first($fieldValue);
+                if ($userModel) {
+                    $updValues[$field['key']] = di()->get(UserFormatter::class)->base($userModel);
+                }
+            } elseif ($field['type'] == Schema::FIELD_MULTI_USER) {
+                $userModels = di()->get(UserDao::class)->findMany($fieldValue);
+                $userIds = $userModels->columns('id')->toArray();
+                $updValues[$field['key']] = di()->get(UserFormatter::class)->formatList($userModels);
+                $updValues[$field['key'] . '_ids'] = $userIds;
+            }
+        }
+
+        if ($assigneeId && $assigneeId !== ($issue->assignee['id'] ?? null)) {
+            if (! $this->acl->isAllowed($assigneeId, Permission::ASSIGNED_ISSUE, $project)) {
+                throw new BusinessException(ErrorCode::ASSIGNED_USER_PERMISSION_DENIED);
+            }
+
+            $userModel = di()->get(UserDao::class)->first($assigneeId);
+            if ($userModel) {
+                $assignee = di()->get(UserFormatter::class)->base($userModel);
+                $updValues['assignee'] = $assignee;
+            }
+        }
+
+        $updValues = $updValues + Arr::only($input, $this->getValidKeysBySchema($schema));
+        if (! $updValues) {
+            return $this->show($issue);
+        }
+
+        $modifier = di()->get(UserFormatter::class)->base($user);
+        $updValues['modifier'] = $modifier;
+
+        $issue->type = $type;
+        $issue->modifier = $modifier;
+        $issue->data = $updValues;
+        $resolution && $issue->resolution = $resolution;
+        $assignee && $issue->assignee = $assignee;
+
+        Db::beginTransaction();
+        try {
+            $issue->save();
+            // TODO: History table
+            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
+            if (isset($updValues['labels']) && $updValues['labels']) {
+                $this->createLabels($project->key, $updValues['labels']);
+            }
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
+        }
+
+        return $this->show($issue);
     }
 
     /**

@@ -68,6 +68,17 @@ class IssueController extends Controller
         return $this->response->success($result);
     }
 
+    public function update(int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $input = $this->request->all();
+
+        $result = $this->service->update($id, $input, $user, $project);
+
+        return $this->response->success($result);
+    }
+
     public function setAssignee(int $id)
     {
         $assigneeId = (string) $this->request->input('assignee');

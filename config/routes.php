@@ -103,8 +103,9 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('issue', App\Controller\IssueController::class . '::index');
     Router::get('issue/options', App\Controller\IssueController::class . '::getOptions');
     Router::get('issue/{id:\d+}', App\Controller\IssueController::class . '::show');
+    Router::put('issue/{id:\d+}', App\Controller\IssueController::class . '::update');
     Router::post('issue/{id:\d+}/assign', App\Controller\IssueController::class . '::setAssignee');
-    Router::post('issue/{id}/reset', App\Controller\IssueController::class . '::resetState');
+    Router::post('issue/{id:\d+}/reset', App\Controller\IssueController::class . '::resetState');
 
     Router::post('issue', App\Controller\IssueController::class . '::store', [
         'options' => [
