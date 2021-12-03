@@ -78,24 +78,6 @@ class WikiService extends Service
         return array_merge($parent->pt, [$parent->id]);
     }
 
-    public function isPermissionAllowed($projectKey, $permission, User $user)
-    {
-        $uid = $user->id;
-
-        $project = di(ProjectDao::class)->firstByKey($projectKey);
-        $isAllowed = di(AclService::class)->isAllowed($uid, $permission, $project);
-        if (! $isAllowed && in_array($permission, ['view_project', 'manage_project'])) {
-            if ($user->email === 'admin@action.view') {
-                return true;
-            }
-            $project = di(ProjectDao::class)->firstByKey($projectKey);
-            if ($project && isset($project->principal, $project->principal['id']) && $uid === $project->principal['id']) {
-                return true;
-            }
-        }
-        return $isAllowed;
-    }
-
     public function show($input, Wiki $model, User $user, Project $project)
     {
         $favorited = false;
