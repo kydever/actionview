@@ -39,6 +39,7 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
 use Illuminate\Support\Facades\Event;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function issue_key as ik;
 
 class IssueService extends Service
 {
@@ -604,7 +605,7 @@ class IssueService extends Service
                                     'term' => ['id' => intval($val)],
                                 ],
                                 [
-                                    'match' => ['data.title' => $val],
+                                    'match' => [ik('title') => $val],
                                 ],
                             ],
                         ],
@@ -624,22 +625,22 @@ class IssueService extends Service
                                     'terms' => ['id' => $ids],
                                 ],
                                 [
-                                    'match' => ['data.title' => $val],
+                                    'match' => [ik('title') => $val],
                                 ],
                             ],
                         ],
                     ];
                 } else {
-                    $bool['must'][] = ['match' => ['data.title' => $val]];
+                    $bool['must'][] = ['match' => [ik('title') => $val]];
                 }
             } elseif ($key === 'sprints') {
-                $bool['must'][] = ['term' => ['data.sprints' => intval($val)]];
+                $bool['must'][] = ['term' => [ik('sprints') => intval($val)]];
             } elseif ($fieldsMapping[$key] === Schema::FIELD_SINGLE_USER) {
                 $userIds = explode(',', $val);
                 if (in_array('me', $userIds) && $userId) {
-                    array_push($userIds, $userId);
+                    $userIds[] = $userId;
                 }
-                $bool['must'][] = ['terms' => ['data.' . $key . '.' . 'id' => $userIds]];
+                $bool['must'][] = ['terms' => [ik($key . '.' . 'id') => $userIds]];
             } elseif ($fieldsMapping[$key] === Schema::FIELD_MULTI_USER) {
                 $userIds = [];
                 $vals = explode(',', $val);
@@ -650,21 +651,21 @@ class IssueService extends Service
                     'bool' => [
                         'should' => [
                             [
-                                'terms' => ['data.' . $key . '_ids' => $userIds],
+                                'terms' => [ik($key . '_ids') => $userIds],
                             ],
                         ],
                     ],
                 ];
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_SELECT, Schema::FIELD_SINGLE_VERSION, Schema::FIELD_RADIO_GROUP])) {
                 $bool['must'][] = [
-                    'terms' => ['data.' . $key => explode(',', $val)],
+                    'terms' => [ik($key) => explode(',', $val)],
                 ];
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_MULTI_SELECT, Schema::FIELD_MULTI_VERSION, Schema::FIELD_CHECKBOX_GROUP])) {
                 $bool['must'][] = [
                     'bool' => [
                         'should' => [
                             [
-                                'terms' => ['data.' . $key => $vals],
+                                'terms' => [ik($key) => $vals],
                             ],
                         ],
                     ],
@@ -685,7 +686,7 @@ class IssueService extends Service
                         $lte = mktime(23, 59, 59, 12, 31, date('Y'));
                     }
                     $bool['must'][] = [
-                        'range' => ['data.' . $key => ['gte' => $gte, 'lte' => $lte]],
+                        'range' => [ik($key) => ['gte' => $gte, 'lte' => $lte]],
                     ];
                 } else {
                     $dateRange = [];
@@ -715,24 +716,24 @@ class IssueService extends Service
                         }
                     }
                     $bool['must'][] = [
-                        'range' => ['data.' . $key => $dateRange],
+                        'range' => [ik($key) => $dateRange],
                     ];
                 }
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_TEXT, Schema::FIELD_TEXT_AREA, Schema::FIELD_RICH_TEXT_EDITOR, Schema::FIELD_URL])) {
                 $bool['must'][] = [
-                    'match' => ['data.' . $key => $val],
+                    'match' => [ik($key) => $val],
                 ];
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_NUMBER, Schema::FIELD_INTEGER])) {
                 if (str_contains($val, '~')) {
                     $sections = explode('~', $val);
                     if ($sections[0]) {
                         $bool['must'][] = [
-                            'range' => ['data.' . $key => ['gte' => intval($sections[0])]],
+                            'range' => [ik($key) => ['gte' => intval($sections[0])]],
                         ];
                     }
                     if ($sections[1]) {
                         $bool['must'][] = [
-                            'range' => ['data.' . $key => ['lte' => intval($sections[1])]],
+                            'range' => [ik($key) => ['lte' => intval($sections[1])]],
                         ];
                     }
                 }
@@ -741,12 +742,12 @@ class IssueService extends Service
                     $sections = explode('~', $val);
                     if ($sections[0]) {
                         $bool['must'][] = [
-                            'range' => ['data.' . $key . '_m' => ['gte' => $this->ttHandleInM($sections[0])]],
+                            'range' => [ik($key . '_m') => ['gte' => $this->ttHandleInM($sections[0])]],
                         ];
                     }
                     if ($sections[1]) {
                         $bool['must'][] = [
-                            'range' => ['data.' . $key . '_m' => ['lte' => $this->ttHandleInM($sections[0])]],
+                            'range' => [ik($key . '_m') => ['lte' => $this->ttHandleInM($sections[0])]],
                         ];
                     }
                 }

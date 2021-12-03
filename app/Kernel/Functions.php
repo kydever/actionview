@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+use App\Constants\Schema;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
@@ -48,5 +49,16 @@ if (! function_exists('queue_push')) {
     {
         $driver = di()->get(DriverFactory::class)->get($key);
         return $driver->push($job, $delay);
+    }
+}
+
+if (! function_exists('issue_key')) {
+    function issue_key(string $key): string
+    {
+        if (in_array($key, Schema::DEFAULT_ISSUE_KEYS)) {
+            return $key;
+        }
+
+        return 'data.' . $key;
     }
 }
