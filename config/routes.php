@@ -117,6 +117,7 @@ Router::addGroup('/project/{project_key}/', function () {
 
     Router::get('version', App\Controller\VersionController::class . '::index');
     Router::post('version', App\Controller\VersionController::class . '::store');
+    Router::put('version/{id:\d+}', App\Controller\VersionController::class . '::update');
     // Route::post('version/merge', 'VersionController@merge');
     // Route::post('version/{id}/release', 'VersionController@release');
     // Route::post('version/{id}/delete', 'VersionController@delete');

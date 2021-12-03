@@ -24,6 +24,7 @@ use App\Service\Formatter\VersionFormatter;
 use Han\Utils\Service;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Arr;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class VersionService extends Service
@@ -36,6 +37,53 @@ class VersionService extends Service
 
     #[Inject]
     protected ProviderService $provider;
+
+    public function update(int $id, array $input, User $user, Project $project)
+    {
+        $version = $this->dao->first($id, true);
+        $name = $input['name'] ?? null;
+        $startTime = $input['start_time'] ?? $version->start_time;
+        $endTime = $input['end_time'] ?? $version->end_time;
+        $description = $input['description'] ?? null;
+        $status = $input['status'] ?? null;
+
+        if ($startTime > $endTime) {
+            throw new BusinessException(ErrorCode::VERSION_END_TIME_MUST_LARGER_THAN_START_TIME);
+        }
+
+        if ($name !== null) {
+            if (empty($name)) {
+                throw new BusinessException(ErrorCode::VERSION_NAME_CANNOT_EMPTY);
+            }
+
+            if ($version->name !== $name && $this->dao->firstByName($project->key, $name)) {
+                throw new BusinessException(ErrorCode::VERSION_NAME_REPEATED);
+            }
+        }
+
+        if (! Arr::only($input, ['name', 'start_time', 'end_time', 'description', 'status'])) {
+            return $this->show($version);
+        }
+
+        isset($name) && $version->name = $name;
+        isset($startTime) && $version->start_time = $startTime;
+        isset($endTime) && $version->end_time = $endTime;
+        isset($description) && $version->description = $description;
+        isset($status) && $version->status = $status;
+        $version->modifier = di()->get(UserFormatter::class)->small($user);
+
+        Db::beginTransaction();
+        try {
+            $version->save();
+            di()->get(EventDispatcherInterface::class)->dispatch(new VersionEvent($version));
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
+        }
+
+        return $this->show($version);
+    }
 
     /**
      * @param $input = [
@@ -76,7 +124,12 @@ class VersionService extends Service
             throw $exception;
         }
 
-        return $this->formatter->base($model);
+        return $this->show($model);
+    }
+
+    public function show(Version $version)
+    {
+        return $this->formatter->base($version);
     }
 
     public function index(Project $project, int $offset, int $limit): array

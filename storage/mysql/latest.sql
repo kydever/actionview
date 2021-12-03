@@ -885,20 +885,21 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `version`;
 
 CREATE TABLE `version` (
-  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
-  `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `start_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `end_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `released_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `status` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `creator` json NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
-  `updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `INDEX_PROJECT_KEY` (`project_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+`id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+`project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`start_time` int(10) unsigned NOT NULL DEFAULT '0',
+`end_time` int(10) unsigned NOT NULL DEFAULT '0',
+`released_time` int(10) unsigned NOT NULL DEFAULT '0',
+`status` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`description` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+`creator` json NOT NULL,
+`modifier` json NOT NULL,
+`created_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+`updated_at` datetime NOT NULL DEFAULT '2020-01-01 00:00:00',
+PRIMARY KEY (`id`),
+KEY `INDEX_PROJECT_KEY` (`project_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 

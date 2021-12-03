@@ -148,6 +148,11 @@ class ErrorCode extends AbstractConstants
     public const VERSION_END_TIME_MUST_LARGER_THAN_START_TIME = -11502;
 
     /**
+     * @Message("当前版本不存在")
+     */
+    public const VERSION_NOT_EXIST = -11503;
+
+    /**
      * @Message("角色非法")
      */
     public const ROLE_INVALID = -12701;

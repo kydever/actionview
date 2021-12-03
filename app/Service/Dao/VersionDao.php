@@ -11,11 +11,22 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\Version;
 use Han\Utils\Service;
 
 class VersionDao extends Service
 {
+    public function first(int $id, bool $throw = false): ?Version
+    {
+        $model = Version::findFromCache($id);
+        if (empty($model) && $throw) {
+            throw new BusinessException(ErrorCode::VERSION_NOT_EXIST);
+        }
+        return $model;
+    }
+
     public function firstByName(string $key, string $name): ?Version
     {
         return Version::query()->where('project_key', $key)->where('name', $name)->first();

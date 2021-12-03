@@ -32,6 +32,16 @@ class VersionController extends Controller
         return $this->response->success($result);
     }
 
+    public function update(int $id)
+    {
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $user = UserAuth::instance()->build()->getUser();
+
+        $result = $this->service->update($id, $this->request->all(), $user, $project);
+
+        return $this->response->success($result);
+    }
+
     public function index(PaginationRequest $request)
     {
         $project = ProjectAuth::instance()->build()->getCurrent();

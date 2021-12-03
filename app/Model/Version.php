@@ -21,6 +21,7 @@ namespace App\Model;
  * @property string $status
  * @property string $description
  * @property array $creator
+ * @property array $modifier
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -38,12 +39,12 @@ class Version extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'start_time', 'end_time', 'released_time', 'status', 'description', 'creator', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'name', 'start_time', 'end_time', 'released_time', 'status', 'description', 'creator', 'modifier', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'start_time' => 'integer', 'end_time' => 'integer', 'released_time' => 'integer', 'creator' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'start_time' => 'integer', 'end_time' => 'integer', 'released_time' => 'integer', 'creator' => 'json', 'modifier' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
