@@ -53,6 +53,7 @@ class WikiService extends Service
 
         $model = new Wiki();
         $model->project_key = $project->key;
+        $model->parent = $parent->id;
         $model->d = ProjectConstant::WIKI_CONTENTS;
         $model->del_flag = StatusConstant::NOT_DELETED;
         $model->name = $name;
@@ -168,7 +169,7 @@ class WikiService extends Service
             $parent = $this->dao->first($parentId, true);
         }
 
-        $isExists = $this->dao->existsNameInSameParent($project->key, $parent->id, $name);
+        $isExists = $this->dao->existsNameInSameParent($project->key, $parent?->id ?? 0, $name);
         if ($isExists) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
         }
