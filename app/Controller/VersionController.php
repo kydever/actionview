@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Request\PaginationRequest;
 use App\Service\ProjectAuth;
+use App\Service\UserAuth;
 use App\Service\VersionService;
 use Hyperf\Di\Annotation\Inject;
 
@@ -20,6 +21,16 @@ class VersionController extends Controller
 {
     #[Inject]
     protected VersionService $service;
+
+    public function store()
+    {
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $user = UserAuth::instance()->build()->getUser();
+
+        $result = $this->service->store($this->request->all(), $user, $project);
+
+        return $this->response->success($result);
+    }
 
     public function index(PaginationRequest $request)
     {

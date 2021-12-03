@@ -20,7 +20,7 @@ namespace App\Model;
  * @property int $released_time
  * @property string $status
  * @property string $description
- * @property string $creator
+ * @property array $creator
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -45,5 +45,5 @@ class Version extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'start_time' => 'integer', 'end_time' => 'integer', 'released_time' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'start_time' => 'integer', 'end_time' => 'integer', 'released_time' => 'integer', 'creator' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

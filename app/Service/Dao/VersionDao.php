@@ -16,6 +16,11 @@ use Han\Utils\Service;
 
 class VersionDao extends Service
 {
+    public function firstByName(string $key, string $name): ?Version
+    {
+        return Version::query()->where('project_key', $key)->where('name', $name)->first();
+    }
+
     /**
      * @return \Hyperf\Database\Model\Collection|Version[]
      */
