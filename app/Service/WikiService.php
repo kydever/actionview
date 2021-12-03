@@ -37,7 +37,6 @@ class WikiService extends Service
     public function createDoc(array $input, User $user, Project $project)
     {
         $parentId = (int) ($input['parent'] ?? null);
-        $projectKey = $input['project_key'] ?? '';
         $name = $input['name'] ?? '';
         $contents = $input['contents'] ?? '';
 
@@ -47,7 +46,7 @@ class WikiService extends Service
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
 
-        if ($this->dao->existsNameInSameParent($projectKey, $parent->id, $name)) {
+        if ($this->dao->existsNameInSameParent($project->key, $parent->id, $name)) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
         }
 
