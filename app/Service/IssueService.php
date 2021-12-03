@@ -792,14 +792,14 @@ class IssueService extends Service
                         $gte = strtotime(date('Y-m-d'));
                         $lte = strtotime(date('Y-m-d') . ' 23:59:59');
                     } elseif ($val == '0w') {
-                        $gte = mktime(0, 0, 0, date('m'), date('d') - date('w') + 1, date('Y'));
-                        $lte = mktime(23, 59, 59, date('m'), date('d') - date('w') + 7, date('Y'));
+                        $gte = mktime(0, 0, 0, (int) date('m'), (int) date('d') - (int) date('w') + 1, (int) date('Y'));
+                        $lte = mktime(23, 59, 59, (int) date('m'), (int) date('d') - (int) date('w') + 7, (int) date('Y'));
                     } elseif ($val == '0m') {
-                        $gte = mktime(0, 0, 0, date('m'), 1, date('Y'));
-                        $lte = mktime(23, 59, 59, date('m'), date('t'), date('Y'));
+                        $gte = mktime(0, 0, 0, (int) date('m'), 1, (int) date('Y'));
+                        $lte = mktime(23, 59, 59, (int) date('m'), (int) date('t'), (int) date('Y'));
                     } else {
-                        $gte = mktime(0, 0, 0, 1, 1, date('Y'));
-                        $lte = mktime(23, 59, 59, 12, 31, date('Y'));
+                        $gte = mktime(0, 0, 0, 1, 1, (int) date('Y'));
+                        $lte = mktime(23, 59, 59, 12, 31, (int) date('Y'));
                     }
                     $bool['must'][] = [
                         'range' => [ik($key) => ['gte' => $gte, 'lte' => $lte]],
@@ -945,7 +945,7 @@ class IssueService extends Service
         $issue = $this->dao->first($id, true);
         $assignee && $issue->assignee = $assignee;
         $resolution && $issue->resolution = $resolution;
-        $issue->modifier = di()->get(UserFormatter::class)->base($user);
+        $issue->modifier = di()->get(UserFormatter::class)->small($user);
 
         Db::beginTransaction();
         try {

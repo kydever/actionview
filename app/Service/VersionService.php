@@ -18,6 +18,7 @@ use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Model\Version;
+use App\Service\Client\IssueSearch;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\Formatter\VersionFormatter;
@@ -131,8 +132,10 @@ class VersionService extends Service
     {
         $result = $this->formatter->base($version);
         $result['is_used'] = false;
-        $result['all_cnt'] = 0;
-        $result['unresolved_cnt'] = 0;
+
+        $res = di()->get(IssueSearch::class)->countByVersion([$version->id]);
+        $result['all_cnt'] = $res[$version->id]['cnt'] ?? 0;
+        $result['unresolved_cnt'] = $res[$version->id]['unresolved_cnt'] ?? 0;
         return $result;
     }
 
@@ -141,10 +144,12 @@ class VersionService extends Service
         [$count, $models] = $this->dao->index($project->key, $offset, $limit);
 
         // TODO: 从搜索引擎中查询对应数量
-        // $versionIds = $models->columns('id')->toArray();
         // $versionFieldModels = $this->provider->getFieldList($project->key);
 
-        $result = $this->formatter->formatList($models);
+        $versionIds = $models->columns('id')->toArray();
+        $res = di()->get(IssueSearch::class)->countByVersion($versionIds);
+
+        $result = $this->formatter->formatList($models, $res);
 
         $options = ['total' => $count, 'sizePerPage' => $limit, 'current_time' => time()];
 

@@ -34,12 +34,20 @@ class VersionFormatter extends Service
         ];
     }
 
-    public function formatList(Collection $models)
+    /**
+     * @param $counts => [1 => ['cnt' => 1, 'unresolved_cnt' => 1]],
+     */
+    public function formatList(Collection $models, array $counts = [])
     {
         $result = [];
         /** @var Version[] $models */
         foreach ($models as $model) {
-            $result[] = $this->base($model);
+            $item = $this->base($model);
+            if ($cnt = $counts[$model->id] ?? null) {
+                $item['all_cnt'] = $cnt['cnt'] ?? 0;
+                $item['unresolved_cnt'] = $cnt['unresolved_cnt'] ?? 0;
+            }
+            $result[] = $item;
         }
         return $result;
     }
