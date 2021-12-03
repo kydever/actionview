@@ -61,11 +61,12 @@ class WikiService extends Service
         $model->creator = di()->get(UserFormatter::class)->base($user);
         $model->editor = [];
         $model->contents = $contents;
+        $model->save();
 
         //         TODO 需要需改
         //        $isSendMsg = $input['isSendMsg'] && true;
         //        Event::fire(new WikiEvent($projectKey, $insValues['creator'], ['event_key' => 'create_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id->__toString()]]));
-        return $this->show($input, $id, $user);
+        return $this->show($input, $model, $user);
     }
 
     public function getPathTree(?Wiki $parent): array
@@ -95,10 +96,8 @@ class WikiService extends Service
         return $isAllowed;
     }
 
-    public function show($input, int $id, User $user)
+    public function show($input, Wiki $model, User $user)
     {
-        $document = $this->dao->first($id, true)->toArray();
-
         if ($this->dao->existsWidUser($id, $user->id)) {
             $document['favorited'] = true;
         }

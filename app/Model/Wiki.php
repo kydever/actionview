@@ -13,13 +13,11 @@ namespace App\Model;
 
 /**
  * @property int $id
- * @property int $wid
  * @property string $project_key 项目KEY
  * @property string $d
  * @property string $del_flag
  * @property string $name
  * @property array $pt
- * @property string $user
  * @property int $parent
  * @property string $contents
  * @property int $version
@@ -42,7 +40,7 @@ class Wiki extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'wid', 'project_key', 'd', 'del_flag', 'name', 'pt', 'user', 'parent', 'contents', 'version', 'creator', 'editor', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'd', 'del_flag', 'name', 'pt', 'parent', 'contents', 'version', 'creator', 'editor', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
