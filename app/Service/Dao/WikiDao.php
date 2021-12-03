@@ -95,6 +95,11 @@ class WikiDao extends Service
         return $query->get();
     }
 
+    public function findMany(array $ids)
+    {
+        return Wiki::findManyFromCache($ids);
+    }
+
     /**
      * @return \Hyperf\Database\Model\Collection|Wiki[]
      */

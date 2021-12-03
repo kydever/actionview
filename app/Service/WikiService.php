@@ -20,11 +20,11 @@ use App\Model\User;
 use App\Model\Wiki;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\WikiDao;
+use App\Service\Dao\WikiFavoriteDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\Formatter\WikiFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Utils\Codec\Json;
 
 class WikiService extends Service
 {
@@ -66,7 +66,7 @@ class WikiService extends Service
         //         TODO 需要需改
         //        $isSendMsg = $input['isSendMsg'] && true;
         //        Event::fire(new WikiEvent($projectKey, $insValues['creator'], ['event_key' => 'create_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id->__toString()]]));
-        return $this->show($input, $model, $user);
+        return $this->show($input, $model, $user, $project);
     }
 
     public function getPathTree(?Wiki $parent): array
@@ -96,16 +96,18 @@ class WikiService extends Service
         return $isAllowed;
     }
 
-    public function show($input, Wiki $model, User $user)
+    public function show($input, Wiki $model, User $user, Project $project)
     {
-        if ($this->dao->existsWidUser($id, $user->id)) {
-            $document['favorited'] = true;
+        $favorited = false;
+        if (di()->get(WikiFavoriteDao::class)->first($model->id, $user->id)) {
+            $favorited = true;
         }
-        $newest = [];
-        $newest['name'] = $document['name'];
-        $newest['editor'] = isset($document['editor']) ? JSON::decode($document['editor']) : JSON::decode($document['creator']);
-        $newest['updated_at'] = isset($document['updated_at']) ? $document['updated_at'] : $document['created_at'];
-        $newest['version'] = $document['version'];
+
+        // $newest = [];
+        // $newest['name'] = $model->name;
+        // $newest['editor'] = $model->editor ?: $model->creator;
+        // $newest['updated_at'] = $model->updated_at->toDateTimeString();
+        // $newest['version'] = $model->version;
 
         //         TODO 先注释后续再看
         //        $v = $input['v'] ?? '';
@@ -123,44 +125,30 @@ class WikiService extends Service
         //            $document['version'] = $wiki['version'];
         //        }
 
-        $document['versions'] = $this->dao->search($input, $id);
+        // $document['versions'] = $this->dao->search($input, $id);
+        //
+        // array_unshift($newest, $document['versions']);
 
-        array_unshift($newest, $document['versions']);
+        $path = $this->getPathTreeDetail($model->pt);
+        $result = $this->formatter->base($model);
+        $result['favorited'] = $favorited;
 
-        $path = $this->getPathTreeDetail($input['project_key'], Json::decode($document['pt']));
-        return [$this->arrange($document), $path];
+        return [$result, $path];
     }
 
-    public function getPathTreeDetail($projectKey, $pt)
+    public function getPathTreeDetail(array $pt)
     {
-        $parents = [];
-        $ps = $this->dao->getName($projectKey, $pt);
-        foreach ($ps as $val) {
-            $parents[$val['_id']->__toString()] = $val['name'];
-        }
+        $parents = $this->dao->findMany($pt)->getDictionary();
 
         $path = [];
         foreach ($pt as $pid) {
-            if ($pid === '0') {
-                $path[] = ['id' => '0', 'name' => 'root'];
-            } elseif (isset($parents[$pid])) {
-                $path[] = ['id' => $pid, 'name' => $parents[$pid]];
+            if ($pid === 0) {
+                $path[] = ['id' => 0, 'name' => 'root'];
+            } elseif (isset($parents[$pid]) && $parents[$pid] instanceof Wiki) {
+                $path[] = ['id' => $pid, 'name' => $parents[$pid]->name];
             }
         }
         return $path;
-    }
-
-    public function arrange($data)
-    {
-        if (! is_array($data)) {
-            return $data;
-        }
-
-        foreach ($data as $k => $val) {
-            $data[$k] = $this->arrange($val);
-        }
-
-        return $data;
     }
 
     public function createFolder(array $input, User $user, Project $project)

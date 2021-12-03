@@ -45,7 +45,7 @@ class WikiController extends Controller
             return $this->response->success($result);
         }
 
-        [$data, $option] = $this->service->createDoc($input, $user, $project);
-        return $this->response->success($data, ['option' => ['path' => $option]]);
+        [$data, $path] = $this->service->createDoc($input, $user, $project);
+        return $this->response->success($data, ['option' => ['path' => $path]]);
     }
 }

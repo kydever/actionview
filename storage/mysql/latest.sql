@@ -921,6 +921,15 @@ PRIMARY KEY (`id`),
 KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `wiki_favorites`;
+CREATE TABLE `wiki_favorites` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`wid` bigint(20) NOT NULL,
+`user_id` bigint(20) NOT NULL,
+`user` json NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 # Dump of table wiki_cate
 # ------------------------------------------------------------
 
