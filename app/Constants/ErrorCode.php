@@ -153,6 +153,16 @@ class ErrorCode extends AbstractConstants
     public const VERSION_NOT_EXIST = -11503;
 
     /**
+     * @Message("版本状态非法")
+     */
+    public const VERSION_RELEASE_STATUS_INVALID = -11505;
+
+    /**
+     * @Message("版本状态必填")
+     */
+    public const VERSION_RELEASE_STATUS_CANNOT_EMPTY = -11506;
+
+    /**
      * @Message("角色非法")
      */
     public const ROLE_INVALID = -12701;

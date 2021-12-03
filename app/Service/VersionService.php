@@ -143,7 +143,6 @@ class VersionService extends Service
     {
         [$count, $models] = $this->dao->index($project->key, $offset, $limit);
 
-        // TODO: 从搜索引擎中查询对应数量
         // $versionFieldModels = $this->provider->getFieldList($project->key);
 
         $versionIds = $models->columns('id')->toArray();
@@ -154,5 +153,46 @@ class VersionService extends Service
         $options = ['total' => $count, 'sizePerPage' => $limit, 'current_time' => time()];
 
         return [$result, $options];
+    }
+
+    public function release(int $id, array $input, User $user, Project $project)
+    {
+        $status = $input['status'];
+        $isSendMsg = (bool) ($input['isSendMsg'] ?? null);
+
+        $version = di()->get(VersionDao::class)->first($id, true);
+        if ($version->project_key !== $project->key) {
+            throw new BusinessException(ErrorCode::VERSION_NOT_EXIST);
+        }
+
+        $version->status = $status;
+        if ($status === StatusConstant::STATUS_RELEASED) {
+            $version->released_time = time();
+        }
+
+        Db::beginTransaction();
+        try {
+            $version->save();
+            if ($status === StatusConstant::STATUS_RELEASED) {
+                di()->get(EventDispatcherInterface::class)->dispatch(new VersionEvent($version, [
+                    'release_user_id' => $user->id,
+                ]));
+            }
+
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
+        }
+
+        return $this->show($version);
+        // $operate_flg = $request->input('operate_flg');
+        // if (isset($operate_flg) && $operate_flg === '1') {
+        //     $swap_version = $request->input('swap_version');
+        //     if (! isset($swap_version) || ! $swap_version) {
+        //         throw new \UnexpectedValueException('the swap version cannot be empty.', -11513);
+        //     }
+        //     $this->updIssueResolveVersion($project_key, $id, $swap_version);
+        // }
     }
 }

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\PaginationRequest;
+use App\Request\VersionReleaseRequest;
 use App\Service\ProjectAuth;
 use App\Service\UserAuth;
 use App\Service\VersionService;
@@ -50,5 +51,15 @@ class VersionController extends Controller
             $result,
             ['option' => $extra],
         );
+    }
+
+    public function release(VersionReleaseRequest $request, int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->release($id, $request->all(), $user, $project);
+
+        return $this->response->success($result);
     }
 }

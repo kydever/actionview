@@ -15,7 +15,7 @@ use App\Model\Version;
 
 class VersionEvent
 {
-    public function __construct(private Version $version)
+    public function __construct(private Version $version, private array $extra = [])
     {
     }
 
