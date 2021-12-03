@@ -24,6 +24,7 @@ namespace App\Model;
  * @property array $modifier
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property Project $project
  */
 class Version extends Model
 {
@@ -47,4 +48,9 @@ class Version extends Model
      * @var array
      */
     protected $casts = ['id' => 'int', 'start_time' => 'integer', 'end_time' => 'integer', 'released_time' => 'integer', 'creator' => 'json', 'modifier' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function project()
+    {
+        return $this->hasOne(Project::class, 'key', 'project_key');
+    }
 }

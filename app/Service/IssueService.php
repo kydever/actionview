@@ -27,6 +27,7 @@ use App\Service\Client\IssueSearch;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
+use App\Service\Dao\ProjectDao;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
@@ -609,6 +610,15 @@ class IssueService extends Service
     public function putOptions(Project $project)
     {
         return $this->options($project);
+    }
+
+    #[AsyncQueueMessage(delay: 5)]
+    public function putOptionsAsync(string $projectKey)
+    {
+        $project = di()->get(ProjectDao::class)->firstByKey($projectKey, false);
+        if ($project) {
+            $this->putOptions($project);
+        }
     }
 
     public function options(Project $project)
