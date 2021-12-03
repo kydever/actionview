@@ -18,7 +18,6 @@ use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Model\Wiki;
-use App\Service\Dao\ProjectDao;
 use App\Service\Dao\WikiDao;
 use App\Service\Dao\WikiFavoriteDao;
 use App\Service\Formatter\UserFormatter;

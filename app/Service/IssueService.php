@@ -812,6 +812,7 @@ class IssueService extends Service
     public function resetState(array $input, int $id, User $user, Project $project)
     {
         $assigneeId = intval($input['assignee'] ?? null);
+        $resolution = $input['resolution'] ?? null;
         $assignee = null;
         if ($assigneeId) {
             $isAllowed = di()->get(AclService::class)->isAllowed($assigneeId, Permission::ASSIGNED_ISSUE, $project);
@@ -824,32 +825,26 @@ class IssueService extends Service
             );
         }
 
-        $resolution = $request->input('resolution');
-        if (isset($resolution) && $resolution) {
-            $updValues['resolution'] = $resolution;
+        $issue = $this->dao->first($id, true);
+        $assignee && $issue->assignee = $assignee;
+        $resolution && $issue->resolution = $resolution;
+        $issue->modifier = di()->get(UserFormatter::class)->base($user);
+
+        Db::beginTransaction();
+        try {
+            $issue->save();
+            // TODO: 初始化 workflow
+
+            // TODO: Histroy Table
+
+            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
         }
 
-        $issue = DB::collection('issue_' . $project_key)->where('_id', $id)->first();
-        if (! $issue) {
-            throw new \UnexpectedValueException('the issue does not exist or is not in the project.', -11103);
-        }
-
-        // workflow initialize
-        $workflow = $this->initializeWorkflow($issue['type']);
-        $updValues = $updValues + $workflow;
-
-        $updValues['modifier'] = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
-        $updValues['updated_at'] = time();
-
-        $table = 'issue_' . $project_key;
-        DB::collection($table)->where('_id', $id)->update($updValues);
-
-        // add to histroy table
-        $snap_id = Provider::snap2His($project_key, $id, null, array_keys($updValues));
-        // trigger event of issue edited
-        Event::fire(new IssueEvent($project_key, $id, $updValues['modifier'], ['event_key' => 'reset_issue', 'snap_id' => $snap_id]));
-
-        return $this->show($project_key, $id);
+        return $this->show($issue);
     }
 
     private function getAssignee(string $assigneeId, Issue $issue, User $user, Project $project): array|User
