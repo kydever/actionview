@@ -29,7 +29,7 @@ class VersionDao extends Service
             ->get();
     }
 
-    public function index(string $key, int $limit, int $offset): array
+    public function index(string $key, int $offset, int $limit): array
     {
         $query = Version::query()
             ->where(['project_key' => $key])

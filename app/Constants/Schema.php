@@ -25,7 +25,10 @@ class Schema
 
     public const LABELS = 'labels';
 
+    public const TYPE = 'type';
+
     public const DEFAULT_ISSUE_KEYS = [
+        self::TYPE,
         self::RESOLUTION,
     ];
 

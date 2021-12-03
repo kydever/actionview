@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Model\Project;
-use App\Service\Dao\ConfigFieldDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\VersionFormatter;
 use Han\Utils\Service;
@@ -21,20 +20,26 @@ use Hyperf\Di\Annotation\Inject;
 class VersionService extends Service
 {
     #[Inject]
-    public VersionDao $dao;
+    protected VersionDao $dao;
 
     #[Inject]
-    public VersionFormatter $formatter;
+    protected VersionFormatter $formatter;
 
-    public function index(Project $project, int $page, int $limit): array
+    #[Inject]
+    protected ProviderService $provider;
+
+    public function index(Project $project, int $offset, int $limit): array
     {
-        $offset = ($page - 1) * $limit;
-        [$count, $versionModels] = $this->dao->index($project->key, $limit, $offset);
-        $versionFieldModels = di(ConfigFieldDao::class)->getFieldList($project->key);
+        [$count, $models] = $this->dao->index($project->key, $offset, $limit);
 
-        $result = [];
-        foreach ($versionModels as $versionModel) {
-            $item = $this->formatter->base($versionModel);
-        }
+        // TODO: 从搜索引擎中查询对应数量
+        // $versionIds = $models->columns('id')->toArray();
+        // $versionFieldModels = $this->provider->getFieldList($project->key);
+
+        $result = $this->formatter->formatList($models);
+
+        $options = ['total' => $count, 'sizePerPage' => $limit, 'current_time' => time()];
+
+        return [$result, $options];
     }
 }
