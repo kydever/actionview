@@ -24,7 +24,8 @@ git submodule update --init --recursive
 
 ## 运行前端代码
 
-> 如果不是 OSX 系统，则需要自行修改 front-end.conf 中的 api 代理
+- OSX 系统将 front-end.conf 中的接口地址改成 host.docker.internal
+- 其他系统按需修改
 
 ```shell
 docker build . -t actionview -f front-end.Dockerfile
