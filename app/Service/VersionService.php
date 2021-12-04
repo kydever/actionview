@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\ErrorCode;
-use App\Constants\Permission;
 use App\Constants\StatusConstant;
 use App\Event\VersionEvent;
 use App\Exception\BusinessException;
