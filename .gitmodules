@@ -1,3 +1,6 @@
 [submodule "laravel"]
 	path = laravel
 	url = https://github.com/lxerxa/actionview.git
+[submodule "front-end"]
+	path = front-end
+	url = https://github.com/forkgroup/actionview-fe.git
