@@ -78,7 +78,6 @@ Router::addGroup('/', function () {
 Router::addGroup('/project/{project_key}/', function () {
     // Router::get('role/{id}/reset', 'RoleController@reset');
     Router::post('role/{id:\d+}/permissions', App\Controller\RoleController::class . '::setPermissions');
-    // Router::post('role/{id}/actor', 'RoleController@setActor');
     // Router::post('role/{id}/groupactor', 'RoleController@setGroupActor');
     Router::get('role', App\Controller\RoleController::class . '::index');
     Router::post('role/{id}/actor', App\Controller\RoleController::class . '::setActor');
