@@ -47,6 +47,6 @@ class AccessProjectLogDao extends Service
             return $data['latest_access_time'] ?? 0;
         });
 
-        return array_column($result, 'project_key');
+        return array_column($result->toArray(), 'project_key');
     }
 }
