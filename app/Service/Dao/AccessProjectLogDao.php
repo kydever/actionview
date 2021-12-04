@@ -39,6 +39,7 @@ class AccessProjectLogDao extends Service
     {
         $models = AccessProjectLog::query()->where('user_id', $userId)
             ->selectRaw('`project_key`, max(`latest_access_time`) as `latest_access_time`')
+            ->groupBy('project_key')
             ->get()
             ->columns(['project_key', 'latest_access_time'])
             ->toArray();
