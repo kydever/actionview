@@ -62,4 +62,14 @@ class VersionController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function delete(int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->delete($id, $this->request->all(), $user, $project);
+
+        return $this->response->success($result);
+    }
 }

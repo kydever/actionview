@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\ErrorCode;
+use App\Constants\Permission;
 use App\Constants\StatusConstant;
 use App\Event\VersionEvent;
 use App\Exception\BusinessException;
@@ -194,5 +195,32 @@ class VersionService extends Service
         //     }
         //     $this->updIssueResolveVersion($project_key, $id, $swap_version);
         // }
+    }
+
+    /**
+     * @param $input = [
+     *     'operate_flg' => 0,
+     * ]
+     */
+    public function delete(int $id, array $input, User $user, Project $project)
+    {
+        $operateFlag = (int) ($input['operate_flg'] ?? null);
+        $version = $this->dao->first($id, true);
+
+        if ($operateFlag === 0) {
+            $res = di()->get(IssueSearch::class)->countByVersion([$version->id]);
+            $count = $res[$version->id]['cnt'] ?? 0;
+            if ($count > 0) {
+                throw new BusinessException(ErrorCode::VERSION_IS_USED);
+            }
+        } else {
+            throw new BusinessException(ErrorCode::VERSION_OPERATION_INVALID);
+        }
+
+        $version->delete();
+
+        di()->get(EventDispatcherInterface::class)->dispatch(new VersionEvent($version));
+
+        return true;
     }
 }

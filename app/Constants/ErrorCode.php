@@ -163,6 +163,16 @@ class ErrorCode extends AbstractConstants
     public const VERSION_RELEASE_STATUS_CANNOT_EMPTY = -11506;
 
     /**
+     * @Message("版本正在被使用")
+     */
+    public const VERSION_IS_USED = -11511;
+
+    /**
+     * @Message("版本操作码非法")
+     */
+    public const VERSION_OPERATION_INVALID = -11512;
+
+    /**
      * @Message("角色非法")
      */
     public const ROLE_INVALID = -12701;
