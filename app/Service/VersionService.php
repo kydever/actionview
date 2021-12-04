@@ -112,6 +112,7 @@ class VersionService extends Service
         $model->project_key = $project->key;
         $model->name = $name;
         $model->creator = $creator;
+        $model->modifier = $creator;
         $model->status = StatusConstant::STATUS_UNRELEASED;
         $model->description = $description;
 
