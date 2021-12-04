@@ -27,6 +27,7 @@ class IssueFormatter extends Service
             'assignee' => $model->assignee,
             'reporter' => $model->reporter,
             'no' => $model->no,
+            'created_at' => $model->created_at->getTimestamp(),
         ];
 
         return array_replace($model->data, $result);
