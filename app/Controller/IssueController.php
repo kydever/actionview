@@ -138,7 +138,7 @@ class IssueController extends Controller
         $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
 
-        $result = $this->service->batchHandleFilters($project, $user);
+        $result = $this->service->batchHandleFilters($this->request->all(), $user, $project);
 
         return $this->response->success($result);
     }

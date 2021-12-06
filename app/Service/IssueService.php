@@ -1015,10 +1015,10 @@ class IssueService extends Service
      */
     public function batchHandleFilters(array $input, User $user, Project $project)
     {
-        return match ($input['mode']) {
+        return match ($input['mode'] ?? null) {
             'sort' => $this->sortFilters($input['sequence'] ?? [], $user, $project),
-            'del' => [],
-            default => $this->getIssueFilters($input['ids'] ?? [], $project, $user)
+            'del' => $this->delFilters($input['ids'] ?? [], $user, $project),
+            default => $this->getIssueFilters($project, $user),
         };
     }
 
@@ -1036,7 +1036,7 @@ class IssueService extends Service
 
     protected function sortFilters(array $sequence, User $user, Project $project): array
     {
-        if (empty($sequence)) {
+        if (! empty($sequence)) {
             $model = di()->get(UserIssueFilterDao::class)->getUserFilter($project->key, $user->id);
             if (! $model) {
                 $model = new UserIssueFilter();

@@ -20,7 +20,7 @@ class IssueFilterFormatter extends Service
     public function base(IssueFilter $model): array
     {
         return [
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'name' => $model->name,
             'project_key' => $model->project_key,
             'query' => $model->query,
