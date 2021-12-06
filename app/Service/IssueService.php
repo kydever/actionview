@@ -323,7 +323,7 @@ class IssueService extends Service
 
         foreach ($schema as $field) {
             if ($field['type'] === Schema::FIELD_FILE && ! empty($result[$field['key']])) {
-                foreach ($result[$field['key']] as $key => $fid) ;
+                foreach ($result[$field['key']] as $key => $fid);
                 // TODO: 处理文件
                 // $result[$field['key']][$key] = File::find($fid);
             }
@@ -1024,7 +1024,7 @@ class IssueService extends Service
 
     protected function delFilters(array $ids, User $user, Project $project)
     {
-        if($ids){
+        if ($ids) {
             $models = di()->get(IssueFilterDao::class)->findMany($ids);
             foreach ($models as $model) {
                 $model->delete();
