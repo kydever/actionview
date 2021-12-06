@@ -35,4 +35,10 @@ class StatusConstant
     public const SCOPE_MEMBER = 3;
 
     public const STATUS_UNRESOLVED = 'Unresolved';
+
+    public const STATUS_UNRELEASED = 'unreleased';
+
+    public const STATUS_ARCHIVED = 'archived';
+
+    public const STATUS_RELEASED = 'released';
 }

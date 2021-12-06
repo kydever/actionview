@@ -11,7 +11,11 @@ declare(strict_types=1);
  */
 namespace App\Service\Client;
 
+use App\Constants\StatusConstant;
+use App\Model\Issue;
+use App\Service\Formatter\IssueFormatter;
 use Han\Utils\ElasticSearch;
+use Hyperf\Database\Model\Model;
 
 class IssueSearch extends ElasticSearch
 {
@@ -24,6 +28,7 @@ class IssueSearch extends ElasticSearch
             'parent_id' => ['type' => 'long'],
             'del_flg' => ['type' => 'byte'],
             'resolution' => ['type' => 'keyword'],
+            'resolve_version' => ['type' => 'long'],
             'assignee' => [
                 'properties' => [
                     'id' => ['type' => 'long'],
@@ -45,7 +50,6 @@ class IssueSearch extends ElasticSearch
                     'email' => ['type' => 'text'],
                 ],
             ],
-            // 'data' => ['type' => 'array']
         ];
     }
 
@@ -59,8 +63,71 @@ class IssueSearch extends ElasticSearch
         return 'doc';
     }
 
-    protected function check($data): bool
+    public function countByVersion(array $versions): array
     {
-        return true;
+        if (empty($versions)) {
+            return [];
+        }
+
+        $bool = [];
+        $bool['must'][] = ['term' => ['del_flg' => StatusConstant::NOT_DELETED]];
+        $bool['must'][] = ['terms' => ['resolve_version' => $versions]];
+
+        $unresolved = $bool;
+        $unresolved['must'][] = ['term' => ['resolution' => StatusConstant::STATUS_UNRESOLVED]];
+
+        $client = $this->client();
+        $body = [
+            'aggs' => [
+                'cnt' => [
+                    'filter' => ['bool' => $bool],
+                    'aggs' => [
+                        'group_by_version' => [
+                            'terms' => ['field' => 'resolve_version'],
+                        ],
+                    ],
+                ],
+                'unresolved_cnt' => [
+                    'filter' => ['bool' => $unresolved],
+                    'aggs' => [
+                        'group_by_version' => [
+                            'terms' => ['field' => 'resolve_version'],
+                        ],
+                    ],
+                ],
+            ],
+            'size' => 0,
+        ];
+        $params = [
+            'index' => $this->index(),
+            'type' => $this->type(),
+            'body' => $body,
+        ];
+
+        $res = $client->search($params);
+        $result = [];
+        foreach ($versions as $version) {
+            $result[$version] = [
+                'unresolved_cnt' => 0,
+                'cnt' => 0,
+            ];
+        }
+
+        foreach (['unresolved_cnt', 'cnt'] as $key) {
+            foreach ($res['aggregations'][$key]['group_by_version']['buckets'] ?? [] as $bucket) {
+                $result[$bucket['key']][$key] = $bucket['doc_count'];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * 根据模型获取对应document，如果数据字段不一致，请重写此方法.
+     * @param Issue $model
+     */
+    protected function document(Model $model): array
+    {
+        return di()->get(IssueFormatter::class)->base($model);
     }
 }

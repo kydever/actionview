@@ -20,9 +20,11 @@ namespace App\Model;
  * @property int $released_time
  * @property string $status
  * @property string $description
- * @property string $creator
+ * @property array $creator
+ * @property array $modifier
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property Project $project
  */
 class Version extends Model
 {
@@ -38,12 +40,17 @@ class Version extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'start_time', 'end_time', 'released_time', 'status', 'description', 'creator', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'name', 'start_time', 'end_time', 'released_time', 'status', 'description', 'creator', 'modifier', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'start_time' => 'integer', 'end_time' => 'integer', 'released_time' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'start_time' => 'integer', 'end_time' => 'integer', 'released_time' => 'integer', 'creator' => 'json', 'modifier' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function project()
+    {
+        return $this->hasOne(Project::class, 'key', 'project_key');
+    }
 }

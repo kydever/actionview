@@ -14,6 +14,7 @@ namespace App\Service\Dao;
 use App\Model\AccessProjectLog;
 use Carbon\Carbon;
 use Han\Utils\Service;
+use function Han\Utils\sort;
 
 class AccessProjectLogDao extends Service
 {
@@ -36,12 +37,17 @@ class AccessProjectLogDao extends Service
 
     public function findLatestProjectKeys(int $userId): array
     {
-        return AccessProjectLog::query()->where('user_id', $userId)
-            ->orderBy('latest_access_time', 'desc')
-            ->distinct()
-            ->select('project_key')
+        $models = AccessProjectLog::query()->where('user_id', $userId)
+            ->selectRaw('`project_key`, max(`latest_access_time`) as `latest_access_time`')
+            ->groupBy('project_key')
             ->get()
-            ->columns('project_key')
+            ->columns(['project_key', 'latest_access_time'])
             ->toArray();
+
+        $result = sort($models, function ($data) {
+            return $data['latest_access_time'] ?? 0;
+        });
+
+        return array_column($result->toArray(), 'project_key');
     }
 }

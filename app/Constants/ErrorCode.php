@@ -133,6 +133,46 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_DATE_TIME_PICKER_INVALID = -11122;
 
     /**
+     * @Message("版本名必填")
+     */
+    public const VERSION_NAME_CANNOT_EMPTY = -11500;
+
+    /**
+     * @Message("版本名重复")
+     */
+    public const VERSION_NAME_REPEATED = -11501;
+
+    /**
+     * @Message("版本结束时间必须大于开始时间")
+     */
+    public const VERSION_END_TIME_MUST_LARGER_THAN_START_TIME = -11502;
+
+    /**
+     * @Message("当前版本不存在")
+     */
+    public const VERSION_NOT_EXIST = -11503;
+
+    /**
+     * @Message("版本状态非法")
+     */
+    public const VERSION_RELEASE_STATUS_INVALID = -11505;
+
+    /**
+     * @Message("版本状态必填")
+     */
+    public const VERSION_RELEASE_STATUS_CANNOT_EMPTY = -11506;
+
+    /**
+     * @Message("版本正在被使用")
+     */
+    public const VERSION_IS_USED = -11511;
+
+    /**
+     * @Message("版本操作码非法")
+     */
+    public const VERSION_OPERATION_INVALID = -11512;
+
+    /**
      * @Message("角色非法")
      */
     public const ROLE_INVALID = -12701;

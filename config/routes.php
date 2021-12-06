@@ -78,7 +78,6 @@ Router::addGroup('/', function () {
 Router::addGroup('/project/{project_key}/', function () {
     // Router::get('role/{id}/reset', 'RoleController@reset');
     Router::post('role/{id:\d+}/permissions', App\Controller\RoleController::class . '::setPermissions');
-    // Router::post('role/{id}/actor', 'RoleController@setActor');
     // Router::post('role/{id}/groupactor', 'RoleController@setGroupActor');
     Router::get('role', App\Controller\RoleController::class . '::index');
     Router::post('role/{id}/actor', App\Controller\RoleController::class . '::setActor');
@@ -103,8 +102,9 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('issue', App\Controller\IssueController::class . '::index');
     Router::get('issue/options', App\Controller\IssueController::class . '::getOptions');
     Router::get('issue/{id:\d+}', App\Controller\IssueController::class . '::show');
+    Router::put('issue/{id:\d+}', App\Controller\IssueController::class . '::update');
     Router::post('issue/{id:\d+}/assign', App\Controller\IssueController::class . '::setAssignee');
-    Router::post('issue/{id}/reset', App\Controller\IssueController::class . '::resetState');
+    Router::post('issue/{id:\d+}/reset', App\Controller\IssueController::class . '::resetState');
 
     Router::post('issue', App\Controller\IssueController::class . '::store', [
         'options' => [
@@ -114,8 +114,13 @@ Router::addGroup('/project/{project_key}/', function () {
         ],
     ]);
 
+    Router::get('version', App\Controller\VersionController::class . '::index');
+    Router::post('version', App\Controller\VersionController::class . '::store');
+    Router::put('version/{id:\d+}', App\Controller\VersionController::class . '::update');
+    Router::post('version/{id:\d+}/release', App\Controller\VersionController::class . '::release');
+    Router::post('version/{id:\d+}/delete', App\Controller\VersionController::class . '::delete');
+
     // Route::post('version/merge', 'VersionController@merge');
-    // Route::post('version/{id}/release', 'VersionController@release');
     // Route::post('version/{id}/delete', 'VersionController@delete');
     // Route::resource('version', 'VersionController');
 

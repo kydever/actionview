@@ -22,11 +22,27 @@ git submodule update --init --recursive
 
 > 暂时前端代码存在版本冲突，所以修改 react-dom 和 react 版本到 15.5.4
 
-## 运行前端代码
+## 运行代码
 
-> 如果不是 OSX 系统，则需要自行修改 front-end.conf 中的 api 代理
+### 创建网络
 
 ```shell
-docker build . -t actionview -f front-end.Dockerfile
-docker run -p 8080:8080 actionview:latest
+docker network create default-network
+```
+### 运行前端代码
+
+> 如果想让前端代码访问宿主机，OSX 系统将 front-end.conf 中的接口地址改成 host.docker.internal，其他系统按实际情况配置
+
+```shell
+docker build . -t actionview_front_end -f front-end.Dockerfile
+docker run -p 8081:8080 --restart always --network default-network --name actionview_front_end -d actionview_front_end:latest
+```
+
+## 运行后端脚本
+
+自己准备好对应的 .env.actionview 配置
+
+```shell
+docker build . -t actionview
+docker run --name actionview --restart always --network default-network -v .env.actionview:/opt/www/.env -d actionview:latest
 ```

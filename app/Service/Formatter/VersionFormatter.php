@@ -23,21 +23,31 @@ class VersionFormatter extends Service
             'id' => $model->id,
             'name' => $model->name,
             'project_key' => $model->project_key,
-            'type' => $model->start_time,
+            'start_time' => $model->start_time,
             'end_time' => $model->end_time,
             'creator' => $model->creator,
             'status' => $model->status,
             'description' => $model->description,
             'released_time' => $model->released_time,
+            'created_at' => $model->created_at->toDateTimeString(),
+            'updated_at' => $model->updated_at->toDateTimeString(),
         ];
     }
 
-    public function formatList(Collection $models)
+    /**
+     * @param $counts => [1 => ['cnt' => 1, 'unresolved_cnt' => 1]],
+     */
+    public function formatList(Collection $models, array $counts = [])
     {
         $result = [];
         /** @var Version[] $models */
         foreach ($models as $model) {
-            $result[] = $this->base($model);
+            $item = $this->base($model);
+            if ($cnt = $counts[$model->id] ?? null) {
+                $item['all_cnt'] = $cnt['cnt'] ?? 0;
+                $item['unresolved_cnt'] = $cnt['unresolved_cnt'] ?? 0;
+            }
+            $result[] = $item;
         }
         return $result;
     }

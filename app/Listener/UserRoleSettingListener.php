@@ -15,6 +15,7 @@ use App\Event\AddUserToRoleEvent;
 use App\Event\DelUserFromRoleEvent;
 use App\Model\UserGroupProject;
 use App\Service\Dao\UserGroupProjectDao;
+use App\Service\IssueService;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
@@ -43,6 +44,8 @@ class UserRoleSettingListener implements ListenerInterface
         if ($event instanceof DelUserFromRoleEvent) {
             $this->unlinkUserWithProject($event->getUserIds(), $event->getProjectKey());
         }
+
+        di()->get(IssueService::class)->putOptionsAsync($event->getProjectKey());
     }
 
     public function unlinkUserWithProject(array $userIds, string $projectKey)

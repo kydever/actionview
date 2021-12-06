@@ -227,8 +227,14 @@ class ProviderService extends Service
     public function getVersionList(string $key)
     {
         $versions = di()->get(VersionDao::class)->findByProjectKey($key);
-
-        return $versions->columns(['id', 'name'])->toArray();
+        $result = [];
+        foreach ($versions as $version) {
+            $result[] = [
+                'id' => (string) $version->id,
+                'name' => $version->name,
+            ];
+        }
+        return $result;
     }
 
     #[Cacheable(prefix: 'label', group: 'context')]

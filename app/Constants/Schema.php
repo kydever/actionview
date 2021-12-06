@@ -25,6 +25,13 @@ class Schema
 
     public const LABELS = 'labels';
 
+    public const TYPE = 'type';
+
+    public const DEFAULT_ISSUE_KEYS = [
+        self::TYPE,
+        self::RESOLUTION,
+    ];
+
     public const FIELD_TIME_TRACKING = 'TimeTracking';
 
     public const FIELD_DATE_PICKER = 'DatePicker';

@@ -27,6 +27,7 @@ use App\Service\Client\IssueSearch;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
+use App\Service\Dao\ProjectDao;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
@@ -39,6 +40,7 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
 use Illuminate\Support\Facades\Event;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use function issue_key as ik;
 
 class IssueService extends Service
 {
@@ -56,6 +58,9 @@ class IssueService extends Service
     #[Inject]
     protected IssueSearch $search;
 
+    #[Inject]
+    protected AclService $acl;
+
     public function requiredCheck(array $schema, array $data, string $mode = 'create'): bool
     {
         foreach ($schema as $field) {
@@ -72,6 +77,109 @@ class IssueService extends Service
             }
         }
         return true;
+    }
+
+    public function update(int $id, array $input, User $user, Project $project)
+    {
+        $issue = $this->dao->first($id, true);
+        if (empty($input)) {
+            return $this->show($issue);
+        }
+
+        $type = $input['type'] ?? $issue->type;
+        $assigneeId = intval($input['assignee'] ?? null);
+        $assignee = null;
+        $resolution = $input['resolution'] ?? null;
+
+        $isAllowed = $this->acl->isAllowed($user->id, Permission::EDIT_ISSUE, $project)
+            || ($this->acl->isAllowed($user->id, Permission::EDIT_SELF_ISSUE, $project) && ($issue->reporter['id'] ?? null) == $user->id)
+            || $this->acl->isAllowed($user->id, Permission::EXEC_WORKFLOW, $project);
+
+        if (! $isAllowed) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        $schema = $this->provider->getSchemaByType($type);
+        if (! $schema) {
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
+        }
+
+        if (! $this->requiredCheck($schema, $input, 'update')) {
+            throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_REQUIRED);
+        }
+
+        $updValues = $issue->data;
+        foreach ($schema as $field) {
+            $fieldValue = $input[$field['key']] ?? null;
+            if (! $fieldValue) {
+                continue;
+            }
+
+            if ($field['type'] == Schema::FIELD_TIME_TRACKING) {
+                if (! $this->ttCheck($fieldValue)) {
+                    throw new BusinessException(ErrorCode::ISSUE_TIME_TRACKING_INVALID);
+                }
+
+                $updValues[$field['key']] = $this->ttHandle($fieldValue);
+                $updValues[$field['key'] . '_m'] = $this->ttHandleInM($updValues[$field['key']]);
+            } elseif ($field['type'] == Schema::FIELD_DATE_PICKER || $field['type'] == Schema::FIELD_DATE_TIME_PICKER) {
+                if ($this->isTimestamp($fieldValue) === false) {
+                    throw new BusinessException(ErrorCode::ISSUE_DATE_TIME_PICKER_INVALID);
+                }
+            } elseif ($field['type'] == Schema::FIELD_SINGLE_USER) {
+                $userModel = di()->get(UserDao::class)->first($fieldValue);
+                if ($userModel) {
+                    $updValues[$field['key']] = di()->get(UserFormatter::class)->base($userModel);
+                }
+            } elseif ($field['type'] == Schema::FIELD_MULTI_USER) {
+                $userModels = di()->get(UserDao::class)->findMany($fieldValue);
+                $userIds = $userModels->columns('id')->toArray();
+                $updValues[$field['key']] = di()->get(UserFormatter::class)->formatList($userModels);
+                $updValues[$field['key'] . '_ids'] = $userIds;
+            }
+        }
+
+        if ($assigneeId && $assigneeId !== ($issue->assignee['id'] ?? null)) {
+            if (! $this->acl->isAllowed($assigneeId, Permission::ASSIGNED_ISSUE, $project)) {
+                throw new BusinessException(ErrorCode::ASSIGNED_USER_PERMISSION_DENIED);
+            }
+
+            $userModel = di()->get(UserDao::class)->first($assigneeId);
+            if ($userModel) {
+                $assignee = di()->get(UserFormatter::class)->base($userModel);
+                $updValues['assignee'] = $assignee;
+            }
+        }
+
+        $updValues = $updValues + Arr::only($input, $this->getValidKeysBySchema($schema));
+        if (! $updValues) {
+            return $this->show($issue);
+        }
+
+        $modifier = di()->get(UserFormatter::class)->base($user);
+        $updValues['modifier'] = $modifier;
+
+        $issue->type = $type;
+        $issue->modifier = $modifier;
+        $issue->data = $updValues;
+        $resolution && $issue->resolution = $resolution;
+        $assignee && $issue->assignee = $assignee;
+
+        Db::beginTransaction();
+        try {
+            $issue->save();
+            // TODO: History table
+            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
+            if (isset($updValues['labels']) && $updValues['labels']) {
+                $this->createLabels($project->key, $updValues['labels']);
+            }
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
+        }
+
+        return $this->show($issue);
     }
 
     /**
@@ -504,6 +612,15 @@ class IssueService extends Service
         return $this->options($project);
     }
 
+    #[AsyncQueueMessage(delay: 5)]
+    public function putOptionsAsync(string $projectKey)
+    {
+        $project = di()->get(ProjectDao::class)->firstByKey($projectKey, false);
+        if ($project) {
+            $this->putOptions($project);
+        }
+    }
+
     public function options(Project $project)
     {
         $users = $this->provider->getUserList($project->key);
@@ -604,7 +721,7 @@ class IssueService extends Service
                                     'term' => ['id' => intval($val)],
                                 ],
                                 [
-                                    'match' => ['data.title' => $val],
+                                    'match' => [ik('title') => $val],
                                 ],
                             ],
                         ],
@@ -624,22 +741,22 @@ class IssueService extends Service
                                     'terms' => ['id' => $ids],
                                 ],
                                 [
-                                    'match' => ['data.title' => $val],
+                                    'match' => [ik('title') => $val],
                                 ],
                             ],
                         ],
                     ];
                 } else {
-                    $bool['must'][] = ['match' => ['data.title' => $val]];
+                    $bool['must'][] = ['match' => [ik('title') => $val]];
                 }
             } elseif ($key === 'sprints') {
-                $bool['must'][] = ['term' => ['data.sprints' => intval($val)]];
+                $bool['must'][] = ['term' => [ik('sprints') => intval($val)]];
             } elseif ($fieldsMapping[$key] === Schema::FIELD_SINGLE_USER) {
                 $userIds = explode(',', $val);
                 if (in_array('me', $userIds) && $userId) {
-                    array_push($userIds, $userId);
+                    $userIds[] = $userId;
                 }
-                $bool['must'][] = ['terms' => ['data.' . $key . '.' . 'id' => $userIds]];
+                $bool['must'][] = ['terms' => [ik($key . '.' . 'id') => $userIds]];
             } elseif ($fieldsMapping[$key] === Schema::FIELD_MULTI_USER) {
                 $userIds = [];
                 $vals = explode(',', $val);
@@ -650,21 +767,21 @@ class IssueService extends Service
                     'bool' => [
                         'should' => [
                             [
-                                'terms' => ['data.' . $key . '_ids' => $userIds],
+                                'terms' => [ik($key . '_ids') => $userIds],
                             ],
                         ],
                     ],
                 ];
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_SELECT, Schema::FIELD_SINGLE_VERSION, Schema::FIELD_RADIO_GROUP])) {
                 $bool['must'][] = [
-                    'terms' => ['data.' . $key => explode(',', $val)],
+                    'terms' => [ik($key) => explode(',', $val)],
                 ];
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_MULTI_SELECT, Schema::FIELD_MULTI_VERSION, Schema::FIELD_CHECKBOX_GROUP])) {
                 $bool['must'][] = [
                     'bool' => [
                         'should' => [
                             [
-                                'terms' => ['data.' . $key => $vals],
+                                'terms' => [ik($key) => $vals],
                             ],
                         ],
                     ],
@@ -675,17 +792,17 @@ class IssueService extends Service
                         $gte = strtotime(date('Y-m-d'));
                         $lte = strtotime(date('Y-m-d') . ' 23:59:59');
                     } elseif ($val == '0w') {
-                        $gte = mktime(0, 0, 0, date('m'), date('d') - date('w') + 1, date('Y'));
-                        $lte = mktime(23, 59, 59, date('m'), date('d') - date('w') + 7, date('Y'));
+                        $gte = mktime(0, 0, 0, (int) date('m'), (int) date('d') - (int) date('w') + 1, (int) date('Y'));
+                        $lte = mktime(23, 59, 59, (int) date('m'), (int) date('d') - (int) date('w') + 7, (int) date('Y'));
                     } elseif ($val == '0m') {
-                        $gte = mktime(0, 0, 0, date('m'), 1, date('Y'));
-                        $lte = mktime(23, 59, 59, date('m'), date('t'), date('Y'));
+                        $gte = mktime(0, 0, 0, (int) date('m'), 1, (int) date('Y'));
+                        $lte = mktime(23, 59, 59, (int) date('m'), (int) date('t'), (int) date('Y'));
                     } else {
-                        $gte = mktime(0, 0, 0, 1, 1, date('Y'));
-                        $lte = mktime(23, 59, 59, 12, 31, date('Y'));
+                        $gte = mktime(0, 0, 0, 1, 1, (int) date('Y'));
+                        $lte = mktime(23, 59, 59, 12, 31, (int) date('Y'));
                     }
                     $bool['must'][] = [
-                        'range' => ['data.' . $key => ['gte' => $gte, 'lte' => $lte]],
+                        'range' => [ik($key) => ['gte' => $gte, 'lte' => $lte]],
                     ];
                 } else {
                     $dateRange = [];
@@ -715,24 +832,24 @@ class IssueService extends Service
                         }
                     }
                     $bool['must'][] = [
-                        'range' => ['data.' . $key => $dateRange],
+                        'range' => [ik($key) => $dateRange],
                     ];
                 }
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_TEXT, Schema::FIELD_TEXT_AREA, Schema::FIELD_RICH_TEXT_EDITOR, Schema::FIELD_URL])) {
                 $bool['must'][] = [
-                    'match' => ['data.' . $key => $val],
+                    'match' => [ik($key) => $val],
                 ];
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_NUMBER, Schema::FIELD_INTEGER])) {
                 if (str_contains($val, '~')) {
                     $sections = explode('~', $val);
                     if ($sections[0]) {
                         $bool['must'][] = [
-                            'range' => ['data.' . $key => ['gte' => intval($sections[0])]],
+                            'range' => [ik($key) => ['gte' => intval($sections[0])]],
                         ];
                     }
                     if ($sections[1]) {
                         $bool['must'][] = [
-                            'range' => ['data.' . $key => ['lte' => intval($sections[1])]],
+                            'range' => [ik($key) => ['lte' => intval($sections[1])]],
                         ];
                     }
                 }
@@ -741,12 +858,12 @@ class IssueService extends Service
                     $sections = explode('~', $val);
                     if ($sections[0]) {
                         $bool['must'][] = [
-                            'range' => ['data.' . $key . '_m' => ['gte' => $this->ttHandleInM($sections[0])]],
+                            'range' => [ik($key . '_m') => ['gte' => $this->ttHandleInM($sections[0])]],
                         ];
                     }
                     if ($sections[1]) {
                         $bool['must'][] = [
-                            'range' => ['data.' . $key . '_m' => ['lte' => $this->ttHandleInM($sections[0])]],
+                            'range' => [ik($key . '_m') => ['lte' => $this->ttHandleInM($sections[0])]],
                         ];
                     }
                 }
@@ -812,6 +929,7 @@ class IssueService extends Service
     public function resetState(array $input, int $id, User $user, Project $project)
     {
         $assigneeId = intval($input['assignee'] ?? null);
+        $resolution = $input['resolution'] ?? null;
         $assignee = null;
         if ($assigneeId) {
             $isAllowed = di()->get(AclService::class)->isAllowed($assigneeId, Permission::ASSIGNED_ISSUE, $project);
@@ -824,32 +942,26 @@ class IssueService extends Service
             );
         }
 
-        $resolution = $request->input('resolution');
-        if (isset($resolution) && $resolution) {
-            $updValues['resolution'] = $resolution;
+        $issue = $this->dao->first($id, true);
+        $assignee && $issue->assignee = $assignee;
+        $resolution && $issue->resolution = $resolution;
+        $issue->modifier = di()->get(UserFormatter::class)->small($user);
+
+        Db::beginTransaction();
+        try {
+            $issue->save();
+            // TODO: 初始化 workflow
+
+            // TODO: Histroy Table
+
+            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
         }
 
-        $issue = DB::collection('issue_' . $project_key)->where('_id', $id)->first();
-        if (! $issue) {
-            throw new \UnexpectedValueException('the issue does not exist or is not in the project.', -11103);
-        }
-
-        // workflow initialize
-        $workflow = $this->initializeWorkflow($issue['type']);
-        $updValues = $updValues + $workflow;
-
-        $updValues['modifier'] = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
-        $updValues['updated_at'] = time();
-
-        $table = 'issue_' . $project_key;
-        DB::collection($table)->where('_id', $id)->update($updValues);
-
-        // add to histroy table
-        $snap_id = Provider::snap2His($project_key, $id, null, array_keys($updValues));
-        // trigger event of issue edited
-        Event::fire(new IssueEvent($project_key, $id, $updValues['modifier'], ['event_key' => 'reset_issue', 'snap_id' => $snap_id]));
-
-        return $this->show($project_key, $id);
+        return $this->show($issue);
     }
 
     private function getAssignee(string $assigneeId, Issue $issue, User $user, Project $project): array|User

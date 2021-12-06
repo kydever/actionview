@@ -50,3 +50,10 @@ if (! function_exists('queue_push')) {
         return $driver->push($job, $delay);
     }
 }
+
+if (! function_exists('issue_key')) {
+    function issue_key(string $key): string
+    {
+        return $key;
+    }
+}

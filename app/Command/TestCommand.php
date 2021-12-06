@@ -11,9 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Command;
 
+use App\Service\Client\IssueSearch;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
-use Hyperf\DbConnection\Db;
 use Psr\Container\ContainerInterface;
 
 #[Command]
@@ -32,11 +32,6 @@ class TestCommand extends HyperfCommand
 
     public function handle()
     {
-        $unresolvedModels = Db::select('select resolve_version, count(*) as num from issue where project_key = "p_open_source" and del_flg != 1 and resolution = "Unresolved" group by resolve_version');
-        $unresolved = [];
-        foreach ($unresolvedModels as $unresolvedModel) {
-            $unresolved[$unresolvedModel->resolve_version] = $unresolvedModel->num;
-        }
-        var_dump($unresolved);
+        $res = di()->get(IssueSearch::class)->countByVersion('p_open_source', [1, 2, 3]);
     }
 }
