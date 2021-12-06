@@ -1277,12 +1277,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/contract.git",
-                "reference": "93e99159979ac4708aef707b80ee60ccab9564d1"
+                "reference": "5fdff8b754bb356ce8a8eb59693d2177d11a7ab0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/contract/zipball/93e99159979ac4708aef707b80ee60ccab9564d1",
-                "reference": "93e99159979ac4708aef707b80ee60ccab9564d1",
+                "url": "https://api.github.com/repos/hyperf/contract/zipball/5fdff8b754bb356ce8a8eb59693d2177d11a7ab0",
+                "reference": "5fdff8b754bb356ce8a8eb59693d2177d11a7ab0",
                 "shasum": ""
             },
             "require": {
@@ -1316,7 +1316,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-12-01T08:19:47+00:00"
+            "time": "2021-12-06T03:43:16+00:00"
         },
         {
             "name": "hyperf/coordinator",
@@ -1374,12 +1374,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/database.git",
-                "reference": "8d482261e6e237f39fea929644c7753ba22b8622"
+                "reference": "c11107a3f04da0aa2d8facf20d213a8aadc1c78f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/database/zipball/8d482261e6e237f39fea929644c7753ba22b8622",
-                "reference": "8d482261e6e237f39fea929644c7753ba22b8622",
+                "url": "https://api.github.com/repos/hyperf/database/zipball/c11107a3f04da0aa2d8facf20d213a8aadc1c78f",
+                "reference": "c11107a3f04da0aa2d8facf20d213a8aadc1c78f",
                 "shasum": ""
             },
             "require": {
@@ -1423,7 +1423,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-11-27T06:05:42+00:00"
+            "time": "2021-12-06T03:43:16+00:00"
         },
         {
             "name": "hyperf/db-connection",
@@ -1953,12 +1953,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/http-message.git",
-                "reference": "57ac6eb5009bbe35e440cd7b919869e764b93f6e"
+                "reference": "1cc88d79b98d59fd8da2df1ec97ec7081cdde1c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/http-message/zipball/57ac6eb5009bbe35e440cd7b919869e764b93f6e",
-                "reference": "57ac6eb5009bbe35e440cd7b919869e764b93f6e",
+                "url": "https://api.github.com/repos/hyperf/http-message/zipball/1cc88d79b98d59fd8da2df1ec97ec7081cdde1c3",
+                "reference": "1cc88d79b98d59fd8da2df1ec97ec7081cdde1c3",
                 "shasum": ""
             },
             "require": {
@@ -1999,7 +1999,7 @@
                 "issues": "https://github.com/hyperf/http-message/issues",
                 "source": "https://github.com/hyperf/http-message/tree/3.0"
             },
-            "time": "2021-12-03T06:51:32+00:00"
+            "time": "2021-12-06T03:43:16+00:00"
         },
         {
             "name": "hyperf/http-server",
@@ -2007,12 +2007,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/http-server.git",
-                "reference": "295fb336ed41b990f51b3eb5a7dd15a9a73ff7e1"
+                "reference": "51fed73b7a903b934dd70df7ec106aff000ddc49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/http-server/zipball/295fb336ed41b990f51b3eb5a7dd15a9a73ff7e1",
-                "reference": "295fb336ed41b990f51b3eb5a7dd15a9a73ff7e1",
+                "url": "https://api.github.com/repos/hyperf/http-server/zipball/51fed73b7a903b934dd70df7ec106aff000ddc49",
+                "reference": "51fed73b7a903b934dd70df7ec106aff000ddc49",
                 "shasum": ""
             },
             "require": {
@@ -2064,7 +2064,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-12-03T06:51:32+00:00"
+            "time": "2021-12-06T03:43:16+00:00"
         },
         {
             "name": "hyperf/logger",
@@ -2344,12 +2344,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/process.git",
-                "reference": "2fa24322b41a59c23270bab37d4757b055d1746c"
+                "reference": "e5cbc5cdbd58d711b367e3d91919f45938d77b64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/process/zipball/2fa24322b41a59c23270bab37d4757b055d1746c",
-                "reference": "2fa24322b41a59c23270bab37d4757b055d1746c",
+                "url": "https://api.github.com/repos/hyperf/process/zipball/e5cbc5cdbd58d711b367e3d91919f45938d77b64",
+                "reference": "e5cbc5cdbd58d711b367e3d91919f45938d77b64",
                 "shasum": ""
             },
             "require": {
@@ -2395,7 +2395,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-11-05T08:06:17+00:00"
+            "time": "2021-12-06T03:43:16+00:00"
         },
         {
             "name": "hyperf/redis",
@@ -2577,12 +2577,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/utils.git",
-                "reference": "aa765d4201eef80ff8a23035fb70b1a282fa09b6"
+                "reference": "d83bd3ab5a5ac82f8310a04aae1c47c93a4cd87b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/utils/zipball/aa765d4201eef80ff8a23035fb70b1a282fa09b6",
-                "reference": "aa765d4201eef80ff8a23035fb70b1a282fa09b6",
+                "url": "https://api.github.com/repos/hyperf/utils/zipball/d83bd3ab5a5ac82f8310a04aae1c47c93a4cd87b",
+                "reference": "d83bd3ab5a5ac82f8310a04aae1c47c93a4cd87b",
                 "shasum": ""
             },
             "require": {
@@ -2636,7 +2636,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2021-12-01T08:19:47+00:00"
+            "time": "2021-12-06T03:43:16+00:00"
         },
         {
             "name": "hyperf/validation",
@@ -3596,16 +3596,16 @@
         },
         {
             "name": "phpoption/phpoption",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/php-option.git",
-                "reference": "5455cb38aed4523f99977c4a12ef19da4bfe2a28"
+                "reference": "eab7a0df01fe2344d172bff4cd6dbd3f8b84ad15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/5455cb38aed4523f99977c4a12ef19da4bfe2a28",
-                "reference": "5455cb38aed4523f99977c4a12ef19da4bfe2a28",
+                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/eab7a0df01fe2344d172bff4cd6dbd3f8b84ad15",
+                "reference": "eab7a0df01fe2344d172bff4cd6dbd3f8b84ad15",
                 "shasum": ""
             },
             "require": {
@@ -3613,7 +3613,7 @@
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.4.1",
-                "phpunit/phpunit": "^6.5.14 || ^7.0.20 || ^8.5.19 || ^9.5.8"
+                "phpunit/phpunit": "^6.5.14 || ^7.5.20 || ^8.5.19 || ^9.5.8"
             },
             "type": "library",
             "extra": {
@@ -3633,11 +3633,13 @@
             "authors": [
                 {
                     "name": "Johannes M. Schmitt",
-                    "email": "schmittjoh@gmail.com"
+                    "email": "schmittjoh@gmail.com",
+                    "homepage": "https://github.com/schmittjoh"
                 },
                 {
                     "name": "Graham Campbell",
-                    "email": "hello@gjcampbell.co.uk"
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
                 }
             ],
             "description": "Option Type for PHP",
@@ -3649,7 +3651,7 @@
             ],
             "support": {
                 "issues": "https://github.com/schmittjoh/php-option/issues",
-                "source": "https://github.com/schmittjoh/php-option/tree/1.8.0"
+                "source": "https://github.com/schmittjoh/php-option/tree/1.8.1"
             },
             "funding": [
                 {
@@ -3661,7 +3663,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-08-28T21:27:29+00:00"
+            "time": "2021-12-04T23:24:31+00:00"
         },
         {
             "name": "psr/cache",
@@ -6731,16 +6733,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.9",
+            "version": "9.2.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "f301eb1453c9e7a1bc912ee8b0ea9db22c60223b"
+                "reference": "d5850aaf931743067f4bfc1ae4cbd06468400687"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/f301eb1453c9e7a1bc912ee8b0ea9db22c60223b",
-                "reference": "f301eb1453c9e7a1bc912ee8b0ea9db22c60223b",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/d5850aaf931743067f4bfc1ae4cbd06468400687",
+                "reference": "d5850aaf931743067f4bfc1ae4cbd06468400687",
                 "shasum": ""
             },
             "require": {
@@ -6796,7 +6798,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.9"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.10"
             },
             "funding": [
                 {
@@ -6804,7 +6806,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-11-19T15:21:02+00:00"
+            "time": "2021-12-05T09:12:13+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
