@@ -16,10 +16,7 @@ use Han\Utils\Service;
 
 class UserIssueFilterDao extends Service
 {
-    /**
-     * @return null|object|UserIssueFilter
-     */
-    public function getUserFilter(string $key, int $userId)
+    public function getUserFilter(string $key, int $userId): ?UserIssueFilter
     {
         return UserIssueFilter::query()
             ->where('project_key', $key)

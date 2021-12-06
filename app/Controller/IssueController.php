@@ -112,4 +112,34 @@ class IssueController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function getIssueFilters()
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->getIssueFilters($project, $user);
+
+        return $this->response->success($result);
+    }
+
+    public function resetIssueFilters()
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->resetIssueFilters($project, $user);
+
+        return $this->response->success($result);
+    }
+
+    public function batchHandleFilters()
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->batchHandleFilters($project, $user);
+
+        return $this->response->success($result);
+    }
 }

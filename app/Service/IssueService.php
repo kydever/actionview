@@ -22,14 +22,17 @@ use App\Model\IssueFilter;
 use App\Model\Label;
 use App\Model\Project;
 use App\Model\User;
+use App\Model\UserIssueFilter;
 use App\Project\Eloquent\Labels;
 use App\Project\Provider;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\IssueDao;
+use App\Service\Dao\IssueFilterDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\UserDao;
+use App\Service\Dao\UserIssueFilterDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
@@ -320,7 +323,7 @@ class IssueService extends Service
 
         foreach ($schema as $field) {
             if ($field['type'] === Schema::FIELD_FILE && ! empty($result[$field['key']])) {
-                foreach ($result[$field['key']] as $key => $fid);
+                foreach ($result[$field['key']] as $key => $fid) ;
                 // TODO: 处理文件
                 // $result[$field['key']][$key] = File::find($fid);
             }
@@ -994,6 +997,57 @@ class IssueService extends Service
     public function getIssueFilters(Project $project, User $user): array
     {
         return $this->provider->getIssueFilters($project->key, $user->id);
+    }
+
+    public function resetIssueFilters(Project $project, User $user): array
+    {
+        di()->get(IssueFilterDao::class)->delete($project->key, $user->id);
+
+        return $this->provider->getIssueFilters($project->key, $user->id);
+    }
+
+    /**
+     * @param $input = [
+     *     'mode' => 'sort',
+     *     'sequence' => [],
+     *     'ids' => [],
+     * ]
+     */
+    public function batchHandleFilters(array $input, User $user, Project $project)
+    {
+        return match ($input['mode']) {
+            'sort' => $this->sortFilters($input['sequence'] ?? [], $user, $project),
+            'del' => [],
+            default => $this->getIssueFilters($input['ids'] ?? [], $project, $user)
+        };
+    }
+
+    protected function delFilters(array $ids, User $user, Project $project)
+    {
+        if($ids){
+            $models = di()->get(IssueFilterDao::class)->findMany($ids);
+            foreach ($models as $model) {
+                $model->delete();
+            }
+        }
+
+        return $this->getIssueFilters($project, $user);
+    }
+
+    protected function sortFilters(array $sequence, User $user, Project $project): array
+    {
+        if (empty($sequence)) {
+            $model = di()->get(UserIssueFilterDao::class)->getUserFilter($project->key, $user->id);
+            if (! $model) {
+                $model = new UserIssueFilter();
+                $model->project_key = $project->key;
+                $model->user = $user->toSmall();
+            }
+            $model->sequence = $sequence;
+            $model->save();
+        }
+
+        return $this->getIssueFilters($project, $user);
     }
 
     private function getAssignee(string $assigneeId, Issue $issue, User $user, Project $project): array|User

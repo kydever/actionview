@@ -29,4 +29,17 @@ class IssueFilterDao extends Service
             })
             ->get();
     }
+
+    public function delete(string $key, int $userId)
+    {
+        return IssueFilter::query()->where('project_key', $key)->where('creator->id', $userId)->delete();
+    }
+
+    /**
+     * @return \Hyperf\Database\Model\Collection<int, IssueFilter>
+     */
+    public function findMany(array $ids)
+    {
+        return IssueFilter::findManyFromCache($ids);
+    }
 }
