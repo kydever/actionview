@@ -14,4 +14,6 @@ namespace App\Constants;
 class WikiConstant
 {
     public const ROOT = 0;
+
+    public const ROOT_PATH = 'root';
 }

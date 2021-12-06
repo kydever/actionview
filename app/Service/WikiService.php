@@ -79,7 +79,7 @@ class WikiService extends Service
         return array_merge($parent->pt, [$parent->id]);
     }
 
-    public function show($input, Wiki $model, User $user)
+    public function show(array $input, Wiki $model, User $user)
     {
         $favorited = false;
         if (di()->get(WikiFavoriteDao::class)->first($model->id, $user->id)) {
@@ -170,17 +170,19 @@ class WikiService extends Service
         return $this->formatter->base($model);
     }
 
-    public function getDirTree($curNode, $dt, Project $project)
+    public function getDirTree(string $curNode, array $dt, Project $project)
     {
         $pt = ['0'];
-        if (empty($curNode)) {
-            if ($curNode == 'root') {
-                $curNode = null;
-            }
-            $node = $this->dao->firstParent($project->key, (int) $curNode);
+        if (empty($curNode) && $curNode !== WikiConstant::ROOT_PATH) {
+            $node = $this->dao->firstProject($project->key);
+//            TODO 目前只了解到  $curNode='root'
+//            else {
+//                $node = $this->dao->firstProjectKeyId($project->key, $curNode);
+//            }
+
             if ($node) {
                 $pt = $node->pt;
-                if (isset($node->d) && $node->d == 1) {
+                if (isset($node->d) && $node->d == ProjectConstant::WIKI_FOLDER) {
                     array_push($pt, $curNode);
                 }
             }
@@ -199,9 +201,9 @@ class WikiService extends Service
         $new_dirs = [];
         foreach ($sub_dirs as $val) {
             $new_dirs[] = [
-                'id' => $val['id'],
+                'id' => (string) $val['id'],
                 'name' => $val['name'],
-                'd' => isset($val['d']) ? $val['d'] : 0,
+                'd' => isset($val['d']) ? $val['d'] : ProjectConstant::WIKI_CONTENTS,
                 'parent' => (string) (isset($val['parent']) ? $val['parent'] : ''),
             ];
         }
@@ -272,13 +274,13 @@ class WikiService extends Service
             $path[] = ['id' => 0, 'name' => 'root'];
             if ($mode === 'list') {
                 foreach ($documents as $doc) {
-                    if ((! isset($doc['d']) || $doc['d'] != 1) && strtolower($doc['name']) === 'home') {
+                    if ((! isset($doc['d']) || $doc['d'] != ProjectConstant::WIKI_FOLDER) && strtolower($doc['name']) === 'home') {
                         $home = $doc;
                     }
                 }
             }
         } else {
-            $d = $this->dao->firstParent($project->key, $directory);
+            $d = $this->dao->firstProjectKeyId($project->key, $directory);
             if ($d && isset($d->pt)) {
                 $path = $this->getPathTreeDetail($d->pt);
             }
@@ -289,12 +291,12 @@ class WikiService extends Service
 
     public function destroy(int $id, Project $project, User $user)
     {
-        $model = $this->dao->firstParent($project->key, $id);
+        $model = $this->dao->firstProjectKeyId($project->key, $id);
         if (! $model) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
 
-        if ($model->d == 1) {
+        if ($model->d == ProjectConstant::WIKI_FOLDER) {
             if (! di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project)) {
                 throw new BusinessException(ErrorCode::PERMISSION_DENIED);
             }
@@ -303,16 +305,13 @@ class WikiService extends Service
         $model->del_flag = StatusConstant::DELETED;
         $model->save();
 
+        if (isset($model->d) && $model->d === ProjectConstant::WIKI_FOLDER) {
+            $this->dao->updateDelFlag($project->key, $id);
+        }
+        return $id;
 //        TODO 暂未使用，先不管 PT， 缺少 WikiEvent 数据表
-//        if (isset($document['d']) && $document['d'] === 1)
-//        {
-//            DB::collection('wiki_' . $project->key)->whereRaw([ 'pt' => $id ])->update([ 'del_flag' => 1 ]);
-//        }
-//
 //        $user = [ 'id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email ];
 //        Event::fire(new WikiEvent($project->key, $user, [ 'event_key' => 'delete_wiki', 'wiki_id' => $id ]));
-
-        return $id;
     }
 
     public function update(array $input, int $id, Project $project, User $user)
@@ -322,12 +321,12 @@ class WikiService extends Service
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
 
-        $model = $this->dao->firstParent($project->key, $id);
+        $model = $this->dao->firstProjectKeyId($project->key, $id);
         if (! $model) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
 
-        if (isset($model->d) && $model->d == 1) {
+        if (isset($model->d) && $model->d == ProjectConstant::WIKI_FOLDER) {
             if (! di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project)) {
                 throw new BusinessException(ErrorCode::PERMISSION_DENIED);
             }
@@ -347,13 +346,13 @@ class WikiService extends Service
             $model->name = $name;
         }
 
-        if (! isset($model->d) || $model->d !== 1) {
+        if (! isset($model->d) || $model->d !== ProjectConstant::WIKI_FOLDER) {
             $contents = $input['contents'] ?? '';
             if (isset($contents) && $contents) {
                 $model->contents = $contents;
             }
 
-            if (isset($model->version) && $model->version) {
+            if ($model->version) {
                 $model->version = $model->version + 1;
             } else {
                 $model->version = 2;
@@ -364,7 +363,7 @@ class WikiService extends Service
         $model->save();
 
         // record the version
-        if (! isset($model['d']) || $model['d'] !== 1) {
+        if (! isset($model['d']) || $model['d'] !== ProjectConstant::WIKI_FOLDER) {
 //            // unlock the wiki
 //            DB::collection('wiki_' . $project_key)->where('_id', $id)->unset('checkin');
 //            // record versions
