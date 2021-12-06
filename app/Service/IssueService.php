@@ -18,17 +18,21 @@ use App\Constants\StatusConstant;
 use App\Event\IssueEvent;
 use App\Exception\BusinessException;
 use App\Model\Issue;
+use App\Model\IssueFilter;
 use App\Model\Label;
 use App\Model\Project;
 use App\Model\User;
+use App\Model\UserIssueFilter;
 use App\Project\Eloquent\Labels;
 use App\Project\Provider;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\IssueDao;
+use App\Service\Dao\IssueFilterDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\UserDao;
+use App\Service\Dao\UserIssueFilterDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
@@ -962,6 +966,88 @@ class IssueService extends Service
         }
 
         return $this->show($issue);
+    }
+
+    /**
+     * @param $input = [
+     *     'name' => '',
+     * ]
+     */
+    public function saveIssueFilter(array $input, User $user, Project $project)
+    {
+        $name = $input['name'];
+        $query = $input['query'] ?? [];
+        $scope = StatusConstant::SCOPE_STRING_PRIVATE;
+
+        if (di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project)) {
+            $scope = $input['scope'] ?? StatusConstant::SCOPE_STRING_PRIVATE;
+        }
+
+        $model = new IssueFilter();
+        $model->project_key = $project->key;
+        $model->name = $name;
+        $model->query = $query;
+        $model->scope = $scope;
+        $model->creator = di()->get(UserFormatter::class)->small($user);
+        $model->save();
+
+        return $this->getIssueFilters($project, $user);
+    }
+
+    public function getIssueFilters(Project $project, User $user): array
+    {
+        return $this->provider->getIssueFilters($project->key, $user->id);
+    }
+
+    public function resetIssueFilters(Project $project, User $user): array
+    {
+        di()->get(IssueFilterDao::class)->delete($project->key, $user->id);
+
+        return $this->provider->getIssueFilters($project->key, $user->id);
+    }
+
+    /**
+     * @param $input = [
+     *     'mode' => 'sort',
+     *     'sequence' => [],
+     *     'ids' => [],
+     * ]
+     */
+    public function batchHandleFilters(array $input, User $user, Project $project)
+    {
+        return match ($input['mode'] ?? null) {
+            'sort' => $this->sortFilters($input['sequence'] ?? [], $user, $project),
+            'del' => $this->delFilters($input['ids'] ?? [], $user, $project),
+            default => $this->getIssueFilters($project, $user),
+        };
+    }
+
+    protected function delFilters(array $ids, User $user, Project $project)
+    {
+        if ($ids) {
+            $models = di()->get(IssueFilterDao::class)->findMany($ids);
+            foreach ($models as $model) {
+                $model->delete();
+            }
+        }
+
+        return $this->getIssueFilters($project, $user);
+    }
+
+    protected function sortFilters(array $sequence, User $user, Project $project): array
+    {
+        if (! empty($sequence)) {
+            $model = di()->get(UserIssueFilterDao::class)->getUserFilter($project->key, $user->id);
+            if (! $model) {
+                $model = new UserIssueFilter();
+                $model->project_key = $project->key;
+                $model->user = $user->toSmall();
+            }
+            $model->sequence = $sequence;
+            $model->save();
+        }
+
+        return $this->getIssueFilters($project, $user);
     }
 
     private function getAssignee(string $assigneeId, Issue $issue, User $user, Project $project): array|User

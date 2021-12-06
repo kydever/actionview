@@ -300,16 +300,11 @@ class ProviderService extends Service
         $customizeFilters = di(IssueFilterFormatter::class)->formatList($customizeFilterModels);
         $filters = array_merge($filters, $customizeFilters);
         $userFilter = di(UserIssueFilterDao::class)->getUserFilter($key, $userId);
-        if ($userFilter) {
-            $sequence = $userFilter->sequence;
-            $func = function ($v1, $v2) use ($sequence) {
-                $i1 = array_search($v1['id'], $sequence);
-                $i1 = $i1 !== false ? $i1 : 998;
-                $i2 = array_search($v2['id'], $sequence);
-                $i2 = $i2 !== false ? $i2 : 999;
-                return $i1 >= $i2 ? 1 : -1;
-            };
-            usort($filters, $func);
+        if ($sequence = $userFilter?->sequence ?? []) {
+            $sequence = array_flip($sequence);
+            return sort($filters, static function ($model) use ($sequence) {
+                return -($sequence[$model['id']] ?? 999);
+            })->toArray();
         }
 
         return $filters;

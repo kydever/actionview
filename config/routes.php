@@ -114,6 +114,11 @@ Router::addGroup('/project/{project_key}/', function () {
         ],
     ]);
 
+    Router::post('issue/filter', App\Controller\IssueController::class . '::saveIssueFilter');
+    Router::get('issue/filters', App\Controller\IssueController::class . '::getIssueFilters');
+    Router::get('issue/filters/reset', App\Controller\IssueController::class . '::resetIssueFilters');
+    Router::post('issue/filters', App\Controller\IssueController::class . '::batchHandleFilters');
+
     Router::get('version', App\Controller\VersionController::class . '::index');
     Router::post('version', App\Controller\VersionController::class . '::store');
     Router::put('version/{id:\d+}', App\Controller\VersionController::class . '::update');

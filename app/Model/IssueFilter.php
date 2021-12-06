@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property string $id
+ * @property int $id
  * @property string $project_key 项目key
  * @property string $name 名称
  * @property array $query
@@ -46,5 +46,5 @@ class IssueFilter extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'string', 'creator' => 'json', 'query' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'creator' => 'json', 'query' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

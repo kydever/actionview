@@ -108,6 +108,11 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_ASSIGNEE_CANNOT_EMPTY = -11104;
 
     /**
+     * @Message("问题过滤器名字必传")
+     */
+    public const ISSUE_FILTER_NAME_CANNOT_EMPTY = -11105;
+
+    /**
      * @Message("您没有分配负责人的权限")
      */
     public const ASSIGN_ASSIGNEE_DENIED = -11116;

@@ -15,6 +15,7 @@ use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Constants\UserConstant;
 use App\Service\AclService;
+use App\Service\Formatter\UserFormatter;
 use App\Service\ProjectAuth;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
 use Hyperf\Database\Model\Relations\HasMany;
@@ -134,5 +135,10 @@ class User extends Model
         //     return Permission::all();
         // }
         return $this->permissions;
+    }
+
+    public function toSmall(): array
+    {
+        return di()->get(UserFormatter::class)->small($this);
     }
 }
