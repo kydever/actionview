@@ -20,16 +20,13 @@ class WikiFormatter extends Service
     public function base(Wiki $model)
     {
         return [
-            'id' => $model->id,
-            'wid' => $model->wid,
+            'id' => (string) $model->id,
             'project_key' => $model->project_key,
             'd' => $model->d,
             'del_flag' => $model->del_flag,
             'name' => $model->name,
             'pt' => $model->pt,
-            'user' => $model->user,
-            'parent' => $model->parent,
-            'contents' => $model->contents,
+            'parent' => (string) $model->parent,
             'version' => $model->version,
             'creator' => $model->creator,
             'editor' => $model->editor,

@@ -16,7 +16,6 @@ use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Kernel\Http\Response;
-use App\Model\User;
 use App\Request\WikiCreateRequest;
 use App\Request\WikiGetDirTreeRequest;
 use App\Request\WikiIndexRequest;
@@ -67,30 +66,31 @@ class WikiController extends Controller
 //        return $this->response->success($result);
 //    }
 
-    public function index(WikiIndexRequest $request, $directory)
+    public function index(WikiIndexRequest $request, int $directory)
     {
         $project = ProjectAuth::instance()->build()->getCurrent();
         $input = $request->all();
-        [$result, $path, $home] = $this->service->index($input, (int) $directory, $project);
+        [$result, $path, $home] = $this->service->index($input, $directory, $project);
 
         return $this->response->success($result, ['options' => ['path' => $path, 'home' => $home]]);
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
-        $id = $this->service->destroy((int) $id, $project, $user);
+
+        $id = $this->service->destroy($id, $project, $user);
 
         return $this->response->success(['id' => $id]);
     }
 
-    public function update(WikiUpdateRequest $request, $id)
+    public function update(WikiUpdateRequest $request, int $id)
     {
         $input = $request->all();
         $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
-        [$result, $path] = $this->service->update($input, (int) $id, $project, $user);
+        [$result, $path] = $this->service->update($input, $id, $project, $user);
         return $this->response->success($result, ['path' => $path]);
     }
 
@@ -98,7 +98,7 @@ class WikiController extends Controller
     {
         $input = $request->all();
         $project = ProjectAuth::instance()->build()->getCurrent();
-        if (isset($input['s'])) {
+        if (! isset($input['s'])) {
             return $this->response->success([]);
         }
         if ($input['s'] === '/') {

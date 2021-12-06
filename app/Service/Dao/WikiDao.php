@@ -75,34 +75,44 @@ class WikiDao extends Service
             ->first();
     }
 
-    public function search(array $input, $projectKey, $directory, $mode)
+    /**
+     * @param $input = [
+     *     'name' => '',
+     *     'contents' => '',
+     * ],
+     * @param mixed $directory
+     * @param mixed $mode
+     */
+    public function search(array $input, string $projectKey, $directory, $mode)
     {
         $query = Wiki::query();
 
-        if (isset($projectKey) && ! empty($projectKey)) {
-            $query->where('project_key', 'like', '%' . $projectKey . '%');
+        if (! empty($projectKey)) {
+            $query->where('project_key', $projectKey);
         }
 
-        if (isset($input['name']) && ! empty($input['name'])) {
+        if (! empty($input['name'])) {
             $query->where('name', 'like', '%' . $input['name'] . '%');
         }
 
-        if (isset($input['contents']) && ! empty($input['contents'])) {
+        if (! empty($input['contents'])) {
             $query->where('contents', 'like', '%' . $input['contents'] . '%');
         }
 
-        if (isset($input['updated_at']) && ! empty($input['updated_at'])) {
-            $query->where('created_at', '>=', $input['updated_at']);
-            $query->orWhere('updated_at', '>=', $input['updated_at']);
+        if (! empty($input['updated_at'])) {
+            $query->where(function ($query) use ($input) {
+                $query->where('created_at', '>=', $input['updated_at']);
+                $query->orWhere('updated_at', '>=', $input['updated_at']);
+            });
         }
 
-//        if ($directory !== '0' && $mode === 'search') {
-//            $query->where('pt', $directory);
-//        }
-//
-//        if ($mode === 'list') {
-//            $query->where('parent', $directory);
-//        }
+        //        if ($directory !== '0' && $mode === 'search') {
+        //            $query->where('pt', $directory);
+        //        }
+        //
+        //        if ($mode === 'list') {
+        //            $query->where('parent', $directory);
+        //        }
 
         $query->where('del_flag', '<>', StatusConstant::DELETED);
 
@@ -161,11 +171,11 @@ class WikiDao extends Service
             ->where('d', ProjectConstant::WIKI_FOLDER)
             ->where('del_flag', '<>', StatusConstant::DELETED);
 
-//        现在 pt 是 JSON，_id 是 int 暂且注释
-//        if (isset($movedPath) && empty($movedPath)) {
-//            $query->where('pt', '<>', $movedPath);
-//            $query->where('_id', '<>', $movedPath);
-//        }
+        //        现在 pt 是 JSON，_id 是 int 暂且注释
+        //        if (isset($movedPath) && empty($movedPath)) {
+        //            $query->where('pt', '<>', $movedPath);
+        //            $query->where('_id', '<>', $movedPath);
+        //        }
 
         $query->limit(20);
         return $query->get(['name', 'pt']);

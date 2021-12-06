@@ -15,6 +15,7 @@ use App\Constants\ErrorCode;
 use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Constants\StatusConstant;
+use App\Constants\WikiConstant;
 use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
@@ -25,7 +26,6 @@ use App\Service\Formatter\UserFormatter;
 use App\Service\Formatter\WikiFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Utils\Codec\Json;
 
 class WikiService extends Service
 {
@@ -233,9 +233,7 @@ class WikiService extends Service
         $documents = $this->dao->search($input, $project->key, $directory, $mode) ?? '';
         $documents = $this->formatter->formatList($documents);
         foreach ($documents as $k => $d) {
-            $documents[$k]['favorited'] = true;
-            $documents[$k]['id'] = $d['id'];
-            $documents[$k]['parent'] = (string) $d['parent'];
+            $documents[$k]['favorited'] = false;
         }
 
 //        TODO Favorites未使用 先注释
@@ -267,13 +265,10 @@ class WikiService extends Service
 //                $documents[$k]['favorited'] = true;
 //            }
 //        }
-        foreach ($documents as $k => $d) {
-            $documents[$k]['favorited'] = true;
-        }
 
         $path = [];
         $home = [];
-        if ($directory === 0) {
+        if ($directory === WikiConstant::ROOT) {
             $path[] = ['id' => 0, 'name' => 'root'];
             if ($mode === 'list') {
                 foreach ($documents as $doc) {
@@ -299,7 +294,7 @@ class WikiService extends Service
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
 
-        if (isset($model->d) && $model->d == 1) {
+        if ($model->d == 1) {
             if (! di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project)) {
                 throw new BusinessException(ErrorCode::PERMISSION_DENIED);
             }
@@ -365,7 +360,7 @@ class WikiService extends Service
             }
         }
 
-        $model->editor = Json::encode($user);
+        $model->editor = di()->get(UserFormatter::class)->small($user);
         $model->save();
 
         // record the version
