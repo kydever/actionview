@@ -32,6 +32,7 @@ class IssueSearch extends ElasticSearch
             'del_flg' => ['type' => 'byte'],
             'resolution' => ['type' => 'keyword'],
             'resolve_version' => ['type' => 'long'],
+            'labels' => ['type' => 'keyword'],
             'assignee' => [
                 'properties' => [
                     'id' => ['type' => 'long'],
