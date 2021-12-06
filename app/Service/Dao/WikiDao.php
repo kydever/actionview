@@ -41,11 +41,11 @@ class WikiDao extends Service
             ->exists();
     }
 
-    public function firstParent(string $projectKey, int $directory): ?Wiki
+    public function firstProjectKeyId(string $projectKey, int $id): ?Wiki
     {
         return Wiki::query()
             ->where('project_key', $projectKey)
-            ->where('id', $directory)
+            ->where('id', $id)
             ->first();
     }
 
@@ -179,5 +179,22 @@ class WikiDao extends Service
 
         $query->limit(20);
         return $query->get(['name', 'pt']);
+    }
+
+    public function firstProject($projectKey): ?Wiki
+    {
+        return Wiki::query()
+            ->where('project_key', $projectKey)
+            ->first();
+    }
+
+
+
+    public function updateDelFlag($projectKey, $id)
+    {
+        return Wiki::query()
+            ->where('project_key', $projectKey)
+            ->whereRaw("json_contains(pt,'{$id}')")
+            ->update('del_flag', StatusConstant::DELETED);
     }
 }

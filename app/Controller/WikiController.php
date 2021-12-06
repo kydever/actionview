@@ -56,15 +56,15 @@ class WikiController extends Controller
     }
 
     // 有问题  currentnode 会传 root  默认赋值为 0
-//    public function getDirTree(WikiGetDirTreeRequest $request)
-//    {
-//        $curnode = $request->input('currentnode') ?? 0;
-//        $dt = ['id' => '0', 'name' => '根目录', 'd' => 1];
-//        $project = ProjectAuth::instance()->build()->getCurrent();
-//        $result = $this->service->getDirTree($curnode, $dt, $project);
-//
-//        return $this->response->success($result);
-//    }
+    public function getDirTree(WikiGetDirTreeRequest $request)
+    {
+        $curnode = $request->input('currentnode') ?? null;
+        $dt = ['id' => '0', 'name' => '根目录', 'd' => 1];
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $result = $this->service->getDirTree($curnode, $dt, $project);
+
+        return $this->response->success($result);
+    }
 
     public function index(WikiIndexRequest $request, int $directory)
     {
@@ -90,6 +90,7 @@ class WikiController extends Controller
         $input = $request->all();
         $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
+
         [$result, $path] = $this->service->update($input, $id, $project, $user);
         return $this->response->success($result, ['path' => $path]);
     }
@@ -109,7 +110,7 @@ class WikiController extends Controller
         return $this->response->success($result);
     }
 
-    public function show(WikiShowRequest $request, $id)
+    public function show(WikiShowRequest $request, int $id)
     {
         $input = $request->all();
         $model = di()->get(WikiDao::class)->first($id, true);
