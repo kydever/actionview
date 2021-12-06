@@ -13,4 +13,4 @@ CREATE TABLE `issue_filters` (
 `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
 PRIMARY KEY (`id`),
 KEY `INDEX_PROJECT_KEY` (`project_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
