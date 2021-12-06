@@ -122,7 +122,7 @@ trait TimeTrackTrait
                 continue;
             }
             $lastChr = substr($ttValue, -1);
-            $ttNum = substr($ttValue, 0, -1) === '' ? 1 : abs(substr($ttValue, 0, -1));
+            $ttNum = substr($ttValue, 0, -1) === '' ? 1 : abs((float) substr($ttValue, 0, -1));
             if ($lastChr == 'w') {
                 $tt_in_min += $ttNum * $W2M;
             } elseif ($lastChr == 'd') {

@@ -17,6 +17,7 @@ use App\Exception\BusinessException;
 use App\Model\Issue;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Builder;
+use Hyperf\Database\Model\Collection;
 
 class IssueDao extends Service
 {
@@ -66,7 +67,7 @@ class IssueDao extends Service
     }
 
     /**
-     * @return \Hyperf\Database\Model\Collection<int, Issue>
+     * @return Collection<int, Issue>
      */
     public function findMany(array $ids)
     {
