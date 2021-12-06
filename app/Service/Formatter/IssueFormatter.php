@@ -21,7 +21,7 @@ class IssueFormatter extends Service
         $result = [
             'id' => $model->id,
             'project_key' => $model->project_key,
-            'type' => $model->type,
+            'type' => (string) $model->type,
             'del_flg' => $model->del_flg,
             'resolution' => $model->resolution,
             'assignee' => $model->assignee,
