@@ -163,6 +163,26 @@ class ErrorCode extends AbstractConstants
     public const VERSION_RELEASE_STATUS_CANNOT_EMPTY = -11506;
 
     /**
+     * @Message("版本合并的源头不能为空")
+     */
+    public const VERSION_MERGE_SOURCE_CANNOT_EMPTY = -11507;
+
+    /**
+     * @Message("版本合并的源头已被废弃")
+     */
+    public const VERSION_MERGE_SOURCE_ARCHIVED = -11508;
+
+    /**
+     * @Message("版本合并的目标不能为空")
+     */
+    public const VERSION_MERGE_DEST_CANNOT_EMPTY = -11509;
+
+    /**
+     * @Message("版本合并的目标已被废弃")
+     */
+    public const VERSION_MERGE_DEST_ARCHIVED = -11510;
+
+    /**
      * @Message("版本正在被使用")
      */
     public const VERSION_IS_USED = -11511;

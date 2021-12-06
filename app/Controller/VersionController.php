@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\MergeVersionRequest;
 use App\Request\PaginationRequest;
 use App\Request\VersionReleaseRequest;
 use App\Service\ProjectAuth;
@@ -69,6 +70,16 @@ class VersionController extends Controller
         $project = ProjectAuth::instance()->build()->getCurrent();
 
         $result = $this->service->delete($id, $this->request->all(), $user, $project);
+
+        return $this->response->success($result);
+    }
+
+    public function merge(MergeVersionRequest $request)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->merge($request->all(), $user, $project);
 
         return $this->response->success($result);
     }

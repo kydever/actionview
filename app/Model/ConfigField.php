@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use App\Constants\Schema;
+
 /**
  * @property int $id
  * @property string $project_key 项目KEY
@@ -47,4 +49,12 @@ class ConfigField extends Model
      * @var array
      */
     protected $casts = ['id' => 'integer', 'option_values' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function isSingleOrMultiVersion(): bool
+    {
+        return in_array($this->type, [
+            Schema::FIELD_SINGLE_VERSION,
+            Schema::FIELD_MULTI_VERSION,
+        ]);
+    }
 }

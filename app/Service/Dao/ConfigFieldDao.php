@@ -13,11 +13,12 @@ namespace App\Service\Dao;
 
 use App\Model\ConfigField;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class ConfigFieldDao extends Service
 {
     /**
-     * @return ConfigField[]|\Hyperf\Database\Model\Collection
+     * @return Collection<int, ConfigField>
      */
     public function getFieldList(string $key)
     {

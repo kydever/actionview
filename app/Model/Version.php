@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use App\Constants\StatusConstant;
+
 /**
  * @property int $id
  * @property string $project_key
@@ -52,5 +54,10 @@ class Version extends Model
     public function project()
     {
         return $this->hasOne(Project::class, 'key', 'project_key');
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->status === StatusConstant::STATUS_ARCHIVED;
     }
 }

@@ -119,10 +119,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::put('version/{id:\d+}', App\Controller\VersionController::class . '::update');
     Router::post('version/{id:\d+}/release', App\Controller\VersionController::class . '::release');
     Router::post('version/{id:\d+}/delete', App\Controller\VersionController::class . '::delete');
-
-    // Route::post('version/merge', 'VersionController@merge');
-    // Route::post('version/{id}/delete', 'VersionController@delete');
-    // Route::resource('version', 'VersionController');
+    Router::post('version/merge', App\Controller\VersionController::class . '::merge');
 
     Router::get('wiki/dirtree', App\Controller\WikiController::class . '::getDirTree');
     // Route::get('wiki/{id}/dirs', 'WikiController@getDirChildren');

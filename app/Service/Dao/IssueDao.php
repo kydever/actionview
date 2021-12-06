@@ -66,7 +66,6 @@ class IssueDao extends Service
     }
 
     /**
-     * @param array $ids
      * @return \Hyperf\Database\Model\Collection<int, Issue>
      */
     public function findMany(array $ids)

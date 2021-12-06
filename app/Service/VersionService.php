@@ -14,10 +14,12 @@ namespace App\Service;
 use App\Constants\ErrorCode;
 use App\Constants\StatusConstant;
 use App\Event\VersionEvent;
+use App\Events\IssueEvent;
 use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Model\Version;
+use App\Project\Provider;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\UserFormatter;
@@ -26,6 +28,7 @@ use Han\Utils\Service;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
+use Illuminate\Support\Facades\Event;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class VersionService extends Service
@@ -222,5 +225,109 @@ class VersionService extends Service
         di()->get(EventDispatcherInterface::class)->dispatch(new VersionEvent($version));
 
         return true;
+    }
+
+    /**
+     * @param $input = [
+     *     'dest' => 1,
+     *     'source' => 2,
+     * ]
+     */
+    public function merge(array $input, User $user, Project $project)
+    {
+        $source = $input['source'];
+        $dest = $input['dest'];
+
+        $source = $this->dao->first((int) $input['source'], true);
+        if ($source->project_key !== $project->key) {
+            throw new BusinessException(ErrorCode::VERSION_MERGE_SOURCE_CANNOT_EMPTY, '版本合并的源头所属项目与实际不符');
+        }
+        if ($source->isArchived()) {
+            throw new BusinessException(ErrorCode::VERSION_MERGE_SOURCE_ARCHIVED);
+        }
+
+        $dest = $this->dao->first((int) $input['dest'], true);
+        if ($dest->project_key !== $project->key) {
+            throw new BusinessException(ErrorCode::VERSION_MERGE_DEST_CANNOT_EMPTY, '版本合并的目标所属项目与实际不符');
+        }
+        if ($dest->isArchived()) {
+            throw new BusinessException(ErrorCode::VERSION_MERGE_DEST_ARCHIVED);
+        }
+
+        // update the issue related version info
+        $this->updIssueVersion($project, $source, $dest);
+
+        // delete the version
+        Version::destroy($source);
+
+        // trigger event of version edited
+        $cur_user = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
+        Event::fire(new VersionEvent($project_key, $cur_user, ['event_key' => 'merge_version', 'data' => ['source' => $source_version->toArray(), 'dest' => $dest_version->toArray()]]));
+
+        return $this->show($project_key, $dest);
+    }
+
+    /**
+     * update the issues version.
+     */
+    public function updIssueVersion(Project $project, Version $source, Version $dest)
+    {
+        $fields = $this->getVersionFields($project->key);
+        $issues = DB::collection('issue_' . $project_key)
+            ->where(function ($query) use ($source, $version_fields) {
+                foreach ($version_fields as $key => $vf) {
+                    $query->orWhere($vf['key'], $source);
+                }
+            })
+            ->where('del_flg', '<>', 1)
+            ->get();
+
+        foreach ($issues as $issue) {
+            $updValues = [];
+            foreach ($version_fields as $key => $vf) {
+                if (! isset($issue[$vf['key']])) {
+                    continue;
+                }
+                if (is_string($issue[$vf['key']])) {
+                    if ($issue[$vf['key']] === $source) {
+                        $updValues[$vf['key']] = $dest;
+                    }
+                } elseif (is_array($issue[$vf['key']])) {
+                    $updValues[$vf['key']] = array_values(array_filter(array_unique(str_replace($source, $dest, $issue[$vf['key']]))));
+                }
+            }
+
+            if ($updValues) {
+                $updFields = array_keys($updValues);
+
+                $updValues['modifier'] = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
+                $updValues['updated_at'] = time();
+
+                $issue_id = $issue['_id']->__toString();
+
+                DB::collection('issue_' . $project_key)->where('_id', $issue_id)->update($updValues);
+                // add to histroy table
+                $snap_id = Provider::snap2His($project_key, $issue_id, [], $updFields);
+                // trigger event of issue edited
+                Event::fire(new IssueEvent($project_key, $issue_id, $updValues['modifier'], ['event_key' => 'edit_issue', 'snap_id' => $snap_id]));
+            }
+        }
+    }
+
+    /**
+     * get all fields related with versiob.
+     *
+     * @return array
+     */
+    public function getVersionFields(string $key)
+    {
+        $fields = $this->provider->getFieldList($key);
+        $result = [];
+        foreach ($fields as $field) {
+            if ($field->isSingleOrMultiVersion()) {
+                $result[] = ['type' => $field->type, 'key' => $field->key];
+            }
+        }
+        return $result;
     }
 }
