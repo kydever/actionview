@@ -90,7 +90,7 @@ class IssueService extends Service
             return $this->show($issue);
         }
 
-        $type = $input['type'] ?? $issue->type;
+        $type = intval($input['type'] ?? $issue->type);
         $assigneeId = intval($input['assignee'] ?? null);
         $assignee = null;
         $resolution = $input['resolution'] ?? null;
@@ -112,7 +112,7 @@ class IssueService extends Service
             throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_REQUIRED);
         }
 
-        $updValues = $issue->data;
+        $updValues= [];
         foreach ($schema as $field) {
             $fieldValue = $input[$field['key']] ?? null;
             if (! $fieldValue) {
@@ -163,6 +163,8 @@ class IssueService extends Service
         $modifier = di()->get(UserFormatter::class)->base($user);
         $updValues['modifier'] = $modifier;
 
+        $updValues = array_replace($issue->data, $updValues);
+
         $issue->type = $type;
         $issue->modifier = $modifier;
         $issue->data = $updValues;
@@ -193,7 +195,7 @@ class IssueService extends Service
      */
     public function store(array $input, User $user, Project $project)
     {
-        $type = $input['type'];
+        $type = (int) $input['type'];
         $assigneeId = $input['assignee'] ?? null;
         $moduleIds = $input['module'] ?? null;
         $resolution = $input['resolution'] ?? null;
