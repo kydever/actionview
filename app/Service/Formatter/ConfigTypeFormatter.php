@@ -19,7 +19,7 @@ class ConfigTypeFormatter extends Service
     public function small(ConfigType $model): array
     {
         return [
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'name' => $model->name,
             'abb' => $model->abb,
             'disabled' => (bool) $model->disabled,

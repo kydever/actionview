@@ -28,8 +28,12 @@ class StatusConstant
     // 公开
     public const SCOPE_PUBLIC = 1;
 
+    public const SCOPE_STRING_PUBLIC = 'public';
+
     // 私有
     public const SCOPE_PRIVATE = 2;
+
+    public const SCOPE_STRING_PRIVATE = 'private';
 
     // 成员可见
     public const SCOPE_MEMBER = 3;

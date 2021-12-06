@@ -18,6 +18,7 @@ use App\Constants\StatusConstant;
 use App\Event\IssueEvent;
 use App\Exception\BusinessException;
 use App\Model\Issue;
+use App\Model\IssueFilter;
 use App\Model\Label;
 use App\Model\Project;
 use App\Model\User;
@@ -962,6 +963,32 @@ class IssueService extends Service
         }
 
         return $this->show($issue);
+    }
+
+    /**
+     * @param $input = [
+     *     'name' => '',
+     * ]
+     */
+    public function saveIssueFilter(array $input, User $user, Project $project)
+    {
+        $name = $input['name'];
+        $query = $input['query'] ?? [];
+        $scope = StatusConstant::SCOPE_STRING_PRIVATE;
+
+        if (di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project)) {
+            $scope = $input['scope'] ?? StatusConstant::SCOPE_STRING_PRIVATE;
+        }
+
+        $model = new IssueFilter();
+        $model->project_key = $project->key;
+        $model->name = $name;
+        $model->query = $query;
+        $model->scope = $scope;
+        $model->creator = di()->get(UserFormatter::class)->small($user);
+        $model->save();
+
+        return $this->getIssueFilters($project);
     }
 
     private function getAssignee(string $assigneeId, Issue $issue, User $user, Project $project): array|User

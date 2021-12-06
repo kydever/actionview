@@ -102,4 +102,14 @@ class IssueController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function saveIssueFilter()
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->saveIssueFilter($this->request->all(), $user, $project);
+
+        return $this->response->success($result);
+    }
 }
