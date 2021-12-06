@@ -160,13 +160,12 @@ class IssueService extends Service
             return $this->show($issue);
         }
 
-        $modifier = di()->get(UserFormatter::class)->base($user);
-        $updValues['modifier'] = $modifier;
+        $updValues['modifier'] = $user->toSmall();
 
         $updValues = array_replace($issue->data, $updValues);
 
         $issue->type = $type;
-        $issue->modifier = $modifier;
+        $issue->modifier = $user->toSmall();
         $issue->data = $updValues;
         $resolution && $issue->resolution = $resolution;
         $assignee && $issue->assignee = $assignee;
