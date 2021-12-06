@@ -7,7 +7,7 @@
 #
 # Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
 # Database: actionview
-# Generation Time: 2021-12-04 06:14:17 +0000
+# Generation Time: 2021-12-06 10:56:38 +0000
 # ************************************************************
 
 
@@ -591,7 +591,7 @@ CREATE TABLE `issue` (
 DROP TABLE IF EXISTS `issue_filters`;
 
 CREATE TABLE `issue_filters` (
-  `id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `project_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '项目key',
   `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `query` json NOT NULL,
@@ -599,7 +599,8 @@ CREATE TABLE `issue_filters` (
   `creator` json NOT NULL,
   `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `INDEX_PROJECT_KEY` (`project_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
