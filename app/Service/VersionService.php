@@ -13,14 +13,15 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Constants\StatusConstant;
+use App\Event\IssueEvent;
 use App\Event\VersionEvent;
-use App\Events\IssueEvent;
 use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Model\Version;
 use App\Project\Provider;
 use App\Service\Client\IssueSearch;
+use App\Service\Dao\IssueDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\Formatter\VersionFormatter;
@@ -28,7 +29,6 @@ use Han\Utils\Service;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
-use Illuminate\Support\Facades\Event;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class VersionService extends Service
@@ -41,6 +41,9 @@ class VersionService extends Service
 
     #[Inject]
     protected ProviderService $provider;
+
+    #[Inject]
+    protected IssueSearch $search;
 
     public function update(int $id, array $input, User $user, Project $project)
     {
@@ -255,62 +258,55 @@ class VersionService extends Service
         }
 
         // update the issue related version info
-        $this->updIssueVersion($project, $source, $dest);
+        $this->updIssueVersion($project, $user, $source, $dest);
 
-        // delete the version
-        Version::destroy($source);
+        $source->delete();
 
-        // trigger event of version edited
-        $cur_user = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
-        Event::fire(new VersionEvent($project_key, $cur_user, ['event_key' => 'merge_version', 'data' => ['source' => $source_version->toArray(), 'dest' => $dest_version->toArray()]]));
+        di()->get(EventDispatcherInterface::class)->dispatch(new VersionEvent($source));
 
-        return $this->show($project_key, $dest);
+        return $this->show($dest);
     }
 
     /**
      * update the issues version.
      */
-    public function updIssueVersion(Project $project, Version $source, Version $dest)
+    public function updIssueVersion(Project $project, User $user, Version $source, Version $dest): void
     {
         $fields = $this->getVersionFields($project->key);
-        $issues = DB::collection('issue_' . $project_key)
-            ->where(function ($query) use ($source, $version_fields) {
-                foreach ($version_fields as $key => $vf) {
-                    $query->orWhere($vf['key'], $source);
-                }
-            })
-            ->where('del_flg', '<>', 1)
-            ->get();
+        $keys = array_column($fields, 'key');
+        if (empty($keys)) {
+            return;
+        }
 
-        foreach ($issues as $issue) {
-            $updValues = [];
-            foreach ($version_fields as $key => $vf) {
-                if (! isset($issue[$vf['key']])) {
-                    continue;
-                }
-                if (is_string($issue[$vf['key']])) {
-                    if ($issue[$vf['key']] === $source) {
-                        $updValues[$vf['key']] = $dest;
+        [$count, $ids] = $this->search->findOrVersion($source->id, $keys);
+        if ($count > 100) {
+            [, $ids] = $this->search->findOrVersion($source->id, $keys, $count);
+        }
+
+        $issues = di()->get(IssueDao::class)->findMany($ids);
+
+        Db::beginTransaction();
+        try {
+            foreach ($issues as $issue) {
+                $issueData = $issue->data;
+                foreach ($fields as $vf) {
+                    if (! isset($issueData[$vf['key']])) {
+                        continue;
                     }
-                } elseif (is_array($issue[$vf['key']])) {
-                    $updValues[$vf['key']] = array_values(array_filter(array_unique(str_replace($source, $dest, $issue[$vf['key']]))));
+
+                    $issueData[$vf['key']] = $dest->id;
                 }
+
+                $issue->data = $issueData;
+                $issue->modifier = di()->get(UserFormatter::class)->small($user);
+                $issue->save();
+
+                di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
             }
-
-            if ($updValues) {
-                $updFields = array_keys($updValues);
-
-                $updValues['modifier'] = ['id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email];
-                $updValues['updated_at'] = time();
-
-                $issue_id = $issue['_id']->__toString();
-
-                DB::collection('issue_' . $project_key)->where('_id', $issue_id)->update($updValues);
-                // add to histroy table
-                $snap_id = Provider::snap2His($project_key, $issue_id, [], $updFields);
-                // trigger event of issue edited
-                Event::fire(new IssueEvent($project_key, $issue_id, $updValues['modifier'], ['event_key' => 'edit_issue', 'snap_id' => $snap_id]));
-            }
+            Db::commit();
+        } catch (\Throwable $exception) {
+            Db::rollBack();
+            throw $exception;
         }
     }
 

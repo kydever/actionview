@@ -22,7 +22,7 @@ class ElasticTest extends HttpTestCase
 {
     public function testDSL()
     {
-        $res = di()->get(IssueSearch::class)->findOrVersion();
+        $res = di()->get(IssueSearch::class)->findOrVersion(1, ['resolve_version', 'version2', 'version3']);
         var_dump($res);
         $this->assertIsArray($res);
     }
