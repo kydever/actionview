@@ -12,19 +12,20 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\ErrorCode;
+use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Constants\StatusConstant;
 use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Model\Wiki;
-use App\Service\Dao\ProjectDao;
 use App\Service\Dao\WikiDao;
 use App\Service\Dao\WikiFavoriteDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\Formatter\WikiFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Codec\Json;
 
 class WikiService extends Service
 {
@@ -167,5 +168,221 @@ class WikiService extends Service
         $model->save();
 
         return $this->formatter->base($model);
+    }
+
+    public function getDirTree($curNode, $dt, Project $project)
+    {
+        $pt = ['0'];
+        if (empty($curNode)) {
+            if ($curNode == 'root') {
+                $curNode = null;
+            }
+            $node = $this->dao->firstParent($project->key, (int) $curNode);
+            if ($node) {
+                $pt = $node->pt;
+                if (isset($node->d) && $node->d == 1) {
+                    array_push($pt, $curNode);
+                }
+            }
+        }
+
+        foreach ($pt as $val) {
+            $subDirs = $this->dao->getParentWiki($project->key, (int) $val);
+            $this->addChildren2Tree($dt, $val, $subDirs);
+        }
+
+        return $dt;
+    }
+
+    public function addChildren2Tree(&$dt, $parent_id, $sub_dirs)
+    {
+        $new_dirs = [];
+        foreach ($sub_dirs as $val) {
+            $new_dirs[] = [
+                'id' => $val['id'],
+                'name' => $val['name'],
+                'd' => isset($val['d']) ? $val['d'] : 0,
+                'parent' => (string) (isset($val['parent']) ? $val['parent'] : ''),
+            ];
+        }
+
+        if ($dt['id'] == $parent_id) {
+            $dt['children'] = $new_dirs;
+            return true;
+        }
+
+        if (isset($dt['children']) && $dt['children']) {
+            $children_num = count($dt['children']);
+            for ($i = 0; $i < $children_num; ++$i) {
+                $res = $this->addChildren2Tree($dt['children'][$i], $parent_id, $sub_dirs);
+                if ($res === true) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function index(array $input, int $directory, Project $project)
+    {
+        $mode = 'list';
+        if (isset($input['name']) || isset($input['contents']) || isset($input['updated_at'])) {
+            $mode = 'search';
+        }
+
+        $documents = $this->dao->search($input, $project->key, $directory, $mode) ?? '';
+        $documents = $this->formatter->formatList($documents);
+        foreach ($documents as $k => $d) {
+            $documents[$k]['favorited'] = true;
+            $documents[$k]['id'] = $d['id'];
+            $documents[$k]['parent'] = (string) $d['parent'];
+        }
+
+//        TODO Favorites未使用 先注释
+//        $favorite_wikis = WikiFavorites::where('project_key', $project->key)
+//            ->where('user.id', $this->user->id)
+//            ->get()
+//            ->toArray();
+//        $favorite_dids = array_column($favorite_wikis, 'wid');
+//
+//
+//        if (isset($myfavorite) && $myfavorite == '1') {
+//            $mode = 'search';
+//            $favoritedIds = [];
+//            foreach ($favorite_dids as $did) {
+//                $favoritedIds[] = new ObjectID($did);
+//            }
+//
+//            $query->whereIn('_id', $favoritedIds);
+//        }
+
+//        $favorite_wikis = WikiFavorites::where('project_key', $project_key)
+//            ->where('user.id', $this->user->id)
+//            ->get()
+//            ->toArray();
+//        $favorite_wids = array_column($favorite_wikis, 'wid');
+//
+//        foreach ($documents as $k => $d) {
+//            if (in_array($d['_id']->__toString(), $favorite_wids)) {
+//                $documents[$k]['favorited'] = true;
+//            }
+//        }
+        foreach ($documents as $k => $d) {
+            $documents[$k]['favorited'] = true;
+        }
+
+        $path = [];
+        $home = [];
+        if ($directory === 0) {
+            $path[] = ['id' => 0, 'name' => 'root'];
+            if ($mode === 'list') {
+                foreach ($documents as $doc) {
+                    if ((! isset($doc['d']) || $doc['d'] != 1) && strtolower($doc['name']) === 'home') {
+                        $home = $doc;
+                    }
+                }
+            }
+        } else {
+            $d = $this->dao->firstParent($project->key, $directory);
+            if ($d && isset($d->pt)) {
+                $path = $this->getPathTreeDetail($d->pt);
+            }
+            $path[] = ['id' => $directory, 'name' => $d['name']];
+        }
+        return [$documents, $path, $home];
+    }
+
+    public function destroy(int $id, Project $project, User $user)
+    {
+        $model = $this->dao->firstParent($project->key, $id);
+        if (! $model) {
+            throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
+        }
+
+        if (isset($model->d) && $model->d == 1) {
+            if (! di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project)) {
+                throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+            }
+        }
+
+        $model->del_flag = StatusConstant::DELETED;
+        $model->save();
+
+//        TODO 暂未使用，先不管 PT， 缺少 WikiEvent 数据表
+//        if (isset($document['d']) && $document['d'] === 1)
+//        {
+//            DB::collection('wiki_' . $project->key)->whereRaw([ 'pt' => $id ])->update([ 'del_flag' => 1 ]);
+//        }
+//
+//        $user = [ 'id' => $this->user->id, 'name' => $this->user->first_name, 'email' => $this->user->email ];
+//        Event::fire(new WikiEvent($project->key, $user, [ 'event_key' => 'delete_wiki', 'wiki_id' => $id ]));
+
+        return $id;
+    }
+
+    public function update(array $input, int $id, Project $project, User $user)
+    {
+        $name = $input['name'] ?? '';
+        if (empty($name)) {
+            throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
+        }
+
+        $model = $this->dao->firstParent($project->key, $id);
+        if (! $model) {
+            throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
+        }
+
+        if (isset($model->d) && $model->d == 1) {
+            if (! di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project)) {
+                throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+            }
+        }
+//        else{
+//            //暂时未使用 checkin 字段
+//            if (isset($model['checkin']) && isset($model['checkin']['user']) && $model['checkin']['user']['id'] !== $this->user->id) {
+//                throw new \UnexpectedValueException('the object has been locked.', -11955);
+//            }
+//        }
+
+        if ($model->name !== $name) {
+            $isExists = $this->dao->existsUpdateInWikiName($project->key, $model->parent, $name, $model->d);
+            if ($isExists) {
+                throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
+            }
+            $model->name = $name;
+        }
+
+        if (! isset($model->d) || $model->d !== 1) {
+            $contents = $input['contents'] ?? '';
+            if (isset($contents) && $contents) {
+                $model->contents = $contents;
+            }
+
+            if (isset($model->version) && $model->version) {
+                $model->version = $model->version + 1;
+            } else {
+                $model->version = 2;
+            }
+        }
+
+        $model->editor = Json::encode($user);
+        $model->save();
+
+        // record the version
+        if (! isset($model['d']) || $model['d'] !== 1) {
+//            // unlock the wiki
+//            DB::collection('wiki_' . $project_key)->where('_id', $id)->unset('checkin');
+//            // record versions
+//
+//            // insert version
+//            $this->recordVersion($project_key, $model);
+//
+//            $isSendMsg = $request->input('isSendMsg') && true;
+//            Event::fire(new WikiEvent($project_key, $updValues['editor'], ['event_key' => 'edit_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id]]));
+
+            return $this->show($input, $model, $user, $project);
+        }
+
+        return [$model, []];
     }
 }

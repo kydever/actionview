@@ -14,7 +14,7 @@ namespace App\Model;
 /**
  * @property int $id
  * @property string $project_key 项目KEY
- * @property string $d
+ * @property int $d
  * @property string $del_flag
  * @property string $name
  * @property array $pt
@@ -47,5 +47,5 @@ class Wiki extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'wid' => 'integer', 'pt' => 'json', 'creator' => 'json', 'editor' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'parent' => 'integer', 'version' => 'integer'];
+    protected $casts = ['id' => 'int', 'wid' => 'integer', 'pt' => 'json', 'creator' => 'json', 'editor' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'parent' => 'integer', 'version' => 'integer', 'd' => 'integer'];
 }

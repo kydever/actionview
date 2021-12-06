@@ -75,22 +75,38 @@ class WikiDao extends Service
             ->first();
     }
 
-    /**
-     * @param mixed $input
-     * @param mixed $id
-     * @return \Hyperf\Database\Model\Collection|Wiki[]
-     */
-    public function search(array $input, int $id)
+    public function search(array $input, $projectKey, $directory, $mode)
     {
-        $query = Wiki::query()->where('name', '<>', '');
-        if ($projectKey = $input['project_key'] ?? null) {
+        $query = Wiki::query();
+
+        if (isset($projectKey) && ! empty($projectKey)) {
             $query->where('project_key', 'like', '%' . $projectKey . '%');
         }
 
-        if (! isset($id) & empty($id)) {
-            $query->where('wid', $id);
+        if (isset($input['name']) && ! empty($input['name'])) {
+            $query->where('name', 'like', '%' . $input['name'] . '%');
         }
 
+        if (isset($input['contents']) && ! empty($input['contents'])) {
+            $query->where('contents', 'like', '%' . $input['contents'] . '%');
+        }
+
+        if (isset($input['updated_at']) && ! empty($input['updated_at'])) {
+            $query->where('created_at', '>=', $input['updated_at']);
+            $query->orWhere('updated_at', '>=', $input['updated_at']);
+        }
+
+//        if ($directory !== '0' && $mode === 'search') {
+//            $query->where('pt', $directory);
+//        }
+//
+//        if ($mode === 'list') {
+//            $query->where('parent', $directory);
+//        }
+
+        $query->where('del_flag', '<>', StatusConstant::DELETED);
+
+        $query->orderByDesc('d');
         $query->orderByDesc('id');
         return $query->get();
     }
@@ -106,9 +122,34 @@ class WikiDao extends Service
     public function getName(string $projectKey, array $pt)
     {
         return Wiki::query()
-            ->where('name', '<>', '')
             ->where('project_key', $projectKey)
             ->whereIn('id', $pt)
             ->get(['name']);
+    }
+
+    public function getParentWiki(string $projectKey, int $parent)
+    {
+        return Wiki::query()
+            ->where('project_key', $projectKey)
+            ->where('parent', $parent)
+            ->where('del_flag', '<>', StatusConstant::DELETED)
+            ->get();
+    }
+
+    public function existsUpdateInWikiName(string $projectKey, int $parent, string $name, $d)
+    {
+        $query = Wiki::query()
+            ->where('project_key', $projectKey)
+            ->where('parent', $parent)
+            ->where('name', $name)
+            ->where('del_flag', '<>', StatusConstant::DELETED);
+
+        if (isset($d) && $d == 1) {
+            $query->where('d', ProjectConstant::WIKI_FOLDER);
+        } else {
+            $query->where('d', '<>', ProjectConstant::WIKI_FOLDER);
+        }
+
+        return $query->exists();
     }
 }
