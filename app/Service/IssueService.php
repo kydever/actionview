@@ -988,7 +988,12 @@ class IssueService extends Service
         $model->creator = di()->get(UserFormatter::class)->small($user);
         $model->save();
 
-        return $this->getIssueFilters($project);
+        return $this->getIssueFilters($project, $user);
+    }
+
+    public function getIssueFilters(Project $project, User $user): array
+    {
+        return $this->provider->getIssueFilters($project->key, $user->id);
     }
 
     private function getAssignee(string $assigneeId, Issue $issue, User $user, Project $project): array|User
