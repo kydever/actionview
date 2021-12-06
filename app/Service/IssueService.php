@@ -112,7 +112,7 @@ class IssueService extends Service
             throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_REQUIRED);
         }
 
-        $updValues= [];
+        $updValues = [];
         foreach ($schema as $field) {
             $fieldValue = $input[$field['key']] ?? null;
             if (! $fieldValue) {
