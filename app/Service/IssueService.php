@@ -782,6 +782,7 @@ class IssueService extends Service
                     'terms' => [ik($key) => explode(',', $val)],
                 ];
             } elseif (in_array($fieldsMapping[$key], [Schema::FIELD_MULTI_SELECT, Schema::FIELD_MULTI_VERSION, Schema::FIELD_CHECKBOX_GROUP])) {
+                $vals = explode(',', $val);
                 $bool['must'][] = [
                     'bool' => [
                         'should' => [
@@ -895,6 +896,7 @@ class IssueService extends Service
         $bool['must_not'][] = [
             'term' => ['del_flg' => StatusConstant::DELETED],
         ];
+
         return $bool;
     }
 
