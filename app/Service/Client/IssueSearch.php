@@ -16,6 +16,7 @@ use App\Model\Issue;
 use App\Service\Formatter\IssueFormatter;
 use Han\Utils\ElasticSearch;
 use Hyperf\Database\Model\Model;
+use ONGR\ElasticsearchDSL as DSL;
 
 class IssueSearch extends ElasticSearch
 {
@@ -61,6 +62,14 @@ class IssueSearch extends ElasticSearch
     public function type(): string
     {
         return 'doc';
+    }
+
+    public function findOrVersion()
+    {
+        $search = new DSL\Search();
+        $matchAll = new DSL\Query\MatchAllQuery();
+        $bool = new DSL\Query\Compound\BoolQuery();
+        return $search->addQuery($matchAll)->toArray();
     }
 
     public function countByVersion(array $versions): array
