@@ -16,11 +16,15 @@ use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Kernel\Http\Response;
+use App\Model\User;
 use App\Request\WikiCreateRequest;
 use App\Request\WikiGetDirTreeRequest;
 use App\Request\WikiIndexRequest;
+use App\Request\WikiSearchPathRequest;
+use App\Request\WikiShowRequest;
 use App\Request\WikiUpdateRequest;
 use App\Service\AclService;
+use App\Service\Dao\WikiDao;
 use App\Service\ProjectAuth;
 use App\Service\UserAuth;
 use App\Service\WikiService;
@@ -88,5 +92,30 @@ class WikiController extends Controller
         $project = ProjectAuth::instance()->build()->getCurrent();
         [$result, $path] = $this->service->update($input, (int) $id, $project, $user);
         return $this->response->success($result, ['path' => $path]);
+    }
+
+    public function searchPath(WikiSearchPathRequest $request)
+    {
+        $input = $request->all();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        if (isset($input['s'])) {
+            return $this->response->success([]);
+        }
+        if ($input['s'] === '/') {
+            return $this->response->success(['id' => 0, 'name' => '/']);
+        }
+        $result = $this->service->searchPath($input, $project);
+
+        return $this->response->success($result);
+    }
+
+    public function show(WikiShowRequest $request, $id)
+    {
+        $input = $request->all();
+        $model = di()->get(WikiDao::class)->first($id, true);
+        $user = UserAuth::instance()->build()->getUser();
+        [$data, $path] = $this->service->show($input, $model, $user);
+
+        return $this->response->success($data, ['path' => $path]);
     }
 }

@@ -129,8 +129,8 @@ Router::addGroup('/project/{project_key}/', function () {
     // Route::get('wiki/{id}/file/{fid}/download', 'WikiController@download');
     // Route::delete('wiki/{id}/file/{fid}', 'WikiController@remove');
     Router::get('wiki/directory/{directory:\d+}', App\Controller\WikiController::class . '::index');
-    // Route::get('wiki/search/path', 'WikiController@searchPath');
-    // Route::get('wiki/{id}', 'WikiController@show');
+    Router::get('wiki/search/path', App\Controller\WikiController::class . '::searchPath');
+    Router::get('wiki/{id:\d+}', App\Controller\WikiController::class . '::show');
     // Route::post('wiki/move', 'WikiController@move');
     // Route::post('wiki/copy', 'WikiController@copy');
     Router::post('wiki', App\Controller\WikiController::class . '::create');

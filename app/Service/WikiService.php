@@ -67,7 +67,7 @@ class WikiService extends Service
         //         TODO 需要需改
         //        $isSendMsg = $input['isSendMsg'] && true;
         //        Event::fire(new WikiEvent($projectKey, $insValues['creator'], ['event_key' => 'create_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id->__toString()]]));
-        return $this->show($input, $model, $user, $project);
+        return $this->show($input, $model, $user);
     }
 
     public function getPathTree(?Wiki $parent): array
@@ -79,7 +79,7 @@ class WikiService extends Service
         return array_merge($parent->pt, [$parent->id]);
     }
 
-    public function show($input, Wiki $model, User $user, Project $project)
+    public function show($input, Wiki $model, User $user)
     {
         $favorited = false;
         if (di()->get(WikiFavoriteDao::class)->first($model->id, $user->id)) {
@@ -380,9 +380,44 @@ class WikiService extends Service
 //            $isSendMsg = $request->input('isSendMsg') && true;
 //            Event::fire(new WikiEvent($project_key, $updValues['editor'], ['event_key' => 'edit_wiki', 'isSendMsg' => $isSendMsg, 'data' => ['wiki_id' => $id]]));
 
-            return $this->show($input, $model, $user, $project);
+            return $this->show($input, $model, $user);
         }
 
         return [$model, []];
     }
+
+//    public function searchPath(array $input, Project $project)
+//    {
+//        $directories = $this->dao->searchPath($project->key, $input['s'], $input['moved_path'] ?? '');
+//        if (empty($directories)){
+//            return [];
+//        }
+//
+//        $ds =[];
+//        foreach ($directories as $d) {
+//           $ds[] = $d->d;
+//        }
+//
+//        $ret = [];
+//        foreach ($directories as $d) {
+//            $parents = [];
+//            $path = '';
+//            //这里不对
+//            $ps = $this->dao->getName($project->key, $d->d);
+//
+//            foreach ($ps as $val) {
+//                $parents[$val->id] = $val->name;
+//            }
+//
+//            foreach ($d->pt as $pid) {
+//                if (isset($parents[$pid])) {
+//                    $path .= '/' . $parents[$pid];
+//                }
+//            }
+//            $path .= '/' . $d->name;
+//            $ret[] = [ 'id' => $d->id, 'name' => $path ];
+//        }
+//
+//        return $ret;
+//    }
 }

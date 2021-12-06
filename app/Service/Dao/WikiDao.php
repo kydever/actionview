@@ -152,4 +152,22 @@ class WikiDao extends Service
 
         return $query->exists();
     }
+
+    public function searchPath($projectKey, $name, $movedPath)
+    {
+        $query = Wiki::query()
+            ->where('project_key', $projectKey)
+            ->where('name', 'like', '%' . $name . '%')
+            ->where('d', ProjectConstant::WIKI_FOLDER)
+            ->where('del_flag', '<>', StatusConstant::DELETED);
+
+//        现在 pt 是 JSON，_id 是 int 暂且注释
+//        if (isset($movedPath) && empty($movedPath)) {
+//            $query->where('pt', '<>', $movedPath);
+//            $query->where('_id', '<>', $movedPath);
+//        }
+
+        $query->limit(20);
+        return $query->get(['name', 'pt']);
+    }
 }
