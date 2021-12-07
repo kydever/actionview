@@ -29,6 +29,10 @@ class ProjectSummaryService extends Service
     {
         // the top four filters
         $filters = $this->getTopFourFilters($project, $user);
+        return [
+            ['filters' => $filters],
+            ['twoWeeksAgo' => Carbon::now()->subWeeks(2)->format('m/d')],
+        ];
         // the two weeks issuepulse
         $trend = $this->getPulseData($project_key);
 

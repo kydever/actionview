@@ -26,8 +26,10 @@ class SummaryController extends Controller
         $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
 
-        $result = $this->service->index($project, $user);
+        [$result, $options] = $this->service->index($project, $user);
 
-        return $this->response->success($result);
+        return $this->response->success($result, [
+            'options' => $options,
+        ]);
     }
 }
