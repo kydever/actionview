@@ -138,7 +138,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('wiki/search/path', App\Controller\WikiController::class . '::searchPath');
     Router::get('wiki/{id:\d+}', App\Controller\WikiController::class . '::show');
     // Route::post('wiki/move', 'WikiController@move');
-    // Route::post('wiki/copy', 'WikiController@copy');
+    Router::post('wiki/copy', App\Controller\WikiController::class . '::copy');
     Router::put('wiki/{id:\d+}', App\Controller\WikiController::class . '::update');
     // Route::get('wiki/{id}/checkin', 'WikiController@checkin');
     // Route::get('wiki/{id}/checkout', 'WikiController@checkout');

@@ -61,6 +61,7 @@ class WikiService extends Service
         $model->version = 1;
         $model->creator = di()->get(UserFormatter::class)->base($user);
         $model->editor = [];
+        $model->attachments = [];
         $model->contents = $contents;
         $model->save();
 
@@ -122,7 +123,6 @@ class WikiService extends Service
     public function getPathTreeDetail(array $pt)
     {
         $parents = $this->dao->findMany($pt)->getDictionary();
-
         $path = [];
         foreach ($pt as $pid) {
             if ($pid === 0) {
@@ -164,6 +164,7 @@ class WikiService extends Service
         $model->d = ProjectConstant::WIKI_FOLDER;
         $model->creator = di()->get(UserFormatter::class)->small($user);
         $model->editor = [];
+        $model->attachments = [];
         $model->del_flag = StatusConstant::NOT_DELETED;
         $model->save();
 
@@ -415,4 +416,53 @@ class WikiService extends Service
 //
 //        return $ret;
 //    }
+
+    public function copy(array $input, Project $project, User $user)
+    {
+
+        $id = $input['id'] ?? 0;
+        if (! $id) {
+            throw new BusinessException(ErrorCode::WIKI_COPY_OBJECT_NOT_EMPTY);
+        }
+
+        $name = $input['name'] ?? '';
+        if (! $name) {
+            throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
+        }
+
+        $destPath =  $input['dest_path'] ?? 0;
+        if (! $destPath) {
+            throw new BusinessException(ErrorCode::WIKI_DESK_DIT_NOT_EMPTY);
+        }
+
+        $document = $this->dao->firstProjectKeyIdDir($project, $id, false);
+        if (!$document) {
+            throw new BusinessException(ErrorCode::WIKI_COPY_OBJ_NOT_EXIST);
+        }
+
+        $destDirectory = [];
+        if ($destPath !== 0) {
+            $destDirectory = $this->dao->firstProjectKeyIdDir($project, $id, true);
+            if (!$destDirectory) {
+                throw new BusinessException(ErrorCode::WIKI_DESK_DIR_NOT_EXIST);
+            }
+        }
+
+        $isExists = $this->dao->existsNameInSameParent($project->key, $destPath, $name);
+        if ($isExists) {
+            throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
+        }
+
+        $wiki = new WIki();
+        $wiki->name = $name;
+        $wiki->parent = $destPath;
+        $wiki->pt = array_merge($destDirectory->pt ?? [], [$destPath]);
+        $wiki->version = 1;
+        $wiki->contents= $document->contents ?? '';
+        $wiki->attachments = $document->attachments ?? [];
+        $wiki->creator = di()->get(UserFormatter::class)->base($user);
+        $wiki->save();
+
+        return $this->formatter->base($wiki);
+    }
 }

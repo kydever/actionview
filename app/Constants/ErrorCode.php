@@ -331,4 +331,25 @@ class ErrorCode extends AbstractConstants
      * @Message("WIKI对象不存在")
      */
     public const WIKI_OBJECT_NOT_EXIST = -11954;
+
+    /**
+     * @Message("WIKI复制对象不能为空")
+     */
+    public const WIKI_COPY_OBJECT_NOT_EMPTY = -11960;
+
+    /**
+     * @Message("WIKI中dest目录不能为空")
+     */
+    public const WIKI_DESK_DIT_NOT_EMPTY = -11961;
+
+    /**
+     * @Message("WIKI复制的对象不存在")
+     */
+    public const WIKI_COPY_OBJ_NOT_EXIST = -11962;
+
+    /**
+     * @Message("WIKI中dest目录不存在")
+     */
+    public const WIKI_DESK_DIR_NOT_EXIST = -11963;
+
 }

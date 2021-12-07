@@ -16,6 +16,7 @@ use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Kernel\Http\Response;
+use App\Request\WikiCopyRequest;
 use App\Request\WikiCreateRequest;
 use App\Request\WikiGetDirTreeRequest;
 use App\Request\WikiIndexRequest;
@@ -113,10 +114,22 @@ class WikiController extends Controller
     public function show(WikiShowRequest $request, int $id)
     {
         $input = $request->all();
-        $model = di()->get(WikiDao::class)->first($id, true);
         $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $model = di()->get(WikiDao::class)->firstProjectKeyId($project->key, $id);
         [$data, $path] = $this->service->show($input, $model, $user);
 
         return $this->response->success($data, ['path' => $path]);
     }
+
+    public function copy(WikiCopyRequest $request)
+    {
+        $input = $request->all();
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $data = $this->service->copy($input, $project, $user);
+
+        return $this->response->success($data);
+    }
+
 }

@@ -46,6 +46,7 @@ class WikiDao extends Service
         return Wiki::query()
             ->where('project_key', $projectKey)
             ->where('id', $id)
+            ->where('del_flag', '<>', StatusConstant::DELETED)
             ->first();
     }
 
@@ -106,13 +107,13 @@ class WikiDao extends Service
             });
         }
 
-        //        if ($directory !== '0' && $mode === 'search') {
-        //            $query->where('pt', $directory);
-        //        }
-        //
-        //        if ($mode === 'list') {
-        //            $query->where('parent', $directory);
-        //        }
+        if ($directory !== '0' && $mode === 'search') {
+            $query->whereRaw("json_contains(pt,'{$directory}')");
+        }
+
+        if ($mode === 'list') {
+            $query->where('parent', $directory);
+        }
 
         $query->where('del_flag', '<>', StatusConstant::DELETED);
 
@@ -195,4 +196,21 @@ class WikiDao extends Service
             ->whereRaw("json_contains(pt,'{$id}')")
             ->update('del_flag', StatusConstant::DELETED);
     }
+
+    public function firstProjectKeyIdDir($projectKey, $id, $dir)
+    {
+        $query = Wiki::query()
+            ->where('project_key', $projectKey)
+            ->where('id', $id)
+            ->where('del_flag', '<>', StatusConstant::DELETED);
+
+        if ($dir){
+            $query = $query->where('d', ProjectConstant::WIKI_FOLDER);
+        }else{
+            $query = $query->where('d', '<>', ProjectConstant::WIKI_FOLDER);
+        }
+
+        return $query->first();
+    }
+
 }
