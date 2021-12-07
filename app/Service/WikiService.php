@@ -205,6 +205,7 @@ class WikiService extends Service
                 'name' => $val['name'],
                 'd' => isset($val['d']) ? $val['d'] : ProjectConstant::WIKI_CONTENTS,
                 'parent' => (string) (isset($val['parent']) ? $val['parent'] : ''),
+                'toggled' => false,
             ];
         }
 
