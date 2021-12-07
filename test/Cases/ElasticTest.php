@@ -12,7 +12,10 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use App\Constants\ProjectConstant;
+use App\Model\Project;
+use App\Model\User;
 use App\Service\Client\IssueSearch;
+use App\Service\ProjectSummaryService;
 use App\Service\ProviderService;
 use HyperfTest\HttpTestCase;
 
@@ -32,6 +35,18 @@ class ElasticTest extends HttpTestCase
     {
         $fields = di()->get(ProviderService::class)->getFieldList(ProjectConstant::SYS);
         $fields = $fields->columns(['key', 'type'])->toArray();
+
+        $this->assertTrue(true);
+    }
+
+    public function testGetTopFourFilters()
+    {
+        $project = Project::query()->find(1);
+        $user = User::query()->find(1);
+        if ($project && $user) {
+            $res = di()->get(ProjectSummaryService::class)->getTopFourFilters($project, $user);
+            $this->assertArrayHasKey('count', $res[0]);
+        }
 
         $this->assertTrue(true);
     }

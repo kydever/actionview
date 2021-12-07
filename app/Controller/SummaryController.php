@@ -11,7 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Service\ProjectAuth;
 use App\Service\ProjectSummaryService;
+use App\Service\UserAuth;
 use Hyperf\Di\Annotation\Inject;
 
 class SummaryController extends Controller
@@ -21,6 +23,11 @@ class SummaryController extends Controller
 
     public function index()
     {
-        return $this->response->success();
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->index($project, $user);
+
+        return $this->response->success($result);
     }
 }

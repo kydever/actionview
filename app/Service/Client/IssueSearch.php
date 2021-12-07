@@ -87,6 +87,26 @@ class IssueSearch extends ElasticSearch
         return $this->search($query);
     }
 
+    public function countByBoolQuery(array $bool)
+    {
+        $params = [
+            'index' => $this->index(),
+            'type' => $this->type(),
+            'body' => [
+                'aggs' => [
+                    'cnt' => [
+                        'filter' => ['bool' => $bool],
+                    ],
+                ],
+                'size' => 0,
+            ],
+        ];
+
+        $res = $this->client()->search($params);
+
+        return $res['aggregations']['cnt']['doc_count'] ?? 0;
+    }
+
     public function countByVersion(array $versions): array
     {
         if (empty($versions)) {
