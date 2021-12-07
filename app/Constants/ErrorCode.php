@@ -352,4 +352,8 @@ class ErrorCode extends AbstractConstants
      */
     public const WIKI_DESK_DIR_NOT_EXIST = -11963;
 
+    /**
+     * @Message("WIKI中上传文件错误")
+     */
+    public const WIKI_UPLOAD_FILE_ERRORS = -11959;
 }

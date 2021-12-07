@@ -24,8 +24,10 @@ use App\Service\Dao\WikiDao;
 use App\Service\Dao\WikiFavoriteDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\Formatter\WikiFormatter;
+use App\Service\Struct\Image;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
+use League\Flysystem\FilesystemOperator;
 
 class WikiService extends Service
 {
@@ -34,6 +36,9 @@ class WikiService extends Service
 
     #[Inject]
     protected WikiFormatter $formatter;
+
+    #[Inject]
+    protected FilesystemOperator $file;
 
     public function createDoc(array $input, User $user, Project $project)
     {
@@ -419,7 +424,6 @@ class WikiService extends Service
 
     public function copy(array $input, Project $project, User $user)
     {
-
         $id = $input['id'] ?? 0;
         if (! $id) {
             throw new BusinessException(ErrorCode::WIKI_COPY_OBJECT_NOT_EMPTY);
@@ -430,20 +434,20 @@ class WikiService extends Service
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
 
-        $destPath =  $input['dest_path'] ?? 0;
+        $destPath = $input['dest_path'] ?? 0;
         if (! $destPath) {
             throw new BusinessException(ErrorCode::WIKI_DESK_DIT_NOT_EMPTY);
         }
 
         $document = $this->dao->firstProjectKeyIdDir($project, $id, false);
-        if (!$document) {
+        if (! $document) {
             throw new BusinessException(ErrorCode::WIKI_COPY_OBJ_NOT_EXIST);
         }
 
         $destDirectory = [];
         if ($destPath !== 0) {
             $destDirectory = $this->dao->firstProjectKeyIdDir($project, $id, true);
-            if (!$destDirectory) {
+            if (! $destDirectory) {
                 throw new BusinessException(ErrorCode::WIKI_DESK_DIR_NOT_EXIST);
             }
         }
@@ -458,11 +462,41 @@ class WikiService extends Service
         $wiki->parent = $destPath;
         $wiki->pt = array_merge($destDirectory->pt ?? [], [$destPath]);
         $wiki->version = 1;
-        $wiki->contents= $document->contents ?? '';
+        $wiki->contents = $document->contents ?? '';
         $wiki->attachments = $document->attachments ?? [];
         $wiki->creator = di()->get(UserFormatter::class)->base($user);
         $wiki->save();
 
         return $this->formatter->base($wiki);
+    }
+
+    public function upload($data, int $id, project $project, User $user)
+    {
+        $dir = date('Y/m/d');
+        $image = Image::makeFromBase64Data($data, BASE_PATH . '/runtime/' . $dir);
+        $object = $image->toAvatarPath();
+        $this->file->writeStream($path = $dir . '/' . uniqid() . '.' . $image->getExtension(), $stream = fopen($object, 'r+'));
+        fclose($stream);
+
+        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        if (! $model) {
+            throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
+        }
+
+        $data = [];
+        $data['id'] = $path;
+        $data['name'] = $path;
+        $data['uploader'] = di()->get(UserFormatter::class)->small($user);
+
+        $attachments = [];
+        if (isset($model->attachments) && empty($model->attachments)) {
+            $attachments = $model->attachments;
+        }
+
+        $attachments[] = $data;
+        $model->attachments = $attachments;
+        $model->save();
+
+        return $data;
     }
 }

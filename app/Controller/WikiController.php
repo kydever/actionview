@@ -23,6 +23,7 @@ use App\Request\WikiIndexRequest;
 use App\Request\WikiSearchPathRequest;
 use App\Request\WikiShowRequest;
 use App\Request\WikiUpdateRequest;
+use App\Request\WikiUploadRequest;
 use App\Service\AclService;
 use App\Service\Dao\WikiDao;
 use App\Service\ProjectAuth;
@@ -132,4 +133,14 @@ class WikiController extends Controller
         return $this->response->success($data);
     }
 
+    // 后续前端代码优化为非二进制上传
+    public function upload(WikiUploadRequest $request, int $id)
+    {
+        $data = $request->input('data');
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $result = $this->service->upload($data, $id, $project, $user);
+
+        return $this->response->success($result);
+    }
 }

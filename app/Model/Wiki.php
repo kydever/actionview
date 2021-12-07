@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,20 +12,20 @@ declare (strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id 
+ * @property int $id
  * @property string $project_key 项目KEY
- * @property int $d 
- * @property string $del_flag 
- * @property string $name 
- * @property array $pt 
- * @property int $parent 
- * @property string $contents 
- * @property int $version 
- * @property array $creator 
- * @property array $editor 
+ * @property int $d
+ * @property string $del_flag
+ * @property string $name
+ * @property array $pt
+ * @property int $parent
+ * @property string $contents
+ * @property int $version
+ * @property array $creator
+ * @property array $editor
  * @property array $attachments
- * @property \Carbon\Carbon $created_at 
- * @property \Carbon\Carbon $updated_at 
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class Wiki extends Model
 {
@@ -35,12 +35,14 @@ class Wiki extends Model
      * @var string
      */
     protected $table = 'wiki';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['id', 'project_key', 'd', 'del_flag', 'name', 'pt', 'parent', 'contents', 'version', 'creator', 'editor', 'attachments', 'attachments', 'created_at', 'updated_at'];
+
     /**
      * The attributes that should be cast to native types.
      *
