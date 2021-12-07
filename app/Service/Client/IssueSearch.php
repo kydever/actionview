@@ -16,6 +16,7 @@ use App\Model\Issue;
 use App\Service\Formatter\IssueFormatter;
 use Han\Utils\ElasticSearch;
 use Hyperf\Database\Model\Model;
+use ONGR\ElasticsearchDSL\Aggregation\Bucketing\DateHistogramAggregation;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
 use ONGR\ElasticsearchDSL\Query\TermLevel\TermQuery;
 use ONGR\ElasticsearchDSL\Search;
@@ -59,8 +60,10 @@ class IssueSearch extends ElasticSearch
                     'email' => ['type' => 'text'],
                 ],
             ],
-            'created_at' => ['type' => 'date'],
-            'updated_at' => ['type' => 'date'],
+            'created_at' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+            'updated_at' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+            'resolved_at' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+            'closed_at' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
         ];
     }
 
@@ -85,6 +88,47 @@ class IssueSearch extends ElasticSearch
         $query = $search->addQuery($bool)->setSize(100)->toArray();
 
         return $this->search($query);
+    }
+
+    /**
+     * @return [
+     *     '2021/12/01' => [
+     *         'created_cnt' => 0,
+     *         'resolved_cnt' => 0,
+     *         'closed_cnt' => 0,
+     *     ],
+     * ]
+     */
+    public function countDaily(string $key): array
+    {
+        $search = new Search();
+        $bool = new BoolQuery();
+        $bool->add(new TermQuery('del_flg', StatusConstant::DELETED), BoolQuery::MUST_NOT);
+        $bool->add(new TermQuery('project_key', $key), BoolQuery::MUST);
+        $body = $search
+            ->addQuery($bool)
+            ->addAggregation(new DateHistogramAggregation('created_cnt', 'created_at', 'day', 'yyyy/MM/dd'))
+            ->addAggregation(new DateHistogramAggregation('resolved_cnt', 'resolved_at', 'day', 'yyyy/MM/dd'))
+            ->addAggregation(new DateHistogramAggregation('closed_cnt', 'closed_at', 'day', 'yyyy/MM/dd'))
+            ->setSize(0)
+            ->toArray();
+
+        $res = $this->client()->search([
+            'index' => $this->index(),
+            'type' => $this->type(),
+            'body' => $body,
+        ]);
+
+        $result = [];
+        foreach ($res['aggregations'] ?? [] as $key => $aggregations) {
+            foreach ($aggregations['buckets'] ?? [] as $value) {
+                if (isset($value['key_as_string'], $value['doc_count'])) {
+                    $result[$value['key_as_string']][$key] = $value['doc_count'];
+                }
+            }
+        }
+
+        return $result;
     }
 
     public function countByBoolQuery(array $bool)
@@ -172,6 +216,9 @@ class IssueSearch extends ElasticSearch
      */
     protected function document(Model $model): array
     {
-        return di()->get(IssueFormatter::class)->base($model);
+        $result = di()->get(IssueFormatter::class)->base($model);
+        $result['created_at'] = $model->created_at->toDateTimeString();
+        $result['updated_at'] = $model->updated_at->toDateTimeString();
+        return $result;
     }
 }

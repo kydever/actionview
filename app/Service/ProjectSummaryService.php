@@ -29,12 +29,16 @@ class ProjectSummaryService extends Service
     {
         // the top four filters
         $filters = $this->getTopFourFilters($project, $user);
+        $trend = $this->getPulseData($project);
+
         return [
-            ['filters' => $filters],
+            [
+                'filters' => $filters,
+                'trend' => $trend,
+            ],
             ['twoWeeksAgo' => Carbon::now()->subWeeks(2)->format('m/d')],
         ];
         // the two weeks issuepulse
-        $trend = $this->getPulseData($project_key);
 
         $types = di()->get(ConfigTypeDao::class)->getTypeList($project->key);
 
@@ -244,43 +248,20 @@ class ProjectSummaryService extends Service
         // initialize the results
         $trend = $this->init14DaysArray();
 
-        $issues = DB::collection('issue_' . $project_key)
-            ->where(function ($query) {
-                $twoWeeksAgo = strtotime(date('Ymd', strtotime('-2 week')));
-                $query->where('created_at', '>=', $twoWeeksAgo)
-                    ->orWhere('resolved_at', '>=', $twoWeeksAgo)
-                    ->orWhere('closed_at', '>=', $twoWeeksAgo);
-            })
-            ->where('del_flg', '<>', 1)
-            ->get(['created_at', 'resolved_at', 'closed_at']);
-
-        foreach ($issues as $issue) {
-            if (isset($issue['created_at']) && $issue['created_at']) {
-                $created_date = date('Y/m/d', $issue['created_at']);
-                if (isset($trend[$created_date])) {
-                    ++$trend[$created_date]['new'];
-                }
-            }
-
-            if (isset($issue['resolved_at']) && $issue['resolved_at']) {
-                $resolved_date = date('Y/m/d', $issue['resolved_at']);
-                if (isset($trend[$resolved_date])) {
-                    ++$trend[$resolved_date]['resolved'];
-                }
-            }
-            if (isset($issue['closed_at']) && $issue['closed_at']) {
-                $closed_date = date('Y/m/d', $issue['closed_at']);
-                if (isset($trend[$closed_date])) {
-                    ++$trend[$closed_date]['closed'];
-                }
-            }
+        $countDaily = di()->get(IssueSearch::class)->countDaily($project->key);
+        foreach ($countDaily as $date => $item) {
+            $trend[$date] = [
+                'new' => $item['created_cnt'] ?? 0,
+                'resolved' => $item['resolved_cnt'] ?? 0,
+                'closed' => $item['closed_cnt'] ?? 0,
+            ];
         }
 
-        $new_trend = [];
+        $result = [];
         foreach ($trend as $key => $val) {
-            $new_trend[] = ['day' => $key] + $val;
+            $result[] = ['day' => $key] + $val;
         }
-        return $new_trend;
+        return $result;
     }
 
     private function init14DaysArray(): array

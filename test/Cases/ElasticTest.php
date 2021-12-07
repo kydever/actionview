@@ -50,4 +50,14 @@ class ElasticTest extends HttpTestCase
 
         $this->assertTrue(true);
     }
+
+    public function testCountDaily()
+    {
+        $project = Project::findFromCache(1);
+        if ($project) {
+            $res = di()->get(IssueSearch::class)->countDaily($project->key);
+        }
+
+        $this->assertTrue(true);
+    }
 }
