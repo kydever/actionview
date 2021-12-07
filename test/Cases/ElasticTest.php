@@ -11,7 +11,9 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
+use App\Constants\ProjectConstant;
 use App\Service\Client\IssueSearch;
+use App\Service\ProviderService;
 use HyperfTest\HttpTestCase;
 
 /**
@@ -24,5 +26,13 @@ class ElasticTest extends HttpTestCase
     {
         $res = di()->get(IssueSearch::class)->findOrVersion(1, ['resolve_version', 'version2', 'version3']);
         $this->assertIsArray($res);
+    }
+
+    public function testGetIssueMapping()
+    {
+        $fields = di()->get(ProviderService::class)->getFieldList(ProjectConstant::SYS);
+        $fields = $fields->columns(['key', 'type'])->toArray();
+
+        $this->assertTrue(true);
     }
 }
