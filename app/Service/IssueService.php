@@ -761,6 +761,9 @@ class IssueService extends Service
                 if (in_array('me', $userIds) && $userId) {
                     $userIds[] = $userId;
                 }
+                $userIds = array_values(array_filter($userIds, static function ($value) {
+                    return is_numeric($value);
+                }));
                 $bool['must'][] = ['terms' => [ik($key . '.' . 'id') => $userIds]];
             } elseif ($fieldsMapping[$key] === Schema::FIELD_MULTI_USER) {
                 $userIds = [];

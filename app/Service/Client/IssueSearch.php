@@ -26,13 +26,18 @@ class IssueSearch extends ElasticSearch
     {
         return [
             'id' => ['type' => 'long'],
+            'no' => ['type' => 'long'],
             'project_key' => ['type' => 'keyword'],
             'type' => ['type' => 'long'],
+            'state' => ['type' => 'keyword'],
             'parent_id' => ['type' => 'long'],
             'del_flg' => ['type' => 'byte'],
             'resolution' => ['type' => 'keyword'],
+            'priority' => ['type' => 'keyword'],
             'resolve_version' => ['type' => 'long'],
             'labels' => ['type' => 'keyword'],
+            'epic' => ['type' => 'keyword'],
+            'module' => ['type' => 'keyword'],
             'assignee' => [
                 'properties' => [
                     'id' => ['type' => 'long'],
@@ -54,6 +59,8 @@ class IssueSearch extends ElasticSearch
                     'email' => ['type' => 'text'],
                 ],
             ],
+            'created_at' => ['type' => 'date'],
+            'updated_at' => ['type' => 'date'],
         ];
     }
 
@@ -78,6 +85,26 @@ class IssueSearch extends ElasticSearch
         $query = $search->addQuery($bool)->setSize(100)->toArray();
 
         return $this->search($query);
+    }
+
+    public function countByBoolQuery(array $bool)
+    {
+        $params = [
+            'index' => $this->index(),
+            'type' => $this->type(),
+            'body' => [
+                'aggs' => [
+                    'cnt' => [
+                        'filter' => ['bool' => $bool],
+                    ],
+                ],
+                'size' => 0,
+            ],
+        ];
+
+        $res = $this->client()->search($params);
+
+        return $res['aggregations']['cnt']['doc_count'] ?? 0;
     }
 
     public function countByVersion(array $versions): array

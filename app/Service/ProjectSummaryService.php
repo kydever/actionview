@@ -11,19 +11,32 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Model\Project;
+use App\Model\User;
 use App\Project\Provider;
+use App\Service\Client\IssueSearch;
+use App\Service\Dao\ConfigTypeDao;
+use Carbon\Carbon;
 use Han\Utils\Service;
+use Hyperf\Di\Annotation\Inject;
 
 class ProjectSummaryService extends Service
 {
-    public function index(string $key)
+    #[Inject]
+    protected ProviderService $provider;
+
+    public function index(Project $project, User $user)
     {
         // the top four filters
-        $filters = $this->getTopFourFilters($project_key);
+        $filters = $this->getTopFourFilters($project, $user);
+        return [
+            ['filters' => $filters],
+            ['twoWeeksAgo' => Carbon::now()->subWeeks(2)->format('m/d')],
+        ];
         // the two weeks issuepulse
         $trend = $this->getPulseData($project_key);
 
-        $types = Provider::getTypeList($project_key);
+        $types = di()->get(ConfigTypeDao::class)->getTypeList($project->key);
 
         $optPriorities = [];
         $priorities = Provider::getPriorityList($project_key);
@@ -202,13 +215,10 @@ class ProjectSummaryService extends Service
 
     /**
      * get the top four filters info.
-     *
-     * @param string $project_key
-     * @return array
      */
-    public function getTopFourFilters($project_key)
+    public function getTopFourFilters(Project $project, User $user)
     {
-        $filters = Provider::getIssueFilters($project_key, $this->user->id);
+        $filters = $this->provider->getIssueFilters($project->key, $user->id);
         $filters = array_slice($filters, 0, 4);
         foreach ($filters as $key => $filter) {
             $query = [];
@@ -216,14 +226,70 @@ class ProjectSummaryService extends Service
                 $query = $filter['query'];
             }
 
-            $where = $this->getIssueQueryWhere($project_key, $query);
-            $count = DB::collection('issue_' . $project_key)
-                ->where($where)
-                ->count();
+            $count = di()->get(IssueSearch::class)->countByBoolQuery(
+                di()->get(IssueService::class)->getBoolSearch($project->key, $query, $user->id)
+            );
 
             $filters[$key]['count'] = $count;
         }
 
         return $filters;
+    }
+
+    /**
+     * get the past two weeks trend data.
+     */
+    public function getPulseData(Project $project)
+    {
+        // initialize the results
+        $trend = $this->init14DaysArray();
+
+        $issues = DB::collection('issue_' . $project_key)
+            ->where(function ($query) {
+                $twoWeeksAgo = strtotime(date('Ymd', strtotime('-2 week')));
+                $query->where('created_at', '>=', $twoWeeksAgo)
+                    ->orWhere('resolved_at', '>=', $twoWeeksAgo)
+                    ->orWhere('closed_at', '>=', $twoWeeksAgo);
+            })
+            ->where('del_flg', '<>', 1)
+            ->get(['created_at', 'resolved_at', 'closed_at']);
+
+        foreach ($issues as $issue) {
+            if (isset($issue['created_at']) && $issue['created_at']) {
+                $created_date = date('Y/m/d', $issue['created_at']);
+                if (isset($trend[$created_date])) {
+                    ++$trend[$created_date]['new'];
+                }
+            }
+
+            if (isset($issue['resolved_at']) && $issue['resolved_at']) {
+                $resolved_date = date('Y/m/d', $issue['resolved_at']);
+                if (isset($trend[$resolved_date])) {
+                    ++$trend[$resolved_date]['resolved'];
+                }
+            }
+            if (isset($issue['closed_at']) && $issue['closed_at']) {
+                $closed_date = date('Y/m/d', $issue['closed_at']);
+                if (isset($trend[$closed_date])) {
+                    ++$trend[$closed_date]['closed'];
+                }
+            }
+        }
+
+        $new_trend = [];
+        foreach ($trend as $key => $val) {
+            $new_trend[] = ['day' => $key] + $val;
+        }
+        return $new_trend;
+    }
+
+    private function init14DaysArray(): array
+    {
+        $now = Carbon::today();
+        $result = [];
+        for ($i = 0; $i < 14; ++$i) {
+            $result[$now->format('Y/m/d')] = ['new' => 0, 'resolved' => 0, 'closed' => 0];
+        }
+        return $result;
     }
 }
