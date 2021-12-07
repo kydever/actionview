@@ -94,7 +94,6 @@ class RoleService extends Service
                 $actor = new AclRoleactor();
                 $actor->project_key = $project->key;
                 $actor->role_id = $role->id;
-                $actor->user_ids = [];
                 $actor->group_ids = [];
             }
 
