@@ -204,13 +204,12 @@ class WikiDao extends Service
             ->where('id', $id)
             ->where('del_flag', '<>', StatusConstant::DELETED);
 
-        if ($dir){
+        if ($dir) {
             $query = $query->where('d', ProjectConstant::WIKI_FOLDER);
-        }else{
+        } else {
             $query = $query->where('d', '<>', ProjectConstant::WIKI_FOLDER);
         }
 
         return $query->first();
     }
-
 }

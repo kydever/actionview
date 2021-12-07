@@ -27,4 +27,13 @@ class ConfigTypeFormatter extends Service
             'type' => $model->type == 'subtask' ? 'subtask' : 'standard',
         ];
     }
+
+    public function formatList($models)
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $result[] = $this->small($model);
+        }
+        return $result;
+    }
 }

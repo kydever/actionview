@@ -351,5 +351,4 @@ class ErrorCode extends AbstractConstants
      * @Message("WIKI中dest目录不存在")
      */
     public const WIKI_DESK_DIR_NOT_EXIST = -11963;
-
 }
