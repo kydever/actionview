@@ -25,4 +25,22 @@ class WikiFavoriteDao extends Service
             ->where('user_id', $userId)
             ->first();
     }
+
+    /**
+     * @param int $wid Wiki ID
+     * @param int $userId User Id
+     * @return \Hyperf\Database\Model\Builder[]|\Hyperf\Database\Model\Collection
+     */
+    public function search(int $wid = 0, int $userId = 0)
+    {
+        $query = WikiFavorite::query();
+        if (! empty($wid)) {
+            $query->where('wid', $wid);
+        }
+        if (! empty($userId)) {
+            $query->where('user_id', $userId);
+        }
+
+        return $query->get();
+    }
 }

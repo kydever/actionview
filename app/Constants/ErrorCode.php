@@ -366,4 +366,9 @@ class ErrorCode extends AbstractConstants
      * @Message("WIKI中对象已被锁定")
      */
     public const WIKI_OBJECT_HAS_BEEN_LOCKED = -11955;
+
+    /**
+     * @Message("WIKI中该对象无法解锁")
+     */
+    public const WIKI_OBJECT_CANNOT_BEEN_UNLOCKED = -11956;
 }

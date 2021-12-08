@@ -20,9 +20,11 @@ use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Model\Wiki;
+use App\Model\WikiFavorite;
 use App\Service\Dao\WikiDao;
 use App\Service\Dao\WikiFavoriteDao;
 use App\Service\Formatter\UserFormatter;
+use App\Service\Formatter\WikiFavoriteFormatter;
 use App\Service\Formatter\WikiFormatter;
 use App\Service\Struct\Image;
 use Carbon\Carbon;
@@ -235,48 +237,34 @@ class WikiService extends Service
         return false;
     }
 
-    public function index(array $input, int $directory, Project $project)
+    public function index(array $input, int $directory, Project $project, User $user)
     {
+        $favoriteModel = di(WikiFavoriteDao::class)->search($directory, $user->id);
+        $favoriteModel = di(WikiFavoriteFormatter::class)->formatList($favoriteModel);
+        $widS = array_column($favoriteModel, 'wid');
+
+        $myFavorite = $input['myfavorite'] ?? 0;
         $mode = 'list';
-        if (isset($input['name']) || isset($input['contents']) || isset($input['updated_at'])) {
+        $favoritedIds = [];
+
+        if (isset($input['name']) || isset($input['contents']) || isset($input['updated_at']) || $myFavorite == '1') {
             $mode = 'search';
         }
-
-        $documents = $this->dao->search($input, $project->key, $directory, $mode) ?? '';
-        $documents = $this->formatter->formatList($documents);
-        foreach ($documents as $k => $d) {
-            $documents[$k]['favorited'] = false;
+        foreach ($widS as $wid) {
+            $favoritedIds[] = $wid;
         }
 
-//        TODO Favorites未使用 先注释
-//        $favorite_wikis = WikiFavorites::where('project_key', $project->key)
-//            ->where('user.id', $this->user->id)
-//            ->get()
-//            ->toArray();
-//        $favorite_dids = array_column($favorite_wikis, 'wid');
-//
-//
-//        if (isset($myfavorite) && $myfavorite == '1') {
-//            $mode = 'search';
-//            $favoritedIds = [];
-//            foreach ($favorite_dids as $did) {
-//                $favoritedIds[] = new ObjectID($did);
-//            }
-//
-//            $query->whereIn('_id', $favoritedIds);
-//        }
+        $documents = $this->dao->search($input, $project->key, $directory, $mode, $favoritedIds);
+        if (empty($documents)) {
+            return ['', '', ''];
+        }
+        $documents = $this->formatter->formatList($documents);
 
-//        $favorite_wikis = WikiFavorites::where('project_key', $project_key)
-//            ->where('user.id', $this->user->id)
-//            ->get()
-//            ->toArray();
-//        $favorite_wids = array_column($favorite_wikis, 'wid');
-//
-//        foreach ($documents as $k => $d) {
-//            if (in_array($d['_id']->__toString(), $favorite_wids)) {
-//                $documents[$k]['favorited'] = true;
-//            }
-//        }
+        foreach ($documents as $k => $d) {
+            if (in_array($d['id'], $widS)) {
+                $documents[$k]['favorited'] = true;
+            }
+        }
 
         $path = [];
         $home = [];
@@ -296,6 +284,7 @@ class WikiService extends Service
             }
             $path[] = ['id' => $directory, 'name' => $d['name']];
         }
+
         return [$documents, $path, $home];
     }
 
@@ -522,5 +511,47 @@ class WikiService extends Service
         $model->save();
 
         return $this->show($input, $model, $user);
+    }
+
+    public function checkout(array $input, int $id, Project $project, User $user)
+    {
+        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        if (empty($model)) {
+            throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
+        }
+
+        if (isset($model->checkin) && ! ((isset($model->checkin['user']) && $model->checkin['user']['id']) || di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project))) {
+            throw new BusinessException(ErrorCode::WIKI_OBJECT_CANNOT_BEEN_UNLOCKED);
+        }
+
+        $model->checkin = [];
+        $model->save();
+
+        return $this->show($input, $model, $user);
+    }
+
+    public function favorite(bool $flag, int $id, Project $project, User $user)
+    {
+        $userInfo = di(UserFormatter::class)->small($user);
+        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        if (empty($model)) {
+            throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
+        }
+        $favoritesModel = di(WikiFavoriteDao::class)->first($id, $user->id);
+        if (! $flag) {
+            $favoritesModel->delete();
+            return [$id, $userInfo];
+        }
+
+        if (! $favoritesModel) {
+            $favoritesModel = new WikiFavorite();
+        }
+
+        $favoritesModel->wid = $id;
+        $favoritesModel->user_id = $user->id;
+        $favoritesModel->user = $userInfo;
+        $favoritesModel->save();
+
+        return [$id, $userInfo];
     }
 }

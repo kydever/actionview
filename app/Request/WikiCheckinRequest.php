@@ -13,7 +13,7 @@ namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class WikiCheckInRequest extends FormRequest
+class WikiCheckinRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

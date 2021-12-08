@@ -140,6 +140,8 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::put('wiki/{id:\d+}', App\Controller\WikiController::class . '::update');
     Router::delete('wiki/{id:\d+}', App\Controller\WikiController::class . '::destroy');
     Router::get('wiki/{id:\d+}/checkin', App\Controller\WikiController::class . '::checkin');
+    Router::get('wiki/{id:\d+}/checkout', App\Controller\WikiController::class . '::checkout');
+    Router::post('wiki/{id:\d+}/favorite', App\Controller\WikiController::class . '::favorite');
 
 //    后续优化为上传OSS
 //    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');
@@ -148,10 +150,7 @@ Router::addGroup('/project/{project_key}/', function () {
 //    Router::delete('wiki/{id}/file/{fid}',  App\Controller\WikiController::class . '::remove');
 
     // Route::get('wiki/{id}/dirs', 'WikiController@getDirChildren');
-    // Route::post('wiki/{id}/favorite', 'WikiController@favorite');
     // Route::post('wiki/move', 'WikiController@move');
-
-    // Route::get('wiki/{id}/checkout', 'WikiController@checkout');
 
     Router::get('team', App\Controller\RoleController::class . '::index');
 

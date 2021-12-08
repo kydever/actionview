@@ -51,7 +51,7 @@ class UserRoleSettingListener implements ListenerInterface
     public function unlinkUserWithProject(array $userIds, string $projectKey)
     {
         foreach ($userIds as $userId) {
-            $link = di()->get(UserGroupProjectDao::class)->firstByUserId((int)$userId, $projectKey);
+            $link = di()->get(UserGroupProjectDao::class)->firstByUserId((int) $userId, $projectKey);
             if ($link->link_count > 0) {
                 $link?->decrement('link_count');
             }
@@ -61,7 +61,7 @@ class UserRoleSettingListener implements ListenerInterface
     public function linkUserWithProject(array $userIds, string $projectKey)
     {
         foreach ($userIds as $userId) {
-            $link = di()->get(UserGroupProjectDao::class)->firstByUserId((int)$userId, $projectKey);
+            $link = di()->get(UserGroupProjectDao::class)->firstByUserId((int) $userId, $projectKey);
             $link?->increment('link_count');
             if (empty($link)) {
                 $model = new UserGroupProject();

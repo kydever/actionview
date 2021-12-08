@@ -16,9 +16,10 @@ use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Kernel\Http\Response;
-use App\Request\WikiCheckInRequest;
+use App\Request\WikiCheckinRequest;
 use App\Request\WikiCopyRequest;
 use App\Request\WikiCreateRequest;
+use App\Request\WikiFavoriteRequest;
 use App\Request\WikiGetDirTreeRequest;
 use App\Request\WikiIndexRequest;
 use App\Request\WikiSearchPathRequest;
@@ -71,9 +72,10 @@ class WikiController extends Controller
 
     public function index(WikiIndexRequest $request, int $directory)
     {
-        $project = ProjectAuth::instance()->build()->getCurrent();
         $input = $request->all();
-        [$result, $path, $home] = $this->service->index($input, $directory, $project);
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        [$result, $path, $home] = $this->service->index($input, $directory, $project, $user);
 
         return $this->response->success($result, ['options' => ['path' => $path, 'home' => $home]]);
     }
@@ -145,7 +147,7 @@ class WikiController extends Controller
         return $this->response->success($result);
     }
 
-    public function checkin(WikiCheckInRequest $request, int $id)
+    public function checkin(WikiCheckinRequest $request, int $id)
     {
         $input = $request->all();
         $project = ProjectAuth::instance()->build()->getCurrent();
@@ -153,5 +155,25 @@ class WikiController extends Controller
         [$data, $path] = $this->service->checkin($input, $id, $project, $user);
 
         return $this->response->success($data, ['option' => ['path' => $path]]);
+    }
+
+    public function checkout(WikiCheckinRequest $request, int $id)
+    {
+        $input = $request->all();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $user = UserAuth::instance()->build()->getUser();
+        [$data, $path] = $this->service->checkout($input, $id, $project, $user);
+
+        return $this->response->success($data, ['option' => ['path' => $path]]);
+    }
+
+    public function favorite(WikiFavoriteRequest $request, int $id)
+    {
+        $flag = $request->input('flag');
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $user = UserAuth::instance()->build()->getUser();
+        [$id, $curUser] = $this->service->favorite($flag, $id, $project, $user);
+
+        return $this->response->success(['id' => $id, 'user' => $curUser, 'favorited' => $flag]);
     }
 }

@@ -84,7 +84,7 @@ class WikiDao extends Service
      * @param mixed $directory
      * @param mixed $mode
      */
-    public function search(array $input, string $projectKey, $directory, $mode)
+    public function search(array $input, string $projectKey, int $directory, string $mode, array $favoritedIds)
     {
         $query = Wiki::query();
 
@@ -113,6 +113,10 @@ class WikiDao extends Service
 
         if ($mode === 'list') {
             $query->where('parent', $directory);
+        }
+
+        if (! empty($favoritedIds)) {
+            $query->whereIn('id', $favoritedIds);
         }
 
         $query->where('del_flag', '<>', StatusConstant::DELETED);

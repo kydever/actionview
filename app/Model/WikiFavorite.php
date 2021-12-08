@@ -15,10 +15,12 @@ namespace App\Model;
  * @property int $id
  * @property int $wid
  * @property int $user_id
- * @property string $user
+ * @property array $user
  */
 class WikiFavorite extends Model
 {
+    public $timestamps = false;
+
     /**
      * The table associated with the model.
      *
@@ -38,5 +40,5 @@ class WikiFavorite extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'wid' => 'integer', 'user_id' => 'integer'];
+    protected $casts = ['id' => 'int', 'wid' => 'integer', 'user_id' => 'integer', 'user' => 'json'];
 }
