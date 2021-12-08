@@ -22,7 +22,7 @@ class OswfDefinitionDao extends Service
     {
         $model = OswfDefinition::query()->find($id);
         if (empty($model) && $throw) {
-            throw new BusinessException(ErrorCode::SERVER_ERROR, 'OswfDefinition not found.');
+            throw new BusinessException(ErrorCode::WORKFLOW_NOT_EXISTS);
         }
 
         return $model;

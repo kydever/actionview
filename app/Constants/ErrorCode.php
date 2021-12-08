@@ -198,6 +198,11 @@ class ErrorCode extends AbstractConstants
     public const VERSION_OPERATION_INVALID = -11512;
 
     /**
+     * @Message("工作流不存在")
+     */
+    public const WORKFLOW_NOT_EXISTS = -12101;
+
+    /**
      * @Message("角色非法")
      */
     public const ROLE_INVALID = -12701;

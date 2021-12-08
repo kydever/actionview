@@ -154,6 +154,8 @@ Router::addGroup('/project/{project_key}/', function () {
     // Route::get('wiki/{id}/checkout', 'WikiController@checkout');
 
     Router::get('team', App\Controller\RoleController::class . '::index');
+
+    Router::get('workflow/{id:\d+}/preview', App\Controller\WorkflowController::class . '::preview');
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
