@@ -346,7 +346,7 @@ class IssueService extends Service
 
             $screenIds = array_column($result['wfactions'], 'screen');
             $screens = [];
-            if($screenIds){
+            if ($screenIds) {
                 $screens = di()->get(ConfigScreenDao::class)->findMany($screenIds)->getDictionary();
             }
 
@@ -1037,6 +1037,33 @@ class IssueService extends Service
             'del' => $this->delFilters($input['ids'] ?? [], $user, $project),
             default => $this->getIssueFilters($project, $user),
         };
+    }
+
+    public function doAction(int $id, int $workflowId, array $input, User $user, Project $project)
+    {
+        $actionId = (int) ($input['action_id'] ?? 0);
+        if (empty($actionId)) {
+            throw new BusinessException(ErrorCode::ISSUE_DO_ACTION_ID_CANNOT_EMPTY);
+        }
+
+        $issue = $this->dao->first($id, true);
+
+        try {
+            $entry = new Workflow(di()->get(OswfEntryDao::class)->first($workflowId));
+            $entry->doAction(
+                $actionId,
+                [
+                    'project_key' => $project->key,
+                    'issue_id' => $id,
+                    'issue' => $issue,
+                    'caller' => $user->toSmall(),
+                ] + Arr::only($input, ['comments'])
+            );
+        } catch (\Throwable $e) {
+            di()->get(StdoutLoggerInterface::class)->warning((string) $e);
+            throw new BusinessException(ErrorCode::ISSUE_DO_ACTION_ID_CANNOT_EMPTY);
+        }
+        return $this->show($issue, $user, $project);
     }
 
     protected function initializeWorkflow(int $type, User $user)

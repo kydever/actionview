@@ -14,6 +14,7 @@ namespace App\Service\Struct;
 use App\Model\OswfCurrentstep;
 use App\Model\OswfDefinition;
 use App\Model\OswfEntry;
+use App\Model\OswfHistorystep;
 use App\Model\User;
 use App\Service\Dao\OswfDefinitionDao;
 use App\Service\Struct\Workflow\ActionNotAvailableException;
@@ -28,10 +29,8 @@ use App\Service\Struct\Workflow\ResultNotFoundException;
 use App\Service\Struct\Workflow\SplitNotFoundException;
 use App\Service\Struct\Workflow\StateNotActivatedException;
 use App\Service\Struct\Workflow\StepNotFoundException;
-use App\Workflow\Eloquent\CurrentStep;
 use App\Workflow\Eloquent\Definition;
 use App\Workflow\Eloquent\Entry;
-use App\Workflow\Eloquent\HistoryStep;
 use Hyperf\Database\Model\Collection;
 
 class Workflow
@@ -200,7 +199,7 @@ class Workflow
      */
     public function doAction($action_id, $options = [])
     {
-        $state = $this->getEntryState($this->entry->id);
+        $state = $this->getEntryState();
         if ($state != self::OSWF_CREATED && $state != self::OSWF_ACTIVATED) {
             throw new StateNotActivatedException();
         }
@@ -426,15 +425,14 @@ class Workflow
      *  move workflow step to history.
      *
      * @param int $action_id
-     * @return string previous_id
      */
-    private function moveToHistory(OswfCurrentstep $current_step, $action_id)
+    private function moveToHistory(OswfCurrentstep $current_step, $action_id): int
     {
         // add to history records
-        $history_step = new HistoryStep();
+        $history_step = new OswfHistorystep();
         $history_step->fill($current_step->toArray());
         $history_step->action_id = $action_id;
-        $history_step->caller = isset($this->options['caller']) ? $this->options['caller'] : '';
+        $history_step->caller = $this->options['caller'] ?? '';
         $history_step->finish_time = time();
         $history_step->save();
 
@@ -494,7 +492,7 @@ class Workflow
                 throw new StepNotFoundException();
             }
 
-            $action_descriptor = $this->getActionDescriptor(isset($step_descriptor['actions']) ? $step_descriptor['actions'] : [], $action_id);
+            $action_descriptor = $this->getActionDescriptor($step_descriptor['actions'] ?? [], $action_id);
             if ($action_descriptor) {
                 break;
             }
@@ -575,7 +573,7 @@ class Workflow
      */
     private function isJoinCompleted()
     {
-        return ! CurrentStep::where('entry_id', $this->entry->id)->exists();
+        return OswfCurrentstep::query()->where('entry_id', $this->entry->id)->exists();
     }
 
     /**

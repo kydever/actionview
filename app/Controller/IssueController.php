@@ -144,4 +144,14 @@ class IssueController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function doAction(int $id, int $workflowId)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->doAction($id, $workflowId, $this->request->all(), $user, $project);
+
+        return $this->response->success($result);
+    }
 }

@@ -13,19 +13,25 @@ namespace App\Workflow;
 
 use App\Acl\Acl;
 use App\Events\IssueEvent;
+use App\Model\User;
 use App\Project\Provider;
 use App\Service\AclService;
 use App\Service\Context\ProjectContext;
+use App\Service\Context\UserContext;
+use App\Service\Dao\IssueDao;
 use App\Service\ProjectAuth;
 use DB;
+use Hyperf\Utils\Arr;
 use Illuminate\Support\Facades\Event;
-use Sentinel;
 
 class Func
 {
-    public static $issue_properties = [];
-
     public static $snap_id = '';
+
+    public static function getIssueProperties()
+    {
+        return IssueProperty::instance();
+    }
 
     /**
      * check if user is the type.
@@ -138,7 +144,7 @@ class Func
     public static function setResolution($param)
     {
         if (isset($param['resolutionParam']) && $param['resolutionParam']) {
-            self::$issue_properties['resolution'] = $param['resolutionParam'];
+            self::getIssueProperties()->data['resolution'] = $param['resolutionParam'];
         }
     }
 
@@ -150,7 +156,7 @@ class Func
     public static function setProgress($param)
     {
         if (isset($param['progressParam']) && $param['progressParam']) {
-            self::$issue_properties['progress'] = intval($param['progressParam']);
+            self::getIssueProperties()->data['progress'] = intval($param['progressParam']);
         }
     }
 
@@ -162,7 +168,7 @@ class Func
     public static function setState($param)
     {
         if (isset($param['state']) && $param['state']) {
-            self::$issue_properties['state'] = $param['state'];
+            self::getIssueProperties()->data['state'] = $param['state'];
         }
     }
 
@@ -173,9 +179,9 @@ class Func
      */
     public static function assignIssueToUser($param)
     {
-        $user_info = Sentinel::findById($param['assignedUserParam']);
+        $user_info = UserContext::instance()->first($param['assignedUserParam'], true);
         if ($user_info) {
-            self::$issue_properties['assignee'] = ['id' => $user_info->id, 'name' => $user_info->first_name];
+            self::getIssueProperties()->data['assignee'] = ['id' => $user_info->id, 'name' => $user_info->first_name];
         }
     }
 
@@ -191,19 +197,19 @@ class Func
         $caller = $param['caller'];
 
         if ($param['assigneeParam'] == 'me') {
-            $user_info = Sentinel::findById($caller);
+            $user_info = UserContext::instance()->first($caller['id'], true);
             if ($user_info) {
-                self::$issue_properties['assignee'] = ['id' => $user_info->id, 'name' => $user_info->first_name];
+                self::getIssueProperties()->data['assignee'] = ['id' => $user_info->id, 'name' => $user_info->first_name];
             }
         } elseif ($param['assigneeParam'] == 'reporter') {
             $issue = DB::collection('issue_' . $project_key)->where('_id', $issue_id)->first();
             if ($issue && isset($issue['reporter'])) {
-                self::$issue_properties['assignee'] = $issue['reporter'];
+                self::getIssueProperties()->data['assignee'] = $issue['reporter'];
             }
         } elseif ($param['assigneeParam'] == 'principal') {
             $principal = Provider::getProjectPrincipal($project_key) ?: [];
             if ($principal) {
-                self::$issue_properties['assignee'] = $principal;
+                self::getIssueProperties()->data['assignee'] = $principal;
             }
         }
     }
@@ -224,7 +230,7 @@ class Func
             return;
         }
 
-        $user_info = Sentinel::findById($caller);
+        $user_info = UserContext::instance()->first($caller['id'], true);
         $creator = ['id' => $user_info->id, 'name' => $user_info->first_name, 'email' => $user_info->email];
 
         $table = 'comments_' . $project_key;
@@ -242,26 +248,18 @@ class Func
     public static function updIssue($param)
     {
         $issue_id = $param['issue_id'];
+        $issue = $param['issue'] ?? di()->get(IssueDao::class)->first($issue_id);
         $project_key = $param['project_key'];
         $caller = $param['caller'];
 
-        if (count(self::$issue_properties) > 0) {
-            $updValues = [];
-            $user_info = Sentinel::findById($caller);
-            $updValues['modifier'] = ['id' => $user_info->id, 'name' => $user_info->first_name, 'email' => $user_info->email];
-            $updValues['updated_at'] = time();
-
-            // update issue
-            DB::collection('issue_' . $project_key)->where('_id', $issue_id)->update(self::$issue_properties + $updValues);
-            // snap to history
-            $snap_id = Provider::snap2His($project_key, $issue_id, null, array_keys(self::$issue_properties));
-
-            //if (!isset($param['eventParam']) || !$param['eventParam'])
-            //{
-            //    Event::fire(new IssueEvent($project_key, $issue_id, $updValues['modifier'], [ 'event_key' => 'normal', 'snap_id' => $snap_id ]));
-            //}
-
-            self::$snap_id = $snap_id;
+        if (count(self::getIssueProperties()->data) > 0) {
+            $updValues = $issue->data;
+            $updValues = array_replace($updValues, self::getIssueProperties()->data);
+            /** @var User $user_info */
+            $user_info = UserContext::instance()->first($caller['id'], true);
+            $issue->modifier = $user_info->toSmall();
+            $issue->data = $updValues;
+            $issue->save();
         }
     }
 
@@ -273,22 +271,18 @@ class Func
     public static function triggerEvent($param)
     {
         $issue_id = $param['issue_id'];
-        $project_key = $param['project_key'];
-        $event_key = array_get($param, 'eventParam', 'normal');
+        $issue = $param['issue'] ?? di()->get(IssueDao::class)->first($issue_id);
+        $event_key = Arr::get($param, 'eventParam', 'normal');
 
-        $user_info = Sentinel::findById($param['caller']);
-        $caller = ['id' => $user_info->id, 'name' => $user_info->first_name, 'email' => $user_info->email];
-
-        if (self::$snap_id) {
-            Event::fire(new IssueEvent($project_key, $issue_id, $caller, ['event_key' => $event_key, 'snap_id' => self::$snap_id]));
-        }
+        /** @var User $user_info */
+        $user_info = UserContext::instance()->first($param['caller']['id'], true);
+        $caller = $user_info->toSmall();
 
         $updValues = [];
         if ($event_key === 'resolve_issue') {
             $updValues['resolved_at'] = time();
             $updValues['resolver'] = $caller;
 
-            $issue = DB::collection('issue_' . $project_key)->where('_id', $issue_id)->first();
             if (isset($issue['regression_times']) && $issue['regression_times']) {
                 $updValues['regression_times'] = $issue['regression_times'] + 1;
             } else {
@@ -315,7 +309,8 @@ class Func
             $updValues['closer'] = $caller;
         }
         if ($updValues) {
-            DB::collection('issue_' . $project_key)->where('_id', $issue_id)->update($updValues);
+            $issue->data = array_replace($issue->data, $updValues);
+            $issue->save();
         }
     }
 }

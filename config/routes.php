@@ -123,6 +123,13 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('issue/filters', App\Controller\IssueController::class . '::getIssueFilters');
     Router::get('issue/filters/reset', App\Controller\IssueController::class . '::resetIssueFilters');
     Router::post('issue/filters', App\Controller\IssueController::class . '::batchHandleFilters');
+    Router::post('issue/{id:\d+}/workflow/{workflowId:\d+}', App\Controller\IssueController::class . '::doAction', [
+        'options' => [
+            App\Middleware\PrivilegeMiddleware::class => [
+                Permission::EXEC_WORKFLOW,
+            ],
+        ],
+    ]);
 
     Router::get('version', App\Controller\VersionController::class . '::index');
     Router::post('version', App\Controller\VersionController::class . '::store');
