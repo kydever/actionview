@@ -89,4 +89,9 @@ class Issue extends Model implements Searchable
     {
         return $this->id;
     }
+
+    public function entry()
+    {
+        return $this->hasOneInJsonObject(OswfEntry::class, 'id', 'data->entry_id');
+    }
 }

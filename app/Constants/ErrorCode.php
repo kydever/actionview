@@ -113,6 +113,11 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_FILTER_NAME_CANNOT_EMPTY = -11105;
 
     /**
+     * @Message("ActionID 必填")
+     */
+    public const ISSUE_DO_ACTION_ID_CANNOT_EMPTY = -11115;
+
+    /**
      * @Message("您没有分配负责人的权限")
      */
     public const ASSIGN_ASSIGNEE_DENIED = -11116;
