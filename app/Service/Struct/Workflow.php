@@ -61,11 +61,6 @@ class Workflow
      */
     protected array $options = [];
 
-    /**
-     * workflow constructor.
-     *
-     * @param string $entry_id
-     */
     public function __construct(protected ?OswfEntry $entry, ?OswfDefinition $definition = null)
     {
         if ($entry) {
@@ -763,7 +758,7 @@ class Workflow
 
         // check handle function exists
         if (! method_exists($class, $action)) {
-            throw new FunctionNotFoundException();
+            throw new FunctionNotFoundException("{$class}::{$action}");
         }
         $args = $function['args'] ?? [];
         // generate temporary vars

@@ -41,8 +41,10 @@ class IssueController extends Controller
     public function show(int $id)
     {
         $issue = di()->get(IssueDao::class)->first($id);
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
 
-        $result = $this->service->show($issue);
+        $result = $this->service->show($issue, $user, $project);
 
         return $this->response->success($result);
     }

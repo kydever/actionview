@@ -26,10 +26,12 @@ use App\Model\UserIssueFilter;
 use App\Project\Eloquent\Labels;
 use App\Project\Provider;
 use App\Service\Client\IssueSearch;
+use App\Service\Dao\ConfigScreenDao;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\IssueFilterDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
+use App\Service\Dao\OswfEntryDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserIssueFilterDao;
@@ -40,6 +42,7 @@ use Han\Utils\Service;
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
@@ -88,7 +91,7 @@ class IssueService extends Service
     {
         $issue = $this->dao->first($id, true);
         if (empty($input)) {
-            return $this->show($issue);
+            return $this->show($issue, $user, $project);
         }
 
         $type = intval($input['type'] ?? $issue->type);
@@ -158,7 +161,7 @@ class IssueService extends Service
 
         $updValues = $updValues + Arr::only($input, $this->getValidKeysBySchema($schema));
         if (! $updValues) {
-            return $this->show($issue);
+            return $this->show($issue, $user, $project);
         }
 
         $updValues['modifier'] = $user->toSmall();
@@ -185,7 +188,7 @@ class IssueService extends Service
             throw $exception;
         }
 
-        return $this->show($issue);
+        return $this->show($issue, $user, $project);
     }
 
     /**
@@ -309,10 +312,10 @@ class IssueService extends Service
             throw $exception;
         }
 
-        return $this->show($model);
+        return $this->show($model, $user, $project);
     }
 
-    public function show(Issue $issue): array
+    public function show(Issue $issue, User $user, Project $project): array
     {
         $schema = $this->provider->getSchemaByType($issue->type);
         if (! $schema) {
@@ -331,17 +334,25 @@ class IssueService extends Service
         }
 
         // 获取可用的 workflow
-        if (! empty($issue['entry_id']) && $this->isPermissionAllowed($project_key, 'exec_workflow')) {
+        if (! empty($issue->data['entry_id']) && di()->get(AclService::class)->isAllowed($user->id, Permission::EXEC_WORKFLOW, $project)) {
             try {
-                $wf = new Workflow($issue['entry_id']);
-                $issue['wfactions'] = $wf->getAvailableActions(['project_key' => $project_key, 'issue_id' => $id, 'caller' => $this->user->id]);
-            } catch (Exception $e) {
-                $issue['wfactions'] = [];
+                $entry = di()->get(OswfEntryDao::class)->first($issue->data['entry_id'], false);
+                $wf = new Workflow($entry);
+                $result['wfactions'] = $wf->getAvailableActions(['project_key' => $project->key, 'issue_id' => $issue->id, 'caller' => $user->toSmall()]);
+            } catch (\Throwable $exception) {
+                di()->get(StdoutLoggerInterface::class)->error((string) $exception);
+                $result['wfactions'] = [];
             }
 
-            foreach ($issue['wfactions'] as $key => $action) {
-                if (isset($action['screen']) && $action['screen'] && $action['screen'] != 'comments') {
-                    $issue['wfactions'][$key]['schema'] = Provider::getSchemaByScreenId($project_key, $issue['type'], $action['screen']);
+            $screenIds = array_column($result['wfactions'], 'screen');
+            $screens = [];
+            if($screenIds){
+                $screens = di()->get(ConfigScreenDao::class)->findMany($screenIds)->getDictionary();
+            }
+
+            foreach ($result['wfactions'] as $key => $action) {
+                if (isset($action['screen']) && $action['screen'] && $action['screen'] != 'comments' && isset($screens[$action['screen']])) {
+                    $result['wfactions'][$key]['schema'] = $this->provider->getScreenSchema($project->key, $issue->type, $screens[$action['screen']]);
                 }
             }
         }
@@ -933,7 +944,7 @@ class IssueService extends Service
             throw $exception;
         }
 
-        return $this->show($issue);
+        return $this->show($issue, $user, $project);
     }
 
     public function resetState(array $input, int $id, User $user, Project $project)
@@ -971,7 +982,7 @@ class IssueService extends Service
             throw $exception;
         }
 
-        return $this->show($issue);
+        return $this->show($issue, $user, $project);
     }
 
     /**
@@ -1080,7 +1091,7 @@ class IssueService extends Service
         };
 
         if ($issue->assignee['id'] === $assigneeId) {
-            return $this->show($issue);
+            return $this->show($issue, $user, $project);
         }
 
         $userModel = $assigneeId === $user->id ? $user : di()->get(UserDao::class)->first($assigneeId, true);
