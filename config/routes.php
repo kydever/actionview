@@ -81,8 +81,13 @@ Router::addGroup('/project/{project_key}/', function () {
     // Router::post('role/{id}/groupactor', 'RoleController@setGroupActor');
     Router::get('role', App\Controller\RoleController::class . '::index');
     Router::post('role/{id}/actor', App\Controller\RoleController::class . '::setActor');
-// Router::resource('role', 'RoleController');
+    // Router::resource('role', 'RoleController');
     // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
+
+    Router::get('state', App\Controller\StateController::class . '::index');
+// Route::resource('state', 'StateController');
+    // Route::post('state/batch', 'StateController@handle');
+    // Route::get('state/{id}/used', 'StateController@viewUsedInProject');
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,

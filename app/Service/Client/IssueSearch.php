@@ -151,6 +151,16 @@ class IssueSearch extends ElasticSearch
         return $res['aggregations']['cnt']['doc_count'] ?? 0;
     }
 
+    public function countWhereTerm(string $key, string $field, mixed $value): int
+    {
+        $bool = new BoolQuery();
+        $bool->add(new TermQuery('del_flg', StatusConstant::DELETED), BoolQuery::MUST_NOT);
+        $bool->add(new TermQuery('project_key', $key), BoolQuery::MUST);
+        $bool->add(new TermQuery($field, $value), BoolQuery::MUST);
+
+        return $this->countByBoolQuery($bool->toArray());
+    }
+
     public function countByVersion(array $versions): array
     {
         if (empty($versions)) {

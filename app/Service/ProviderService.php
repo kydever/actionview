@@ -110,6 +110,9 @@ class ProviderService extends Service
         return $result;
     }
 
+    /**
+     * @return Collection<int, ConfigState>
+     */
     public function getStateList(string $key): Collection
     {
         $states = di()->get(ConfigStateDao::class)->findOrByProjectKey($key);

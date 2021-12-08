@@ -13,11 +13,12 @@ namespace App\Service\Dao;
 
 use App\Model\ConfigState;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class ConfigStateDao extends Service
 {
     /**
-     * @return ConfigState[]|\Hyperf\Database\Model\Collection
+     * @return Collection<int, ConfigState>
      */
     public function findOrByProjectKey(string $key)
     {
