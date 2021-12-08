@@ -457,7 +457,6 @@ class IssueService extends Service
         $options = ['total' => $count, 'sizePerPage' => $limit];
 
         return [$count, $result, $options];
-        $query = DB::collection('issue_' . $project_key)->whereRaw($where);
 
         // TODO: 看板
         // $from = $request->input('from');
