@@ -21,7 +21,7 @@ namespace App\Model;
  * @property string $owners
  * @property string $status
  * @property string $comments
- * @property string $caller
+ * @property array $caller
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -46,5 +46,5 @@ class OswfCurrentstep extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'entry_id' => 'integer', 'step_id' => 'integer', 'previous_id' => 'integer', 'start_time' => 'integer', 'action_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'int', 'entry_id' => 'integer', 'step_id' => 'integer', 'previous_id' => 'integer', 'start_time' => 'integer', 'action_id' => 'integer', 'owners' => 'json', 'caller' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

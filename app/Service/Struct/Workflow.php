@@ -91,15 +91,16 @@ class Workflow
      * @param string $caller
      * @return string
      */
-    public static function createInstance(int $definitionId, User $caller)
+    public static function createInstance(OswfDefinition $definition, User $caller)
     {
         $entry = new OswfEntry();
-        $entry->definition_id = $definitionId;
+        $entry->definition_id = $definition->id;
         $entry->creator = $caller->toSmall();
         $entry->state = self::OSWF_CREATED;
+        $entry->propertysets = [];
         $entry->save();
 
-        return new Workflow($entry);
+        return new Workflow($entry, $definition);
     }
 
     /**
@@ -141,7 +142,7 @@ class Workflow
             throw new ResultNotAvailableException();
         }
         // create new current step
-        $this->createNewCurrentStep($available_result_descriptor, $actionDescriptor['id'], '');
+        $this->createNewCurrentStep($available_result_descriptor, $actionDescriptor['id']);
         // change workflow state to activited
         $this->changeEntryState(self::OSWF_ACTIVATED);
 
@@ -448,13 +449,7 @@ class Workflow
         return $history_step->id;
     }
 
-    /**
-     *  create new workflow step.
-     *
-     * @param int $action_id
-     * @param string $previous_id
-     */
-    private function createNewCurrentStep(array $result_descriptor, $action_id, $previous_id = '')
+    private function createNewCurrentStep(array $result_descriptor, int $action_id, int $previous_id = 0)
     {
         $step_descriptor = [];
         if (isset($result_descriptor['step']) && $result_descriptor['step']) {
@@ -478,9 +473,9 @@ class Workflow
         $new_current_step->previous_id = $previous_id;
         $new_current_step->status = $result_descriptor['status'] ?? 'Finished';
         $new_current_step->start_time = time();
-        $new_current_step->owners = $this->options['owners'] ?? '';
+        $new_current_step->owners = $this->options['owners'] ?? [];
         $new_current_step->comments = $this->options['comments'] ?? '';
-        $new_current_step->caller = $this->options['caller'] ?? '';
+        $new_current_step->caller = $this->options['caller'] ?? null;
         $new_current_step->save();
 
         // trigger before step

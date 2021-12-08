@@ -16,7 +16,7 @@ namespace App\Model;
  * @property int $definition_id
  * @property array $creator
  * @property int $state
- * @property string $propertysets
+ * @property array $propertysets
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Hyperf\Database\Model\Collection|OswfCurrentstep[] $currentSteps
@@ -42,7 +42,7 @@ class OswfEntry extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'int', 'definition_id' => 'integer', 'creator' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'state' => 'integer'];
+    protected $casts = ['id' => 'int', 'definition_id' => 'integer', 'creator' => 'json', 'propertysets' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'state' => 'integer'];
 
     public function currentSteps()
     {

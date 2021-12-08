@@ -272,14 +272,13 @@ class IssueService extends Service
 
         $maxNumber = di()->get(IssueDao::class)->count($project->key) + 1;
 
-        // TODO: Support Workflow
-        $workflow = $this->initializeWorkflow($type, $user);
-        $insValues = $insValues + $workflow;
-
-        $insValues = $insValues + Arr::only($input, $this->getValidKeysBySchema($schema));
-
         Db::beginTransaction();
         try {
+            // Support Workflow
+            $workflow = $this->initializeWorkflow($type, $user);
+            $insValues = $insValues + $workflow;
+            $insValues = $insValues + Arr::only($input, $this->getValidKeysBySchema($schema));
+
             $model = new Issue();
             $model->project_key = $project->key;
             $model->type = $type;
@@ -1033,7 +1032,7 @@ class IssueService extends Service
     {
         $definition = $this->provider->getWorkflowByType($type);
         // create and start workflow instacne
-        $workflow = Workflow::createInstance($definition->id, $user->id)->start(['caller' => $user->id]);
+        $workflow = Workflow::createInstance($definition, $user)->start(['caller' => $user->toSmall()]);
         // get the inital step
         $step = $workflow->getCurrentSteps()->first();
         $state = $workflow->getStepMeta($step->step_id, 'state');
