@@ -41,7 +41,7 @@ class Wiki extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'project_key', 'd', 'del_flag', 'name', 'pt', 'parent', 'contents', 'version', 'creator', 'editor', 'attachments', 'attachments', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'project_key', 'd', 'del_flag', 'name', 'pt', 'parent', 'contents', 'version', 'creator', 'editor', 'attachments', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.

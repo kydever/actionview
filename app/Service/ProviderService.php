@@ -95,6 +95,14 @@ class ProviderService extends Service
         return di()->get(UserFormatter::class)->formatSmalls($models);
     }
 
+    #[Cacheable(prefix: 'workflow:by:type', group: 'context')]
+    public function getWorkflowByType(int $type)
+    {
+        $model = di()->get(ConfigTypeDao::class)->first($type, true);
+
+        return $model->workflow;
+    }
+
     public function getStateListOptions(string $key): array
     {
         $states = $this->getStateList($key);

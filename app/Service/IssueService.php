@@ -35,6 +35,7 @@ use App\Service\Dao\UserDao;
 use App\Service\Dao\UserIssueFilterDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
+use App\Service\Struct\Workflow;
 use Han\Utils\Service;
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 use Hyperf\Cache\Annotation\Cacheable;
@@ -272,8 +273,8 @@ class IssueService extends Service
         $maxNumber = di()->get(IssueDao::class)->count($project->key) + 1;
 
         // TODO: Support Workflow
-        // $workflow = $this->initializeWorkflow($issue_type);
-        // $insValues = $insValues + $workflow;
+        $workflow = $this->initializeWorkflow($type, $user);
+        $insValues = $insValues + $workflow;
 
         $insValues = $insValues + Arr::only($input, $this->getValidKeysBySchema($schema));
 
@@ -330,21 +331,21 @@ class IssueService extends Service
             }
         }
 
-        // TODO: 获取可用的 workflow
-        // if (isset($issue['entry_id']) && $issue['entry_id'] && $this->isPermissionAllowed($project_key, 'exec_workflow')) {
-        //     try {
-        //         $wf = new Workflow($issue['entry_id']);
-        //         $issue['wfactions'] = $wf->getAvailableActions(['project_key' => $project_key, 'issue_id' => $id, 'caller' => $this->user->id]);
-        //     } catch (Exception $e) {
-        //         $issue['wfactions'] = [];
-        //     }
-        //
-        //     foreach ($issue['wfactions'] as $key => $action) {
-        //         if (isset($action['screen']) && $action['screen'] && $action['screen'] != 'comments') {
-        //             $issue['wfactions'][$key]['schema'] = Provider::getSchemaByScreenId($project_key, $issue['type'], $action['screen']);
-        //         }
-        //     }
-        // }
+        // 获取可用的 workflow
+        if (! empty($issue['entry_id']) && $this->isPermissionAllowed($project_key, 'exec_workflow')) {
+            try {
+                $wf = new Workflow($issue['entry_id']);
+                $issue['wfactions'] = $wf->getAvailableActions(['project_key' => $project_key, 'issue_id' => $id, 'caller' => $this->user->id]);
+            } catch (Exception $e) {
+                $issue['wfactions'] = [];
+            }
+
+            foreach ($issue['wfactions'] as $key => $action) {
+                if (isset($action['screen']) && $action['screen'] && $action['screen'] != 'comments') {
+                    $issue['wfactions'][$key]['schema'] = Provider::getSchemaByScreenId($project_key, $issue['type'], $action['screen']);
+                }
+            }
+        }
 
         if ($issue->parent_id > 0) {
             $result['parent'] = $this->formatter->base($issue->parent);
@@ -1026,6 +1027,22 @@ class IssueService extends Service
             'del' => $this->delFilters($input['ids'] ?? [], $user, $project),
             default => $this->getIssueFilters($project, $user),
         };
+    }
+
+    protected function initializeWorkflow(int $type, User $user)
+    {
+        $definition = $this->provider->getWorkflowByType($type);
+        // create and start workflow instacne
+        $workflow = Workflow::createInstance($definition->id, $user->id)->start(['caller' => $user->id]);
+        // get the inital step
+        $step = $workflow->getCurrentSteps()->first();
+        $state = $workflow->getStepMeta($step->step_id, 'state');
+
+        return [
+            'state' => $state,
+            'entry_id' => $workflow->getEntryId(),
+            'definition_id' => $definition->id,
+        ];
     }
 
     protected function delFilters(array $ids, User $user, Project $project)

@@ -52,9 +52,6 @@ class ConfigField extends Model
 
     public function isSingleOrMultiVersion(): bool
     {
-        return in_array($this->type, [
-            Schema::FIELD_SINGLE_VERSION,
-            Schema::FIELD_MULTI_VERSION,
-        ]);
+        return in_array($this->type, [Schema::FIELD_SINGLE_VERSION, Schema::FIELD_MULTI_VERSION]);
     }
 }
