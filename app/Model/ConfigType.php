@@ -26,6 +26,7 @@ namespace App\Model;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property ConfigScreen $screen
+ * @property OswfDefinition $workflow
  */
 class ConfigType extends Model
 {
@@ -53,5 +54,10 @@ class ConfigType extends Model
     public function screen()
     {
         return $this->hasOne(ConfigScreen::class, 'id', 'screen_id');
+    }
+
+    public function workflow()
+    {
+        return $this->hasOne(OswfDefinition::class, 'id', 'workflow_id');
     }
 }

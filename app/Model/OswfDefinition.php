@@ -20,7 +20,7 @@ namespace App\Model;
  * @property string $state_ids
  * @property string $screen_ids
  * @property int $steps
- * @property string $contents
+ * @property array $contents
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -45,5 +45,5 @@ class OswfDefinition extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'latest_modifier' => 'integer', 'steps' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'latest_modifier' => 'integer', 'steps' => 'integer', 'contents' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
