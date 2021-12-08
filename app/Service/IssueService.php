@@ -445,6 +445,7 @@ class IssueService extends Service
             'query' => [
                 'bool' => $bool,
             ],
+            'sort' => ['created_at' => 'desc'],
             'from' => $offset,
             'size' => $limit,
         ]);
