@@ -25,6 +25,7 @@ use App\Service\Dao\WikiFavoriteDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\Formatter\WikiFormatter;
 use App\Service\Struct\Image;
+use Carbon\Carbon;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
 use League\Flysystem\FilesystemOperator;
@@ -64,9 +65,10 @@ class WikiService extends Service
         $model->name = $name;
         $model->pt = $this->getPathTree($parent);
         $model->version = 1;
-        $model->creator = di()->get(UserFormatter::class)->base($user);
+        $model->creator = di()->get(UserFormatter::class)->small($user);
         $model->editor = [];
         $model->attachments = [];
+        $model->checkin = [];
         $model->contents = $contents;
         $model->save();
 
@@ -170,6 +172,7 @@ class WikiService extends Service
         $model->creator = di()->get(UserFormatter::class)->small($user);
         $model->editor = [];
         $model->attachments = [];
+        $model->checkin = [];
         $model->del_flag = StatusConstant::NOT_DELETED;
         $model->save();
 
@@ -464,7 +467,7 @@ class WikiService extends Service
         $wiki->version = 1;
         $wiki->contents = $document->contents ?? '';
         $wiki->attachments = $document->attachments ?? [];
-        $wiki->creator = di()->get(UserFormatter::class)->base($user);
+        $wiki->creator = di()->get(UserFormatter::class)->small($user);
         $wiki->save();
 
         return $this->formatter->base($wiki);
@@ -498,5 +501,26 @@ class WikiService extends Service
         $model->save();
 
         return $data;
+    }
+
+    public function checkin(array $input, int $id, Project $project, User $user)
+    {
+        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        if (! $model) {
+            throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
+        }
+
+        if (! empty($model->checkin)) {
+            throw new BusinessException(ErrorCode::WIKI_OBJECT_HAS_BEEN_LOCKED);
+        }
+
+        $checkin = [];
+        $checkin['user'] = di()->get(UserFormatter::class)->small($user);
+        $checkin['at'] = Carbon::now()->timestamp;
+
+        $model->checkin = $checkin;
+        $model->save();
+
+        return $this->show($input, $model, $user);
     }
 }

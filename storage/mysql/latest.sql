@@ -922,6 +922,7 @@ CREATE TABLE `wiki` (
   `creator` json NOT NULL,
   `editor` json NOT NULL,
   `attachments` json NOT NULL,
+  `checkin` json NOT NULL,
   `created_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '2021-01-01 00:00:00',
   PRIMARY KEY (`id`),

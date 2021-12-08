@@ -16,6 +16,7 @@ use App\Constants\Permission;
 use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Kernel\Http\Response;
+use App\Request\WikiCheckInRequest;
 use App\Request\WikiCopyRequest;
 use App\Request\WikiCreateRequest;
 use App\Request\WikiGetDirTreeRequest;
@@ -142,5 +143,15 @@ class WikiController extends Controller
         $result = $this->service->upload($data, $id, $project, $user);
 
         return $this->response->success($result);
+    }
+
+    public function checkin(WikiCheckInRequest $request, int $id)
+    {
+        $input = $request->all();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $user = UserAuth::instance()->build()->getUser();
+        [$data, $path] = $this->service->checkin($input, $id, $project, $user);
+
+        return $this->response->success($data, ['option' => ['path' => $path]]);
     }
 }

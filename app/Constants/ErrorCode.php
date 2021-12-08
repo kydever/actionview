@@ -356,4 +356,9 @@ class ErrorCode extends AbstractConstants
      * @Message("WIKI中上传文件错误")
      */
     public const WIKI_UPLOAD_FILE_ERRORS = -11959;
+
+    /**
+     * @Message("WIKI中对象已被锁定")
+     */
+    public const WIKI_OBJECT_HAS_BEEN_LOCKED = -11955;
 }

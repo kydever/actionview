@@ -139,15 +139,18 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('wiki/copy', App\Controller\WikiController::class . '::copy');
     Router::put('wiki/{id:\d+}', App\Controller\WikiController::class . '::update');
     Router::delete('wiki/{id:\d+}', App\Controller\WikiController::class . '::destroy');
-    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');
+    Router::get('wiki/{id:\d+}/checkin', App\Controller\WikiController::class . '::checkin');
+
+//    后续优化为上传OSS
+//    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');
+//    Router::get('wiki/{id}/file/{fid}/download', App\Controller\WikiController::class . '::download');
+//    Router::get('wiki/{id}/download', App\Controller\WikiController::class . '::download2');
+//    Router::delete('wiki/{id}/file/{fid}',  App\Controller\WikiController::class . '::remove');
 
     // Route::get('wiki/{id}/dirs', 'WikiController@getDirChildren');
     // Route::post('wiki/{id}/favorite', 'WikiController@favorite');
-    // Route::get('wiki/{id}/download', 'WikiController@download2');
-    // Route::get('wiki/{id}/file/{fid}/download', 'WikiController@download');
-    // Route::delete('wiki/{id}/file/{fid}', 'WikiController@remove');
     // Route::post('wiki/move', 'WikiController@move');
-    // Route::get('wiki/{id}/checkin', 'WikiController@checkin');
+
     // Route::get('wiki/{id}/checkout', 'WikiController@checkout');
 
     Router::get('team', App\Controller\RoleController::class . '::index');
