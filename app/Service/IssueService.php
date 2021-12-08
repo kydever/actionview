@@ -457,7 +457,6 @@ class IssueService extends Service
         $options = ['total' => $count, 'sizePerPage' => $limit];
 
         return [$count, $result, $options];
-
         // TODO: 看板
         // $from = $request->input('from');
         // $from_kanban_id = $request->input('from_kanban_id');

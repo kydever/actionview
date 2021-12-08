@@ -20,6 +20,7 @@ use ONGR\ElasticsearchDSL\Aggregation\Bucketing\DateHistogramAggregation;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
 use ONGR\ElasticsearchDSL\Query\TermLevel\TermQuery;
 use ONGR\ElasticsearchDSL\Search;
+use function Han\Utils\date_load;
 
 class IssueSearch extends ElasticSearch
 {
@@ -229,6 +230,9 @@ class IssueSearch extends ElasticSearch
         $result = di()->get(IssueFormatter::class)->base($model);
         $result['created_at'] = $model->created_at->toDateTimeString();
         $result['updated_at'] = $model->updated_at->toDateTimeString();
+        if (! empty($result['closed_at']) && $date = date_load($result['closed_at'])) {
+            $result['closed_at'] = $date->toDateTimeString();
+        }
         return $result;
     }
 }
