@@ -233,6 +233,9 @@ class IssueSearch extends ElasticSearch
         if (! empty($result['closed_at']) && $date = date_load($result['closed_at'])) {
             $result['closed_at'] = $date->toDateTimeString();
         }
+        if (! empty($result['resolved_at']) && $date = date_load($result['resolved_at'])) {
+            $result['resolved_at'] = $date->toDateTimeString();
+        }
         return $result;
     }
 }
