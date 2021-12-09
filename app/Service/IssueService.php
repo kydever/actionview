@@ -1058,6 +1058,8 @@ class IssueService extends Service
                     'caller' => $user->toSmall(),
                 ] + Arr::only($input, ['comments'])
             );
+
+            $issue->pushToSearch();
         } catch (\Throwable $e) {
             di()->get(StdoutLoggerInterface::class)->warning((string) $e);
             throw new BusinessException(ErrorCode::ISSUE_DO_ACTION_ID_CANNOT_EMPTY);
