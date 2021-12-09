@@ -116,6 +116,8 @@ class VersionService extends Service
         $creator = di()->get(UserFormatter::class)->small($user);
         $model = new Version();
         $model->project_key = $project->key;
+        $startTime && $model->start_time = $startTime;
+        $endTime && $model->end_time = $endTime;
         $model->name = $name;
         $model->creator = $creator;
         $model->modifier = $creator;
