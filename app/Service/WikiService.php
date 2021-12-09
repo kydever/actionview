@@ -30,6 +30,7 @@ use App\Service\Struct\Image;
 use Carbon\Carbon;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Codec\Json;
 use League\Flysystem\FilesystemOperator;
 
 class WikiService extends Service
@@ -403,7 +404,6 @@ class WikiService extends Service
             foreach ($ps as $val) {
                 $parents[$val->id] = $val->name;
             }
-
             foreach ($d->pt as $pid) {
                 if (isset($parents[$pid])) {
                     $path .= '/' . $parents[$pid];
@@ -435,7 +435,7 @@ class WikiService extends Service
 
         $document = $this->dao->firstProjectKeyIdDir($id, false);
         if (! $document) {
-            throw new BusinessException(ErrorCode::WIKI_COPY_OBJ_NOT_EXIST);
+            throw new BusinessException(ErrorCode::WIKI_COPY_OBJECT_NOT_EXIST);
         }
 
         $destDirectory = [];
@@ -565,5 +565,61 @@ class WikiService extends Service
     {
         $models = $this->dao->getParentWiki($project->key, $id);
         return $this->formatter->formatList($models);
+    }
+
+    public function move(array $input, Project $project, User $user)
+    {
+        $id = $input['id'] ?? 0;
+        if (! $id) {
+            throw new BusinessException(ErrorCode::WIKI_MOVE_OBJECT_NOT_EMPTY);
+        }
+
+        $destPath = (int) ($input['dest_path'] ?? 0);
+        if (! isset($destPath)) {
+            throw new BusinessException(ErrorCode::WIKI_MOVE_DIR_DEST_NOT_EMPTY);
+        }
+
+        $model = $this->dao->firstProjectKeyId($id);
+        if (! $model) {
+            throw new BusinessException(ErrorCode::WIKI_MOVE_OBJECT_NOT_EXIST);
+        }
+
+        if ($model->d == ProjectConstant::WIKI_FOLDER) {
+            if (! di()->get(AclService::class)->isAllowed($user->id, Permission::MANAGE_PROJECT, $project)) {
+                throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+            }
+        }
+
+        $destDirectory = (object) [];
+        if ($destPath !== 0) {
+            $destDirectory = $this->dao->firstProjectKeyIdDir($id, true);
+            if ($destDirectory) {
+                throw new BusinessException(ErrorCode::WIKI_MOVE_DIR_NOT_EXIST);
+            }
+        }
+
+        if ($this->dao->existsUpdateInWikiName($project->key, $destPath, $model->name, $model->d)) {
+            throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
+        }
+
+        $updValues = [];
+        $updValues['parent'] = $destPath;
+        $updValues['pt'] = Json::encode(array_merge($destDirectory->pt ?? [], [$destPath]));
+        $this->dao->updateMove($id, $updValues);
+
+        if (isset($document['d']) && $document['d'] === 1) {
+            $subs = $this->dao->getMove($project->key, $id);
+            foreach ($subs as $sub) {
+                $pt = isset($sub->pt) ? $sub->pt : [];
+                $pind = array_search($id, $pt);
+                if ($pind !== false) {
+                    $tail = array_slice($pt, $pind);
+                    $pt = array_merge($updValues['pt'], $tail);
+                    $this->dao->updateMove($sub->id, ['pt' => $pt]);
+                }
+            }
+        }
+
+        return $model;
     }
 }

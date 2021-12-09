@@ -22,6 +22,7 @@ use App\Request\WikiCreateRequest;
 use App\Request\WikiFavoriteRequest;
 use App\Request\WikiGetDirTreeRequest;
 use App\Request\WikiIndexRequest;
+use App\Request\WikimoveRequest;
 use App\Request\WikiSearchPathRequest;
 use App\Request\WikiShowRequest;
 use App\Request\WikiUpdateRequest;
@@ -177,6 +178,16 @@ class WikiController extends Controller
     {
         $project = ProjectAuth::instance()->build()->getCurrent();
         $result = $this->service->getDirChildren($id, $project);
+
+        return $this->response->success($result);
+    }
+
+    public function move(WikimoveRequest $request)
+    {
+        $input = $request->all();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $user = UserAuth::instance()->build()->getUser();
+        $result = $this->service->move($input, $project, $user);
 
         return $this->response->success($result);
     }

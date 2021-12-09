@@ -150,14 +150,13 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('wiki/{id:\d+}/checkout', App\Controller\WikiController::class . '::checkout');
     Router::post('wiki/{id:\d+}/favorite', App\Controller\WikiController::class . '::favorite');
     Router::get('wiki/{id:\d+}/dirs', App\Controller\WikiController::class . '::getDirChildren');
+    Router::post('wiki/move', App\Controller\WikiController::class . '::move');
 
 //    后续优化为上传OSS
 //    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');
 //    Router::get('wiki/{id}/file/{fid}/download', App\Controller\WikiController::class . '::download');
 //    Router::get('wiki/{id}/download', App\Controller\WikiController::class . '::download2');
 //    Router::delete('wiki/{id}/file/{fid}',  App\Controller\WikiController::class . '::remove');
-
-    // Route::post('wiki/move', 'WikiController@move');
 
     Router::get('team', App\Controller\RoleController::class . '::index');
 

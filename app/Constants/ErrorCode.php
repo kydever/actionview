@@ -355,7 +355,7 @@ class ErrorCode extends AbstractConstants
     /**
      * @Message("WIKI复制的对象不存在")
      */
-    public const WIKI_COPY_OBJ_NOT_EXIST = -11962;
+    public const WIKI_COPY_OBJECT_NOT_EXIST = -11962;
 
     /**
      * @Message("WIKI中dest目录不存在")
@@ -376,4 +376,24 @@ class ErrorCode extends AbstractConstants
      * @Message("WIKI中该对象无法解锁")
      */
     public const WIKI_OBJECT_CANNOT_BEEN_UNLOCKED = -11956;
+
+    /**
+     * @Message("WIKI中移动的对象不能为空")
+     */
+    public const WIKI_MOVE_OBJECT_NOT_EMPTY = -11964;
+
+    /**
+     * @Message("WIKI中移动的目标目录不能为空")
+     */
+    public const WIKI_MOVE_DIR_DEST_NOT_EMPTY = -11965;
+
+    /**
+     * @Message("WIKI中移动的对象不存在")
+     */
+    public const WIKI_MOVE_OBJECT_NOT_EXIST = -11966;
+
+    /**
+     * @Message("WIKI中移动的目录不存在")
+     */
+    public const WIKI_MOVE_DIR_NOT_EXIST = -11967;
 }

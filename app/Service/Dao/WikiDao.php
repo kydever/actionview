@@ -138,7 +138,7 @@ class WikiDao extends Service
         return Wiki::query()
             ->where('project_key', $projectKey)
             ->whereIn('id', $pt)
-            ->get(['name']);
+            ->get(['id', 'name']);
     }
 
     public function getParentWiki(string $projectKey, int $parent)
@@ -175,13 +175,12 @@ class WikiDao extends Service
             ->where('d', ProjectConstant::WIKI_FOLDER)
             ->where('del_flag', '<>', StatusConstant::DELETED);
 
-        if (isset($id) && empty($id)) {
+        if (isset($id) && ! empty($id)) {
             $query->whereRaw("json_contains(pt,'{$id}')");
             $query->where('id', '<>', $id);
         }
 
-        $query->limit(20);
-        return $query->get(['name', 'pt']);
+        return $query->get();
     }
 
     public function firstProject($projectKey): ?Wiki
@@ -212,5 +211,21 @@ class WikiDao extends Service
         }
 
         return $query->first();
+    }
+
+    public function updateMove(int $id, array $data)
+    {
+        return Wiki::query()
+            ->where('id', $id)
+            ->update($data);
+    }
+
+    public function getMove(string $projectKey, int $parent)
+    {
+        return Wiki::query()
+            ->where('project_key', $projectKey)
+            ->whereRaw("json_contains(pt,'{$parent}')")
+            ->where('del_flag', '<>', StatusConstant::DELETED)
+            ->get();
     }
 }
