@@ -20,10 +20,10 @@ use Han\Utils\Service;
 
 class WikiDao extends Service
 {
-    public function exists(string $key, int $id): bool
+    public function exists(string $projectKey, int $id): bool
     {
         return Wiki::query()
-            ->where('project_key', $key)
+            ->where('project_key', $projectKey)
             ->where('id', $id)
             ->where('d', ProjectConstant::WIKI_FOLDER)
             ->where('del_flag', '<>', StatusConstant::DELETED)
@@ -41,10 +41,9 @@ class WikiDao extends Service
             ->exists();
     }
 
-    public function firstProjectKeyId(string $projectKey, int $id): ?Wiki
+    public function firstProjectKeyId(int $id): ?Wiki
     {
         return Wiki::query()
-            ->where('project_key', $projectKey)
             ->where('id', $id)
             ->where('del_flag', '<>', StatusConstant::DELETED)
             ->first();
@@ -151,7 +150,7 @@ class WikiDao extends Service
             ->get();
     }
 
-    public function existsUpdateInWikiName(string $projectKey, int $parent, string $name, $d)
+    public function existsUpdateInWikiName(string $projectKey, int $parent, string $name, int $d)
     {
         $query = Wiki::query()
             ->where('project_key', $projectKey)
@@ -168,7 +167,7 @@ class WikiDao extends Service
         return $query->exists();
     }
 
-    public function searchPath($projectKey, $name, $movedPath)
+    public function searchPath(string $projectKey, string $name, int $id)
     {
         $query = Wiki::query()
             ->where('project_key', $projectKey)
@@ -176,11 +175,10 @@ class WikiDao extends Service
             ->where('d', ProjectConstant::WIKI_FOLDER)
             ->where('del_flag', '<>', StatusConstant::DELETED);
 
-        //        现在 pt 是 JSON，_id 是 int 暂且注释
-        //        if (isset($movedPath) && empty($movedPath)) {
-        //            $query->where('pt', '<>', $movedPath);
-        //            $query->where('_id', '<>', $movedPath);
-        //        }
+        if (isset($id) && empty($id)) {
+            $query->whereRaw("json_contains(pt,'{$id}')");
+            $query->where('id', '<>', $id);
+        }
 
         $query->limit(20);
         return $query->get(['name', 'pt']);
@@ -201,10 +199,9 @@ class WikiDao extends Service
             ->update('del_flag', StatusConstant::DELETED);
     }
 
-    public function firstProjectKeyIdDir($projectKey, $id, $dir)
+    public function firstProjectKeyIdDir($id, $dir)
     {
         $query = Wiki::query()
-            ->where('project_key', $projectKey)
             ->where('id', $id)
             ->where('del_flag', '<>', StatusConstant::DELETED);
 

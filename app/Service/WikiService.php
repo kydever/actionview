@@ -49,23 +49,27 @@ class WikiService extends Service
         $name = $input['name'] ?? '';
         $contents = $input['contents'] ?? '';
 
-        $parent = $this->dao->first($parentId, true);
+        if ($parentId !== 0) {
+            if (! $this->dao->exists($project->key, $parentId)) {
+                throw new BusinessException(ErrorCode::PARENT_NOT_EXIST);
+            }
+        }
 
         if (empty($name)) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
 
-        if ($this->dao->existsNameInSameParent($project->key, $parent->id, $name)) {
+        if ($this->dao->existsNameInSameParent($project->key, $parentId, $name)) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
         }
 
         $model = new Wiki();
         $model->project_key = $project->key;
-        $model->parent = $parent->id;
+        $model->parent = $parentId;
         $model->d = ProjectConstant::WIKI_CONTENTS;
         $model->del_flag = StatusConstant::NOT_DELETED;
         $model->name = $name;
-        $model->pt = $this->getPathTree($parent);
+        $model->pt = $this->getPathTree($this->dao->firstProjectKeyId($parentId));
         $model->version = 1;
         $model->creator = di()->get(UserFormatter::class)->small($user);
         $model->editor = [];
@@ -188,7 +192,7 @@ class WikiService extends Service
             $node = $this->dao->firstProject($project->key);
 //            TODO 目前只了解到  $curNode='root'
 //            else {
-//                $node = $this->dao->firstProjectKeyId($project->key, $curNode);
+//                $node = $this->dao->firstProjectKeyId($curNode);
 //            }
 
             if ($node) {
@@ -278,7 +282,7 @@ class WikiService extends Service
                 }
             }
         } else {
-            $d = $this->dao->firstProjectKeyId($project->key, $directory);
+            $d = $this->dao->firstProjectKeyId($directory);
             if ($d && isset($d->pt)) {
                 $path = $this->getPathTreeDetail($d->pt);
             }
@@ -290,7 +294,7 @@ class WikiService extends Service
 
     public function destroy(int $id, Project $project, User $user)
     {
-        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        $model = $this->dao->firstProjectKeyId($id);
         if (! $model) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
@@ -320,7 +324,7 @@ class WikiService extends Service
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
 
-        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        $model = $this->dao->firstProjectKeyId($id);
         if (! $model) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
@@ -379,40 +383,38 @@ class WikiService extends Service
         return [$model, []];
     }
 
-//    public function searchPath(array $input, Project $project)
-//    {
-//        $directories = $this->dao->searchPath($project->key, $input['s'], $input['moved_path'] ?? '');
-//        if (empty($directories)){
-//            return [];
-//        }
-//
-//        $ds =[];
-//        foreach ($directories as $d) {
-//           $ds[] = $d->d;
-//        }
-//
-//        $ret = [];
-//        foreach ($directories as $d) {
-//            $parents = [];
-//            $path = '';
-//            //这里不对
-//            $ps = $this->dao->getName($project->key, $d->d);
-//
-//            foreach ($ps as $val) {
-//                $parents[$val->id] = $val->name;
-//            }
-//
-//            foreach ($d->pt as $pid) {
-//                if (isset($parents[$pid])) {
-//                    $path .= '/' . $parents[$pid];
-//                }
-//            }
-//            $path .= '/' . $d->name;
-//            $ret[] = [ 'id' => $d->id, 'name' => $path ];
-//        }
-//
-//        return $ret;
-//    }
+    public function searchPath(array $input, Project $project)
+    {
+        $directories = $this->dao->searchPath($project->key, $input['s'], (int) $input['moved_path'] ?? 0);
+        if (empty($directories)) {
+            return [];
+        }
+
+        $ds = [];
+        foreach ($directories as $d) {
+            $ds[] = $d->d;
+        }
+
+        $ret = [];
+        foreach ($directories as $d) {
+            $parents = [];
+            $path = '';
+            $ps = $this->dao->getName($project->key, $d->pt);
+            foreach ($ps as $val) {
+                $parents[$val->id] = $val->name;
+            }
+
+            foreach ($d->pt as $pid) {
+                if (isset($parents[$pid])) {
+                    $path .= '/' . $parents[$pid];
+                }
+            }
+            $path .= '/' . $d->name;
+            $ret[] = ['id' => $d->id, 'name' => $path];
+        }
+
+        return $ret;
+    }
 
     public function copy(array $input, Project $project, User $user)
     {
@@ -431,14 +433,14 @@ class WikiService extends Service
             throw new BusinessException(ErrorCode::WIKI_DESK_DIT_NOT_EMPTY);
         }
 
-        $document = $this->dao->firstProjectKeyIdDir($project, $id, false);
+        $document = $this->dao->firstProjectKeyIdDir($id, false);
         if (! $document) {
             throw new BusinessException(ErrorCode::WIKI_COPY_OBJ_NOT_EXIST);
         }
 
         $destDirectory = [];
         if ($destPath !== 0) {
-            $destDirectory = $this->dao->firstProjectKeyIdDir($project, $id, true);
+            $destDirectory = $this->dao->firstProjectKeyIdDir($id, true);
             if (! $destDirectory) {
                 throw new BusinessException(ErrorCode::WIKI_DESK_DIR_NOT_EXIST);
             }
@@ -462,7 +464,7 @@ class WikiService extends Service
         return $this->formatter->base($wiki);
     }
 
-    public function upload($data, int $id, project $project, User $user)
+    public function upload($data, int $id, User $user)
     {
         $dir = date('Y/m/d');
         $image = Image::makeFromBase64Data($data, BASE_PATH . '/runtime/' . $dir);
@@ -470,7 +472,7 @@ class WikiService extends Service
         $this->file->writeStream($path = $dir . '/' . uniqid() . '.' . $image->getExtension(), $stream = fopen($object, 'r+'));
         fclose($stream);
 
-        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        $model = $this->dao->firstProjectKeyId($id);
         if (! $model) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
@@ -492,9 +494,9 @@ class WikiService extends Service
         return $data;
     }
 
-    public function checkin(array $input, int $id, Project $project, User $user)
+    public function checkin(array $input, int $id, User $user)
     {
-        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        $model = $this->dao->firstProjectKeyId($id);
         if (! $model) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
@@ -515,7 +517,7 @@ class WikiService extends Service
 
     public function checkout(array $input, int $id, Project $project, User $user)
     {
-        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        $model = $this->dao->firstProjectKeyId($id);
         if (empty($model)) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
@@ -530,10 +532,10 @@ class WikiService extends Service
         return $this->show($input, $model, $user);
     }
 
-    public function favorite(bool $flag, int $id, Project $project, User $user)
+    public function favorite(bool $flag, int $id, User $user)
     {
         $userInfo = di(UserFormatter::class)->small($user);
-        $model = $this->dao->firstProjectKeyId($project->key, $id);
+        $model = $this->dao->firstProjectKeyId($id);
         if (empty($model)) {
             throw new BusinessException(ErrorCode::WIKI_OBJECT_NOT_EXIST);
         }
@@ -553,5 +555,11 @@ class WikiService extends Service
         $favoritesModel->save();
 
         return [$id, $userInfo];
+    }
+
+    public function getDirChildren(int $id, Project $project)
+    {
+        $models = $this->dao->getParentWiki($project->key, $id);
+        return $this->formatter->formatList($models);
     }
 }

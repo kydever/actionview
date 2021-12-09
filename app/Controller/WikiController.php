@@ -119,8 +119,7 @@ class WikiController extends Controller
     {
         $input = $request->all();
         $user = UserAuth::instance()->build()->getUser();
-        $project = ProjectAuth::instance()->build()->getCurrent();
-        $model = di()->get(WikiDao::class)->firstProjectKeyId($project->key, $id);
+        $model = di()->get(WikiDao::class)->firstProjectKeyId($id);
         [$data, $path] = $this->service->show($input, $model, $user);
 
         return $this->response->success($data, ['path' => $path]);
@@ -141,8 +140,7 @@ class WikiController extends Controller
     {
         $data = $request->input('data');
         $user = UserAuth::instance()->build()->getUser();
-        $project = ProjectAuth::instance()->build()->getCurrent();
-        $result = $this->service->upload($data, $id, $project, $user);
+        $result = $this->service->upload($data, $id, $user);
 
         return $this->response->success($result);
     }
@@ -150,9 +148,8 @@ class WikiController extends Controller
     public function checkin(WikiCheckinRequest $request, int $id)
     {
         $input = $request->all();
-        $project = ProjectAuth::instance()->build()->getCurrent();
         $user = UserAuth::instance()->build()->getUser();
-        [$data, $path] = $this->service->checkin($input, $id, $project, $user);
+        [$data, $path] = $this->service->checkin($input, $id, $user);
 
         return $this->response->success($data, ['option' => ['path' => $path]]);
     }
@@ -170,10 +167,17 @@ class WikiController extends Controller
     public function favorite(WikiFavoriteRequest $request, int $id)
     {
         $flag = $request->input('flag');
-        $project = ProjectAuth::instance()->build()->getCurrent();
         $user = UserAuth::instance()->build()->getUser();
-        [$id, $curUser] = $this->service->favorite($flag, $id, $project, $user);
+        [$id, $curUser] = $this->service->favorite($flag, $id, $user);
 
         return $this->response->success(['id' => $id, 'user' => $curUser, 'favorited' => $flag]);
+    }
+
+    public function getDirChildren(int $id)
+    {
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $result = $this->service->getDirChildren($id, $project);
+
+        return $this->response->success($result);
     }
 }
