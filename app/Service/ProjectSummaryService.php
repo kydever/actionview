@@ -87,6 +87,7 @@ class ProjectSummaryService extends Service
         }
 
         $result = [];
+        ksort($trend);
         foreach ($trend as $key => $val) {
             $result[] = ['day' => $key] + $val;
         }
