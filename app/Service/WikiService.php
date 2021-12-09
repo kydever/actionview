@@ -385,7 +385,7 @@ class WikiService extends Service
 
     public function searchPath(array $input, Project $project)
     {
-        $directories = $this->dao->searchPath($project->key, $input['s'], (int) $input['moved_path'] ?? 0);
+        $directories = $this->dao->searchPath($project->key, $input['s'], (int) ($input['moved_path'] ?? 0));
         if (empty($directories)) {
             return [];
         }
@@ -428,7 +428,7 @@ class WikiService extends Service
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_EMPTY);
         }
 
-        $destPath = $input['dest_path'] ?? 0;
+        $destPath = (int) ($input['dest_path'] ?? 0);
         if (! $destPath) {
             throw new BusinessException(ErrorCode::WIKI_DESK_DIT_NOT_EMPTY);
         }
@@ -441,24 +441,28 @@ class WikiService extends Service
         $destDirectory = [];
         if ($destPath !== 0) {
             $destDirectory = $this->dao->firstProjectKeyIdDir($id, true);
-            if (! $destDirectory) {
+            if ($destDirectory) {
                 throw new BusinessException(ErrorCode::WIKI_DESK_DIR_NOT_EXIST);
             }
         }
 
-        $isExists = $this->dao->existsNameInSameParent($project->key, $destPath, $name);
-        if ($isExists) {
+        if ($this->dao->existsNameInSameParent($project->key, $destPath, $name)) {
             throw new BusinessException(ErrorCode::WIKI_NAME_NOT_REPEAT);
         }
 
         $wiki = new WIki();
+        $wiki->project_key = $document->project_key;
+        $wiki->d = $document->d;
+        $wiki->del_flag = $document->del_flag;
         $wiki->name = $name;
         $wiki->parent = $destPath;
         $wiki->pt = array_merge($destDirectory->pt ?? [], [$destPath]);
         $wiki->version = 1;
         $wiki->contents = $document->contents ?? '';
-        $wiki->attachments = $document->attachments ?? [];
         $wiki->creator = di()->get(UserFormatter::class)->small($user);
+        $wiki->editor = [];
+        $wiki->attachments = $document->attachments ?? [];
+        $wiki->checkin = [];
         $wiki->save();
 
         return $this->formatter->base($wiki);

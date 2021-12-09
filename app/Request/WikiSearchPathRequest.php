@@ -29,8 +29,8 @@ class WikiSearchPathRequest extends FormRequest
     public function rules(): array
     {
         return [
-            's' => 'required',
-            'moved_path' => 'required',
+            's' => 'required|string',
+            'moved_path' => 'int',
         ];
     }
 }
