@@ -3078,16 +3078,16 @@
         },
         {
             "name": "limingxinleo/hyperf-utils",
-            "version": "v3.2.1",
+            "version": "v3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/limingxinleo/hyperf-utils.git",
-                "reference": "c28df71b157a7dd08fdb2fa2092233e917fceb9e"
+                "reference": "e8270b2445d97f019f6648ff2c8d52bac5b20ffc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/limingxinleo/hyperf-utils/zipball/c28df71b157a7dd08fdb2fa2092233e917fceb9e",
-                "reference": "c28df71b157a7dd08fdb2fa2092233e917fceb9e",
+                "url": "https://api.github.com/repos/limingxinleo/hyperf-utils/zipball/e8270b2445d97f019f6648ff2c8d52bac5b20ffc",
+                "reference": "e8270b2445d97f019f6648ff2c8d52bac5b20ffc",
                 "shasum": ""
             },
             "require": {
@@ -3145,9 +3145,9 @@
             ],
             "support": {
                 "issues": "https://github.com/limingxinleo/hyperf-utils/issues",
-                "source": "https://github.com/limingxinleo/hyperf-utils/tree/v3.2.1"
+                "source": "https://github.com/limingxinleo/hyperf-utils/tree/v3.2.3"
             },
-            "time": "2021-12-04T03:25:04+00:00"
+            "time": "2021-12-11T06:03:12+00:00"
         },
         {
             "name": "monolog/monolog",
