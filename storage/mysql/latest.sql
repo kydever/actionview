@@ -945,7 +945,6 @@ VALUES
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
 # Dump of table version
 # ------------------------------------------------------------
 
@@ -967,8 +966,6 @@ CREATE TABLE `version` (
   PRIMARY KEY (`id`),
   KEY `INDEX_PROJECT_KEY` (`project_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
 
 # Dump of table wiki
 # ------------------------------------------------------------
@@ -994,24 +991,6 @@ CREATE TABLE `wiki` (
   PRIMARY KEY (`id`),
   KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table wiki_cate
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `wiki_cate`;
-
-CREATE TABLE `wiki_cate` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `w_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'wiki_id',
-  `p_id` int(10) unsigned NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `del_flag` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
 
 # Dump of table wiki_favorites
 # ------------------------------------------------------------
