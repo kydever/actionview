@@ -80,8 +80,15 @@ class WikiDao extends Service
      *     'name' => '',
      *     'contents' => '',
      * ],
-     * @param mixed $directory
-     * @param mixed $mode
+     * @param $projectKey = '',
+     * @param $directory = 1,
+     * @param $mode = '',
+     * @param $favoritedIds = [
+     *     'id' =>1,
+     *     'wid' => 1,
+     *     'user_id' => 1,
+     *     'user' =>[],
+     * ],
      */
     public function search(array $input, string $projectKey, int $directory, string $mode, array $favoritedIds)
     {
@@ -106,12 +113,16 @@ class WikiDao extends Service
             });
         }
 
-        if ($directory !== '0' && $mode === 'search') {
-            $query->whereRaw("json_contains(pt,'{$directory}')");
-        }
-
-        if ($mode === 'list') {
-            $query->where('parent', $directory);
+        if ($directory !== 0) {
+            if ($mode === 'search') {
+                $query->whereRaw("json_contains(pt,'{$directory}')");
+            } else {
+                $query->where('parent', $directory);
+            }
+        } else {
+            if ($mode === 'list') {
+                $query->where('parent', $directory);
+            }
         }
 
         if (! empty($favoritedIds)) {
@@ -119,9 +130,9 @@ class WikiDao extends Service
         }
 
         $query->where('del_flag', '<>', StatusConstant::DELETED);
-
         $query->orderByDesc('d');
         $query->orderByDesc('id');
+
         return $query->get();
     }
 
@@ -130,9 +141,6 @@ class WikiDao extends Service
         return Wiki::findManyFromCache($ids);
     }
 
-    /**
-     * @return \Hyperf\Database\Model\Collection|Wiki[]
-     */
     public function getName(string $projectKey, array $pt)
     {
         return Wiki::query()
@@ -150,7 +158,7 @@ class WikiDao extends Service
             ->get();
     }
 
-    public function existsUpdateInWikiName(string $projectKey, int $parent, string $name, int $d)
+    public function existsUpdateInWikiName(string $projectKey, int $parent, string $name, int $d): bool
     {
         $query = Wiki::query()
             ->where('project_key', $projectKey)
@@ -192,13 +200,13 @@ class WikiDao extends Service
 
     public function updateDelFlag($projectKey, $id)
     {
-        return Wiki::query()
+        Wiki::query()
             ->where('project_key', $projectKey)
             ->whereRaw("json_contains(pt,'{$id}')")
             ->update('del_flag', StatusConstant::DELETED);
     }
 
-    public function firstProjectKeyIdDir($id, $dir)
+    public function firstProjectKeyIdDir($id, $dir): ?Wiki
     {
         $query = Wiki::query()
             ->where('id', $id)
@@ -215,7 +223,7 @@ class WikiDao extends Service
 
     public function updateMove(int $id, array $data)
     {
-        return Wiki::query()
+        Wiki::query()
             ->where('id', $id)
             ->update($data);
     }
