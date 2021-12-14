@@ -104,13 +104,13 @@ class WikiController extends Controller
     public function searchPath(WikiSearchPathRequest $request)
     {
         $input = $request->all();
-        $project = ProjectAuth::instance()->build()->getCurrent();
         if (! isset($input['s'])) {
             return $this->response->success([]);
         }
         if ($input['s'] === '/') {
             return $this->response->success(['id' => 0, 'name' => '/']);
         }
+        $project = ProjectAuth::instance()->build()->getCurrent();
         $result = $this->service->searchPath($input, $project);
 
         return $this->response->success($result);

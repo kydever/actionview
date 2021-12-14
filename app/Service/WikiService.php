@@ -391,11 +391,6 @@ class WikiService extends Service
             return [];
         }
 
-        $ds = [];
-        foreach ($directories as $d) {
-            $ds[] = $d->d;
-        }
-
         $ret = [];
         foreach ($directories as $d) {
             $parents = [];
@@ -592,8 +587,8 @@ class WikiService extends Service
 
         $destDirectory = (object) [];
         if ($destPath !== 0) {
-            $destDirectory = $this->dao->firstProjectKeyIdDir($id, true);
-            if ($destDirectory) {
+            $destDirectory = $this->dao->firstProjectKeyId($id, true);
+            if (! $destDirectory) {
                 throw new BusinessException(ErrorCode::WIKI_MOVE_DIR_NOT_EXIST);
             }
         }

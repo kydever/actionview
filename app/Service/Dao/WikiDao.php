@@ -184,7 +184,6 @@ class WikiDao extends Service
             ->where('del_flag', '<>', StatusConstant::DELETED);
 
         if (isset($id) && ! empty($id)) {
-            $query->whereRaw("json_contains(pt,'{$id}')");
             $query->where('id', '<>', $id);
         }
 
