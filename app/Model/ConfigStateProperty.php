@@ -23,19 +23,15 @@ class ConfigStateProperty extends Model
      *
      * @var string
      */
-    protected $table = 'config_state_property';
+    protected ?string $table = 'config_state_property';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'sequence'];
+    protected array $fillable = ['id', 'project_key', 'sequence'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'sequence' => 'integer', 'sequence' => 'json'];
+    protected array $casts = ['id' => 'int', 'sequence' => 'integer', 'sequence' => 'json'];
 }

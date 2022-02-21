@@ -26,21 +26,17 @@ class AclRolePermission extends Model
      *
      * @var string
      */
-    protected $table = 'acl_role_permissions';
+    protected ?string $table = 'acl_role_permissions';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'role_id', 'permissions', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'role_id', 'permissions', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'role_id' => 'integer', 'permissions' => 'array', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'role_id' => 'integer', 'permissions' => 'array', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function hasAccess(string $permission): bool
     {

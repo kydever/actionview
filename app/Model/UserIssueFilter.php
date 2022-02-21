@@ -26,19 +26,15 @@ class UserIssueFilter extends Model
      *
      * @var string
      */
-    protected $table = 'user_issue_filters';
+    protected ?string $table = 'user_issue_filters';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'user', 'sequence', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'user', 'sequence', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'user' => 'json', 'sequence' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'user' => 'json', 'sequence' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

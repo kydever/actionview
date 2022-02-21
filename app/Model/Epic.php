@@ -28,19 +28,15 @@ class Epic extends Model
      *
      * @var string
      */
-    protected $table = 'epic';
+    protected ?string $table = 'epic';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'name', 'bgColor', 'description', 'project_key', 'sn', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'name', 'bgColor', 'description', 'project_key', 'sn', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

@@ -26,19 +26,15 @@ class ConfigEventNotification extends Model
      *
      * @var string
      */
-    protected $table = 'config_event_notifications';
+    protected ?string $table = 'config_event_notifications';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'event_id', 'notifications', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'event_id', 'notifications', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'event_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'event_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

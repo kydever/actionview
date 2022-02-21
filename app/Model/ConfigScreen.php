@@ -28,19 +28,15 @@ class ConfigScreen extends Model
      *
      * @var string
      */
-    protected $table = 'config_screen';
+    protected ?string $table = 'config_screen';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'description', 'schema', 'field_ids', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'name', 'description', 'schema', 'field_ids', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'schema' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'schema' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

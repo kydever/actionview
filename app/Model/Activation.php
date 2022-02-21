@@ -27,19 +27,15 @@ class Activation extends Model
      *
      * @var string
      */
-    protected $table = 'activations';
+    protected ?string $table = 'activations';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'code', 'user_id', 'completed', 'completed_at', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'code', 'user_id', 'completed', 'completed_at', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'user_id' => 'integer', 'completed' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'user_id' => 'integer', 'completed' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

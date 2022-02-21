@@ -27,19 +27,15 @@ class AclRoleactor extends Model
      *
      * @var string
      */
-    protected $table = 'acl_roleactor';
+    protected ?string $table = 'acl_roleactor';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'role_id', 'project_key', 'user_ids', 'group_ids', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'role_id', 'project_key', 'user_ids', 'group_ids', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'role_id' => 'integer', 'user_ids' => 'json', 'group_ids' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'role_id' => 'integer', 'user_ids' => 'json', 'group_ids' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

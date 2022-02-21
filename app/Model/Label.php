@@ -26,19 +26,15 @@ class Label extends Model
      *
      * @var string
      */
-    protected $table = 'labels';
+    protected ?string $table = 'labels';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'name', 'bgColor', 'project_key', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'name', 'bgColor', 'project_key', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

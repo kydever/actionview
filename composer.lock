@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94715be5271474ddbed51579431a2e52",
+    "content-hash": "2f4662d61a8ec543aef567be9b2503db",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -6393,6 +6393,61 @@
             "time": "2022-02-13T11:40:56+00:00"
         },
         {
+            "name": "hyperf/migration-generator-incubator",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hyperf/migration-generator-incubator.git",
+                "reference": "6a62c5e5c40ef563c69aefcbeb14fb6589b8e957"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hyperf/migration-generator-incubator/zipball/6a62c5e5c40ef563c69aefcbeb14fb6589b8e957",
+                "reference": "6a62c5e5c40ef563c69aefcbeb14fb6589b8e957",
+                "shasum": ""
+            },
+            "require": {
+                "hyperf/command": "3.0.*",
+                "hyperf/database": "3.0.*",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "mockery/mockery": "^1.0",
+                "phpstan/phpstan": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "swoole/ide-helper": "^4.5"
+            },
+            "suggest": {
+                "swow/swow": "Required to create swow components."
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "hyperf": {
+                    "config": "Hyperf\\MigrationGenerator\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hyperf\\MigrationGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "keywords": [
+                "hyperf",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/hyperf/migration-generator-incubator/issues",
+                "source": "https://github.com/hyperf/migration-generator-incubator/tree/main"
+            },
+            "time": "2022-02-21T09:42:39+00:00"
+        },
+        {
             "name": "hyperf/testing",
             "version": "v3.0.0-alpha.1",
             "source": {
@@ -9091,6 +9146,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "hyperf/migration-generator-incubator": 20,
         "swoole/ide-helper": 20
     },
     "prefer-stable": true,

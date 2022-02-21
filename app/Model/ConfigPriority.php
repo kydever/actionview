@@ -30,19 +30,15 @@ class ConfigPriority extends Model
      *
      * @var string
      */
-    protected $table = 'config_priority';
+    protected ?string $table = 'config_priority';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'color', 'description', 'key', 'name', 'sn', 'default', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'color', 'description', 'key', 'name', 'sn', 'default', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'default' => 'integer'];
+    protected array $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'default' => 'integer'];
 }

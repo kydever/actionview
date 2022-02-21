@@ -27,19 +27,15 @@ class UserIssueListColumn extends Model
      *
      * @var string
      */
-    protected $table = 'user_issue_list_columns';
+    protected ?string $table = 'user_issue_list_columns';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'user', 'column_keys', 'columns', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'user', 'column_keys', 'columns', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'user' => 'json', 'columns' => 'json', 'column_keys' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'user' => 'json', 'columns' => 'json', 'column_keys' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

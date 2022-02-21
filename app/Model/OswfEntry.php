@@ -28,21 +28,17 @@ class OswfEntry extends Model
      *
      * @var string
      */
-    protected $table = 'oswf_entry';
+    protected ?string $table = 'oswf_entry';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'definition_id', 'creator', 'state', 'propertysets', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'definition_id', 'creator', 'state', 'propertysets', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'definition_id' => 'integer', 'creator' => 'json', 'propertysets' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'state' => 'integer'];
+    protected array $casts = ['id' => 'int', 'definition_id' => 'integer', 'creator' => 'json', 'propertysets' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'state' => 'integer'];
 
     public function currentSteps()
     {

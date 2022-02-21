@@ -35,19 +35,15 @@ class Wiki extends Model
      *
      * @var string
      */
-    protected $table = 'wiki';
+    protected ?string $table = 'wiki';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'd', 'del_flag', 'name', 'pt', 'parent', 'contents', 'version', 'creator', 'editor', 'attachments', 'checkin', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'd', 'del_flag', 'name', 'pt', 'parent', 'contents', 'version', 'creator', 'editor', 'attachments', 'checkin', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'wid' => 'integer', 'pt' => 'json', 'creator' => 'json', 'editor' => 'json', 'attachments' => 'json', 'checkin' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'parent' => 'integer', 'version' => 'integer', 'd' => 'integer'];
+    protected array $casts = ['id' => 'int', 'wid' => 'integer', 'pt' => 'json', 'creator' => 'json', 'editor' => 'json', 'attachments' => 'json', 'checkin' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'parent' => 'integer', 'version' => 'integer', 'd' => 'integer'];
 }

@@ -35,19 +35,15 @@ class Sprint extends Model
      *
      * @var string
      */
-    protected $table = 'sprint';
+    protected ?string $table = 'sprint';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'no', 'name', 'status', 'start_time', 'complete_time', 'description', 'real_complete_time', 'issues', 'origin_issues', 'completed_issues', 'incompleted_issues', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'no', 'name', 'status', 'start_time', 'complete_time', 'description', 'real_complete_time', 'issues', 'origin_issues', 'completed_issues', 'incompleted_issues', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'issues' => 'json', 'origin_issues' => 'json', 'completed_issues' => 'json', 'incompleted_issues' => 'json', 'no' => 'integer', 'start_time' => 'integer', 'complete_time' => 'integer', 'real_complete_time' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'issues' => 'json', 'origin_issues' => 'json', 'completed_issues' => 'json', 'incompleted_issues' => 'json', 'no' => 'integer', 'start_time' => 'integer', 'complete_time' => 'integer', 'real_complete_time' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

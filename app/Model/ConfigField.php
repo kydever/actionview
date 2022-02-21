@@ -34,21 +34,17 @@ class ConfigField extends Model
      *
      * @var string
      */
-    protected $table = 'config_field';
+    protected ?string $table = 'config_field';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'key', 'type', 'description', 'option_values', 'default_value', 'min_value', 'max_value', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'name', 'key', 'type', 'description', 'option_values', 'default_value', 'min_value', 'max_value', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'option_values' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'option_values' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function isSingleOrMultiVersion(): bool
     {

@@ -39,21 +39,17 @@ class AclGroup extends Model
      *
      * @var string
      */
-    protected $table = 'acl_group';
+    protected ?string $table = 'acl_group';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'name', 'users', 'principal', 'public_scope', 'description', 'directory', 'ldap_dn', 'sync_flag', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'name', 'users', 'principal', 'public_scope', 'description', 'directory', 'ldap_dn', 'sync_flag', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'users' => 'json', 'principal' => 'json', 'public_scope' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'users' => 'json', 'principal' => 'json', 'public_scope' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function userModels(): HasMany
     {

@@ -27,21 +27,17 @@ class UserGroupProject extends Model
      *
      * @var string
      */
-    protected $table = 'user_group_project';
+    protected ?string $table = 'user_group_project';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'ug_id', 'type', 'link_count', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'ug_id', 'type', 'link_count', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'ug_id' => 'integer', 'link_count' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'ug_id' => 'integer', 'link_count' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function isGroup(): bool
     {

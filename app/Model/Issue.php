@@ -44,21 +44,17 @@ class Issue extends Model implements Searchable
      *
      * @var string
      */
-    protected $table = 'issue';
+    protected ?string $table = 'issue';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'modifier', 'no', 'data', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'modifier', 'no', 'data', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer'];
+    protected array $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer'];
 
     public function typeModel()
     {

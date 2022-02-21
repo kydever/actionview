@@ -20,28 +20,24 @@ namespace App\Model;
  */
 class UserSetting extends Model
 {
-    public $incrementing = false;
+    public bool $incrementing = false;
 
-    protected $primaryKey = 'user_id';
+    protected string $primaryKey = 'user_id';
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'user_setting';
+    protected ?string $table = 'user_setting';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['user_id', 'notifications', 'favorites', 'created_at', 'updated_at'];
+    protected array $fillable = ['user_id', 'notifications', 'favorites', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['user_id' => 'integer', 'notifications' => 'array', 'favorites' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['user_id' => 'integer', 'notifications' => 'array', 'favorites' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

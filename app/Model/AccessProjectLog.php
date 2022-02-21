@@ -20,28 +20,24 @@ namespace App\Model;
  */
 class AccessProjectLog extends Model
 {
-    public $timestamps = false;
+    public bool $timestamps = false;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'access_project_log';
+    protected ?string $table = 'access_project_log';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'user_id', 'latest_access_time'];
+    protected array $fillable = ['id', 'project_key', 'user_id', 'latest_access_time'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'user_id' => 'integer', 'latest_access_time' => 'integer'];
+    protected array $casts = ['id' => 'int', 'user_id' => 'integer', 'latest_access_time' => 'integer'];
 
     public function project()
     {

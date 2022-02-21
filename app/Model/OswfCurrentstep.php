@@ -32,19 +32,15 @@ class OswfCurrentstep extends Model
      *
      * @var string
      */
-    protected $table = 'oswf_currentstep';
+    protected ?string $table = 'oswf_currentstep';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'entry_id', 'step_id', 'previous_id', 'start_time', 'action_id', 'owners', 'status', 'comments', 'caller', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'entry_id', 'step_id', 'previous_id', 'start_time', 'action_id', 'owners', 'status', 'comments', 'caller', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'entry_id' => 'integer', 'step_id' => 'integer', 'previous_id' => 'integer', 'start_time' => 'integer', 'action_id' => 'integer', 'owners' => 'json', 'caller' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'entry_id' => 'integer', 'step_id' => 'integer', 'previous_id' => 'integer', 'start_time' => 'integer', 'action_id' => 'integer', 'owners' => 'json', 'caller' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

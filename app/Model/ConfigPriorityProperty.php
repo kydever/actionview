@@ -24,19 +24,15 @@ class ConfigPriorityProperty extends Model
      *
      * @var string
      */
-    protected $table = 'config_priority_property';
+    protected ?string $table = 'config_priority_property';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'sequence', 'default_value'];
+    protected array $fillable = ['id', 'project_key', 'sequence', 'default_value'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int'];
+    protected array $casts = ['id' => 'int'];
 }

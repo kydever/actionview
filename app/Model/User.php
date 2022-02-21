@@ -46,21 +46,17 @@ class User extends Model
      *
      * @var string
      */
-    protected $table = 'users';
+    protected ?string $table = 'users';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'email', 'first_name', 'password', 'last_login', 'permissions', 'invalid_flag', 'directory', 'phone', 'avatar', 'department', 'position', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'email', 'first_name', 'password', 'last_login', 'permissions', 'invalid_flag', 'directory', 'phone', 'avatar', 'department', 'position', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'permissions' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'invalid_flag' => 'integer'];
+    protected array $casts = ['id' => 'integer', 'permissions' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'invalid_flag' => 'integer'];
 
     public function groups(): HasMany
     {

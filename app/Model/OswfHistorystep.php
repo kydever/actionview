@@ -28,26 +28,22 @@ namespace App\Model;
  */
 class OswfHistorystep extends Model
 {
-    public $incrementing = false;
+    public bool $incrementing = false;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'oswf_historystep';
+    protected ?string $table = 'oswf_historystep';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'entry_id', 'step_id', 'previous_id', 'start_time', 'action_id', 'owners', 'status', 'comments', 'caller', 'finish_time', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'entry_id', 'step_id', 'previous_id', 'start_time', 'action_id', 'owners', 'status', 'comments', 'caller', 'finish_time', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'entry_id' => 'integer', 'step_id' => 'integer', 'previous_id' => 'integer', 'start_time' => 'integer', 'action_id' => 'integer', 'owners' => 'json', 'caller' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'finish_time' => 'integer'];
+    protected array $casts = ['id' => 'int', 'entry_id' => 'integer', 'step_id' => 'integer', 'previous_id' => 'integer', 'start_time' => 'integer', 'action_id' => 'integer', 'owners' => 'json', 'caller' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'finish_time' => 'integer'];
 }

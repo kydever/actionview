@@ -25,19 +25,15 @@ class AclRole extends Model
      *
      * @var string
      */
-    protected $table = 'acl_role';
+    protected ?string $table = 'acl_role';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'name', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

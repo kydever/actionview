@@ -28,21 +28,17 @@ class SysSetting extends Model
      *
      * @var string
      */
-    protected $table = 'sys_setting';
+    protected ?string $table = 'sys_setting';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'properties', 'mailserver', 'sysroles', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'properties', 'mailserver', 'sysroles', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'properties' => 'json', 'mailserver' => 'json', 'sysroles' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'properties' => 'json', 'mailserver' => 'json', 'sysroles' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function allowCreateProject(): bool
     {

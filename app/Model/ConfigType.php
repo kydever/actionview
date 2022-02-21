@@ -35,21 +35,17 @@ class ConfigType extends Model
      *
      * @var string
      */
-    protected $table = 'config_type';
+    protected ?string $table = 'config_type';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'sn', 'name', 'abb', 'screen_id', 'workflow_id', 'type', 'default', 'description', 'disabled', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'sn', 'name', 'abb', 'screen_id', 'workflow_id', 'type', 'default', 'description', 'disabled', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'sn' => 'integer', 'screen_id' => 'integer', 'workflow_id' => 'integer', 'default' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'disabled' => 'integer'];
+    protected array $casts = ['id' => 'integer', 'sn' => 'integer', 'screen_id' => 'integer', 'workflow_id' => 'integer', 'default' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'disabled' => 'integer'];
 
     public function screen()
     {

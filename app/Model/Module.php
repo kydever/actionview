@@ -30,19 +30,15 @@ class Module extends Model
      *
      * @var string
      */
-    protected $table = 'module';
+    protected ?string $table = 'module';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'name', 'project_key', 'principal', 'default_assignee', 'creator', 'description', 'sn', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'name', 'project_key', 'principal', 'default_assignee', 'creator', 'description', 'sn', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'principal' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'principal' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

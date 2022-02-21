@@ -31,19 +31,15 @@ class OswfDefinition extends Model
      *
      * @var string
      */
-    protected $table = 'oswf_definition';
+    protected ?string $table = 'oswf_definition';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'latest_modifier', 'latest_modified_time', 'state_ids', 'screen_ids', 'steps', 'contents', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'name', 'latest_modifier', 'latest_modified_time', 'state_ids', 'screen_ids', 'steps', 'contents', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'integer', 'latest_modifier' => 'integer', 'steps' => 'integer', 'contents' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'latest_modifier' => 'integer', 'steps' => 'integer', 'contents' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

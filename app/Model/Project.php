@@ -37,21 +37,17 @@ class Project extends Model
      *
      * @var string
      */
-    protected $table = 'project';
+    protected ?string $table = 'project';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'name', 'key', 'principal', 'category', 'description', 'creator', 'status', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'name', 'key', 'principal', 'category', 'description', 'creator', 'status', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'principal' => 'json', 'category' => 'integer', 'creator' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'principal' => 'json', 'category' => 'integer', 'creator' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
     public function isActive(): bool
     {

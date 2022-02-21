@@ -23,28 +23,24 @@ namespace App\Model;
  */
 class IssueFilter extends Model
 {
-    public $incrementing = false;
+    public bool $incrementing = false;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'issue_filters';
+    protected ?string $table = 'issue_filters';
 
-    protected $keyType = 'string';
+    protected string $keyType = 'string';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'name', 'query', 'scope', 'creator', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'name', 'query', 'scope', 'creator', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'creator' => 'json', 'query' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'creator' => 'json', 'query' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

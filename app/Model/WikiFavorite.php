@@ -19,26 +19,22 @@ namespace App\Model;
  */
 class WikiFavorite extends Model
 {
-    public $timestamps = false;
+    public bool $timestamps = false;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'wiki_favorites';
+    protected ?string $table = 'wiki_favorites';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'wid', 'user_id', 'user'];
+    protected array $fillable = ['id', 'wid', 'user_id', 'user'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'wid' => 'integer', 'user_id' => 'integer', 'user' => 'json'];
+    protected array $casts = ['id' => 'int', 'wid' => 'integer', 'user_id' => 'integer', 'user' => 'json'];
 }

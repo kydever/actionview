@@ -24,19 +24,15 @@ class Activity extends Model
      *
      * @var string
      */
-    protected $table = 'activity';
+    protected ?string $table = 'activity';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
-    protected $fillable = ['id', 'project_key', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
-     *
-     * @var array
      */
-    protected $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
