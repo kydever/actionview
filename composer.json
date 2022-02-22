@@ -55,7 +55,7 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "hyperf/devtool": "3.0.*",
         "hyperf/ide-helper": "3.0.*",
-        "hyperf/migration-generator-incubator": "dev-main",
+        "hyperf/migration-generator-incubator": "^0.1",
         "hyperf/testing": "3.0.*",
         "limingxinleo/happy-join-hyperf": "^1.0",
         "mockery/mockery": "^1.0",
