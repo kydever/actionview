@@ -30,7 +30,7 @@ services:
     networks:
       - net
     restart: "always"
-  hyperf:
+  actionview:
     image: "hyperf/biz-skeleton:latest"
     build:
       context: "."
