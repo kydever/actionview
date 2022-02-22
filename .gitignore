@@ -8,5 +8,6 @@ runtime/
 vendor/
 .phpintel/
 .env
+.env.backup
 .DS_Store
 *.cache

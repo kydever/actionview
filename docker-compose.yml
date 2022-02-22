@@ -6,7 +6,7 @@ services:
       TZ: "Asia/Shanghai"
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
       MYSQL_ROOT_HOST: "%"
-      MYSQL_DATABASE: "hyperf"
+      MYSQL_DATABASE: "actionview"
     networks:
       - net
     volumes:
@@ -20,6 +20,16 @@ services:
     volumes:
       - redis-data:/data
     restart: "always"
+  frontend:
+    image: "actionview-fe:latest"
+    build:
+      context: "."
+      dockerfile: "front-end.Dockerfile"
+    ports:
+      - "8081:8080"
+    networks:
+      - net
+    restart: "always"
   hyperf:
     image: "hyperf/biz-skeleton:latest"
     build:
@@ -28,13 +38,26 @@ services:
       APP_ENV: "${APP_ENV:-prod}"
       DB_HOST: "mysql"
       REDIS_HOST: "redis"
+      ELASTIC_SEARCH_HOST: "http://elasticsearch:9200"
+      SCAN_CACHEABLE: "(true)"
     networks:
       - net
     restart: "always"
     deploy:
       replicas: 1
+  elasticsearch:
+    image: "elasticsearch:5-alpine"
+    environment:
+      discovery.type: "single-node"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    networks:
+      - net
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    restart: "always"
 networks:
   net:
 volumes:
   mysql-data:
   redis-data:
+  elasticsearch-data:
