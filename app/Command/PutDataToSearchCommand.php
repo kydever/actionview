@@ -36,6 +36,7 @@ class PutDataToSearchCommand extends HyperfCommand
         $this->setDescription('推送数据到搜索引擎');
         $this->addOption('id', 'I', InputOption::VALUE_OPTIONAL, '起始ID', 0);
         $this->addOption('num', 'N', InputOption::VALUE_OPTIONAL, '执行条数');
+        $this->addOption('index', 'i', InputOption::VALUE_OPTIONAL, '需要初始化的索引');
     }
 
     public function handle()
@@ -46,9 +47,12 @@ class PutDataToSearchCommand extends HyperfCommand
             $num = (int) $num;
         }
 
-        $index = $this->choice('请选择需要推送的数据', [
-            'issue' => '问题数据',
-        ]);
+        $index = $this->input->getOption('index');
+        if ($index === null) {
+            $index = $this->choice('请选择需要创建的索引', [
+                'issue' => '问题索引',
+            ]);
+        }
 
         /** @var ElasticSearch $search */
         $search = match ($index) {
