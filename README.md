@@ -28,6 +28,10 @@ docker-compose up -d --remove-orphans --build
 
 ### 初始化数据库
 
+```shell
+docker exec $(basename $(pwd))_actionview_1 php /opt/www/bin/hyperf.php migrate
+```
+
 ### 初始化搜索引擎
 
 

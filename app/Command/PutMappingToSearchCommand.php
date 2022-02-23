@@ -33,14 +33,18 @@ class PutMappingToSearchCommand extends HyperfCommand
         parent::configure();
         $this->setDescription('创建搜索引擎索引');
         $this->addOption('force', 'f', InputOption::VALUE_NONE, '是否强制创建');
+        $this->addOption('index', 'i', InputOption::VALUE_OPTIONAL, '需要初始化的索引');
     }
 
     public function handle()
     {
         $force = $this->input->getOption('force');
-        $index = $this->choice('请选择需要创建的索引', [
-            'issue' => '问题索引',
-        ]);
+        $index = $this->input->getOption('index');
+        if ($index === null) {
+            $index = $this->choice('请选择需要创建的索引', [
+                'issue' => '问题索引',
+            ]);
+        }
 
         /** @var ElasticSearch $search */
         $search = match ($index) {
