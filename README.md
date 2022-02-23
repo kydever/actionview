@@ -34,4 +34,6 @@ docker exec $(basename $(pwd))_actionview_1 php /opt/www/bin/hyperf.php migrate
 
 ### 初始化搜索引擎
 
-
+```shell
+docker exec $(basename $(pwd))_actionview_1 php /opt/www/bin/hyperf.php put:mapping -i issue
+```
