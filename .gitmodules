@@ -3,4 +3,4 @@
 	url = https://github.com/lxerxa/actionview.git
 [submodule "front-end"]
 	path = front-end
-	url = ../actionview-fe.git
+	url = https://github.com/kydever/actionview-fe.git
