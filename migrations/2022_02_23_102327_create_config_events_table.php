@@ -26,6 +26,8 @@ class CreateConfigEventsTable extends Migration
             $table->addColumn('string', 'name', ['length' => 32])->default('')->comment('事件名');
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
         Db::select("
             INSERT INTO `config_events` (`id`, `project_key`, `key`, `apply`, `name`, `created_at`, `updated_at`)

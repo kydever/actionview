@@ -22,6 +22,8 @@ class CreateConfigPriorityPropertyTable extends Migration
             $table->addColumn('string', 'project_key', ['length' => 32])->default('');
             $table->addColumn('json', 'sequence', []);
             $table->addColumn('string', 'default_value', ['length' => 32])->default('');
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
     }
 

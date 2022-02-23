@@ -24,6 +24,8 @@ class CreateAclRoleTable extends Migration
             $table->addColumn('string', 'name', ['length' => 16])->default('')->comment('角色名');
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
         Db::select("
             INSERT INTO `acl_role` (`id`, `project_key`, `name`, `created_at`, `updated_at`)

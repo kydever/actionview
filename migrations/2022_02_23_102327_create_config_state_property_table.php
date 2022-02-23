@@ -21,6 +21,8 @@ class CreateConfigStatePropertyTable extends Migration
             $table->addColumn('bigInteger', 'id', ['autoIncrement' => true, 'unsigned' => true]);
             $table->addColumn('string', 'project_key', ['length' => 32])->default('');
             $table->addColumn('json', 'sequence', []);
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
     }
 

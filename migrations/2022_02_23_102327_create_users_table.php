@@ -33,6 +33,8 @@ class CreateUsersTable extends Migration
             $table->addColumn('string', 'position', ['length' => 32])->default('');
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->unique(['email'], 'UNIQUE_EMAIL');
         });
         Db::select("
         INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `invalid_flag`, `directory`, `phone`, `avatar`, `department`, `position`, `created_at`, `updated_at`)

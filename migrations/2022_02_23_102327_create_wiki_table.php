@@ -33,6 +33,8 @@ class CreateWikiTable extends Migration
             $table->addColumn('json', 'checkin', []);
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
     }
 

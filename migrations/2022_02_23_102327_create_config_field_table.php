@@ -31,6 +31,8 @@ class CreateConfigFieldTable extends Migration
             $table->addColumn('string', 'max_value', ['length' => 32])->default('')->comment('默认最大值');
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
         Db::select("
             INSERT INTO `config_field` (`id`, `project_key`, `name`, `key`, `type`, `description`, `option_values`, `default_value`, `min_value`, `max_value`, `created_at`, `updated_at`)

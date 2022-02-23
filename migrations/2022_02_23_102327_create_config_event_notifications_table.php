@@ -25,6 +25,8 @@ class CreateConfigEventNotificationsTable extends Migration
             $table->addColumn('json', 'notifications', [])->comment('通知');
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
         Db::select("
             INSERT INTO `config_event_notifications` (`id`, `project_key`, `event_id`, `notifications`, `created_at`, `updated_at`)

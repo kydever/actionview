@@ -5,9 +5,9 @@
 # https://www.sequelpro.com/
 # https://github.com/sequelpro/sequelpro
 #
-# Host: swoft-test.knowyourself.cc (MySQL 5.7.23)
+# Host: 127.0.0.1 (MySQL 5.7.37-log)
 # Database: actionview
-# Generation Time: 2021-12-08 06:12:21 +0000
+# Generation Time: 2022-02-23 09:02:02 +0000
 # ************************************************************
 
 
@@ -945,6 +945,7 @@ VALUES
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
 # Dump of table version
 # ------------------------------------------------------------
 
@@ -966,6 +967,8 @@ CREATE TABLE `version` (
   PRIMARY KEY (`id`),
   KEY `INDEX_PROJECT_KEY` (`project_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 
 # Dump of table wiki
 # ------------------------------------------------------------
@@ -991,6 +994,8 @@ CREATE TABLE `wiki` (
   PRIMARY KEY (`id`),
   KEY `INDEX_PROJECT_KEY` (`project_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 
 # Dump of table wiki_favorites
 # ------------------------------------------------------------

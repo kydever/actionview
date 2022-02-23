@@ -29,6 +29,8 @@ class CreateConfigPriorityTable extends Migration
             $table->addColumn('tinyInteger', 'default', ['unsigned' => true])->default('0');
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
         Db::select("
             INSERT INTO `config_priority` (`id`, `project_key`, `color`, `description`, `key`, `name`, `sn`, `default`, `created_at`, `updated_at`)

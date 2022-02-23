@@ -22,6 +22,8 @@ class CreateAccessProjectLogTable extends Migration
             $table->addColumn('string', 'project_key', ['length' => 32])->default('');
             $table->addColumn('bigInteger', 'user_id', ['unsigned' => true]);
             $table->addColumn('integer', 'latest_access_time', ['unsigned' => true])->default('0');
+
+            $table->index(['user_id'], 'INDEX_USER_ID');
         });
     }
 

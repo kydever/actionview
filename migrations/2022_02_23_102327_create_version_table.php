@@ -30,6 +30,8 @@ class CreateVersionTable extends Migration
             $table->addColumn('json', 'modifier', []);
             $table->addColumn('dateTime', 'created_at', [])->default('2020-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2020-01-01 00:00:00');
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
     }
 
