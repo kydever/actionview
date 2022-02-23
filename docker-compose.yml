@@ -26,7 +26,7 @@ services:
       context: "."
       dockerfile: "front-end.Dockerfile"
     ports:
-      - "8081:8080"
+      - "10011:8080"
     networks:
       - net
     restart: "always"
