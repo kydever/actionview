@@ -5,7 +5,8 @@ WORKDIR /usr/src/build
 RUN npm install -g cnpm --registry=https://registry.npm.taobao.org && cnpm install
 
 COPY front-end /usr/src/build
-RUN npm install && npm run build
+RUN npm install
+RUN npm run build
 COPY front-end.conf /usr/src/build/app.conf
 COPY storage/front-end /usr/src/build/front-end
 
