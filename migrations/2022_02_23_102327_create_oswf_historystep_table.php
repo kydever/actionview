@@ -31,6 +31,8 @@ class CreateOswfHistorystepTable extends Migration
             $table->addColumn('integer', 'finish_time', [])->default('0');
             $table->addColumn('dateTime', 'created_at', [])->default('2020-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2020-01-01 00:00:00');
+
+            $table->primary(['id']);
         });
     }
 

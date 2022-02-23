@@ -24,6 +24,8 @@ class CreateUserSettingTable extends Migration
             $table->addColumn('json', 'favorites', []);
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->primary(['user_id']);
         });
         Db::select("
             INSERT INTO `user_setting` (`user_id`, `notifications`, `favorites`, `created_at`, `updated_at`)
