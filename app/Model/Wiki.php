@@ -24,7 +24,7 @@ namespace App\Model;
  * @property array $creator
  * @property array $editor
  * @property array $attachments
- * @property array $checkin 加锁
+ * @property array $checkin
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
