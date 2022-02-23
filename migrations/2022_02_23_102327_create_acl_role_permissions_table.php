@@ -25,6 +25,8 @@ class CreateAclRolePermissionsTable extends Migration
             $table->addColumn('json', 'permissions', [])->comment('权限表');
             $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
             $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
+
+            $table->comment('权限表');
         });
         Db::select("
             INSERT INTO `acl_role_permissions` (`id`, `project_key`, `role_id`, `permissions`, `created_at`, `updated_at`)
