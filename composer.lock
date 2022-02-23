@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e93371396e4dcd5860e973df32e8173",
+    "content-hash": "94715be5271474ddbed51579431a2e52",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -828,12 +828,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Promise\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Promise\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -6308,62 +6308,6 @@
             "time": "2022-02-13T11:40:56+00:00"
         },
         {
-            "name": "hyperf/migration-generator-incubator",
-            "version": "v0.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/hyperf/migration-generator-incubator.git",
-                "reference": "b3a1d143c50bed64ade6b9c1243d08ed638bb1c7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/migration-generator-incubator/zipball/b3a1d143c50bed64ade6b9c1243d08ed638bb1c7",
-                "reference": "b3a1d143c50bed64ade6b9c1243d08ed638bb1c7",
-                "shasum": ""
-            },
-            "require": {
-                "hyperf/command": "3.0.*",
-                "hyperf/database": "3.0.*",
-                "php": ">=8.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.0",
-                "hyperf/config": "3.0.*",
-                "hyperf/di": "3.0.*",
-                "mockery/mockery": "^1.0",
-                "phpstan/phpstan": "^1.0",
-                "phpunit/phpunit": "^9.5",
-                "swoole/ide-helper": "^4.5"
-            },
-            "suggest": {
-                "swow/swow": "Required to create swow components."
-            },
-            "type": "library",
-            "extra": {
-                "hyperf": {
-                    "config": "Hyperf\\MigrationGenerator\\ConfigProvider"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Hyperf\\MigrationGenerator\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "keywords": [
-                "hyperf",
-                "php"
-            ],
-            "support": {
-                "issues": "https://github.com/hyperf/migration-generator-incubator/issues",
-                "source": "https://github.com/hyperf/migration-generator-incubator/tree/v0.1.1"
-            },
-            "time": "2022-02-22T10:51:56+00:00"
-        },
-        {
             "name": "hyperf/testing",
             "version": "v3.0.0-alpha.1",
             "source": {
@@ -7030,16 +6974,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.11",
+            "version": "9.2.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "665a1ac0a763c51afc30d6d130dac0813092b17f"
+                "reference": "c011a0b6aaa4acd2f39b7f51fb4ad4442b6ec631"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/665a1ac0a763c51afc30d6d130dac0813092b17f",
-                "reference": "665a1ac0a763c51afc30d6d130dac0813092b17f",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/c011a0b6aaa4acd2f39b7f51fb4ad4442b6ec631",
+                "reference": "c011a0b6aaa4acd2f39b7f51fb4ad4442b6ec631",
                 "shasum": ""
             },
             "require": {
@@ -7095,7 +7039,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.11"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.12"
             },
             "funding": [
                 {
@@ -7103,7 +7047,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-18T12:46:09+00:00"
+            "time": "2022-02-23T06:30:26+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -7348,16 +7292,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.5.14",
+            "version": "9.5.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "1883687169c017d6ae37c58883ca3994cfc34189"
+                "reference": "dc738383c519243b0a967f63943a848d3fd861aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1883687169c017d6ae37c58883ca3994cfc34189",
-                "reference": "1883687169c017d6ae37c58883ca3994cfc34189",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dc738383c519243b0a967f63943a848d3fd861aa",
+                "reference": "dc738383c519243b0a967f63943a848d3fd861aa",
                 "shasum": ""
             },
             "require": {
@@ -7373,7 +7317,7 @@
                 "phar-io/version": "^3.0.2",
                 "php": ">=7.3",
                 "phpspec/prophecy": "^1.12.1",
-                "phpunit/php-code-coverage": "^9.2.7",
+                "phpunit/php-code-coverage": "^9.2.12",
                 "phpunit/php-file-iterator": "^3.0.5",
                 "phpunit/php-invoker": "^3.1.1",
                 "phpunit/php-text-template": "^2.0.3",
@@ -7435,7 +7379,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.14"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.15"
             },
             "funding": [
                 {
@@ -7447,7 +7391,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-18T12:54:07+00:00"
+            "time": "2022-02-23T08:53:20+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -8419,12 +8363,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swoole/ide-helper.git",
-                "reference": "b277ed171a29f7bbce1c5feee5581553101e06bf"
+                "reference": "62d306dcfdb7c2cd21768386955af9de387163f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/b277ed171a29f7bbce1c5feee5581553101e06bf",
-                "reference": "b277ed171a29f7bbce1c5feee5581553101e06bf",
+                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/62d306dcfdb7c2cd21768386955af9de387163f9",
+                "reference": "62d306dcfdb7c2cd21768386955af9de387163f9",
                 "shasum": ""
             },
             "default-branch": true,
@@ -8442,7 +8386,7 @@
             "description": "IDE help files for Swoole.",
             "support": {
                 "issues": "https://github.com/swoole/ide-helper/issues",
-                "source": "https://github.com/swoole/ide-helper/tree/4.8.6"
+                "source": "https://github.com/swoole/ide-helper/tree/4.8.7"
             },
             "funding": [
                 {
@@ -8454,7 +8398,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-01-11T17:42:26+00:00"
+            "time": "2022-02-23T01:04:01+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
