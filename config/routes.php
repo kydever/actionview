@@ -104,12 +104,12 @@ Router::addGroup('/project/{project_key}/', function () {
 Router::addGroup('/project/{project_key}/', function () {
     Router::get('summary', App\Controller\SummaryController::class . '::index');
 
-    Router::get('issue', App\Controller\IssueController::class . '::index');
+    Router::get('issue', [App\Controller\IssueController::class, 'index']);
     Router::get('issue/options', App\Controller\IssueController::class . '::getOptions');
     Router::get('issue/{id:\d+}', App\Controller\IssueController::class . '::show');
     Router::put('issue/{id:\d+}', App\Controller\IssueController::class . '::update');
     Router::post('issue/{id:\d+}/assign', App\Controller\IssueController::class . '::setAssignee');
-    Router::post('issue/{id:\d+}/reset', App\Controller\IssueController::class . '::resetState');
+    Router::post('issue/{id:\d+}/reset', [App\Controller\IssueController::class, 'resetState']);
 
     Router::post('issue', App\Controller\IssueController::class . '::store', [
         'options' => [
@@ -152,11 +152,11 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('wiki/{id:\d+}/dirs', App\Controller\WikiController::class . '::getDirChildren');
     Router::post('wiki/move', App\Controller\WikiController::class . '::move');
 
-//    后续优化为上传OSS
-//    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');
-//    Router::get('wiki/{id}/file/{fid}/download', App\Controller\WikiController::class . '::download');
-//    Router::get('wiki/{id}/download', App\Controller\WikiController::class . '::download2');
-//    Router::delete('wiki/{id}/file/{fid}',  App\Controller\WikiController::class . '::remove');
+    //    后续优化为上传OSS
+    //    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');
+    //    Router::get('wiki/{id}/file/{fid}/download', App\Controller\WikiController::class . '::download');
+    //    Router::get('wiki/{id}/download', App\Controller\WikiController::class . '::download2');
+    //    Router::delete('wiki/{id}/file/{fid}',  App\Controller\WikiController::class . '::remove');
 
     Router::get('team', App\Controller\RoleController::class . '::index');
 

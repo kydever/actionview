@@ -24,6 +24,7 @@ class UserFormatter extends Service
             'id' => $model->id,
             'email' => $model->email,
             'first_name' => $model->first_name,
+            'name' => $model->first_name,
             'directory' => $model->directory ?: 'self',
             // unactivated
             'status' => $model->isInvalid() ? UserConstant::INVALID : UserConstant::ACTIVE,
