@@ -14,6 +14,8 @@ namespace App\Controller;
 use App\Request\LabelRequest;
 use App\Service\Formatter\LabelFormatter;
 use App\Service\LabelService;
+use App\Service\ProjectAuth;
+use App\Service\UserAuth;
 use Hyperf\Di\Annotation\Inject;
 
 class LabelController extends Controller
@@ -24,16 +26,14 @@ class LabelController extends Controller
     #[Inject]
     protected LabelFormatter $formatter;
 
-    public function index(string $project_key)
+    public function index()
     {
-        $offset = (int) $this->request->input('offset', 0);
-        $limit = (int) $this->request->input('limit', 10);
-        [$count, $items] = $this->service->paginationByProjectKey($project_key, $offset, $limit);
-//        $list = $this->formatter->formatList($items);
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $user = UserAuth::instance()->build()->getUser();
 
-        return $this->response->success(
-            $this->formatter->formatList($items)
-        );
+        $result = $this->service->findByProject($project);
+
+        return $this->response->success($result);
     }
 
     public function store(LabelRequest $request, string $project_key)

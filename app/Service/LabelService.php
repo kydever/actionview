@@ -11,7 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Model\Project;
 use App\Service\Dao\LabelDao;
+use App\Service\Formatter\LabelFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
 
@@ -20,9 +22,14 @@ class LabelService extends Service
     #[Inject]
     protected LabelDao $dao;
 
-    public function paginationByProjectKey(string $projectKey, int $offset = 0, int $limit = 10, array $columns = ['*'])
+    #[Inject]
+    protected LabelFormatter $formatter;
+
+    public function findByProject(Project $project)
     {
-        return $this->dao->paginationByProjectKey($projectKey, $offset, $limit, $columns);
+        $models = $this->dao->getLabelOptions($project->key);
+
+        return $this->formatter->formatList($models);
     }
 
     public function createOrUpdate(string $name, string $projectKey, ?string $bgColor, int $id = 0): bool
