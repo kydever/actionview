@@ -44,7 +44,7 @@ class LabelDao extends Service
         return Label::findFromCache($id);
     }
 
-    public function createOrUpdate(string $name, string $projectKey, ?string $bgColor, int $id = 0): bool
+    public function createOrUpdate(int $id = 0, string $projectKey, string $name, ?string $bgColor): bool
     {
         $model = $this->findById($id);
         if (empty($model)) {

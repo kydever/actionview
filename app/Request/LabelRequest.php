@@ -39,5 +39,7 @@ class LabelRequest extends FormRequest
                     'name' => 'required|unique:labels,name,' . $id,
                 ];
         }
+
+        return [];
     }
 }

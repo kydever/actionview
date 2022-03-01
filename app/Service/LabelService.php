@@ -32,9 +32,9 @@ class LabelService extends Service
         return $this->formatter->formatList($models);
     }
 
-    public function createOrUpdate(string $name, string $projectKey, ?string $bgColor, int $id = 0): bool
+    public function save(int $id, Project $project, string $name, ?string $bgColor): bool
     {
-        return $this->dao->createOrUpdate($name, $projectKey, $bgColor, $id);
+        return $this->dao->createOrUpdate($id, $project->key, $name, $bgColor);
     }
 
     public function delete(int $id): bool
