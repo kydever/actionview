@@ -35,4 +35,19 @@ class LabelFormatter extends Service
 
         return $result;
     }
+
+    public function formatListWithCount(Collection $models, array $labels)
+    {
+        $result = [];
+        /** @var Label $model */
+        foreach ($models as $model) {
+            $result[] = array_merge($this->base($model), [
+                'is_used' => isset($labels[$model->name]),
+                'all_cnt' => $labels[$model->name]['all'] ?? 0,
+                'unresolved_cnt' => $labels[$model->name]['unresolved'] ?? 0,
+            ]);
+        }
+
+        return $result;
+    }
 }

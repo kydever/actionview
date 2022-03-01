@@ -66,6 +66,7 @@ class ElasticTest extends HttpTestCase
         $project = Project::findFromCache(1);
         if ($project) {
             $res = di()->get(IssueSearch::class)->countByLabels($project->key);
+            var_dump($res);
         }
 
         $this->assertTrue(true);

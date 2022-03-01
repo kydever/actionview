@@ -16,6 +16,7 @@ use App\Model\Issue;
 use App\Service\Formatter\IssueFormatter;
 use Han\Utils\ElasticSearch;
 use Hyperf\Database\Model\Model;
+use Hyperf\Utils\Str;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\DateHistogramAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
@@ -95,9 +96,9 @@ class IssueSearch extends ElasticSearch
     /**
      * @return [
      *     '标签名' => [
-     *         'created_cnt' => 0,
-     *         'resolved_cnt' => 0,
-     *         'closed_cnt' => 0,
+     *         'all' => 0,
+     *         'unresolved' => 0,
+     *         'fixed' => 0,
      *     ],
      * ]
      */
@@ -109,9 +110,11 @@ class IssueSearch extends ElasticSearch
         $bool->add(new TermQuery('project_key', $key), BoolQuery::MUST);
         $body = $search
             ->addQuery($bool)
-            ->addAggregation(new TermsAggregation('created_cnt', 'labels'))
-            ->addAggregation(new TermsAggregation('resolved_cnt', 'labels'))
-            ->addAggregation(new TermsAggregation('closed_cnt', 'labels'))
+            ->addAggregation(
+                tap(new TermsAggregation('label', 'labels'), static function (TermsAggregation $aggregation) {
+                    $aggregation->addAggregation(new TermsAggregation('resolution', 'resolution'));
+                })
+            )
             ->setSize(0)
             ->toArray();
 
@@ -122,10 +125,15 @@ class IssueSearch extends ElasticSearch
         ]);
 
         $result = [];
-        foreach ($res['aggregations'] ?? [] as $key => $aggregations) {
+        foreach ($res['aggregations'] ?? [] as $aggregations) {
             foreach ($aggregations['buckets'] ?? [] as $value) {
-                if (isset($value['key'], $value['doc_count'])) {
-                    $result[$value['key']][$key] = $value['doc_count'];
+                if (isset($value['key'], $value['doc_count'], $value['resolution'])) {
+                    $result[$value['key']]['all'] = $value['doc_count'];
+                    foreach ($value['resolution']['buckets'] ?? [] as $resolution) {
+                        if (isset($resolution['key'], $resolution['doc_count'])) {
+                            $result[$value['key']][Str::lower($resolution['key'])] = $resolution['doc_count'];
+                        }
+                    }
                 }
             }
         }

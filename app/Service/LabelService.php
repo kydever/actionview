@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Model\Project;
+use App\Service\Client\IssueSearch;
 use App\Service\Dao\LabelDao;
 use App\Service\Formatter\LabelFormatter;
 use Han\Utils\Service;
@@ -29,7 +30,9 @@ class LabelService extends Service
     {
         $models = $this->dao->getLabelOptions($project->key);
 
-        return $this->formatter->formatList($models);
+        $labelsCount = di()->get(IssueSearch::class)->countByLabels($project->key);
+
+        return $this->formatter->formatListWithCount($models, $labelsCount);
     }
 
     public function save(int $id, Project $project, string $name, ?string $bgColor): bool
