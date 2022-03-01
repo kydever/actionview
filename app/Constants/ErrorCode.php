@@ -396,4 +396,14 @@ class ErrorCode extends AbstractConstants
      * @Message("WIKI中移动的目录不存在")
      */
     public const WIKI_MOVE_DIR_NOT_EXIST = -11967;
+
+    /**
+     * @Message("标签不存在或不在项目中")
+     */
+    public const LABEL_NOT_FOUND = -16103;
+
+    /**
+     * @Message("该标签已被一些问题使用")
+     */
+    public const LABEL_USED_IESSUES = -16104;
 }

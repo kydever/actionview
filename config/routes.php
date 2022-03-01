@@ -88,10 +88,11 @@ Router::addGroup('/project/{project_key}/', function () {
     // Route::resource('state', 'StateController');
     // Route::post('state/batch', 'StateController@handle');
     // Route::get('state/{id}/used', 'StateController@viewUsedInProject');
-
-    // TODO: Labels 管理
-    // Route::post('labels/{id}/delete', 'LabelsController@delete');
-    // Route::resource('labels', 'LabelsController');
+    
+    Router::get('labels', App\Controller\LabelController::class . '::index');
+    Router::post('labels', App\Controller\LabelController::class . '::store');
+    Router::put('labels/{id:\d+}', App\Controller\LabelController::class . '::update');
+    Router::post('labels/{id:\d+}/delete', App\Controller\LabelController::class . '::delete');
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
