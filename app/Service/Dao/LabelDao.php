@@ -15,15 +15,19 @@ use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\Label;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class LabelDao extends Service
 {
     /**
-     * @return \Hyperf\Database\Model\Collection|Label[]
+     * @return Collection<int, Label>
      */
     public function getLabelOptions(string $key)
     {
-        return Label::query()->where('project_key', $key)->orderBy('id')->get();
+        return Label::query()
+            ->where('project_key', $key)
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
     public function paginationByProjectKey(string $projectKey, int $offset = 0, int $limit = 10, array $columns = ['*']): array

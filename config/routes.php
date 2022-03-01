@@ -85,14 +85,14 @@ Router::addGroup('/project/{project_key}/', function () {
     // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
 
     Router::get('state', App\Controller\StateController::class . '::index');
-// Route::resource('state', 'StateController');
+    // Route::resource('state', 'StateController');
     // Route::post('state/batch', 'StateController@handle');
     // Route::get('state/{id}/used', 'StateController@viewUsedInProject');
 
-    Router::get('labels', App\Controller\LabelController::class . '::index');
-    Router::post('labels', App\Controller\LabelController::class . '::store');
-    Router::put('labels/{id:\d+}', App\Controller\LabelController::class . '::update');
-    Router::post('labels/{id:\d+}/delete', App\Controller\LabelController::class . '::delete');
+    Router::get('labels', [App\Controller\LabelController::class, 'index']);
+    Router::post('labels', [App\Controller\LabelController::class, 'store']);
+    Router::put('labels/{id:\d+}', [App\Controller\LabelController::class, 'update']);
+    Router::post('labels/{id:\d+}/delete', [App\Controller\LabelController::class, 'delete']);
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
