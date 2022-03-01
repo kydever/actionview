@@ -21,6 +21,7 @@ use App\Exception\BusinessException;
 use App\Model\ConfigType;
 use App\Model\Project;
 use App\Model\User;
+use App\Service\Client\IssueSearch;
 use App\Service\Dao\AccessProjectLogDao;
 use App\Service\Dao\AclGroupDao;
 use App\Service\Dao\ActivityDao;
@@ -350,6 +351,40 @@ class ProjectService extends Service
         di()->get(IssueService::class)->putOptions($model);
 
         return $this->formatter->base($model);
+    }
+
+    public function stats(array $keys, User $user)
+    {
+        $models = $this->dao->findByKeys($keys);
+
+        $result = [];
+        foreach ($models as $model) {
+            $totalCount = di()->get(IssueSearch::class)->countByBoolQuery(
+                di()->get(IssueService::class)->getBoolSearch($model->key, [], $user->id)
+            );
+            $unresolvedCount = di()->get(IssueSearch::class)->countByBoolQuery(
+                di()->get(IssueService::class)->getBoolSearch($model->key, ['resolution' => StatusConstant::STATUS_UNRESOLVED], $user->id)
+            );
+            $mineCount = di()->get(IssueSearch::class)->countByBoolQuery(
+                di()->get(IssueService::class)->getBoolSearch(
+                    $model->key,
+                    ['assignee' => 'me', 'resolution' => StatusConstant::STATUS_UNRESOLVED],
+                    $user->id
+                )
+            );
+            $trend = di()->get(ProjectSummaryService::class)->getPulseData($model);
+            $result[] = [
+                'key' => $model->key,
+                'stats' => [
+                    'all' => $totalCount,
+                    'unresolved' => $unresolvedCount,
+                    'assigntome' => $mineCount,
+                    'trend' => $trend,
+                ],
+            ];
+        }
+
+        return $result;
     }
 
     protected function showProject(Project $model, int $userId)
