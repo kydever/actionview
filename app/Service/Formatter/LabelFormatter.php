@@ -21,6 +21,7 @@ class LabelFormatter extends Service
     {
         return [
             'id' => $model->id,
+            'project_key' => $model->project_key,
             'name' => $model->name,
             'bgColor' => $model->bgColor,
         ];
