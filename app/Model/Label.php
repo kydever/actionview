@@ -11,6 +11,11 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use App\Event\LabelEvent;
+use Hyperf\Database\Model\Events\Deleted;
+use Hyperf\Database\Model\Events\Saved;
+use Psr\EventDispatcher\EventDispatcherInterface;
+
 /**
  * @property int $id
  * @property string $name 名称
@@ -23,8 +28,6 @@ class Label extends Model
 {
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected ?string $table = 'labels';
 
@@ -37,4 +40,14 @@ class Label extends Model
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function saved(Saved $event)
+    {
+        di()->get(EventDispatcherInterface::class)->dispatch(new LabelEvent($this));
+    }
+
+    public function deleted(Deleted $event)
+    {
+        di()->get(EventDispatcherInterface::class)->dispatch(new LabelEvent($this));
+    }
 }

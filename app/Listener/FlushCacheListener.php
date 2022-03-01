@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Listener;
 
+use App\Event\LabelEvent;
 use App\Event\VersionEvent;
 use App\Service\IssueService;
 use Hyperf\Event\Annotation\Listener;
@@ -28,6 +29,7 @@ class FlushCacheListener implements ListenerInterface
     {
         return [
             VersionEvent::class,
+            LabelEvent::class,
         ];
     }
 
@@ -36,6 +38,11 @@ class FlushCacheListener implements ListenerInterface
         if ($event instanceof VersionEvent) {
             $version = $event->getVersion();
             di()->get(IssueService::class)->putOptionsAsync($version->project_key);
+        }
+
+        if ($event instanceof LabelEvent) {
+            $label = $event->getLabel();
+            di()->get(IssueService::class)->putOptionsAsync($label->project_key);
         }
     }
 }
