@@ -88,7 +88,7 @@ Router::addGroup('/project/{project_key}/', function () {
     // Route::resource('state', 'StateController');
     // Route::post('state/batch', 'StateController@handle');
     // Route::get('state/{id}/used', 'StateController@viewUsedInProject');
-    
+
     Router::get('labels', App\Controller\LabelController::class . '::index');
     Router::post('labels', App\Controller\LabelController::class . '::store');
     Router::put('labels/{id:\d+}', App\Controller\LabelController::class . '::update');
