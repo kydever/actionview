@@ -85,9 +85,13 @@ Router::addGroup('/project/{project_key}/', function () {
     // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
 
     Router::get('state', App\Controller\StateController::class . '::index');
-// Route::resource('state', 'StateController');
+    // Route::resource('state', 'StateController');
     // Route::post('state/batch', 'StateController@handle');
     // Route::get('state/{id}/used', 'StateController@viewUsedInProject');
+
+    // TODO: Labels 管理
+    // Route::post('labels/{id}/delete', 'LabelsController@delete');
+    // Route::resource('labels', 'LabelsController');
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
