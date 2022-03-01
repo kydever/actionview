@@ -17,6 +17,7 @@ use App\Service\Formatter\IssueFormatter;
 use Han\Utils\ElasticSearch;
 use Hyperf\Database\Model\Model;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\DateHistogramAggregation;
+use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
 use ONGR\ElasticsearchDSL\Query\TermLevel\TermQuery;
 use ONGR\ElasticsearchDSL\Search;
@@ -89,6 +90,47 @@ class IssueSearch extends ElasticSearch
         $query = $search->addQuery($bool)->setSize(100)->toArray();
 
         return $this->search($query);
+    }
+
+    /**
+     * @return [
+     *     '标签名' => [
+     *         'created_cnt' => 0,
+     *         'resolved_cnt' => 0,
+     *         'closed_cnt' => 0,
+     *     ],
+     * ]
+     */
+    public function countByLabels(string $key): array
+    {
+        $search = new Search();
+        $bool = new BoolQuery();
+        $bool->add(new TermQuery('del_flg', StatusConstant::DELETED), BoolQuery::MUST_NOT);
+        $bool->add(new TermQuery('project_key', $key), BoolQuery::MUST);
+        $body = $search
+            ->addQuery($bool)
+            ->addAggregation(new TermsAggregation('created_cnt', 'labels'))
+            ->addAggregation(new TermsAggregation('resolved_cnt', 'labels'))
+            ->addAggregation(new TermsAggregation('closed_cnt', 'labels'))
+            ->setSize(0)
+            ->toArray();
+
+        $res = $this->client()->search([
+            'index' => $this->index(),
+            'type' => $this->type(),
+            'body' => $body,
+        ]);
+
+        $result = [];
+        foreach ($res['aggregations'] ?? [] as $key => $aggregations) {
+            foreach ($aggregations['buckets'] ?? [] as $value) {
+                if (isset($value['key'], $value['doc_count'])) {
+                    $result[$value['key']][$key] = $value['doc_count'];
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**

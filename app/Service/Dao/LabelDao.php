@@ -30,13 +30,15 @@ class LabelDao extends Service
             ->get();
     }
 
-    public function paginationByProjectKey(string $projectKey, int $offset = 0, int $limit = 10, array $columns = ['*']): array
+    /**
+     * @return \Hyperf\Database\Model\Collection|Label[]
+     */
+    public function findByName(string $key, array $names)
     {
-        $builder = Label::query()
-            ->where('project_key', $projectKey)
-            ->orderBy('id', 'desc');
-
-        return $this->factory->model->pagination($builder, $offset, $limit, $columns);
+        return Label::query()->where('project_key', $key)
+            ->whereIn('name', $names)
+            ->orderBy('id')
+            ->get();
     }
 
     public function findById(int $id): ?Label

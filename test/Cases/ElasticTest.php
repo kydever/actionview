@@ -60,4 +60,14 @@ class ElasticTest extends HttpTestCase
 
         $this->assertTrue(true);
     }
+
+    public function testCountLabels()
+    {
+        $project = Project::findFromCache(1);
+        if ($project) {
+            $res = di()->get(IssueSearch::class)->countByLabels($project->key);
+        }
+
+        $this->assertTrue(true);
+    }
 }
