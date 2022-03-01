@@ -90,7 +90,12 @@ class ProjectController extends Controller
 
     public function stats()
     {
-        return $this->response->success();
+        $keys = $this->request->input('keys');
+        $user = UserAuth::instance()->build()->getUser();
+
+        $result = $this->service->stats(explode(',', $keys), $user);
+
+        return $this->response->success($result);
     }
 
     public function index(PaginationRequest $request)

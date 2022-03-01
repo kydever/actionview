@@ -909,6 +909,7 @@ class IssueService extends Service
         $bool['must_not'][] = [
             'term' => ['del_flg' => StatusConstant::DELETED],
         ];
+        $bool['must'][] = ['term' => ['project_key' => $projectKey]];
 
         return $bool;
     }

@@ -60,7 +60,7 @@ class ProjectDao extends Service
     }
 
     /**
-     * @return \Hyperf\Database\Model\Collection|Project[]
+     * @return Collection<int, Project>
      */
     public function findByKeys(array $keys)
     {

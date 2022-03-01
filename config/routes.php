@@ -23,12 +23,12 @@ Router::post('/user/register', App\Controller\UserController::class . '::registe
 
 Router::addGroup('/', function () {
     Router::get('myproject', App\Controller\ProjectController::class . '::mine');
-    Router::get('project/recent', App\Controller\ProjectController::class . '::recent');
-    Router::get('project/stats', App\Controller\ProjectController::class . '::stats');
+    Router::get('project/recent', [App\Controller\ProjectController::class, 'recent']);
+    Router::get('project/stats', [App\Controller\ProjectController::class, 'stats']);
     Router::get('project/checkkey/{key}', App\Controller\ProjectController::class . '::checkKey');
     Router::post('project', App\Controller\ProjectController::class . '::store');
     Router::put('project/{id:\d+}', App\Controller\ProjectController::class . '::update');
-    Router::get('project/p_{key}', App\Controller\ProjectController::class . '::show');
+    Router::get('project/p_{key}', [App\Controller\ProjectController::class, 'show']);
     Router::get('project/{id:\d+}/createindex', App\Controller\ProjectController::class . '::createIndex');
 
     Router::get('mysetting', App\Controller\MySettingController::class . '::show');
@@ -85,7 +85,7 @@ Router::addGroup('/project/{project_key}/', function () {
     // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
 
     Router::get('state', App\Controller\StateController::class . '::index');
-    // Route::resource('state', 'StateController');
+// Route::resource('state', 'StateController');
     // Route::post('state/batch', 'StateController@handle');
     // Route::get('state/{id}/used', 'StateController@viewUsedInProject');
 
@@ -107,10 +107,10 @@ Router::addGroup('/project/{project_key}/', function () {
 ]);
 
 Router::addGroup('/project/{project_key}/', function () {
-    Router::get('summary', App\Controller\SummaryController::class . '::index');
+    Router::get('summary', [App\Controller\SummaryController::class, 'index']);
 
     Router::get('issue', [App\Controller\IssueController::class, 'index']);
-    Router::get('issue/options', App\Controller\IssueController::class . '::getOptions');
+    Router::get('issue/options', [App\Controller\IssueController::class, 'getOptions']);
     Router::get('issue/{id:\d+}', App\Controller\IssueController::class . '::show');
     Router::put('issue/{id:\d+}', App\Controller\IssueController::class . '::update');
     Router::post('issue/{id:\d+}/assign', App\Controller\IssueController::class . '::setAssignee');

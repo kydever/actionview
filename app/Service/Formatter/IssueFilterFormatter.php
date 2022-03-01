@@ -24,7 +24,7 @@ class IssueFilterFormatter extends Service
             'name' => $model->name,
             'project_key' => $model->project_key,
             'query' => $model->query,
-            'creator' => $model->creator,
+            'creator' => (string) ($model->creator['id'] ?? null),
             'scope' => $model->scope,
         ];
     }
