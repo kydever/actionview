@@ -55,7 +55,7 @@ class LabelDao extends Service
     {
         $model = $this->findById($id);
         $nameExists = $this->existsByName($name);
-        if ( $nameExists && $model?->name !== $name ) {
+        if ($nameExists && $model?->name !== $name) {
             throw new BusinessException(ErrorCode::LABEL_NAME_ALREADY_EXISTED);
         }
         if (empty($model)) {

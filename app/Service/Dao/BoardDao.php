@@ -11,25 +11,17 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
-use App\Model\Epic;
+use App\Model\Board;
 use App\Model\Project;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
 
-class EpicDao extends Service
+class BoardDao extends Service
 {
-    /**
-     * @return Epic[]|\Hyperf\Database\Model\Collection
-     */
-    public function getEpicList(string $key)
-    {
-        return Epic::query()->where('project_key', $key)->orderBy('sn')->get();
-    }
-
     public function getByProjectKey(Project $projectKey): Collection
     {
-        return Epic::where('project_key', $projectKey)
-            ->orderBy('sn', 'asc')
-            ->get(['bgColor', 'name']);
+        return Board::where('project_key', $projectKey)
+            ->orderBy('id', 'desc')
+            ->get();
     }
 }
