@@ -17,10 +17,11 @@ namespace App\Model;
  * @property string $name 看板名称
  * @property string $type 看板类型
  * @property string $description 看板描述
- * @property string $columns
- * @property string $filters
- * @property string $query
- * @property string $creator
+ * @property array $display_fields
+ * @property array $columns
+ * @property array $filters
+ * @property array $query
+ * @property array $creator
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -34,10 +35,10 @@ class Board extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected array $fillable = ['id', 'project_key', 'name', 'type', 'description', 'columns', 'filters', 'query', 'creator', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'name', 'type', 'description', 'display_fields', 'columns', 'filters', 'query', 'creator', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'display_fields' => 'json', 'columns' => 'json', 'filters' => 'json', 'query' => 'json', 'creator' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

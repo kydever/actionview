@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Model\Project;
 use App\Service\Dao\EpicDao;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
@@ -21,7 +20,7 @@ class EpicService extends Service
     #[Inject]
     protected EpicDao $dao;
 
-    public function getByProjectKey(Project $projectKey)
+    public function getByProjectKey(string $projectKey)
     {
         return $this->dao->getByProjectKey($projectKey);
     }

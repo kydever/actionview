@@ -12,13 +12,15 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Model\AccessBoardLog;
-use App\Model\Project;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
 
 class AccessBoardLogDao extends Service
 {
-    public function getByProjectKeyAndUserId(Project $projectKey, int $userId): Collection
+    /**
+     * @return Collection<int, AccessBoardLog>
+     */
+    public function getByProjectKeyAndUserId(string $projectKey, int $userId): Collection
     {
         return AccessBoardLog::where('project_key', $projectKey)
             ->where('user_id', $userId)

@@ -329,7 +329,7 @@ class VersionService extends Service
         return $result;
     }
 
-    public function getByProjectKey(Project $projectKey)
+    public function getByProjectKey(string $projectKey)
     {
         return $this->dao->getByProjectKey($projectKey);
     }
