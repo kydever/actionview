@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Model\Epic;
-use App\Model\Project;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
 
@@ -26,7 +25,10 @@ class EpicDao extends Service
         return Epic::query()->where('project_key', $key)->orderBy('sn')->get();
     }
 
-    public function getByProjectKey(Project $projectKey): Collection
+    /**
+     * @return Collection<int, Epic>
+     */
+    public function getByProjectKey(string $projectKey): Collection
     {
         return Epic::where('project_key', $projectKey)
             ->orderBy('sn', 'asc')

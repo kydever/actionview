@@ -12,15 +12,17 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Model\Board;
-use App\Model\Project;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
 
 class BoardDao extends Service
 {
-    public function getByProjectKey(Project $projectKey): Collection
+    /**
+     * @return Collection<int, Board>
+     */
+    public function getByProjectKey(string $key): Collection
     {
-        return Board::where('project_key', $projectKey)
+        return Board::where('project_key', $key)
             ->orderBy('id', 'desc')
             ->get();
     }

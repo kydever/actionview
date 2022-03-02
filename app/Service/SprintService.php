@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Model\Project;
 use App\Service\Dao\SprintDao;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
@@ -21,12 +20,12 @@ class SprintService extends Service
     #[Inject]
     protected SprintDao $dao;
 
-    public function getByProjectKeyAndStatus(Project $projectKey)
+    public function getByProjectKeyAndStatus(string $projectKey)
     {
         return $this->dao->getByProjectKeyAndStatus($projectKey);
     }
 
-    public function maxByProjectKeyAndStatus(Project $projectKey)
+    public function maxByProjectKeyAndStatus(string $projectKey)
     {
         return $this->dao->maxByProjectKeyAndStatus($projectKey);
     }

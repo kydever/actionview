@@ -34,7 +34,10 @@ class BoardFormatter extends Service
         ];
     }
 
-    public function listFormat(Collection $models)
+    /**
+     * @param array|Collection<int, Board> $models
+     */
+    public function listFormat($models)
     {
         $results = [];
         foreach ($models as $model) {

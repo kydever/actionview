@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Model\Project;
 use App\Service\Dao\AccessBoardLogDao;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
@@ -21,7 +20,7 @@ class AccessBoardLogService extends Service
     #[Inject]
     protected AccessBoardLogDao $dao;
 
-    public function getByProjectKeyAndUserId(Project $projectKey, int $userId)
+    public function getByProjectKeyAndUserId(string $projectKey, int $userId)
     {
         return $this->dao->getByProjectKeyAndUserId($projectKey, $userId);
     }
