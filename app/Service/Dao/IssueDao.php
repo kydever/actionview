@@ -78,10 +78,7 @@ class IssueDao extends Service
     public function exists(string $projectKey, string $labelName): bool
     {
         $issues = di(IssueSearch::class)->countByLabels($projectKey);
-        if (isset($issues[$labelName])) {
-            return true;
-        }
 
-        return false;
+        return $issues[$labelName];
     }
 }
