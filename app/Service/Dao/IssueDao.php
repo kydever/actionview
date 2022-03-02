@@ -79,6 +79,6 @@ class IssueDao extends Service
     {
         $issues = di(IssueSearch::class)->countByLabels($projectKey);
 
-        return $issues[$labelName];
+        return isset($issues[$labelName]);
     }
 }
