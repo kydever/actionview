@@ -11,8 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
+use App\Model\Project;
 use App\Model\Sprint;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class SprintDao extends Service
 {
@@ -25,5 +27,20 @@ class SprintDao extends Service
             ->whereIn('status', ['active', 'completed'])
             ->orderBy('no', 'desc')
             ->get();
+    }
+
+    public function getByProjectKeyAndStatus(Project $projectKey): Collection
+    {
+        return Sprint::where('project_key', $projectKey)
+            ->whereIn('status', ['active', 'waiting'])
+            ->orderBy('no', 'asc')
+            ->get();
+    }
+
+    public function maxByProjectKeyAndStatus(Project $projectKey)
+    {
+        return Sprint::where('project_key', $projectKey)
+            ->where('status', 'completed')
+            ->max('no');
     }
 }

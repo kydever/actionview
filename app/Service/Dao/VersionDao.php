@@ -13,8 +13,10 @@ namespace App\Service\Dao;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Model\Project;
 use App\Model\Version;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class VersionDao extends Service
 {
@@ -54,5 +56,12 @@ class VersionDao extends Service
             ->orderBy('end_time', 'desc')
             ->orderBy('created_at', 'desc');
         return $this->factory->model->pagination($query, $offset, $limit);
+    }
+
+    public function getByProjectKey(Project $projectKey): Collection
+    {
+        return Version::where('project_key', $projectKey)
+            ->orderBy('created_at', 'desc')
+            ->get(['name']);
     }
 }
