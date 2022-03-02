@@ -40,7 +40,7 @@ class LabelController extends Controller
         $name = $request->input('name');
         $bgColor = $request->input('bgColor');
 
-        $created = $this->service->save(0, $project, $name, $bgColor, );
+        $created = $this->service->save(0, $project, $name, $bgColor);
 
         return $this->response->success($created);
     }

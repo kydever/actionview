@@ -15,6 +15,7 @@ use App\Constants\ErrorCode;
 use App\Constants\StatusConstant;
 use App\Exception\BusinessException;
 use App\Model\Issue;
+use App\Service\Client\IssueSearch;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
@@ -72,5 +73,12 @@ class IssueDao extends Service
     public function findMany(array $ids)
     {
         return Issue::findManyFromCache($ids);
+    }
+
+    public function exists(string $projectKey, string $labelName): bool
+    {
+        $issues = di(IssueSearch::class)->countByLabels($projectKey);
+
+        return isset($issues[$labelName]);
     }
 }

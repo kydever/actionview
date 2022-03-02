@@ -28,18 +28,8 @@ class LabelRequest extends FormRequest
      */
     public function rules(): array
     {
-        switch ($this->getMethod()) {
-            case 'POST':
-                return [
-                    'name' => 'required|unique:labels',
-                ];
-            case 'PUT':
-                $id = $this->route('id');
-                return [
-                    'name' => 'required|unique:labels,name,' . $id,
-                ];
-        }
-
-        return [];
+        return [
+            'name' => 'required',
+        ];
     }
 }

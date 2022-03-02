@@ -46,14 +46,23 @@ class LabelDao extends Service
         return Label::findFromCache($id);
     }
 
+    public function existsByName(string $name): bool
+    {
+        return Label::where('name', $name)->exists();
+    }
+
     public function createOrUpdate(int $id, string $projectKey, string $name, ?string $bgColor): bool
     {
         $model = $this->findById($id);
+        $nameExists = $this->existsByName($name);
+        if ( $nameExists && $model?->name !== $name ) {
+            throw new BusinessException(ErrorCode::LABEL_NAME_ALREADY_EXISTED);
+        }
         if (empty($model)) {
             $model = new Label();
         }
-        $model->name = $name;
         $model->project_key = $projectKey;
+        $model->name = $name;
         $model->bgColor = $bgColor ?? '';
 
         return $model->save();
@@ -65,7 +74,7 @@ class LabelDao extends Service
         if (empty($model)) {
             throw new BusinessException(ErrorCode::LABEL_NOT_FOUND);
         }
-        if (di(IssueDao::class)->count($model->project_key) > 0) {
+        if (di(IssueDao::class)->exists($model->project_key, $model->name)) {
             throw new BusinessException(ErrorCode::LABEL_USED_IESSUES);
         }
 

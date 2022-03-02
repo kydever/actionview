@@ -398,12 +398,17 @@ class ErrorCode extends AbstractConstants
     public const WIKI_MOVE_DIR_NOT_EXIST = -11967;
 
     /**
-     * @Message("标签不存在或不在项目中")
+     * @Message("标签名称不能重复")
+     */
+    public const LABEL_NAME_ALREADY_EXISTED = -16102;
+
+    /**
+     * @Message("标签不存在或不属于此项目")
      */
     public const LABEL_NOT_FOUND = -16103;
 
     /**
-     * @Message("该标签已被一些问题使用")
+     * @Message("标签在问题中被使用")
      */
     public const LABEL_USED_IESSUES = -16104;
 }
