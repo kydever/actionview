@@ -32,6 +32,8 @@ class CreateBoardTable extends Migration
             $table->json('query');
             $table->json('creator');
             $table->timestamps();
+
+            $table->index(['project_key'], 'INDEX_PROJECT_KEY');
         });
     }
 
