@@ -35,7 +35,7 @@ class LabelService extends Service
         return $this->formatter->formatListWithCount($models, $labelsCount);
     }
 
-    public function save(int $id, Project $project, string $name, ?string $bgColor): bool
+    public function save(int $id, Project $project, string $name, ?string $bgColor)
     {
         return $this->dao->createOrUpdate($id, $project->key, $name, $bgColor);
     }

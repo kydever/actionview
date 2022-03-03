@@ -40,9 +40,11 @@ class LabelController extends Controller
         $name = $request->input('name');
         $bgColor = $request->input('bgColor');
 
-        $created = $this->service->save(0, $project, $name, $bgColor);
+        $model = $this->service->save(0, $project, $name, $bgColor);
 
-        return $this->response->success($created);
+        return $this->response->success(
+            $this->formatter->base($model)
+        );
     }
 
     public function update(LabelRequest $request, int $id)
