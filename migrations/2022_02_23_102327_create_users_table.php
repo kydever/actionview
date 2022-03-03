@@ -39,7 +39,7 @@ class CreateUsersTable extends Migration
         Db::select("
         INSERT INTO `users` (`id`, `email`, `first_name`, `password`, `last_login`, `permissions`, `invalid_flag`, `directory`, `phone`, `avatar`, `department`, `position`, `created_at`, `updated_at`)
         VALUES
-	        (1,'l@hyperf.io','系统管理员','$2y$10\$NQMqcCmHzQ2Eae/9A3kSXObd90t.GWJ4erwoq.uZeWOLwqROWJGnK','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'','','default.png','','','2021-01-01 00:00:00','2021-11-29 09:52:39');
+	        (1,'l@hyperf.io','系统管理员','$2y$10\$ivey5rQbs7dAy28lGzFBIOLhqLXlEV2X9esKkkHSZAp/9jNQvHNku','2021-01-01 00:00:00','{\"sys_admin\": true}',0,'','','default.png','','','2021-01-01 00:00:00','2021-11-29 09:52:39');
         ");
     }
 
