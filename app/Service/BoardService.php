@@ -77,21 +77,21 @@ class BoardService extends Service
         ];
     }
 
-    public function create ( string $projectKey, $states, array $attributes )
+    public function create(string $projectKey, $states, array $attributes)
     {
         $columns = [
-            [ 'no' => 1, 'name' => '开始', 'states' => [] ],
-            [ 'no' => 2, 'name' => '处理中', 'states' => [] ],
-            [ 'no' => 3, 'name' => '完成', 'states' => [] ],
+            ['no' => 1, 'name' => '开始', 'states' => []],
+            ['no' => 2, 'name' => '处理中', 'states' => []],
+            ['no' => 3, 'name' => '完成', 'states' => []],
         ];
-        foreach ( $states as $state ) {
-            $state_val = $state [ 'id' ];
-            if ( $state [ 'category' ] === 'new' ) {
-                array_push ( $columns [ 0 ][ 'states' ] );
-            } else if ( $state [ 'category' ] === 'inprogress' ) {
-                array_push ( $columns [ 1 ][ 'states' ], $state_val );
-            } else if ( $state [ 'category' ] === 'completed' ) {
-                array_push ( $columns [ 2 ][ 'states' ], $state_val );
+        foreach ($states as $state) {
+            $state_val = $state['id'];
+            if ($state['category'] === 'new') {
+                array_push($columns[0]['states']);
+            } elseif ($state['category'] === 'inprogress') {
+                array_push($columns[1]['states'], $state_val);
+            } elseif ($state['category'] === 'completed') {
+                array_push($columns[2]['states'], $state_val);
             }
         }
         return $this->dao->create($projectKey, $columns, $attributes);

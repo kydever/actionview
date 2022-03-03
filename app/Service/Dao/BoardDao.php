@@ -27,21 +27,19 @@ class BoardDao extends Service
             ->get();
     }
 
-    public function findById ( int $id ): ?Board
+    public function findById(int $id): ?Board
     {
-        $model = Board::findFromCache ( $id );
-
-        return $model;
+        return Board::findFromCache($id);
     }
 
-    public function create ( string $projectKey, array $columns, array $attributes ): ?Board
+    public function create(string $projectKey, array $columns, array $attributes): ?Board
     {
         $model = new Board();
         $model->project_key = $projectKey;
-        $model->query = [ 'subtask' => true ];
+        $model->query = ['subtask' => true];
         $model->columns = $columns;
-        $model->name = $attributes [ 'name' ];
-        $model->type = $attributes [ 'type' ];
+        $model->name = $attributes['name'];
+        $model->type = $attributes['type'];
         $model->save();
 
         return $model;

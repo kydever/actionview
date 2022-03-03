@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use App\Project\Provider;
 use App\Request\BoardRequest;
 use App\Service\BoardService;
 use App\Service\Formatter\BoardFormatter;
@@ -52,7 +51,7 @@ class BoardController extends Controller
         $states = $this->provider->getStateListOptions($project->key);
         $model = $this->service->create($project->key, $states, $request->all());
 
-        return $this->response->success (
+        return $this->response->success(
             $this->formatter->base($model)
         );
     }
