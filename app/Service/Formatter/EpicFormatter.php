@@ -25,8 +25,8 @@ class EpicFormatter extends Service
             'bgColor' => $model->bgColor,
             'description' => $model->description,
             'sn' => $model->sn,
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at,
+            'created_at' => $model->created_at->toDateTimeString(),
+            'updated_at' => $model->updated_at->toDateTimeString(),
         ];
     }
 
