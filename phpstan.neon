@@ -5,6 +5,10 @@
 #
 parameters:
   reportUnmatchedIgnoredErrors: false
+  excludePaths:
+    - %currentWorkingDirectory%/app/Service/Struct/Workflow.php
+    - %currentWorkingDirectory%/app/Workflow/Func.php
   ignoreErrors:
     - '#Static call to instance method Hyperf\\HttpServer\\Router\\Router::[a-zA-Z0-9\\_]+\(\)#'
     - '#Static call to instance method Hyperf\\DbConnection\\Db::[a-zA-Z0-9\\_]+\(\)#'
+    - '#Unsafe usage of new static#'

@@ -16,6 +16,7 @@ use App\Constants\StatusConstant;
 use App\Exception\BusinessException;
 use App\Model\AclGroup;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Builder;
 
 class AclGroupDao extends Service
 {
@@ -77,14 +78,15 @@ class AclGroupDao extends Service
             [$scale, $userId] = $scale;
             $query = match ($scale) {
                 'myprincipal' => $query->where('principal->id', $userId),
-                'myjoin' => $query->whereRaw('JSON_CONTAINS(users, ?, ?)', [$userId, '&']),
+                'myjoin' => $query->whereJsonContains('users', $userId),
                 default => $query,
             };
 
             $query->where(static function ($query) use ($userId) {
                 $query->where('principal->id', $userId)
-                    ->orWhere(function ($query) {
-                        $query->where('public_scope', '<>', '2')->whereRaw('JSON_CONTAINS(users, ?, ?)', [$userId, '&']);
+                    ->orWhere(function (Builder $query) use ($userId) {
+                        $query->where('public_scope', '<>', '2')
+                            ->whereJsonContains('users', $userId);
                     });
             });
         }

@@ -57,7 +57,7 @@ class BusinessExceptionHandler extends ExceptionHandler
                     $message = $code;
                     $code = ErrorCode::SERVER_ERROR;
                 }
-                $this->logger->error(sprintf('[%s] $s', $code, $message));
+                $this->logger->error(sprintf('[%s] %s', $code, $message));
                 return $this->response->fail($code, $message);
         }
 

@@ -31,8 +31,8 @@ class WikiFormatter extends Service
             'creator' => $model->creator,
             'editor' => $model->editor,
             'checkin' => $model->checkin,
-            'created_at' => $model->created_at->timestamp,
-            'updated_at' => $model->updated_at->timestamp,
+            'created_at' => (string) $model->created_at,
+            'updated_at' => (string) $model->updated_at,
         ];
     }
 

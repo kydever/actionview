@@ -26,4 +26,22 @@ class BoardDao extends Service
             ->orderBy('id', 'desc')
             ->get();
     }
+
+    public function findById(int $id): ?Board
+    {
+        return Board::findFromCache($id);
+    }
+
+    public function create(string $projectKey, array $columns, array $attributes): ?Board
+    {
+        $model = new Board();
+        $model->project_key = $projectKey;
+        $model->query = ['subtask' => true];
+        $model->columns = $columns;
+        $model->name = $attributes['name'];
+        $model->type = $attributes['type'];
+        $model->save();
+
+        return $model;
+    }
 }

@@ -29,8 +29,8 @@ class VersionFormatter extends Service
             'status' => $model->status,
             'description' => $model->description,
             'released_time' => $model->released_time,
-            'created_at' => $model->created_at->toDateTimeString(),
-            'updated_at' => $model->updated_at->toDateTimeString(),
+            'created_at' => (string) $model->created_at,
+            'updated_at' => (string) $model->updated_at,
         ];
     }
 
