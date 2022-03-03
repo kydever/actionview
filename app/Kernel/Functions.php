@@ -82,7 +82,7 @@ if (! function_exists('get_project_key')) {
     function get_project_key()
     {
         $project = get_project();
-        if (empty($model)) {
+        if (empty($project)) {
             throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
         }
 
