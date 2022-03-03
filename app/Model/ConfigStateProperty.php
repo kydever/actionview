@@ -20,8 +20,6 @@ class ConfigStateProperty extends Model
 {
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected ?string $table = 'config_state_property';
 
@@ -33,5 +31,5 @@ class ConfigStateProperty extends Model
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'int', 'sequence' => 'integer', 'sequence' => 'json'];
+    protected array $casts = ['id' => 'int', 'sequence' => 'json'];
 }
