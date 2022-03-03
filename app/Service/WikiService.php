@@ -602,18 +602,18 @@ class WikiService extends Service
         $updValues['pt'] = Json::encode(array_merge($destDirectory->pt ?? [], [$destPath]));
         $this->dao->updateMove($id, $updValues);
 
-        if (isset($document['d']) && $document['d'] === 1) {
-            $subs = $this->dao->getMove($project->key, $id);
-            foreach ($subs as $sub) {
-                $pt = isset($sub->pt) ? $sub->pt : [];
-                $pind = array_search($id, $pt);
-                if ($pind !== false) {
-                    $tail = array_slice($pt, $pind);
-                    $pt = array_merge($updValues['pt'], $tail);
-                    $this->dao->updateMove($sub->id, ['pt' => $pt]);
-                }
-            }
-        }
+        // if (isset($document['d']) && $document['d'] === 1) {
+        //     $subs = $this->dao->getMove($project->key, $id);
+        //     foreach ($subs as $sub) {
+        //         $pt = isset($sub->pt) ? $sub->pt : [];
+        //         $pind = array_search($id, $pt);
+        //         if ($pind !== false) {
+        //             $tail = array_slice($pt, $pind);
+        //             $pt = array_merge($updValues['pt'], $tail);
+        //             $this->dao->updateMove($sub->id, ['pt' => $pt]);
+        //         }
+        //     }
+        // }
 
         return $model;
     }

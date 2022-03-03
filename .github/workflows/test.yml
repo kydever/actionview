@@ -44,4 +44,3 @@ jobs:
           cp .env.example .env
           vendor/bin/php-cs-fixer fix --dry-run
           composer analyse
-          composer test
