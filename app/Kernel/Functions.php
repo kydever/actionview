@@ -61,11 +61,11 @@ if (! function_exists('issue_key')) {
     }
 }
 
-if ( ! function_exists ( 'get_project' ) ) {
+if (! function_exists('get_project')) {
     /**
      * Get a project instance.
      *
-     * @return \App\Model\Project|null
+     * @return null|\App\Model\Project
      */
     function get_project()
     {
@@ -73,9 +73,7 @@ if ( ! function_exists ( 'get_project' ) ) {
     }
 }
 
-
-if ( ! function_exists ( 'get_project_key' ) ) {
-
+if (! function_exists('get_project_key')) {
     /**
      * Get a project key.
      *
@@ -84,8 +82,8 @@ if ( ! function_exists ( 'get_project_key' ) ) {
     function get_project_key()
     {
         $project = get_project();
-        if ( empty ( $model ) ) {
-            throw new BusinessException ( ErrorCode::PROJECT_NOT_EXIST );
+        if (empty($model)) {
+            throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
         }
 
         return $project->key;

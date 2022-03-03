@@ -11,11 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use App\Constants\ErrorCode;
-use App\Exception\BusinessException;
 use App\Kernel\Http\Response;
-use App\Model\Project;
-use App\Service\ProjectAuth;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Psr\Container\ContainerInterface;
 
