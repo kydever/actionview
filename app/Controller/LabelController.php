@@ -42,7 +42,9 @@ class LabelController extends Controller
 
         $model = $this->service->save(0, $project, $name, $bgColor);
 
-        return $this->response->success($model);
+        return $this->response->success(
+            $this->formatter->base($model)
+        );
     }
 
     public function update(LabelRequest $request, int $id)
@@ -52,7 +54,9 @@ class LabelController extends Controller
         $bgColor = $request->input('bgColor');
         $model = $this->service->save($id, $project, $name, $bgColor);
 
-        return $this->response->success($model);
+        return $this->response->success(
+            $this->formatter->base($model)
+        );
     }
 
     public function delete(int $id)
