@@ -58,7 +58,7 @@ class BoardController extends Controller
 
     public function update(BoardRequest $request, int $id)
     {
-        $model = $this->service->update($id, $this->getProjectKey(), $request->all());
+        $model = $this->service->update($id, get_project_key(), $request->all());
 
         return $this->response->success(
             $this->formatter->base($model)

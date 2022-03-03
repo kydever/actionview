@@ -203,6 +203,91 @@ class ErrorCode extends AbstractConstants
     public const VERSION_OPERATION_INVALID = -11512;
 
     /**
+     * @Message("看板不存在或不属于此项目")
+     */
+    public const BOARD_NOT_FOUND = -11601;
+
+    /**
+     * @Message("父目录不能为空")
+     */
+    public const PARENT_NOT_EMPTY = -11950;
+
+    /**
+     * @Message("父目录不存在")
+     */
+    public const PARENT_NOT_EXIST = -11951;
+
+    /**
+     * @Message("WIKI名称不能为空")
+     */
+    public const WIKI_NAME_NOT_EMPTY = -11952;
+
+    /**
+     * @Message("WIKI名称不能重复")
+     */
+    public const WIKI_NAME_NOT_REPEAT = -11953;
+
+    /**
+     * @Message("WIKI对象不存在")
+     */
+    public const WIKI_OBJECT_NOT_EXIST = -11954;
+
+    /**
+     * @Message("WIKI复制对象不能为空")
+     */
+    public const WIKI_COPY_OBJECT_NOT_EMPTY = -11960;
+
+    /**
+     * @Message("WIKI中dest目录不能为空")
+     */
+    public const WIKI_DESK_DIT_NOT_EMPTY = -11961;
+
+    /**
+     * @Message("WIKI复制的对象不存在")
+     */
+    public const WIKI_COPY_OBJECT_NOT_EXIST = -11962;
+
+    /**
+     * @Message("WIKI中dest目录不存在")
+     */
+    public const WIKI_DESK_DIR_NOT_EXIST = -11963;
+
+    /**
+     * @Message("WIKI中上传文件错误")
+     */
+    public const WIKI_UPLOAD_FILE_ERRORS = -11959;
+
+    /**
+     * @Message("WIKI中对象已被锁定")
+     */
+    public const WIKI_OBJECT_HAS_BEEN_LOCKED = -11955;
+
+    /**
+     * @Message("WIKI中该对象无法解锁")
+     */
+    public const WIKI_OBJECT_CANNOT_BEEN_UNLOCKED = -11956;
+
+    /**
+     * @Message("WIKI中移动的对象不能为空")
+     */
+    public const WIKI_MOVE_OBJECT_NOT_EMPTY = -11964;
+
+    /**
+     * @Message("WIKI中移动的目标目录不能为空")
+     */
+    public const WIKI_MOVE_DIR_DEST_NOT_EMPTY = -11965;
+
+    /**
+     * @Message("WIKI中移动的对象不存在")
+     */
+    public const WIKI_MOVE_OBJECT_NOT_EXIST = -11966;
+
+    /**
+     * @Message("WIKI中移动的目录不存在")
+     */
+    public const WIKI_MOVE_DIR_NOT_EXIST = -11967;
+
+    /**
      * @Message("工作流不存在")
      */
     public const WORKFLOW_NOT_EXISTS = -12101;
@@ -313,91 +398,6 @@ class ErrorCode extends AbstractConstants
     public const MAIL_INVALID = -15203;
 
     /**
-     * @Message("文件系统 Domain 设置非法")
-     */
-    public const FILE_DOMAIN_INVALID = -17000;
-
-    /**
-     * @Message("父目录不能为空")
-     */
-    public const PARENT_NOT_EMPTY = -11950;
-
-    /**
-     * @Message("父目录不存在")
-     */
-    public const PARENT_NOT_EXIST = -11951;
-
-    /**
-     * @Message("WIKI名称不能为空")
-     */
-    public const WIKI_NAME_NOT_EMPTY = -11952;
-
-    /**
-     * @Message("WIKI名称不能重复")
-     */
-    public const WIKI_NAME_NOT_REPEAT = -11953;
-
-    /**
-     * @Message("WIKI对象不存在")
-     */
-    public const WIKI_OBJECT_NOT_EXIST = -11954;
-
-    /**
-     * @Message("WIKI复制对象不能为空")
-     */
-    public const WIKI_COPY_OBJECT_NOT_EMPTY = -11960;
-
-    /**
-     * @Message("WIKI中dest目录不能为空")
-     */
-    public const WIKI_DESK_DIT_NOT_EMPTY = -11961;
-
-    /**
-     * @Message("WIKI复制的对象不存在")
-     */
-    public const WIKI_COPY_OBJECT_NOT_EXIST = -11962;
-
-    /**
-     * @Message("WIKI中dest目录不存在")
-     */
-    public const WIKI_DESK_DIR_NOT_EXIST = -11963;
-
-    /**
-     * @Message("WIKI中上传文件错误")
-     */
-    public const WIKI_UPLOAD_FILE_ERRORS = -11959;
-
-    /**
-     * @Message("WIKI中对象已被锁定")
-     */
-    public const WIKI_OBJECT_HAS_BEEN_LOCKED = -11955;
-
-    /**
-     * @Message("WIKI中该对象无法解锁")
-     */
-    public const WIKI_OBJECT_CANNOT_BEEN_UNLOCKED = -11956;
-
-    /**
-     * @Message("WIKI中移动的对象不能为空")
-     */
-    public const WIKI_MOVE_OBJECT_NOT_EMPTY = -11964;
-
-    /**
-     * @Message("WIKI中移动的目标目录不能为空")
-     */
-    public const WIKI_MOVE_DIR_DEST_NOT_EMPTY = -11965;
-
-    /**
-     * @Message("WIKI中移动的对象不存在")
-     */
-    public const WIKI_MOVE_OBJECT_NOT_EXIST = -11966;
-
-    /**
-     * @Message("WIKI中移动的目录不存在")
-     */
-    public const WIKI_MOVE_DIR_NOT_EXIST = -11967;
-
-    /**
      * @Message("标签名称不能重复")
      */
     public const LABEL_NAME_ALREADY_EXISTED = -16102;
@@ -413,7 +413,7 @@ class ErrorCode extends AbstractConstants
     public const LABEL_USED_IESSUES = -16104;
 
     /**
-     * @Message("看板不存在或不属于此项目")
+     * @Message("文件系统 Domain 设置非法")
      */
-    public const BOARD_NOT_FOUND = -11601;
+    public const FILE_DOMAIN_INVALID = -17000;
 }

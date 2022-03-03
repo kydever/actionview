@@ -30,22 +30,4 @@ abstract class Controller
         $this->response = $container->get(Response::class);
         $this->request = $container->get(RequestInterface::class);
     }
-
-    /**
-     * Get a Project instance.
-     */
-    public function getProject(): ?Project
-    {
-        return ProjectAuth::instance()->build()->getCurrent();
-    }
-
-    public function getProjectKey(): string
-    {
-        $model = $this->getProject();
-        if (empty($model)) {
-            throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
-        }
-
-        return $model->key;
-    }
 }
