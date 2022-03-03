@@ -96,4 +96,26 @@ class BoardService extends Service
         }
         return $this->dao->create($projectKey, $columns, $attributes);
     }
+
+    public function update(int $id, string $projectKey, array $attributes)
+    {
+        $updValues = [];
+        $updValues['name'] = $attributes['name'];
+        if (isset($attributes['description'])) {
+            $updValues['description'] = $attributes['description'];
+        }
+        if (isset($attributes['query'])) {
+            $updValues['query'] = ['subtask' => true] + $attributes['query'];
+        }
+        if (isset($attributes['filters'])) {
+            $updValues['filters'] = $attributes['filters'];
+        }
+        if (isset($attributes['columns'])) {
+            $updValues['columns'] = $attributes['columns'];
+        }
+        if (isset($attributes['display_fields'])) {
+            $updValues['display_fields'] = $attributes['display_fields'];
+        }
+        return $this->dao->update($id, $projectKey, $updValues);
+    }
 }

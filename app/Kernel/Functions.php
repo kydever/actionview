@@ -9,6 +9,10 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
+use App\Model\Project;
+use App\Service\ProjectAuth;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
@@ -55,5 +59,24 @@ if (! function_exists('issue_key')) {
     function issue_key(string $key): string
     {
         return $key;
+    }
+}
+
+if (! function_exists('get_project')) {
+    function get_project(): ?Project
+    {
+        return ProjectAuth::instance()->build()->getCurrent();
+    }
+}
+
+if (! function_exists('get_project_key')) {
+    function get_project_key(): string
+    {
+        $project = get_project();
+        if (empty($project)) {
+            throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
+        }
+
+        return $project->key;
     }
 }
