@@ -40,9 +40,9 @@ class LabelController extends Controller
         $name = $request->input('name');
         $bgColor = $request->input('bgColor');
 
-        $created = $this->service->save(0, $project, $name, $bgColor);
+        $model = $this->service->save(0, $project, $name, $bgColor);
 
-        return $this->response->success($created);
+        return $this->response->success($model);
     }
 
     public function update(LabelRequest $request, int $id)
@@ -50,9 +50,9 @@ class LabelController extends Controller
         $project = ProjectAuth::instance()->build()->getCurrent();
         $name = $request->input('name');
         $bgColor = $request->input('bgColor');
-        $updated = $this->service->save($id, $project, $name, $bgColor);
+        $model = $this->service->save($id, $project, $name, $bgColor);
 
-        return $this->response->success($updated);
+        return $this->response->success($model);
     }
 
     public function delete(int $id)
