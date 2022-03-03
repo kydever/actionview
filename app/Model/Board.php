@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,18 +12,18 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id
+ * @property int $id 
  * @property string $project_key 项目 key
  * @property string $name 看板名称
  * @property string $type 看板类型
  * @property string $description 看板描述
- * @property array $display_fields
- * @property array $columns
- * @property array $filters
- * @property array $query
- * @property array $creator
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property array $display_fields 
+ * @property array $columns 
+ * @property array $filters 
+ * @property array $query 
+ * @property array $creator 
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at 
  */
 class Board extends Model
 {
@@ -31,12 +31,10 @@ class Board extends Model
      * The table associated with the model.
      */
     protected ?string $table = 'board';
-
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'project_key', 'name', 'type', 'description', 'display_fields', 'columns', 'filters', 'query', 'creator', 'created_at', 'updated_at'];
-
     /**
      * The attributes that should be cast to native types.
      */

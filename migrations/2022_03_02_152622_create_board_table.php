@@ -26,11 +26,11 @@ class CreateBoardTable extends Migration
             $table->string('name', 30)->comment('看板名称');
             $table->string('type', 30)->comment('看板类型');
             $table->string('description', 1024)->default('')->comment('看板描述');
-            $table->json('display_fields');
-            $table->json('columns');
-            $table->json('filters');
-            $table->json('query');
-            $table->json('creator');
+            $table->json('display_fields')->nullable();
+            $table->json('columns')->nullable();
+            $table->json('filters')->nullable();
+            $table->json('query')->nullable();
+            $table->json('creator')->nullable();
             $table->timestamps();
 
             $table->index(['project_key'], 'INDEX_PROJECT_KEY');

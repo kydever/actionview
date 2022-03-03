@@ -11,9 +11,12 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Project\Provider;
+use App\Request\BoardRequest;
 use App\Service\BoardService;
 use App\Service\Formatter\BoardFormatter;
 use App\Service\ProjectAuth;
+use App\Service\ProviderService;
 use App\Service\UserAuth;
 use Hyperf\Di\Annotation\Inject;
 
@@ -24,6 +27,9 @@ class BoardController extends Controller
 
     #[Inject]
     protected BoardFormatter $formatter;
+
+    #[Inject]
+    protected ProviderService $provider;
 
     public function index()
     {
@@ -38,5 +44,16 @@ class BoardController extends Controller
                 'options' => $options,
             ],
         ]);
+    }
+
+    public function store(BoardRequest $request)
+    {
+        $project = ProjectAuth::instance()->build()->getCurrent();
+        $states = $this->provider->getStateListOptions($project->key);
+        $model = $this->service->create($project->key, $states, $request->all());
+
+        return $this->response->success (
+            $this->formatter->base($model)
+        );
     }
 }
