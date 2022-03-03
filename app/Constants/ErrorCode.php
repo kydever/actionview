@@ -411,4 +411,9 @@ class ErrorCode extends AbstractConstants
      * @Message("标签在问题中被使用")
      */
     public const LABEL_USED_IESSUES = -16104;
+
+    /**
+     * @Message("看板不存在或不属于此项目")
+     */
+    public const BOARD_NOT_FOUND = -11601;
 }
