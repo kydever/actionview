@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Model\Project;
 use App\Service\ProjectAuth;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
@@ -62,24 +63,14 @@ if (! function_exists('issue_key')) {
 }
 
 if (! function_exists('get_project')) {
-    /**
-     * Get a project instance.
-     *
-     * @return null|\App\Model\Project
-     */
-    function get_project()
+    function get_project(): ?Project
     {
         return ProjectAuth::instance()->build()->getCurrent();
     }
 }
 
 if (! function_exists('get_project_key')) {
-    /**
-     * Get a project key.
-     *
-     * @return string
-     */
-    function get_project_key()
+    function get_project_key(): string
     {
         $project = get_project();
         if (empty($project)) {
