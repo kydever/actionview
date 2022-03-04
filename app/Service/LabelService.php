@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Model\Label;
 use App\Model\Project;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\LabelDao;
@@ -26,7 +27,7 @@ class LabelService extends Service
     #[Inject]
     protected LabelFormatter $formatter;
 
-    public function findByProject(Project $project)
+    public function findByProject(Project $project): array
     {
         $models = $this->dao->getLabelOptions($project->key);
 
@@ -35,7 +36,7 @@ class LabelService extends Service
         return $this->formatter->formatListWithCount($models, $labelsCount);
     }
 
-    public function save(int $id, Project $project, string $name, ?string $bgColor)
+    public function save(int $id, Project $project, string $name, ?string $bgColor): Label
     {
         return $this->dao->createOrUpdate($id, $project->key, $name, $bgColor);
     }
