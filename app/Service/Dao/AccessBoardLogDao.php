@@ -27,4 +27,28 @@ class AccessBoardLogDao extends Service
             ->orderBy('latest_access_time', 'desc')
             ->get();
     }
+
+    public function create(string $projectKey, int $boardId, int $userId, ?string $latestAccessTime = null): AccessBoardLog
+    {
+        $model = new AccessBoardLog();
+        $model->project_key = $projectKey;
+        $model->board_id = $boardId;
+        $model->user_id = $userId;
+        $model->latest_access_time = $latestAccessTime ?? time();
+        $model->save();
+
+        return $model;
+    }
+
+    public function firstByBoardIdAndUserId(string $projectKey, int $boardId, int $userId): int
+    {
+        $record = AccessBoardLog::where([
+            'board_id' => $boardId,
+            'user_id' => $userId,
+        ])->first();
+        $record?->delete();
+        $model = $this->create($projectKey, $boardId, $userId);
+
+        return $model->id;
+    }
 }

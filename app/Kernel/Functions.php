@@ -12,7 +12,9 @@ declare(strict_types=1);
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\Project;
+use App\Model\User;
 use App\Service\ProjectAuth;
+use App\Service\UserAuth;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
@@ -78,5 +80,19 @@ if (! function_exists('get_project_key')) {
         }
 
         return $project->key;
+    }
+}
+
+if (! function_exists('get_user')) {
+    function get_user(): ?User
+    {
+        return UserAuth::instance()->build()->getUser();
+    }
+}
+
+if (! function_exists('get_user_id')) {
+    function get_user_id(): int
+    {
+        return UserAuth::instance()->build()->getUserId();
     }
 }

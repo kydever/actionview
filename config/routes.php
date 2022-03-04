@@ -159,6 +159,7 @@ Router::addGroup('/project/{project_key}/', function () {
 
     Router::get('kanban', App\Controller\BoardController::class . '::index');
     Router::post('kanban', App\Controller\BoardController::class . '::store');
+    Router::get('kanban/{id}/access', App\Controller\BoardController::class . '::recordAccess');
 
     //    后续优化为上传OSS
     //    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');
