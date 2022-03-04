@@ -28,15 +28,8 @@ class BoardRequest extends FormRequest
      */
     public function rules(): array
     {
-        $validate = [];
-        switch ($this->getMethod()) {
-            case 'POST':
-                $validate['type'] = 'required|in:kanban,scrum';
-        }
-
         return [
             'name' => 'required',
-            $validate,
         ];
     }
 }

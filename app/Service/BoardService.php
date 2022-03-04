@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
+use App\Model\Board;
 use App\Model\Project;
 use App\Model\User;
 use App\Service\Dao\BoardDao;
@@ -29,7 +32,7 @@ class BoardService extends Service
     #[Inject]
     protected BoardFormatter $formatter;
 
-    public function index(User $user, Project $project)
+    public function index(User $user, Project $project): array
     {
         $boards = $this->dao->getByProjectKey($project->key);
         $records = di(AccessBoardLogService::class)->getByProjectKeyAndUserId($project->key, $user->id);
@@ -77,8 +80,12 @@ class BoardService extends Service
         ];
     }
 
-    public function create(string $projectKey, $states, array $attributes)
+    public function create(string $projectKey, $states, array $attributes): Board
     {
+        $type = $attributes['type'];
+        if (! isset($type) || ($type != 'kanban' && $type != 'scrum')) {
+            throw new BusinessException(ErrorCode::BOARD_TYPE_ERROR);
+        }
         $columns = [
             ['no' => 1, 'name' => '开始', 'states' => []],
             ['no' => 2, 'name' => '处理中', 'states' => []],
@@ -97,7 +104,7 @@ class BoardService extends Service
         return $this->dao->create($projectKey, $columns, $attributes);
     }
 
-    public function update(int $id, string $projectKey, array $attributes)
+    public function update(int $id, string $projectKey, array $attributes): Board
     {
         $updValues = [];
         $updValues['name'] = $attributes['name'];
