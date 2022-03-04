@@ -156,7 +156,7 @@ class ProviderService extends Service
     }
 
     #[ArrayShape([Collection::class, ConfigPriorityProperty::class])]
-    public function getPriorityList(string $key)
+    public function getPriorityList(string $key): array
     {
         $priorities = di()->get(ConfigPriorityDao::class)->findOrByProjectKey($key);
 
@@ -175,7 +175,7 @@ class ProviderService extends Service
     }
 
     #[Cacheable(prefix: 'priority', group: 'context')]
-    public function getPriorityOptions(string $key)
+    public function getPriorityOptions(string $key): array
     {
         [$priorities, $property] = $this->getPriorityList($key);
 
@@ -198,7 +198,7 @@ class ProviderService extends Service
     }
 
     #[Cacheable(prefix: 'resolution', group: 'context')]
-    public function getResolutionOptions(string $key)
+    public function getResolutionOptions(string $key): array
     {
         [$resolutions, $property] = $this->getResolutionList($key);
         $options = [];
@@ -291,7 +291,7 @@ class ProviderService extends Service
     }
 
     #[Cacheable(prefix: 'field', group: 'context')]
-    public function getFieldList(string $key)
+    public function getFieldList(string $key): Collection
     {
         return di()->get(ConfigFieldDao::class)->getFieldList($key);
     }

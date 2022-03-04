@@ -87,7 +87,7 @@ class IssueService extends Service
         return true;
     }
 
-    public function update(int $id, array $input, User $user, Project $project)
+    public function update(int $id, array $input, User $user, Project $project): array
     {
         $issue = $this->dao->first($id, true);
         if (empty($input)) {
@@ -196,7 +196,7 @@ class IssueService extends Service
      *     'type' => '',
      * ]
      */
-    public function store(array $input, User $user, Project $project)
+    public function store(array $input, User $user, Project $project): array
     {
         $type = (int) $input['type'];
         $assigneeId = $input['assignee'] ?? null;
@@ -403,7 +403,7 @@ class IssueService extends Service
         return $result;
     }
 
-    public function createLabels(string $key, array $labels)
+    public function createLabels(string $key, array $labels): bool
     {
         $models = di()->get(LabelDao::class)->findByName($key, $labels);
         $createdLabels = [];
@@ -422,7 +422,7 @@ class IssueService extends Service
         return true;
     }
 
-    public function getValidKeysBySchema($schema = [])
+    public function getValidKeysBySchema($schema = []): array
     {
         $valid_keys = array_merge(array_column($schema, 'key'), ['type', 'assignee', 'descriptions', 'labels', 'parent_id', 'resolution', 'priority', 'progress', 'expect_start_time', 'expect_complete_time']);
 
@@ -616,19 +616,19 @@ class IssueService extends Service
     }
 
     #[Cacheable(prefix: 'issue:options', value: '#{project.id}', ttl: 8640000, offset: 3600)]
-    public function getOptions(Project $project)
+    public function getOptions(Project $project): array
     {
         return $this->options($project);
     }
 
     #[CachePut(prefix: 'issue:options', value: '#{project.id}', ttl: 8640000, offset: 3600)]
-    public function putOptions(Project $project)
+    public function putOptions(Project $project): array
     {
         return $this->options($project);
     }
 
     #[AsyncQueueMessage(delay: 5)]
-    public function putOptionsAsync(string $projectKey)
+    public function putOptionsAsync(string $projectKey): ?array
     {
         $project = di()->get(ProjectDao::class)->firstByKey($projectKey, false);
         if ($project) {
@@ -636,7 +636,7 @@ class IssueService extends Service
         }
     }
 
-    public function options(Project $project)
+    public function options(Project $project): array
     {
         $users = $this->provider->getUserList($project->key);
         $assignees = $this->provider->getAssignedUsers($project->key);
@@ -914,7 +914,7 @@ class IssueService extends Service
         return $bool;
     }
 
-    public function setAssignee(int $id, string $assigneeId, User $user, Project $project)
+    public function setAssignee(int $id, string $assigneeId, User $user, Project $project): array|User
     {
         $issue = $this->dao->first($id, true);
         $isAllowed = di()->get(AclService::class)->isAllowed($user->id, Permission::ASSIGN_ISSUE, $project);
@@ -947,7 +947,7 @@ class IssueService extends Service
         return $this->show($issue, $user, $project);
     }
 
-    public function resetState(array $input, int $id, User $user, Project $project)
+    public function resetState(array $input, int $id, User $user, Project $project): array
     {
         $assigneeId = intval($input['assignee'] ?? null);
         $resolution = $input['resolution'] ?? null;
@@ -1030,7 +1030,7 @@ class IssueService extends Service
      *     'ids' => [],
      * ]
      */
-    public function batchHandleFilters(array $input, User $user, Project $project)
+    public function batchHandleFilters(array $input, User $user, Project $project): array
     {
         return match ($input['mode'] ?? null) {
             'sort' => $this->sortFilters($input['sequence'] ?? [], $user, $project),
@@ -1039,7 +1039,7 @@ class IssueService extends Service
         };
     }
 
-    public function doAction(int $id, int $workflowId, array $input, User $user, Project $project)
+    public function doAction(int $id, int $workflowId, array $input, User $user, Project $project): array
     {
         $actionId = (int) ($input['action_id'] ?? 0);
         if (empty($actionId)) {
@@ -1068,7 +1068,7 @@ class IssueService extends Service
         return $this->show($issue, $user, $project);
     }
 
-    protected function initializeWorkflow(int $type, User $user)
+    protected function initializeWorkflow(int $type, User $user): array
     {
         $definition = $this->provider->getWorkflowByType($type);
         // create and start workflow instacne
@@ -1084,7 +1084,7 @@ class IssueService extends Service
         ];
     }
 
-    protected function delFilters(array $ids, User $user, Project $project)
+    protected function delFilters(array $ids, User $user, Project $project): array
     {
         if ($ids) {
             $models = di()->get(IssueFilterDao::class)->findMany($ids);

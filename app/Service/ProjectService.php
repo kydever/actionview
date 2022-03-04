@@ -40,6 +40,7 @@ use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
+use Laminas\Stdlib\SplPriorityQueue;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ProjectService extends Service
@@ -86,18 +87,18 @@ class ProjectService extends Service
     }
 
     #[Cacheable(prefix: 'project:all', ttl: 8640000)]
-    public function getAllProjectKeys()
+    public function getAllProjectKeys(): array
     {
         return $this->dao->findAllProjectKeys();
     }
 
     #[CachePut(prefix: 'project:all', ttl: 8640000)]
-    public function putAllProjectKeys()
+    public function putAllProjectKeys(): array
     {
         return $this->dao->findAllProjectKeys();
     }
 
-    public function sortByCreatedAt(array $keys, string $sort)
+    public function sortByCreatedAt(array $keys, string $sort): SplPriorityQueue
     {
         $projectKeys = $this->getAllProjectKeys();
         return di()->get(Sorter::class)->sort($keys, static function ($key) use ($projectKeys, $sort) {
@@ -110,7 +111,7 @@ class ProjectService extends Service
         });
     }
 
-    public function mine(int $userId, array $input = [], )
+    public function mine(int $userId, array $input = []): array
     {
         $sortKey = $input['sortkey'] ?? null;
         $offsetKey = $input['offset_key'] ?? null;
@@ -172,7 +173,7 @@ class ProjectService extends Service
         ];
     }
 
-    public function recent(int $userId)
+    public function recent(int $userId): array
     {
         $keys = $this->getRecentProjectKeys($userId);
         $projects = di()->get(ProjectDao::class)->findByKeys($keys);
@@ -209,7 +210,7 @@ class ProjectService extends Service
      *     'status' => 'active',
      * ]
      */
-    public function update(int $id, array $input, User $user)
+    public function update(int $id, array $input, User $user): array
     {
         $name = $input['name'] ?? null;
         $principal = new Principal($input['principal'] ?? null);
@@ -253,7 +254,7 @@ class ProjectService extends Service
      *     'principal' => 'required',
      * ]
      */
-    public function store(int $userId, array $input)
+    public function store(int $userId, array $input): array
     {
         $user = di()->get(UserDao::class)->first($userId, true);
         $setting = di()->get(SysSettingDao::class)->first();
@@ -299,7 +300,7 @@ class ProjectService extends Service
     /**
      * 初始化项目相关数据.
      */
-    public function initialize(string $key)
+    public function initialize(string $key): bool
     {
         $default = di()->get(ConfigTypeDao::class)->findDefault();
         $values = [];
@@ -323,7 +324,7 @@ class ProjectService extends Service
         ConfigType::query()->insert($values);
     }
 
-    public function index(array $input, int $offset, int $limit)
+    public function index(array $input, int $offset, int $limit): array
     {
         $input['key_or_name'] = $input['name'] ?? null;
 
@@ -334,14 +335,14 @@ class ProjectService extends Service
         return [$count, $result];
     }
 
-    public function show(string $key, int $userId)
+    public function show(string $key, int $userId): array
     {
         $model = $this->dao->firstByKey($key, true);
 
         return $this->showProject($model, $userId);
     }
 
-    public function createIndex(int $id, User $user)
+    public function createIndex(int $id, User $user): array
     {
         $model = $this->dao->first($id, true);
         if (! $model->isPrincipal($user->id) && ! $user->hasAccess(Permission::SYS_ADMIN)) {
@@ -353,7 +354,7 @@ class ProjectService extends Service
         return $this->formatter->base($model);
     }
 
-    public function stats(array $keys, User $user)
+    public function stats(array $keys, User $user): array
     {
         $models = $this->dao->findByKeys($keys);
 
@@ -387,7 +388,7 @@ class ProjectService extends Service
         return $result;
     }
 
-    protected function showProject(Project $model, int $userId)
+    protected function showProject(Project $model, int $userId): array
     {
         $permissions = di()->get(AclService::class)->getPermissions($userId, $model);
 

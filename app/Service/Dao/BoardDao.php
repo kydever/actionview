@@ -47,7 +47,7 @@ class BoardDao extends Service
         return $model;
     }
 
-    public function update(int $id, string $projectKey, array $updValues): Board
+    public function update(int $id, string $projectKey, array $updValues): ?Board
     {
         $model = $this->findById($id);
         if (empty($model) || $projectKey != $model->project_key) {

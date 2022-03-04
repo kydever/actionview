@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Model\Board;
 use App\Model\Project;
 use App\Model\User;
 use App\Service\Dao\BoardDao;
@@ -29,7 +30,7 @@ class BoardService extends Service
     #[Inject]
     protected BoardFormatter $formatter;
 
-    public function index(User $user, Project $project)
+    public function index(User $user, Project $project): array
     {
         $boards = $this->dao->getByProjectKey($project->key);
         $records = di(AccessBoardLogService::class)->getByProjectKeyAndUserId($project->key, $user->id);
@@ -77,7 +78,7 @@ class BoardService extends Service
         ];
     }
 
-    public function create(string $projectKey, $states, array $attributes)
+    public function create(string $projectKey, $states, array $attributes): ?Board
     {
         $columns = [
             ['no' => 1, 'name' => '开始', 'states' => []],
@@ -97,7 +98,7 @@ class BoardService extends Service
         return $this->dao->create($projectKey, $columns, $attributes);
     }
 
-    public function update(int $id, string $projectKey, array $attributes)
+    public function update(int $id, string $projectKey, array $attributes): ?Board
     {
         $updValues = [];
         $updValues['name'] = $attributes['name'];

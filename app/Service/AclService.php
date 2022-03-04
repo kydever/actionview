@@ -96,7 +96,7 @@ class AclService extends Service
         return array_values(array_unique($result));
     }
 
-    public function getUserIdsByPermission($access, $key)
+    public function getUserIdsByPermission($access, $key): array
     {
         $permissions = di()->get(AclRolePermissionDao::class)->findByProject($key);
         $defaultPermissions = di()->get(AclRolePermissionDao::class)->getDefaultPermissions();
@@ -132,7 +132,7 @@ class AclService extends Service
         return array_values(array_unique($userIds));
     }
 
-    public function isAllowed(int $userId, string $permission, Project $project)
+    public function isAllowed(int $userId, string $permission, Project $project): bool
     {
         $permissions = $this->getPermissionsFromContext($userId, $project);
         if ($permission == 'view_project') {

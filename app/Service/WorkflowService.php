@@ -24,7 +24,7 @@ class WorkflowService extends Service
     #[Inject]
     protected DefinitionFormatter $formatter;
 
-    public function preview(int $id)
+    public function preview(int $id): array
     {
         $model = $this->dao->first($id, true);
 

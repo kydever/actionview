@@ -44,7 +44,7 @@ class WikiService extends Service
     #[Inject]
     protected FilesystemOperator $file;
 
-    public function createDoc(array $input, User $user, Project $project)
+    public function createDoc(array $input, User $user, Project $project): array
     {
         $parentId = (int) ($input['parent'] ?? null);
         $name = $input['name'] ?? '';
@@ -94,7 +94,7 @@ class WikiService extends Service
         return array_merge($parent->pt, [$parent->id]);
     }
 
-    public function show(array $input, Wiki $model, User $user)
+    public function show(array $input, Wiki $model, User $user): array
     {
         $favorited = false;
         if (di()->get(WikiFavoriteDao::class)->first($model->id, $user->id)) {
@@ -134,7 +134,7 @@ class WikiService extends Service
         return [$result, $path];
     }
 
-    public function getPathTreeDetail(array $pt)
+    public function getPathTreeDetail(array $pt): array
     {
         $parents = $this->dao->findMany($pt)->getDictionary();
         $path = [];
@@ -148,7 +148,7 @@ class WikiService extends Service
         return $path;
     }
 
-    public function createFolder(array $input, User $user, Project $project)
+    public function createFolder(array $input, User $user, Project $project): array
     {
         $parentId = $input['parent'] ?? null;
         if (! isset($parentId)) {

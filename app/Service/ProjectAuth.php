@@ -60,7 +60,7 @@ class ProjectAuth
         return $this->projectKey;
     }
 
-    public function build()
+    public function build(): self
     {
         if ($this->project === null) {
             throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);

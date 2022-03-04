@@ -25,7 +25,7 @@ class ProjectSummaryService extends Service
     #[Inject]
     protected ProviderService $provider;
 
-    public function index(Project $project, User $user)
+    public function index(Project $project, User $user): array
     {
         // the top four filters
         $filters = $this->getTopFourFilters($project, $user);
@@ -49,7 +49,7 @@ class ProjectSummaryService extends Service
     /**
      * get the top four filters info.
      */
-    public function getTopFourFilters(Project $project, User $user)
+    public function getTopFourFilters(Project $project, User $user): array
     {
         $filters = $this->provider->getIssueFilters($project->key, $user->id);
         $filters = array_slice($filters, 0, 4);
@@ -72,7 +72,7 @@ class ProjectSummaryService extends Service
     /**
      * get the past two weeks trend data.
      */
-    public function getPulseData(Project $project)
+    public function getPulseData(Project $project): array
     {
         // initialize the results
         $trend = $this->init14DaysArray();

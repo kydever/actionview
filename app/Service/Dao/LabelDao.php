@@ -51,7 +51,7 @@ class LabelDao extends Service
         return Label::where('name', $name)->exists();
     }
 
-    public function createOrUpdate(int $id, string $projectKey, string $name, ?string $bgColor): Label
+    public function createOrUpdate(int $id, string $projectKey, string $name, ?string $bgColor): ?Label
     {
         $model = $this->findById($id);
         $nameExists = $this->existsByName($name);

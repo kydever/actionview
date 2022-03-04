@@ -36,7 +36,7 @@ class GroupService extends Service
     #[Inject]
     protected GroupFormatter $formatter;
 
-    public function index(array $input, int $offset, int $limit)
+    public function index(array $input, int $offset, int $limit): array
     {
         [$total, $models] = $this->dao->find($input, $offset, $limit);
 
@@ -57,7 +57,7 @@ class GroupService extends Service
      *     'users' => [],
      * ]
      */
-    public function store(int $id, array $input, User $user)
+    public function store(int $id, array $input, User $user): array
     {
         $name = $input['name'] ?? null;
         $principal = $input['principal'] ?? null;
@@ -143,7 +143,7 @@ class GroupService extends Service
         return $id;
     }
 
-    public function mygroup(array $input, int $userId, int $offset, int $limit)
+    public function mygroup(array $input, int $userId, int $offset, int $limit): array
     {
         if ($scale = $input['scale'] ?? null) {
             $input['scale'] = match ($scale) {
