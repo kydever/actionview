@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
+use App\Model\Board;
 use App\Model\Project;
 use App\Model\User;
 use App\Service\Dao\BoardDao;
@@ -77,8 +80,12 @@ class BoardService extends Service
         ];
     }
 
-    public function create(string $projectKey, $states, array $attributes)
+    public function create(string $projectKey, $states, array $attributes): Board
     {
+        $type = $attributes['type'];
+        if (! isset($type) || ($type != 'kanban' && $type != 'scrum')) {
+            throw new BusinessException(ErrorCode::BOARD_TYPE_ERROR);
+        }
         $columns = [
             ['no' => 1, 'name' => '开始', 'states' => []],
             ['no' => 2, 'name' => '处理中', 'states' => []],

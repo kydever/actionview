@@ -208,6 +208,11 @@ class ErrorCode extends AbstractConstants
     public const BOARD_NOT_FOUND = -11601;
 
     /**
+     * @Message("看板类型错误")
+     */
+    public const BOARD_TYPE_ERROR = -11608;
+
+    /**
      * @Message("父目录不能为空")
      */
     public const PARENT_NOT_EMPTY = -11950;

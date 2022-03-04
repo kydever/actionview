@@ -34,7 +34,7 @@ class BoardDao extends Service
         return Board::findFromCache($id);
     }
 
-    public function create(string $projectKey, array $columns, array $attributes): ?Board
+    public function create(string $projectKey, array $columns, array $attributes): Board
     {
         $model = new Board();
         $model->project_key = $projectKey;
