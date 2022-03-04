@@ -32,7 +32,7 @@ class BoardService extends Service
     #[Inject]
     protected BoardFormatter $formatter;
 
-    public function index(User $user, Project $project)
+    public function index(User $user, Project $project): array
     {
         $boards = $this->dao->getByProjectKey($project->key);
         $records = di(AccessBoardLogService::class)->getByProjectKeyAndUserId($project->key, $user->id);
