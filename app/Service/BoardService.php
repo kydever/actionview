@@ -104,7 +104,7 @@ class BoardService extends Service
         return $this->dao->create($projectKey, $columns, $attributes);
     }
 
-    public function update(int $id, string $projectKey, array $attributes)
+    public function update(int $id, string $projectKey, array $attributes): Board
     {
         $updValues = [];
         $updValues['name'] = $attributes['name'];
