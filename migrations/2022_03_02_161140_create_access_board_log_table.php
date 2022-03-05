@@ -25,7 +25,7 @@ class CreateAccessBoardLogTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('project_key', 32);
             $table->unsignedBigInteger('board_id');
-            $table->dateTime('latest_access_time');
+            $table->integer('latest_access_time');
             $table->timestamps();
 
             $table->index(['project_key', 'user_id'], 'INDEX_PROJECT_USER_ID');
