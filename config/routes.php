@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
@@ -9,6 +10,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 use App\Constants\Permission;
 use Hyperf\HttpServer\Router\Router;
 
@@ -159,7 +161,7 @@ Router::addGroup('/project/{project_key}/', function () {
 
     Router::get('kanban', App\Controller\BoardController::class . '::index');
     Router::post('kanban', App\Controller\BoardController::class . '::store');
-    Router::get('kanban/{id}/access', App\Controller\BoardController::class . '::recordAccess');
+    Router::get('kanban/{id}/access', [App\Controller\BoardController::class, 'recordAccess']);
 
     //    后续优化为上传OSS
     //    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');
