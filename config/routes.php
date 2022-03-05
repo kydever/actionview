@@ -157,9 +157,10 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('wiki/{id:\d+}/dirs', App\Controller\WikiController::class . '::getDirChildren');
     Router::post('wiki/move', App\Controller\WikiController::class . '::move');
 
-    Router::get('kanban', App\Controller\BoardController::class . '::index');
-    Router::post('kanban', App\Controller\BoardController::class . '::store');
-    Router::get('kanban/{id}/access', [App\Controller\BoardController::class, 'recordAccess']);
+    Router::get('kanban', [App\Controller\BoardController::class, 'index']);
+    Router::post('kanban', [App\Controller\BoardController::class, 'store']);
+    Router::put('kanban/{id:\d+}', [App\Controller\BoardController::class, 'update']);
+    Router::get('kanban/{id:\d+}/access', [App\Controller\BoardController::class, 'recordAccess']);
 
     //    后续优化为上传OSS
     //    Router::post('wiki/{id:\d+}/upload', App\Controller\WikiController::class . '::upload');

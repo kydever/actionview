@@ -28,6 +28,10 @@ class BoardRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->getMethod() === 'PUT') {
+            return [];
+        }
+
         return [
             'name' => 'required',
         ];

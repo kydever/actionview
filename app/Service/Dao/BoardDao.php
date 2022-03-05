@@ -29,7 +29,7 @@ class BoardDao extends Service
             ->get();
     }
 
-    public function findById(int $id): ?Board
+    public function first(int $id): ?Board
     {
         return Board::findFromCache($id);
     }
@@ -49,16 +49,34 @@ class BoardDao extends Service
 
     public function update(int $id, string $projectKey, array $updValues): Board
     {
-        $model = $this->findById($id);
+        $model = $this->first($id);
         if (empty($model) || $projectKey != $model->project_key) {
             throw new BusinessException(ErrorCode::BOARD_NOT_FOUND);
         }
-        $model->name = $updValues['name'];
-        $model->description = $updValues['description'] ?? '';
-        $model->query = $updValues['query'] ?? null;
-        $model->filters = $updValues['filters'] ?? null;
-        $model->columns = $updValues['columns'] ?? null;
-        $model->display_fields = $updValues['display_fields'] ?? null;
+        if (isset($updValues['name'])) {
+            $model->name = $updValues['name'];
+        }
+
+        if (isset($updValues['description'])) {
+            $model->description = $updValues['description'] ?? '';
+        }
+
+        if (isset($updValues['query'])) {
+            $model->query = $updValues['query'];
+        }
+
+        if (isset($updValues['filters'])) {
+            $model->filters = $updValues['filters'];
+        }
+
+        if (isset($updValues['columns'])) {
+            $model->columns = $updValues['columns'] ?? null;
+        }
+
+        if (isset($updValues['display_fields'])) {
+            $model->display_fields = $updValues['display_fields'];
+        }
+
         $model->save();
 
         return $model;
