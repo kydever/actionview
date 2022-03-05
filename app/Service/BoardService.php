@@ -50,7 +50,7 @@ class BoardService extends Service
         }
 
         foreach ($boards as $board) {
-            if (! in_array($board->id, $accessedBoardIds)) {
+            if (in_array($board->id, $accessedBoardIds)) {
                 $list[] = $board;
             }
         }

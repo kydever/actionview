@@ -20,7 +20,8 @@ class BoardFormatter extends Service
     public function base(Board $model)
     {
         return [
-            'id' => $model->id,
+            'id' => (string) $model->id,
+            'project_key' => $model->project_key,
             'name' => $model->name,
             'type' => $model->type,
             'description' => $model->description,

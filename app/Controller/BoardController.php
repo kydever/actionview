@@ -38,11 +38,8 @@ class BoardController extends Controller
 
         [$result, $options] = $this->service->index($user, $project);
 
-        return $this->response->success([
-            $result,
-            [
-                'options' => $options,
-            ],
+        return $this->response->success($result, [
+            'options' => $options,
         ]);
     }
 
