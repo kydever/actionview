@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\BoardRequest;
+use App\Service\AccessBoardLogService;
 use App\Service\BoardService;
 use App\Service\Formatter\BoardFormatter;
 use App\Service\ProjectAuth;
@@ -63,5 +64,14 @@ class BoardController extends Controller
         return $this->response->success(
             $this->formatter->base($model)
         );
+    }
+
+    public function recordAccess(int $id)
+    {
+        $id = di()->get(AccessBoardLogService::class)->idByBoardIdAndUserId(get_project_key(), $id, get_user_id());
+
+        return $this->response->success([
+            'id' => $id,
+        ]);
     }
 }

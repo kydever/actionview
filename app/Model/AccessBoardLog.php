@@ -16,7 +16,7 @@ namespace App\Model;
  * @property int $user_id
  * @property string $project_key
  * @property int $board_id
- * @property string $latest_access_time
+ * @property int $latest_access_time
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -35,5 +35,5 @@ class AccessBoardLog extends Model
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'int', 'user_id' => 'integer', 'board_id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'user_id' => 'integer', 'board_id' => 'integer', 'latest_access_time' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
