@@ -68,7 +68,7 @@ class BoardController extends Controller
 
     public function recordAccess(int $id)
     {
-        $id = di(AccessBoardLogService::class)->firstByBoardIdAndUserId(get_project_key(), $id, get_user_id());
+        $id = di()->get(AccessBoardLogService::class)->idByBoardIdAndUserId(get_project_key(), $id, get_user_id());
 
         return $this->response->success([
             'id' => $id,

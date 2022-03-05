@@ -25,8 +25,10 @@ class AccessBoardLogService extends Service
         return $this->dao->getByProjectKeyAndUserId($projectKey, $userId);
     }
 
-    public function firstByBoardIdAndUserId(string $projectKey, int $boardId, int $userId): int
+    public function idByBoardIdAndUserId(string $projectKey, int $boardId, int $userId): int
     {
-        return $this->dao->firstByBoardIdAndUserId($projectKey, $boardId, $userId);
+        $model = $this->dao->firstByBoardIdAndUserId($projectKey, $boardId, $userId);
+
+        return $model->id;
     }
 }

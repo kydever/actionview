@@ -40,15 +40,21 @@ class AccessBoardLogDao extends Service
         return $model;
     }
 
-    public function firstByBoardIdAndUserId(string $projectKey, int $boardId, int $userId): int
+    public function firstByBoardIdAndUserId(string $projectKey, int $boardId, int $userId): AccessBoardLog
     {
-        $record = AccessBoardLog::where([
-            'board_id' => $boardId,
-            'user_id' => $userId,
-        ])->first();
-        $record?->delete();
-        $model = $this->create($projectKey, $boardId, $userId);
+        /** @var AccessBoardLog $model */
+        $model = AccessBoardLog::query()->where('project_key', $projectKey)
+            ->where('user_id', $userId)
+            ->where('board_id', $boardId)
+            ->first();
 
-        return $model->id;
+        if ($model) {
+            $model->latest_access_time = time();
+            $model->save();
+        } else {
+            $model = $this->create($projectKey, $boardId, $userId);
+        }
+
+        return $model;
     }
 }
