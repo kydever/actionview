@@ -36,16 +36,11 @@ class ConfigStateDao extends Service
         return ConfigState::findFromCache($id);
     }
 
-    public function existsByName(string $name): bool
-    {
-        return ConfigState::where('name', $name)->exists();
-    }
-
     public function createOrUpdate(int $id, string $projectKey, array $attributes): ConfigState
     {
         $model = $this->findById($id);
         $name = $attributes['name'];
-        if ($this->existsByName($name) && $model?->name != $name) {
+        if ($this->isStateExisted($projectKey, $name) && $model?->name != $name) {
             throw new BusinessException(ErrorCode::STATE_NAME_ALREADY_EXISTS);
         }
         if (empty($model)) {
@@ -58,5 +53,13 @@ class ConfigStateDao extends Service
         $model->save();
 
         return $model;
+    }
+
+    protected function isStateExisted(string $projectKey, string $name): bool
+    {
+        return ConfigState::where('project_key', '$_sys_$')
+            ->orWhere('project_key', $projectKey)
+            ->where('name', $name)
+            ->exists();
     }
 }
