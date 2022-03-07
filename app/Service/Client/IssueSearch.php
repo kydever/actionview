@@ -190,7 +190,7 @@ class IssueSearch extends ElasticSearch
             'body' => [
                 'aggs' => [
                     'cnt' => [
-                        'filter' => ['bool' => $bool],
+                        'filter' => $bool,
                     ],
                 ],
                 'size' => 0,
