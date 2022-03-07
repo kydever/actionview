@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\StateRequest;
+use App\Service\Formatter\StateFormatter;
 use App\Service\ProjectAuth;
 use App\Service\StateService;
 use App\Service\UserAuth;
@@ -21,6 +23,9 @@ class StateController extends Controller
     #[Inject]
     protected StateService $service;
 
+    #[Inject]
+    protected StateFormatter $formatter;
+
     public function index()
     {
         $project = ProjectAuth::instance()->build()->getCurrent();
@@ -29,5 +34,12 @@ class StateController extends Controller
         $result = $this->service->index($project, $user);
 
         return $this->response->success($result);
+    }
+
+    public function store(StateRequest $request)
+    {
+        $model = $this->service->save(0, get_project_key(), $request->all());
+
+        return $this->formatter->base($model);
     }
 }

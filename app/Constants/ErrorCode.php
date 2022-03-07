@@ -298,6 +298,11 @@ class ErrorCode extends AbstractConstants
     public const WORKFLOW_NOT_EXISTS = -12101;
 
     /**
+     * @Message("状态名称不能重复")
+     */
+    public const STATE_NAME_ALREADY_EXISTS = -12401;
+
+    /**
      * @Message("角色非法")
      */
     public const ROLE_INVALID = -12701;
