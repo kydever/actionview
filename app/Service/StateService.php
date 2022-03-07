@@ -101,4 +101,9 @@ class StateService extends Service
     {
         return $this->dao->createOrUpdate($id, $projectKey, $attributes);
     }
+
+    public function delete(Project $project, int $id): bool
+    {
+        return $this->dao->delete($project, $id);
+    }
 }

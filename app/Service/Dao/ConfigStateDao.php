@@ -15,6 +15,8 @@ use App\Constants\ErrorCode;
 use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Model\ConfigState;
+use App\Model\Project;
+use App\Service\StateService;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
@@ -55,6 +57,25 @@ class ConfigStateDao extends Service
         $model->save();
 
         return $model;
+    }
+
+    public function delete(Project $project, int $id): bool
+    {
+        $model = $this->findById($id);
+        if (empty($model) || $project->key != $model->project_key) {
+            throw new BusinessException(ErrorCode::STATE_NOT_FOUND);
+        }
+        if (isset($model->key) && $model->key) {
+            throw new BusinessException(ErrorCode::STATE_IS_SYSTEM);
+        }
+        if (di()->get(StateService::class)->isFieldUsedByIssue($project, 'state', $model->toArray())) {
+            throw new BusinessException(ErrorCode::STATE_USED_ISSUE);
+        }
+        if (di()->get(OswfDefinitionDao::class)->exists($model->key, $id)) {
+            throw new BusinessException(ErrorCode::STATE_USED_WORKFLOW);
+        }
+
+        return $model->delete();
     }
 
     protected function isStateExisted(string $projectKey, string $name): bool

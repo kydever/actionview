@@ -87,6 +87,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('state', App\Controller\StateController::class . '::index');
     Router::post('state', [App\Controller\StateController::class, 'store']);
     Router::put('state/{id}', [App\Controller\StateController::class, 'update']);
+    Router::delete('state/{id}', [App\Controller\StateController::class, 'destroy']);
     // Route::resource('state', 'StateController');
     // Route::post('state/batch', 'StateController@handle');
     // Route::get('state/{id}/used', 'StateController@viewUsedInProject');

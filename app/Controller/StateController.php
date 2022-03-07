@@ -49,4 +49,13 @@ class StateController extends Controller
 
         return $this->formatter->base($model);
     }
+
+    public function destroy(int $id)
+    {
+        $this->service->delete(get_project(), $id);
+
+        return $this->response->success([
+            'id' => $id,
+        ]);
+    }
 }
