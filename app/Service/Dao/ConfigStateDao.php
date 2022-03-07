@@ -31,32 +31,30 @@ class ConfigStateDao extends Service
             ->get();
     }
 
-    public function findById ( int $id ): ?ConfigState
+    public function findById(int $id): ?ConfigState
     {
-        $model = ConfigState::findFromCache ( $id );
-
-        return $model;
+        return ConfigState::findFromCache($id);
     }
 
-    public function existsByName ( string $name ): bool
+    public function existsByName(string $name): bool
     {
-        return ConfigState::where ( 'name', $name )->exists();
+        return ConfigState::where('name', $name)->exists();
     }
 
-    public function createOrUpdate ( int $id, string $projectKey, array $attributes ): ConfigState
+    public function createOrUpdate(int $id, string $projectKey, array $attributes): ConfigState
     {
         $model = $this->findById($id);
-        $name = $attributes [ 'name' ];
-        if ( $this->existsByName($name) && $model?->name != $name ) {
+        $name = $attributes['name'];
+        if ($this->existsByName($name) && $model?->name != $name) {
             throw new BusinessException(ErrorCode::STATE_NAME_ALREADY_EXISTS);
         }
-        if ( empty ( $model ) ) {
+        if (empty($model)) {
             $model = new ConfigState();
             $model->project_key = $projectKey;
         }
-        $model->name = $attributes [ 'name' ];
+        $model->name = $attributes['name'];
         $model->sn = time();
-        $model->category = $attributes [ 'category' ];
+        $model->category = $attributes['category'];
         $model->save();
 
         return $model;

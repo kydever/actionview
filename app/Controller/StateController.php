@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use App\Project\Provider;
 use App\Request\StateRequest;
 use App\Service\Formatter\StateFormatter;
 use App\Service\ProjectAuth;
@@ -37,7 +36,7 @@ class StateController extends Controller
         return $this->response->success($result);
     }
 
-    public function store ( StateRequest $request )
+    public function store(StateRequest $request)
     {
         $model = $this->service->save(0, get_project_key(), $request->all());
 

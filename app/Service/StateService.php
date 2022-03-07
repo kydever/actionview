@@ -97,10 +97,8 @@ class StateService extends Service
         }
     }
 
-    public function save ( int $id, string $projectKey, array $attributes ): ConfigState
+    public function save(int $id, string $projectKey, array $attributes): ConfigState
     {
-        $model = $this->dao->createOrUpdate($id, $projectKey, $attributes);
-
-        return $model;
+        return $this->dao->createOrUpdate($id, $projectKey, $attributes);
     }
 }
