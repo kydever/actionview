@@ -11,9 +11,11 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Model\ConfigState;
 use App\Model\Project;
 use App\Model\User;
 use App\Service\Client\IssueSearch;
+use App\Service\Dao\ConfigStateDao;
 use App\Service\Formatter\StateFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
@@ -22,6 +24,9 @@ class StateService extends Service
 {
     #[Inject]
     protected ProviderService $provider;
+
+    #[Inject]
+    protected ConfigStateDao $dao;
 
     #[Inject]
     protected StateFormatter $formatter;
@@ -69,9 +74,9 @@ class StateService extends Service
             case 'resolution':
             case 'epic':
             case 'module':
-                return di()->get(IssueSearch::class)->countWhereTerm($fieldKey, $field['id']) > 0;
+                return di()->get(IssueSearch::class)->countWhereTerm($project->key, $fieldKey, $field['id']) > 0;
             case 'labels':
-                return di()->get(IssueSearch::class)->countWhereTerm($fieldKey, $field['name']) > 0;
+                return di()->get(IssueSearch::class)->countWhereTerm($project->key, $fieldKey, $field['name']) > 0;
             case 'version':
                 if (! $extra) {
                     return false;
@@ -90,5 +95,12 @@ class StateService extends Service
             default:
                 return true;
         }
+    }
+
+    public function save ( int $id, string $projectKey, array $attributes ): ConfigState
+    {
+        $model = $this->dao->createOrUpdate($id, $projectKey, $attributes);
+
+        return $model;
     }
 }
