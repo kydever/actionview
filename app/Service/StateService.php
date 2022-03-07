@@ -37,13 +37,11 @@ class StateService extends Service
         $result = [];
         foreach ($states as $state) {
             $item = $this->formatter->base($state);
-            $item['is_used'] = $this->isFieldUsedByIssue($project, 'state', value(static function () use ($state) {
-                return [
-                    'id' => $state->id,
-                    'name' => $state->name,
-                    'project_key' => $state->project_key,
-                ];
-            }));
+            $item['is_used'] = $this->isFieldUsedByIssue($project, 'state', [
+                'id' => $state->id,
+                'name' => $state->name,
+                'project_key' => $state->project_key,
+            ]);
 
             $result[] = $item;
         }
