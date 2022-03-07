@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Constants\ErrorCode;
+use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Model\ConfigState;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
 
 class ConfigStateDao extends Service
@@ -57,9 +59,10 @@ class ConfigStateDao extends Service
 
     protected function isStateExisted(string $projectKey, string $name): bool
     {
-        return ConfigState::where('project_key', '$_sys_$')
-            ->orWhere('project_key', $projectKey)
-            ->where('name', $name)
+        return ConfigState::query()->where(static function (Builder $builder) use ($projectKey) {
+            $builder->where('project_key', ProjectConstant::SYS)
+                ->orWhere('project_key', $projectKey);
+        })->where('name', $name)
             ->exists();
     }
 }
