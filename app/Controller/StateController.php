@@ -42,4 +42,11 @@ class StateController extends Controller
 
         return $this->formatter->base($model);
     }
+
+    public function update(StateRequest $request, int $id)
+    {
+        $model = $this->service->save($id, get_project_key(), $request->all());
+
+        return $this->formatter->base($model);
+    }
 }
