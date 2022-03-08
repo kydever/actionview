@@ -11,7 +11,9 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\WorkflowRequest;
 use App\Service\Dao\ConfigTypeDao;
+use App\Service\Formatter\DefinitionFormatter;
 use App\Service\ProviderService;
 use App\Service\WorkflowService;
 use Hyperf\Di\Annotation\Inject;
@@ -23,6 +25,9 @@ class WorkflowController extends Controller
 
     #[Inject]
     protected ProviderService $provider;
+
+    #[Inject]
+    protected DefinitionFormatter $formatter;
 
     public function preview(int $id)
     {
@@ -43,5 +48,12 @@ class WorkflowController extends Controller
         }
 
         return $this->response->success($workflows);
+    }
+
+    public function store ( WorkflowRequest $request )
+    {
+        $model = $this->service->save(0, get_user(), get_project_key(), $request->all());
+
+        return $this->formatter->base($model);
     }
 }

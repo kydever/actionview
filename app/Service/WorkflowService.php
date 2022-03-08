@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Model\OswfDefinition;
+use App\Model\User;
 use App\Service\Dao\OswfDefinitionDao;
 use App\Service\Formatter\DefinitionFormatter;
 use Han\Utils\Service;
@@ -29,5 +31,10 @@ class WorkflowService extends Service
         $model = $this->dao->first($id, true);
 
         return $this->formatter->base($model);
+    }
+
+    public function save ( int $id, User $user, string $projectKey, array $attributes ): OswfDefinition
+    {
+        return $this->dao->createOrUpdate($id, $user, $projectKey, $attributes);
     }
 }
