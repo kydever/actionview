@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\WorkflowRequest;
 use App\Service\Formatter\OswfDefinitionFormatter;
 use App\Service\ProviderService;
 use App\Service\WorkflowService;
