@@ -50,7 +50,7 @@ class WorkflowController extends Controller
         return $this->response->success($workflows);
     }
 
-    public function store ( WorkflowRequest $request )
+    public function store(WorkflowRequest $request)
     {
         $model = $this->service->save(0, get_user(), get_project_key(), $request->all());
 

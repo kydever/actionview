@@ -44,40 +44,32 @@ class OswfDefinitionDao extends Service
             ->get($fields);
     }
 
-    /**
-     * @param int $id
-     * @return OswfDefinition|null
-     */
-    public function findById ( int $id ): ?OswfDefinition
+    public function findById(int $id): ?OswfDefinition
     {
-        $model = OswfDefinition::findFromCache ( $id );
-
-        return $model;
+        return OswfDefinition::findFromCache($id);
     }
 
-    public function findBySourceId ( int $sourceId ): ?OswfDefinition
+    public function findBySourceId(int $sourceId): ?OswfDefinition
     {
-        $model = OswfDefinition::find ( $sourceId );
-
-        return $model;
+        return OswfDefinition::find($sourceId);
     }
 
-    public function createOrUpdate ( int $id, User $user, string $projectKey,  array $attributes ): OswfDefinition
+    public function createOrUpdate(int $id, User $user, string $projectKey, array $attributes): OswfDefinition
     {
-        $model = $this->findById($id );
-        if ( empty ( $model ) ) {
+        $model = $this->findById($id);
+        if (empty($model)) {
             $model = new OswfDefinition();
             $model->project_key = $projectKey;
         }
-        if ( ! empty ( $attributes [ 'contents' ] ) ) {
+        if (! empty($attributes['contents'])) {
             $latest_modifier = [
                 'id' => $user->id,
                 'name' => $user->first_name,
             ];
-            $latest_modified_time = date ( 'Y-m-d H:i:s' );
-            $state_ids = Workflow::getScreens($attributes [ 'contents' ]);
-            $screen_ids = Workflow::getScreens($attributes [ 'contents' ]);
-            $steps = Workflow::getStepNum($attributes [ 'contents' ]);
+            $latest_modified_time = date('Y-m-d H:i:s');
+            $state_ids = Workflow::getScreens($attributes['contents']);
+            $screen_ids = Workflow::getScreens($attributes['contents']);
+            $steps = Workflow::getStepNum($attributes['contents']);
         } else {
             $latest_modifier = [];
             $latest_modified_time = '';
@@ -85,13 +77,13 @@ class OswfDefinitionDao extends Service
             $screen_ids = [];
             $steps = 0;
         }
-        if ( ! empty ( $attributes [ 'source_id' ] ) ) {
-            $source_definition = $this->findBySourceId($attributes [ 'source_id' ]);
+        if (! empty($attributes['source_id'])) {
+            $source_definition = $this->findBySourceId($attributes['source_id']);
             $latest_modifier = [
                 'id' => $user->id,
                 'name' => $user->first_name,
             ];
-            $latest_modified_time = date ( 'Y-m-d H:i:s' );
+            $latest_modified_time = date('Y-m-d H:i:s');
             $state_ids = $source_definition->state_ids;
             $screen_ids = $source_definition->screen_ids;
             $steps = $source_definition->steps;
@@ -103,8 +95,8 @@ class OswfDefinitionDao extends Service
         $model->state_ids = $state_ids;
         $model->screen_ids = $screen_ids;
         $model->steps = $steps;
-        $model->contents = $contents ?? $attributes [ 'contents' ];
-        $model->name = $attributes [ 'name' ];
+        $model->contents = $contents ?? $attributes['contents'];
+        $model->name = $attributes['name'];
         $model->save();
 
         return $model;

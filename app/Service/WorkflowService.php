@@ -33,7 +33,7 @@ class WorkflowService extends Service
         return $this->formatter->base($model);
     }
 
-    public function save ( int $id, User $user, string $projectKey, array $attributes ): OswfDefinition
+    public function save(int $id, User $user, string $projectKey, array $attributes): OswfDefinition
     {
         return $this->dao->createOrUpdate($id, $user, $projectKey, $attributes);
     }
