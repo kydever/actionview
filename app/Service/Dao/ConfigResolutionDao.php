@@ -24,8 +24,8 @@ class ConfigResolutionDao extends Service
     {
         return ConfigResolution::query()->where('project_key', ProjectConstant::SYS)
             ->orWhere('project_key', $key)
-            ->orderBy('project_key', )
-            ->orderBy('sn', )
+            ->orderBy('project_key')
+            ->orderBy('sn')
             ->get();
     }
 }
