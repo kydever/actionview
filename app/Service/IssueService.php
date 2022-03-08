@@ -522,7 +522,7 @@ class IssueService extends Service
         $query->orderBy('_id', isset($from) && $from != 'gantt' ? 'asc' : 'desc');
 
         $page_size = $request->input('limit') ? intval($request->input('limit')) : 50;
-        //$page_size = 200;
+        // $page_size = 200;
         $page = $request->input('page') ?: 1;
         $query = $query->skip($page_size * ($page - 1))->take($page_size);
         $issues = $query->get();

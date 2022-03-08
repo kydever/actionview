@@ -110,7 +110,7 @@ class ProjectService extends Service
         });
     }
 
-    public function mine(int $userId, array $input = [], )
+    public function mine(int $userId, array $input = [])
     {
         $sortKey = $input['sortkey'] ?? null;
         $offsetKey = $input['offset_key'] ?? null;

@@ -303,6 +303,26 @@ class ErrorCode extends AbstractConstants
     public const STATE_NAME_ALREADY_EXISTS = -12401;
 
     /**
+     * @Message("状态不存在或不属于此项目")
+     */
+    public const STATE_NOT_FOUND = -12402;
+
+    /**
+     * @Message("状态在问题中被使用")
+     */
+    public const STATE_USED_ISSUE = -12403;
+
+    /**
+     * @Message("状态在工作流中被使用")
+     */
+    public const STATE_USED_WORKFLOW = -12404;
+
+    /**
+     * @Message("该状态为系统内置状态，不能编辑和删除")
+     */
+    public const STATE_IS_SYSTEM = 12405;
+
+    /**
      * @Message("角色非法")
      */
     public const ROLE_INVALID = -12701;

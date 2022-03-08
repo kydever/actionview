@@ -27,4 +27,9 @@ class OswfDefinitionDao extends Service
 
         return $model;
     }
+
+    public function exists(string $stateKey, int $id): bool
+    {
+        return OswfDefinition::whereJsonContains('state_ids', $stateKey ?? $id)->exists();
+    }
 }

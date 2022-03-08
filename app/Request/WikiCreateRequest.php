@@ -34,7 +34,7 @@ class WikiCreateRequest extends FormRequest
             //            'parent' => 'string',
             //            'name' => 'string',
             //            'contents' => 'string',
-            ////            'isSendMsg' => 'string',
+            // //            'isSendMsg' => 'string',
             //            'v' => 'string',
         ];
     }

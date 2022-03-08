@@ -102,7 +102,7 @@ class Permission
             static::RESET_ISSUE,
             static::CLOSE_ISSUE,
 
-            //static::VIEW_WORKFLOW,
+            // static::VIEW_WORKFLOW,
             static::EXEC_WORKFLOW,
 
             static::UPLOAD_FILE,
