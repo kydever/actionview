@@ -35,13 +35,13 @@ class WorkflowController extends Controller
     {
         $workflows = $this->provider->getWorkflowList(
             get_project_key(),
-            [ 'id', 'name', 'project_key', 'description', 'latest_modified_time', 'latest_modifier', 'steps' ]
+            ['id', 'name', 'project_key', 'description', 'latest_modified_time', 'latest_modifier', 'steps']
         );
         $configTypeDao = di()->get(ConfigTypeDao::class);
-        foreach ( $workflows as $workflow ) {
+        foreach ($workflows as $workflow) {
             $workflow->is_used = $configTypeDao->existsByWorkFlowId($workflow->id);
         }
 
-        return $this->response->success ( $workflows );
+        return $this->response->success($workflows);
     }
 }

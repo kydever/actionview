@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,10 +12,10 @@ declare (strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id 
- * @property string $project_key 
- * @property array $sequence 
- * @property string $default_value 
+ * @property int $id
+ * @property string $project_key
+ * @property array $sequence
+ * @property string $default_value
  */
 class ConfigResolutionProperty extends Model
 {
@@ -25,10 +25,12 @@ class ConfigResolutionProperty extends Model
      * @var string
      */
     protected ?string $table = 'config_resolution_property';
+
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'project_key', 'sequence', 'default_value'];
+
     /**
      * The attributes that should be cast to native types.
      */

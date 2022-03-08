@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,14 +12,14 @@ declare (strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id 
- * @property int $definition_id 
- * @property array $creator 
- * @property int $state 
- * @property array $propertysets 
- * @property \Carbon\Carbon $created_at 
- * @property \Carbon\Carbon $updated_at 
- * @property-read \Hyperf\Database\Model\Collection|OswfCurrentstep[] $currentSteps 
+ * @property int $id
+ * @property int $definition_id
+ * @property array $creator
+ * @property int $state
+ * @property array $propertysets
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Hyperf\Database\Model\Collection|OswfCurrentstep[] $currentSteps
  */
 class OswfEntry extends Model
 {
@@ -29,14 +29,17 @@ class OswfEntry extends Model
      * @var string
      */
     protected ?string $table = 'oswf_entry';
+
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'definition_id', 'creator', 'state', 'propertysets', 'created_at', 'updated_at'];
+
     /**
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'int', 'definition_id' => 'integer', 'creator' => 'json', 'propertysets' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'state' => 'integer'];
+
     public function currentSteps()
     {
         return $this->hasMany(OswfCurrentstep::class, 'entry_id', 'id');

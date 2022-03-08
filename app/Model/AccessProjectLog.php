@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,29 +12,33 @@ declare (strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id 
- * @property string $project_key 
- * @property int $user_id 
- * @property int $latest_access_time 
- * @property-read Project $project 
+ * @property int $id
+ * @property string $project_key
+ * @property int $user_id
+ * @property int $latest_access_time
+ * @property Project $project
  */
 class AccessProjectLog extends Model
 {
     public bool $timestamps = false;
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected ?string $table = 'access_project_log';
+
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'project_key', 'user_id', 'latest_access_time'];
+
     /**
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'int', 'user_id' => 'integer', 'latest_access_time' => 'integer'];
+
     public function project()
     {
         return $this->hasOne(Project::class, 'key', 'project_key');

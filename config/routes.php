@@ -97,7 +97,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::put('labels/{id:\d+}', [App\Controller\LabelController::class, 'update']);
     Router::post('labels/{id:\d+}/delete', [App\Controller\LabelController::class, 'delete']);
 
-    Router::get ( 'workflow', [ App\Controller\WorkflowController::class, 'index' ] );
+    Router::get('workflow', [App\Controller\WorkflowController::class, 'index']);
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,

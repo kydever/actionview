@@ -48,8 +48,8 @@ class ConfigTypeDao extends Service
         return $query->where('project_key', $key)->orderBy('sn')->get();
     }
 
-    public function existsByWorkFlowId ( int $workflowId ): bool
+    public function existsByWorkFlowId(int $workflowId): bool
     {
-        return ConfigType::where ( 'workflow_id', $workflowId )->exists();
+        return ConfigType::where('workflow_id', $workflowId)->exists();
     }
 }

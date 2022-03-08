@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,12 +12,12 @@ declare (strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id 
+ * @property int $id
  * @property string $project_key 项目KEY
  * @property int $role_id 角色ID
  * @property array $permissions 权限表
- * @property \Carbon\Carbon $created_at 
- * @property \Carbon\Carbon $updated_at 
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class AclRolePermission extends Model
 {
@@ -27,15 +27,18 @@ class AclRolePermission extends Model
      * @var string
      */
     protected ?string $table = 'acl_role_permissions';
+
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'project_key', 'role_id', 'permissions', 'created_at', 'updated_at'];
+
     /**
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'integer', 'role_id' => 'integer', 'permissions' => 'array', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
-    public function hasAccess(string $permission) : bool
+
+    public function hasAccess(string $permission): bool
     {
         return in_array($permission, $this->permissions, true);
     }

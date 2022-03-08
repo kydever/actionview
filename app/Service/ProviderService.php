@@ -448,8 +448,8 @@ class ProviderService extends Service
         return $project?->getPrincipal();
     }
 
-    public function getWorkflowList ( string $projectKey, array $fields = [] )
+    public function getWorkflowList(string $projectKey, array $fields = [])
     {
-         return di()->get(OswfDefinitionDao::class)->getByFieldsList($projectKey, $fields);
+        return di()->get(OswfDefinitionDao::class)->getByFieldsList($projectKey, $fields);
     }
 }
