@@ -17,8 +17,8 @@ namespace App\Model;
  * @property string $name
  * @property int $latest_modifier
  * @property string $latest_modified_time
- * @property string $state_ids
- * @property string $screen_ids
+ * @property array $state_ids
+ * @property array $screen_ids
  * @property int $steps
  * @property array $contents
  * @property string $description 描述
@@ -40,5 +40,5 @@ class OswfDefinition extends Model
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'integer', 'latest_modifier' => 'integer', 'steps' => 'integer', 'contents' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'integer', 'latest_modifier' => 'integer', 'state_ids' => 'json', 'screen_ids' => 'json', 'steps' => 'integer', 'contents' => 'json', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }
