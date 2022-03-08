@@ -30,6 +30,6 @@ class OswfDefinitionDao extends Service
 
     public function exists(string $stateKey, int $id): bool
     {
-        return OswfDefinition::whereRaw(['state_ids' => $stateKey ?? $id])->exists();
+        return OswfDefinition::whereJsonContains('state_ids', $stateKey ?? $id)->exists();
     }
 }
