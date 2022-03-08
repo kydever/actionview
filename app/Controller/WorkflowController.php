@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\WorkflowRequest;
 use App\Service\Formatter\OswfDefinitionFormatter;
 use App\Service\ProviderService;
 use App\Service\WorkflowService;
@@ -39,5 +40,12 @@ class WorkflowController extends Controller
         $workflows = $this->provider->getWorkflowList(get_project_key());
 
         return $this->response->success($workflows);
+    }
+
+    public function store(WorkflowRequest $request)
+    {
+        $model = $this->service->save(0, get_user(), get_project_key(), $request->all());
+
+        return $this->formatter->base($model);
     }
 }
