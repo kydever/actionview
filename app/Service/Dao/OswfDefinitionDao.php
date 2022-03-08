@@ -83,7 +83,6 @@ class OswfDefinitionDao extends Service
                 'id' => $user->id,
                 'name' => $user->first_name,
             ];
-            $latest_modified_time = date('Y-m-d H:i:s');
             $state_ids = $source_definition->state_ids;
             $screen_ids = $source_definition->screen_ids;
             $steps = $source_definition->steps;
@@ -91,11 +90,11 @@ class OswfDefinitionDao extends Service
         }
 
         $model->latest_modifier = $latest_modifier;
-        $model->latest_modified_time = $latest_modified_time;
+        $model->latest_modified_time = date('Y-m-d H:i:s');
         $model->state_ids = $state_ids;
         $model->screen_ids = $screen_ids;
         $model->steps = $steps;
-        $model->contents = $contents ?? $attributes['contents'];
+        $model->contents = $contents ?? $attributes['contents'] ?? [];
         $model->name = $attributes['name'];
         $model->save();
 

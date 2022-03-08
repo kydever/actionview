@@ -48,4 +48,16 @@ class WorkflowController extends Controller
 
         return $this->formatter->base($model);
     }
+
+    public function update(WorkflowRequest $request, int $id)
+    {
+        $model = $this->service->save(
+            $id,
+            get_user(),
+            get_project_key(),
+            $request->all()
+        );
+
+        return $this->formatter->base($model);
+    }
 }
