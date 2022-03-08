@@ -23,7 +23,6 @@ class AddDescriptionToOswfDefinitionTable extends Migration
     {
         Schema::table('oswf_definition', function (Blueprint $table) {
             Db::select('ALTER TABLE `oswf_definition` CHANGE `latest_modifier` `latest_modifier` JSON  NOT NULL;');
-
             $table->string('description', 50)->default('')->after('contents')->comment('描述');
         });
     }
