@@ -16,6 +16,7 @@ use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Model\ConfigType;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class ConfigTypeDao extends Service
 {
@@ -51,5 +52,13 @@ class ConfigTypeDao extends Service
     public function existsByWorkFlowId(int $workflowId): bool
     {
         return ConfigType::where('workflow_id', $workflowId)->exists();
+    }
+
+    /**
+     * @return Collection<int, ConfigType>
+     */
+    public function findByWorkflowIds(array $workflowIds)
+    {
+        return ConfigType::query()->whereIn('workflow_id', $workflowIds)->get();
     }
 }

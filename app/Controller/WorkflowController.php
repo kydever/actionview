@@ -11,9 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use App\Request\WorkflowRequest;
-use App\Service\Dao\ConfigTypeDao;
-use App\Service\Formatter\DefinitionFormatter;
+use App\Service\Formatter\OswfDefinitionFormatter;
 use App\Service\ProviderService;
 use App\Service\WorkflowService;
 use Hyperf\Di\Annotation\Inject;
@@ -27,7 +25,7 @@ class WorkflowController extends Controller
     protected ProviderService $provider;
 
     #[Inject]
-    protected DefinitionFormatter $formatter;
+    protected OswfDefinitionFormatter $formatter;
 
     public function preview(int $id)
     {
@@ -38,14 +36,7 @@ class WorkflowController extends Controller
 
     public function index()
     {
-        $workflows = $this->provider->getWorkflowList(
-            get_project_key(),
-            ['id', 'name', 'project_key', 'description', 'latest_modified_time', 'latest_modifier', 'steps']
-        );
-        $configTypeDao = di()->get(ConfigTypeDao::class);
-        foreach ($workflows as $workflow) {
-            $workflow->is_used = $configTypeDao->existsByWorkFlowId($workflow->id);
-        }
+        $workflows = $this->provider->getWorkflowList(get_project_key());
 
         return $this->response->success($workflows);
     }

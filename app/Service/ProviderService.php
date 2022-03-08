@@ -48,6 +48,7 @@ use App\Service\Formatter\ConfigFieldFormatter;
 use App\Service\Formatter\ConfigTypeFormatter;
 use App\Service\Formatter\IssueFilterFormatter;
 use App\Service\Formatter\LabelFormatter;
+use App\Service\Formatter\OswfDefinitionFormatter;
 use App\Service\Formatter\SprintFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
@@ -448,8 +449,17 @@ class ProviderService extends Service
         return $project?->getPrincipal();
     }
 
-    public function getWorkflowList(string $projectKey, array $fields = [])
+    public function getWorkflowList(string $projectKey)
     {
-        return di()->get(OswfDefinitionDao::class)->getByFieldsList($projectKey, $fields);
+        $models = di()->get(OswfDefinitionDao::class)->getByFieldsList($projectKey);
+
+        $usedCollection = di()->get(ConfigTypeDao::class)->findByWorkflowIds($models->modelKeys());
+
+        $useMap = [];
+        foreach ($usedCollection as $item) {
+            $useMap[$item->workflow_id] = $item;
+        }
+
+        return di()->get(OswfDefinitionFormatter::class)->formatList($models, $useMap);
     }
 }
