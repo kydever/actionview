@@ -34,6 +34,7 @@ use App\Service\Dao\EpicDao;
 use App\Service\Dao\IssueFilterDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
+use App\Service\Dao\OswfDefinitionDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\ProjectIssueListColumnDao;
 use App\Service\Dao\SprintDao;
@@ -445,5 +446,10 @@ class ProviderService extends Service
         $project = di()->get(ProjectDao::class)->firstByKey($key);
 
         return $project?->getPrincipal();
+    }
+
+    public function getWorkflowList ( string $projectKey, array $fields = [] )
+    {
+         return di()->get(OswfDefinitionDao::class)->getByFieldsList($projectKey, $fields);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,12 +12,12 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id
+ * @property int $id 
  * @property string $project_key 项目KEY
  * @property int $event_id 事件ID
  * @property string $notifications 通知
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at 
  */
 class ConfigEventNotification extends Model
 {
@@ -27,12 +27,10 @@ class ConfigEventNotification extends Model
      * @var string
      */
     protected ?string $table = 'config_event_notifications';
-
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'project_key', 'event_id', 'notifications', 'created_at', 'updated_at'];
-
     /**
      * The attributes that should be cast to native types.
      */

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id
+ * @property int $id 
  * @property string $name 名称
  * @property string $project_key 项目KEY
  * @property array $principal 负责人
@@ -20,8 +20,8 @@ namespace App\Model;
  * @property string $creator 创建者
  * @property string $description 描述
  * @property string $sn 版本
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at 
  */
 class Module extends Model
 {
@@ -31,12 +31,10 @@ class Module extends Model
      * @var string
      */
     protected ?string $table = 'module';
-
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'name', 'project_key', 'principal', 'default_assignee', 'creator', 'description', 'sn', 'created_at', 'updated_at'];
-
     /**
      * The attributes that should be cast to native types.
      */

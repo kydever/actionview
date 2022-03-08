@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id
- * @property int $role_id
- * @property string $project_key
- * @property array $user_ids
- * @property array $group_ids
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property int $id 
+ * @property int $role_id 
+ * @property string $project_key 
+ * @property array $user_ids 
+ * @property array $group_ids 
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at 
  */
 class AclRoleactor extends Model
 {
@@ -28,12 +28,10 @@ class AclRoleactor extends Model
      * @var string
      */
     protected ?string $table = 'acl_roleactor';
-
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'role_id', 'project_key', 'user_ids', 'group_ids', 'created_at', 'updated_at'];
-
     /**
      * The attributes that should be cast to native types.
      */

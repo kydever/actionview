@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id
+ * @property int $id 
  * @property string $code 代码
  * @property int $user_id 用户ID
  * @property int $completed 是否完成
  * @property string $completed_at 完成时间
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at 
  */
 class Activation extends Model
 {
@@ -28,12 +28,10 @@ class Activation extends Model
      * @var string
      */
     protected ?string $table = 'activations';
-
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'code', 'user_id', 'completed', 'completed_at', 'created_at', 'updated_at'];
-
     /**
      * The attributes that should be cast to native types.
      */

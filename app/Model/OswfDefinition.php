@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,17 +12,18 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id
+ * @property int $id 
  * @property string $project_key 项目KEY
- * @property string $name
- * @property int $latest_modifier
- * @property string $latest_modified_time
- * @property string $state_ids
- * @property string $screen_ids
- * @property int $steps
- * @property array $contents
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property string $name 
+ * @property int $latest_modifier 
+ * @property string $latest_modified_time 
+ * @property string $state_ids 
+ * @property string $screen_ids 
+ * @property int $steps 
+ * @property array $contents 
+ * @property string $description 描述
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at 
  */
 class OswfDefinition extends Model
 {
@@ -32,12 +33,10 @@ class OswfDefinition extends Model
      * @var string
      */
     protected ?string $table = 'oswf_definition';
-
     /**
      * The attributes that are mass assignable.
      */
-    protected array $fillable = ['id', 'project_key', 'name', 'latest_modifier', 'latest_modified_time', 'state_ids', 'screen_ids', 'steps', 'contents', 'created_at', 'updated_at'];
-
+    protected array $fillable = ['id', 'project_key', 'name', 'latest_modifier', 'latest_modified_time', 'state_ids', 'screen_ids', 'steps', 'contents', 'description', 'created_at', 'updated_at'];
     /**
      * The attributes that should be cast to native types.
      */

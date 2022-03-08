@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * This file is part of Hyperf.
  *
@@ -12,18 +12,18 @@ declare(strict_types=1);
 namespace App\Model;
 
 /**
- * @property int $id
- * @property int $entry_id
- * @property int $step_id
- * @property int $previous_id
- * @property int $start_time
- * @property int $action_id
- * @property array $owners
- * @property string $status
- * @property string $comments
- * @property array $caller
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property int $id 
+ * @property int $entry_id 
+ * @property int $step_id 
+ * @property int $previous_id 
+ * @property int $start_time 
+ * @property int $action_id 
+ * @property array $owners 
+ * @property string $status 
+ * @property string $comments 
+ * @property array $caller 
+ * @property \Carbon\Carbon $created_at 
+ * @property \Carbon\Carbon $updated_at 
  */
 class OswfCurrentstep extends Model
 {
@@ -33,12 +33,10 @@ class OswfCurrentstep extends Model
      * @var string
      */
     protected ?string $table = 'oswf_currentstep';
-
     /**
      * The attributes that are mass assignable.
      */
     protected array $fillable = ['id', 'entry_id', 'step_id', 'previous_id', 'start_time', 'action_id', 'owners', 'status', 'comments', 'caller', 'created_at', 'updated_at'];
-
     /**
      * The attributes that should be cast to native types.
      */

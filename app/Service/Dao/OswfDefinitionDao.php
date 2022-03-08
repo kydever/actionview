@@ -15,6 +15,7 @@ use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\OswfDefinition;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Builder;
 
 class OswfDefinitionDao extends Service
 {
@@ -31,5 +32,14 @@ class OswfDefinitionDao extends Service
     public function exists(string $stateKey, int $id): bool
     {
         return OswfDefinition::whereJsonContains('state_ids', $stateKey ?? $id)->exists();
+    }
+
+    public function getByFieldsList ( string $projectKey, array $fields = [] )
+    {
+        return OswfDefinition::where ( 'project_key', '$_sys_$' )
+            ->orWhere ( 'project_key', $projectKey )
+            ->orderBy ( 'project_key', 'asc' )
+            ->orderBy ( 'id', 'asc' )
+            ->get ( $fields );
     }
 }
