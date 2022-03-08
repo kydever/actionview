@@ -16,6 +16,7 @@ use App\Exception\BusinessException;
 use App\Model\OswfDefinition;
 use App\Model\User;
 use App\Service\Struct\Workflow;
+use Carbon\Carbon;
 use Han\Utils\Service;
 
 class OswfDefinitionDao extends Service
@@ -61,18 +62,21 @@ class OswfDefinitionDao extends Service
             $model = new OswfDefinition();
             $model->project_key = $projectKey;
         }
-        if (! empty($attributes['contents'])) {
+
+        $now = Carbon::now();
+        $contents = $attributes['contents'] ?? [];
+        $name = $attributes['name'] ?? null;
+
+        if (! empty($contents)) {
             $latest_modifier = [
                 'id' => $user->id,
                 'name' => $user->first_name,
             ];
-            $latest_modified_time = date('Y-m-d H:i:s');
             $state_ids = Workflow::getScreens($attributes['contents']);
             $screen_ids = Workflow::getScreens($attributes['contents']);
             $steps = Workflow::getStepNum($attributes['contents']);
         } else {
             $latest_modifier = [];
-            $latest_modified_time = '';
             $state_ids = [];
             $screen_ids = [];
             $steps = 0;
@@ -89,13 +93,14 @@ class OswfDefinitionDao extends Service
             $contents = $source_definition->contents;
         }
 
-        $model->latest_modifier = $latest_modifier;
-        $model->latest_modified_time = date('Y-m-d H:i:s');
-        $model->state_ids = $state_ids;
-        $model->screen_ids = $screen_ids;
-        $model->steps = $steps;
-        $model->contents = $contents ?? $attributes['contents'] ?? [];
-        $model->name = $attributes['name'];
+        $latest_modifier && $model->latest_modifier = $latest_modifier;
+        $state_ids && $model->state_ids = $state_ids;
+        $screen_ids && $model->screen_ids = $screen_ids;
+        $steps && $model->steps = $steps;
+        $contents && $model->contents = $contents;
+        $name && $model->name = $name;
+
+        $model->latest_modified_time = $now->toDateTimeString();
         $model->save();
 
         return $model;
