@@ -12,27 +12,18 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Constants\ProjectConstant;
-use App\Model\ConfigScreen;
+use App\Model\ConfigEvent;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
 
-class ConfigScreenDao extends Service
+class ConfigEventDao extends Service
 {
     /**
-     * @return Collection<int, ConfigScreen>
-     */
-    public function findMany(array $ids)
-    {
-        return ConfigScreen::findManyFromCache($ids);
-    }
-
-    /**
-     * @return Collection<int, ConfigScreen>
+     * @return Collection<int, ConfigEvent>
      */
     public function findByProjectKey(string $key)
     {
-        return ConfigScreen::query()
-            ->where('project_key', ProjectConstant::SYS)
+        return ConfigEvent::query()->where('project_key', ProjectConstant::SYS)
             ->orWhere('project_key', $key)
             ->orderBy('project_key')
             ->orderBy('id')

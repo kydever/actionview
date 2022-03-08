@@ -24,8 +24,6 @@ class ConfigEvent extends Model
 {
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected ?string $table = 'config_events';
 
@@ -38,4 +36,9 @@ class ConfigEvent extends Model
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function isWorkflow(): bool
+    {
+        return $this->apply === 'workflow';
+    }
 }

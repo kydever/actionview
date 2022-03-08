@@ -100,6 +100,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('workflow', [App\Controller\WorkflowController::class, 'index']);
     Router::post('workflow', [App\Controller\WorkflowController::class, 'store']);
     Router::put('workflow/{id:\d+}', [App\Controller\WorkflowController::class, 'update']);
+    Router::get('workflow/{id:\d+}', [App\Controller\WorkflowController::class, 'info']);
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,

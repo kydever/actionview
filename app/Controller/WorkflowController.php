@@ -46,7 +46,9 @@ class WorkflowController extends Controller
     {
         $model = $this->service->save(0, get_user(), get_project_key(), $request->all());
 
-        return $this->formatter->base($model);
+        return $this->response->success(
+            $this->formatter->base($model)
+        );
     }
 
     public function update(WorkflowRequest $request, int $id)
@@ -58,6 +60,16 @@ class WorkflowController extends Controller
             $request->all()
         );
 
-        return $this->formatter->base($model);
+        return $this->response->success(
+            $this->formatter->base($model)
+        );
+    }
+
+    public function info(int $id)
+    {
+        [$result, $options] = $this->service->info($id, get_project());
+        return $this->response->success($result, [
+            'options' => $options,
+        ]);
     }
 }

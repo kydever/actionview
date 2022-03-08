@@ -11,17 +11,20 @@ declare(strict_types=1);
  */
 namespace App\Service\Formatter;
 
-use App\Model\AclRole;
+use App\Model\ConfigScreen;
 use Han\Utils\Service;
 
-class RoleFormatter extends Service
+class ConfigScreenFormatter extends Service
 {
-    public function base(AclRole $model)
+    public function base(ConfigScreen $model)
     {
         return [
             'id' => $model->id,
             'project_key' => $model->project_key,
             'name' => $model->name,
+            'description' => $model->description,
+            'schema' => $model->schema,
+            'field_ids' => $model->field_ids,
         ];
     }
 
@@ -31,6 +34,7 @@ class RoleFormatter extends Service
         foreach ($models as $model) {
             $result[] = $this->base($model);
         }
+
         return $result;
     }
 }

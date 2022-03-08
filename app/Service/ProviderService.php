@@ -22,11 +22,14 @@ use App\Model\ConfigResolutionProperty;
 use App\Model\ConfigScreen;
 use App\Model\ConfigState;
 use App\Service\Context\GroupContext;
+use App\Service\Dao\AclRoleDao;
+use App\Service\Dao\ConfigEventDao;
 use App\Service\Dao\ConfigFieldDao;
 use App\Service\Dao\ConfigPriorityDao;
 use App\Service\Dao\ConfigPriorityPropertyDao;
 use App\Service\Dao\ConfigResolutionDao;
 use App\Service\Dao\ConfigResolutionPropertyDao;
+use App\Service\Dao\ConfigScreenDao;
 use App\Service\Dao\ConfigStateDao;
 use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Dao\ConfigTypeDao;
@@ -45,10 +48,12 @@ use App\Service\Dao\UserIssueFilterDao;
 use App\Service\Dao\UserIssueListColumnDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\ConfigFieldFormatter;
+use App\Service\Formatter\ConfigScreenFormatter;
 use App\Service\Formatter\ConfigTypeFormatter;
 use App\Service\Formatter\IssueFilterFormatter;
 use App\Service\Formatter\LabelFormatter;
 use App\Service\Formatter\OswfDefinitionFormatter;
+use App\Service\Formatter\RoleFormatter;
 use App\Service\Formatter\SprintFormatter;
 use App\Service\Formatter\UserFormatter;
 use Han\Utils\Service;
@@ -366,6 +371,39 @@ class ProviderService extends Service
         }
 
         return $this->getScreenSchema($type->project_key, $typeId, $type->screen);
+    }
+
+    public function getScreenList(string $projectKey): array
+    {
+        $models = di()->get(ConfigScreenDao::class)->findByProjectKey($projectKey);
+
+        return di()->get(ConfigScreenFormatter::class)->formatList($models);
+    }
+
+    public function getRoleList(string $projectKey): array
+    {
+        $models = di()->get(AclRoleDao::class)->findOrByProjectKey($projectKey);
+
+        return di()->get(RoleFormatter::class)->formatList($models);
+    }
+
+    public function getEventOptions(string $projectKey)
+    {
+        $models = di()->get(ConfigEventDao::class)->findByProjectKey($projectKey);
+        $result = [];
+
+        foreach ($models as $model) {
+            if (! $model->isWorkflow()) {
+                continue;
+            }
+
+            $result[] = [
+                '_id' => $model->key ?: $model->id,
+                'name' => trim((string) $model->name),
+            ];
+        }
+
+        return $result;
     }
 
     public function getScreenSchema(string $projectKey, int $typeId, ConfigScreen $screen): array

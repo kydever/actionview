@@ -11,7 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\OswfDefinition;
+use App\Model\Project;
 use App\Model\User;
 use App\Service\Dao\OswfDefinitionDao;
 use App\Service\Formatter\DefinitionFormatter;
@@ -21,10 +24,40 @@ use Hyperf\Di\Annotation\Inject;
 class WorkflowService extends Service
 {
     #[Inject]
+    protected ProviderService $provider;
+
+    #[Inject]
     protected OswfDefinitionDao $dao;
 
     #[Inject]
     protected DefinitionFormatter $formatter;
+
+    public function info(int $id, Project $project): array
+    {
+        $workflow = $this->dao->first($id);
+        if ($project->key !== $workflow?->project_key) {
+            throw new BusinessException(ErrorCode::WORKFLOW_NOT_EXISTS);
+        }
+
+        $states = $this->provider->getStateListOptions($project->key);
+        $screens = $this->provider->getScreenList($project->key);
+        $resolutions = $this->provider->getResolutionOptions($project->key);
+        $roles = $this->provider->getRoleList($project->key);
+        $events = $this->provider->getEventOptions($project->key);
+        $users = $this->provider->getUserList($project->key);
+
+        return [
+            $this->formatter->base($workflow),
+            [
+                'states' => $states,
+                'screens' => $screens,
+                'resolutions' => $resolutions,
+                'events' => $events,
+                'roles' => $roles,
+                'users' => $users,
+            ],
+        ];
+    }
 
     public function preview(int $id)
     {
