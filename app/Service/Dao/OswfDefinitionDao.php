@@ -33,12 +33,12 @@ class OswfDefinitionDao extends Service
         return OswfDefinition::whereJsonContains('state_ids', $stateKey ?? $id)->exists();
     }
 
-    public function getByFieldsList(string $projectKey, array $fields = [])
+    public function getByFieldsList(string $projectKey)
     {
         return OswfDefinition::where('project_key', '$_sys_$')
             ->orWhere('project_key', $projectKey)
-            ->orderBy('project_key', 'asc')
-            ->orderBy('id', 'asc')
-            ->get($fields);
+            ->orderBy('project_key')
+            ->orderBy('id')
+            ->get();
     }
 }
