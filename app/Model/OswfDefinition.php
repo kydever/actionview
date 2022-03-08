@@ -21,6 +21,7 @@ namespace App\Model;
  * @property string $screen_ids
  * @property int $steps
  * @property array $contents
+ * @property string $description 描述
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -36,7 +37,7 @@ class OswfDefinition extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected array $fillable = ['id', 'project_key', 'name', 'latest_modifier', 'latest_modified_time', 'state_ids', 'screen_ids', 'steps', 'contents', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'name', 'latest_modifier', 'latest_modified_time', 'state_ids', 'screen_ids', 'steps', 'contents', 'description', 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be cast to native types.
