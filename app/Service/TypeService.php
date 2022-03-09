@@ -11,8 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Model\ConfigType;
 use App\Model\Project;
 use App\Service\Dao\TypeDao;
+use App\Service\Formatter\TypeFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
 
@@ -24,23 +26,30 @@ class TypeService extends Service
     #[Inject]
     protected ProviderService $provider;
 
-    public function getByProjectKeyOrderSnOldest(Project $project): array
+    #[Inject]
+    protected TypeFormatter $formatter;
+
+    public function findByProject(Project $project): array
     {
-        $models = $this->dao->getByProjectKeyOrderSnOldest($project->key);
-        $stateService = di()->get(StateService::class);
+        $models = $this->dao->findByProjectKey($project->key);
+
+        $list = [];
+        /** @var ConfigType $model */
         foreach ($models as $model) {
-            $model->is_used = $stateService->isFieldUsedByIssue($project, 'type', $model->toArray());
+            $item = $this->formatter->base($model);
+            $item['is_used'] = di()->get(StateService::class)->isFieldUsedByIssue($project, 'type', ['id' => $model->id]);
+            $list[] = $item;
         }
+
         $screens = $this->provider->getScreenList($project->key);
         $workflows = $this->provider->getWorkflowList($project->key);
-        $options = [
-            'screens' => $screens,
-            'workflows' => $workflows,
-        ];
 
         return [
-            'models' => $models,
-            'options' => $options,
+            $list,
+            [
+                'screens' => $screens,
+                'workflows' => $workflows,
+            ],
         ];
     }
 }

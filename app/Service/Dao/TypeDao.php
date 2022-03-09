@@ -13,13 +13,17 @@ namespace App\Service\Dao;
 
 use App\Model\ConfigType;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class TypeDao extends Service
 {
-    public function getByProjectKeyOrderSnOldest(string $projectKey)
+    /**
+     * @return Collection<int, ConfigType>
+     */
+    public function findByProjectKey(string $key)
     {
-        return ConfigType::where('project_key', $projectKey)
-            ->orderBy('sn', 'asc')
+        return ConfigType::query()->where('project_key', $key)
+            ->orderBy('sn')
             ->get();
     }
 }

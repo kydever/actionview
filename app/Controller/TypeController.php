@@ -25,12 +25,12 @@ class TypeController extends Controller
 
     public function index()
     {
-        $type = $this->service->getByProjectKeyOrderSnOldest(get_project());
+        [$list, $options] = $this->service->findByProject(get_project());
 
         return $this->response->success(
-            $this->formatter->formatList($type['models']),
+            $list,
             [
-                'options' => $type['options'],
+                'options' => $options,
             ]
         );
     }
