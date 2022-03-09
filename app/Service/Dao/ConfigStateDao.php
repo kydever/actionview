@@ -28,7 +28,7 @@ class ConfigStateDao extends Service
      */
     public function findOrByProjectKey(string $key)
     {
-        return ConfigState::query()->where('project_key', '$_sys_$')
+        return ConfigState::query()->where('project_key', ProjectConstant::SYS)
             ->orWhere('project_key', $key)
             ->orderBy('project_key', 'asc')
             ->orderBy('sn', 'asc')

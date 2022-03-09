@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Constants\ErrorCode;
+use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Model\OswfDefinition;
 use App\Model\User;
@@ -38,7 +39,7 @@ class OswfDefinitionDao extends Service
 
     public function getByFieldsList(string $projectKey)
     {
-        return OswfDefinition::where('project_key', '$_sys_$')
+        return OswfDefinition::where('project_key', ProjectConstant::SYS)
             ->orWhere('project_key', $projectKey)
             ->orderBy('project_key')
             ->orderBy('id')
