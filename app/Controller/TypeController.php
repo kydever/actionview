@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\TypeRequest;
 use App\Service\Formatter\TypeFormatter;
 use App\Service\TypeService;
 use Hyperf\Di\Annotation\Inject;
@@ -32,6 +33,15 @@ class TypeController extends Controller
             [
                 'options' => $options,
             ]
+        );
+    }
+
+    public function store ( TypeRequest $request )
+    {
+        $model = $this->service->save(0, get_project_key(), $request->all());
+
+        return $this->response->success (
+            $this->formatter->base($model)
         );
     }
 }
