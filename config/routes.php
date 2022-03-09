@@ -98,6 +98,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('labels/{id:\d+}/delete', [App\Controller\LabelController::class, 'delete']);
 
     Router::get('type', [App\Controller\TypeController::class, 'index']);
+    Router::post('type', [App\Controller\TypeController::class, 'store']);
 
     Router::get('workflow', [App\Controller\WorkflowController::class, 'index']);
     Router::post('workflow', [App\Controller\WorkflowController::class, 'store']);

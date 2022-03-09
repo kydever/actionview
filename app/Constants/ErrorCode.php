@@ -293,6 +293,16 @@ class ErrorCode extends AbstractConstants
     public const WIKI_MOVE_DIR_NOT_EXIST = -11967;
 
     /**
+     * @Message("类型名称不能重复")
+     */
+    public const TYPE_NAME_ALREADY_EXIST = -12001;
+
+    /**
+     * @Message("类型缩码不能重复")
+     */
+    public const TYPE_ABB_ALREADY_EXIST = -12003;
+
+    /**
      * @Message("工作流不存在")
      */
     public const WORKFLOW_NOT_EXISTS = -12101;

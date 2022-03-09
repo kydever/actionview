@@ -52,4 +52,9 @@ class TypeService extends Service
             ],
         ];
     }
+
+    public function save(int $id, string $key, array $attributes): ConfigType
+    {
+        return $this->dao->createOrUpdate($id, $key, $attributes);
+    }
 }
