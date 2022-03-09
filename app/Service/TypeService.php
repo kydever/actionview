@@ -37,7 +37,7 @@ class TypeService extends Service
         /** @var ConfigType $model */
         foreach ($models as $model) {
             $item = $this->formatter->base($model);
-            $item['is_used'] = di()->get(StateService::class)->isFieldUsedByIssue($project, 'type', ['id' => $model->id]);
+            $item['is_used'] = di()->get(StateService::class)->isFieldUsedByIssue($project, 'type', ['id' => $model->id, 'project_key' => $project->key]);
             $list[] = $item;
         }
 
