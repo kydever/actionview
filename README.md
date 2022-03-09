@@ -37,3 +37,36 @@ docker exec $(basename $(pwd))_actionview_1 php /opt/www/bin/hyperf.php migrate
 ```shell
 docker exec $(basename $(pwd))_actionview_1 php /opt/www/bin/hyperf.php put:mapping -i issue
 ```
+
+# 如何开发
+
+## MacOS
+
+### 创建 Network
+
+```shell
+docker network create default-network
+```
+
+### 安装必要的服务
+
+- ElasticSearch
+
+```shell
+docker run -d --network default-network --restart always -p 9200:9200 -p 9300:9300 \
+-e "discovery.type=single-node" -v elasticsearch-data:/usr/share/elasticsearch/data \
+-e ES_JAVA_OPTS="-Xms512m -Xmx512m" --name elasticsearch elasticsearch:5-alpine
+```
+
+- Redis
+
+```shell
+docker run --name redis -v redis-data:/data --network default-network --restart always -p 6379:6379 -d redis
+```
+
+- MySQL
+
+```shell
+docker run --name mysql -v mysql-data:/var/lib/mysql -p 3306:3306 --restart always --network default-network -e MYSQL_ALLOW_EMPTY_PASSWORD=true -e TZ=Asia/Shanghai -d mysql:5.7
+```
+
