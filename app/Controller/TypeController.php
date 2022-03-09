@@ -36,11 +36,11 @@ class TypeController extends Controller
         );
     }
 
-    public function store ( TypeRequest $request )
+    public function store(TypeRequest $request)
     {
         $model = $this->service->save(0, get_project_key(), $request->all());
 
-        return $this->response->success (
+        return $this->response->success(
             $this->formatter->base($model)
         );
     }
