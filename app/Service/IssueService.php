@@ -442,9 +442,7 @@ class IssueService extends Service
         $bool = $this->getBoolSearch($project->key, $input, $user->id);
 
         [$count, $ids] = $this->search->search([
-            'query' => [
-                'bool' => $bool,
-            ],
+            'query' => $bool,
             'sort' => ['created_at' => 'desc'],
             'from' => $offset,
             'size' => $limit,
@@ -911,7 +909,7 @@ class IssueService extends Service
         ];
         $bool['must'][] = ['term' => ['project_key' => $projectKey]];
 
-        return $bool;
+        return ['bool' => $bool];
     }
 
     public function setAssignee(int $id, string $assigneeId, User $user, Project $project)
