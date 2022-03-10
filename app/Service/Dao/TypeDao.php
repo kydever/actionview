@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service\Dao;
 
 use App\Constants\ErrorCode;
+use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Model\ConfigType;
 use Han\Utils\Service;
@@ -24,7 +25,8 @@ class TypeDao extends Service
      */
     public function findByProjectKey(string $key)
     {
-        return ConfigType::query()->where('project_key', $key)
+        return ConfigType::query()->where('project_key', ProjectConstant::SYS)
+            ->orWhere('project_key', $key)
             ->orderBy('sn')
             ->get();
     }
