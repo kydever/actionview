@@ -67,8 +67,8 @@ class TypeDao extends Service
         if (empty($model)) {
             $model = new ConfigType();
             $model->project_key = $key;
+            $model->sn = time();
         }
-        $model->sn = time();
         $model->name = $attributes['name'] ?? $model->name;
         $model->abb = $attributes['abb'] ?? $model->abb;
         $model->screen_id = $attributes['screen_id'] ?? $model->screen_id;
@@ -76,9 +76,11 @@ class TypeDao extends Service
         if (isset($attributes['type'])) {
             $model->type = $attributes['type'];
         }
+        $model->default = $attributes['default'] ?? 0;
         if (isset($attributes['description'])) {
             $model->description = $attributes['description'];
         }
+        $model->disabled = $attributes['disabled'] ?? 0;
         $model->save();
 
         return $model;
