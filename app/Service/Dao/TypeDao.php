@@ -81,11 +81,17 @@ class TypeDao extends Service
         if (isset($attributes['type'])) {
             $model->type = $attributes['type'];
         }
-        $model->default = $attributes['default'] ?? 0;
         if (isset($attributes['description'])) {
             $model->description = $attributes['description'];
         }
-        $model->disabled = $attributes['disabled'] ?? 0;
+
+        $disabled = $attributes['disabled'] ?? null;
+        if ($disabled !== null) {
+            $model->disabled = $disabled;
+            if ($disabled) {
+                $model->default = 0;
+            }
+        }
         $model->save();
 
         return $model;
