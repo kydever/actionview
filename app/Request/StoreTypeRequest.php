@@ -13,7 +13,7 @@ namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class TypeRequest extends FormRequest
+class StoreTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,8 +31,9 @@ class TypeRequest extends FormRequest
         return [
             'name' => 'required',
             'abb' => 'required',
-            'screen_id' => 'required',
-            'workflow_id' => 'required',
+            'screen_id' => 'required|integer',
+            'workflow_id' => 'required|integer',
+            'type' => 'required',
         ];
     }
 }

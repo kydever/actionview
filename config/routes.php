@@ -99,6 +99,7 @@ Router::addGroup('/project/{project_key}/', function () {
 
     Router::get('type', [App\Controller\TypeController::class, 'index']);
     Router::post('type', [App\Controller\TypeController::class, 'store']);
+    Router::put('type/{id:\d+}', [App\Controller\TypeController::class, 'update']);
 
     Router::get('workflow', [App\Controller\WorkflowController::class, 'index']);
     Router::post('workflow', [App\Controller\WorkflowController::class, 'store']);

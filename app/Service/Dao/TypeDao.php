@@ -65,12 +65,13 @@ class TypeDao extends Service
         if (empty($model)) {
             $model = new ConfigType();
             $model->project_key = $key;
+            $model->screen_id = $attributes['screen_id'];
+            $model->workflow_id = $attributes['workflow_id'];
+            $model->type = $attributes['type'];
         }
         $model->sn = time();
         $model->name = $attributes['name'];
         $model->abb = $attributes['abb'];
-        $model->screen_id = $attributes['screen_id'];
-        $model->workflow_id = $attributes['workflow_id'];
         $model->description = $attributes['description'] ?? '';
         $model->save();
 
