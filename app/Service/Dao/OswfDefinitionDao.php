@@ -94,11 +94,11 @@ class OswfDefinitionDao extends Service
             $contents = $source_definition->contents;
         }
 
-        $latest_modifier && $model->latest_modifier = $latest_modifier;
-        $state_ids && $model->state_ids = $state_ids;
-        $screen_ids && $model->screen_ids = $screen_ids;
+        $model->latest_modifier = $latest_modifier ?? $model->latest_modifier ?? [];
+        $model->state_ids = $state_ids ?? $model->state_ids ?? [];
+        $model->screen_ids = $screen_ids ?? $model->screen_ids ?? [];
+        $model->contents = $contents ?? $model->contents ?? [];
         $steps && $model->steps = $steps;
-        $contents && $model->contents = $contents;
         $name && $model->name = $name;
 
         $model->latest_modified_time = $now->toDateTimeString();

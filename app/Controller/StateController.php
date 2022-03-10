@@ -40,14 +40,18 @@ class StateController extends Controller
     {
         $model = $this->service->save(0, get_project_key(), $request->all());
 
-        return $this->formatter->base($model);
+        return $this->response->success(
+            $this->formatter->base($model)
+        );
     }
 
     public function update(StateRequest $request, int $id)
     {
         $model = $this->service->save($id, get_project_key(), $request->all());
 
-        return $this->formatter->base($model);
+        return $this->response->success(
+            $this->formatter->base($model)
+        );
     }
 
     public function destroy(int $id)
