@@ -56,23 +56,27 @@ class TypeDao extends Service
     public function createOrUpdate(int $id, string $key, array $attributes): ConfigType
     {
         $model = $this->findById($id);
-        if ($this->existsByName($attributes['name']) && $model?->name != $attributes['name']) {
+        if (isset($attributes['name']) && $this->existsByName($attributes['name']) && $model?->name != $attributes['name']) {
             throw new BusinessException(ErrorCode::TYPE_NAME_ALREADY_EXIST);
         }
-        if ($this->existsByAbb($attributes['abb']) && $model?->abb != $attributes['abb']) {
+        if (isset($attributes['abb']) && $this->existsByAbb($attributes['abb']) && $model?->abb != $attributes['abb']) {
             throw new BusinessException(ErrorCode::TYPE_ABB_ALREADY_EXIST);
         }
         if (empty($model)) {
             $model = new ConfigType();
             $model->project_key = $key;
-            $model->screen_id = $attributes['screen_id'];
-            $model->workflow_id = $attributes['workflow_id'];
-            $model->type = $attributes['type'];
         }
         $model->sn = time();
-        $model->name = $attributes['name'];
-        $model->abb = $attributes['abb'];
-        $model->description = $attributes['description'] ?? '';
+        $model->name = $attributes['name'] ?? $model->name;
+        $model->abb = $attributes['abb'] ?? $model->abb;
+        $model->screen_id = $attributes['screen_id'] ?? $model->screen_id;
+        $model->workflow_id = $attributes['workflow_id'] ?? $model->workflow_id;
+        if (isset($attributes['type'])) {
+            $model->type = $attributes['type'];
+        }
+        if (isset($attributes['description'])) {
+            $model->description = $attributes['description'];
+        }
         $model->save();
 
         return $model;

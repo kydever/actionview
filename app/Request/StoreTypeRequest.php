@@ -33,7 +33,6 @@ class StoreTypeRequest extends FormRequest
             'abb' => 'required',
             'screen_id' => 'required|integer',
             'workflow_id' => 'required|integer',
-            'type' => 'required',
         ];
     }
 }

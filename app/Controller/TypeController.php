@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\StoreTypeRequest;
-use App\Request\UpdateTypeRequest;
 use App\Service\Formatter\TypeFormatter;
 use App\Service\TypeService;
 use Hyperf\Di\Annotation\Inject;
@@ -46,12 +45,16 @@ class TypeController extends Controller
         );
     }
 
-    public function update(UpdateTypeRequest $request, int $id)
+    public function update(int $id)
     {
-        $model = $this->service->save($id, get_project_key(), $request->all());
+        $model = $this->service->save($id, get_project_key(), $this->request->all());
 
         return $this->response->success(
             $this->formatter->base($model)
         );
+    }
+
+    public function handle()
+    {
     }
 }
