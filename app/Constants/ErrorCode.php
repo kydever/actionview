@@ -303,6 +303,16 @@ class ErrorCode extends AbstractConstants
     public const TYPE_ABB_ALREADY_EXIST = -12003;
 
     /**
+     * @Message("类型不存在或不属于此项目")
+     */
+    public const TYPE_NOT_FOUND = -12006;
+
+    /**
+     * @Message("类型在问题中被使用")
+     */
+    public const TYPE_USED_ISSUE = -12007;
+
+    /**
      * @Message("工作流不存在")
      */
     public const WORKFLOW_NOT_EXISTS = -12101;

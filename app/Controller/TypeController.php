@@ -54,6 +54,13 @@ class TypeController extends Controller
         );
     }
 
+    public function destroy(int $id)
+    {
+        return $this->response->success([
+            'id' => $this->service->delete(get_project(), $id),
+        ]);
+    }
+
     public function handle()
     {
     }
