@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\ConfigType;
 use App\Model\Project;
 use App\Service\Dao\TypeDao;
@@ -56,5 +58,16 @@ class TypeService extends Service
     public function save(int $id, string $key, array $attributes): ConfigType
     {
         return $this->dao->createOrUpdate($id, $key, $attributes);
+    }
+
+    public function delete(Project $project, int $id): int
+    {
+        $isUsed = di()->get(StateService::class)->isFieldUsedByIssue($project, 'type', ['id' => $id, 'project_key' => $project->key]);
+        if ($isUsed) {
+            throw new BusinessException(ErrorCode::TYPE_USED_ISSUE);
+        }
+        $model = $this->dao->delete($id);
+
+        return $model->id;
     }
 }

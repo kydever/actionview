@@ -31,9 +31,14 @@ class TypeDao extends Service
             ->get();
     }
 
-    public function findById(int $id): ?ConfigType
+    public function findById(int $id, bool $throw = false): ?ConfigType
     {
-        return ConfigType::findFromCache($id);
+        $model = ConfigType::findFromCache($id);
+        if (empty($model) && $throw) {
+            throw new BusinessException(ErrorCode::TYPE_NOT_FOUND);
+        }
+
+        return $model;
     }
 
     public function existsByNameOrAbb(string $name, string $abb): bool
@@ -82,6 +87,14 @@ class TypeDao extends Service
         }
         $model->disabled = $attributes['disabled'] ?? 0;
         $model->save();
+
+        return $model;
+    }
+
+    public function delete(int $id): ConfigType
+    {
+        $model = $this->findById($id, true);
+        $model->delete();
 
         return $model;
     }
