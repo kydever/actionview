@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Service\Formatter;
 
 use App\Model\Wiki;
@@ -26,13 +27,12 @@ class WikiFormatter extends Service
             'del_flag' => $model->del_flag,
             'name' => $model->name,
             'pt' => $model->pt,
-            'parent' => (string) $model->parent,
+            'parent' => (string)$model->parent,
             'version' => $model->version,
             'creator' => $model->creator,
             'editor' => $model->editor,
             'checkin' => $model->checkin,
-            'created_at' => (string) $model->created_at,
-            'updated_at' => (string) $model->updated_at,
+            'created_at' => $model->created_at->getTimestamp(),
         ];
     }
 
