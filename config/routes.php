@@ -158,7 +158,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('version/merge', App\Controller\VersionController::class . '::merge');
 
     Router::post('wiki', App\Controller\WikiController::class . '::create');
-    Router::get('wiki/directory/{directory:\d+}', App\Controller\WikiController::class . '::index');
+    Router::get('wiki/directory/{directory:\d+}', [App\Controller\WikiController::class, 'index']);
     Router::get('wiki/dirtree', App\Controller\WikiController::class . '::getDirTree');
     Router::get('wiki/search/path', App\Controller\WikiController::class . '::searchPath');
     Router::get('wiki/{id:\d+}', App\Controller\WikiController::class . '::show');
