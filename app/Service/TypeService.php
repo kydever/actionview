@@ -70,4 +70,9 @@ class TypeService extends Service
 
         return $model->id;
     }
+
+    public function sortable(string $key, array $sequence): array
+    {
+        return $this->dao->sortable($key, $sequence);
+    }
 }

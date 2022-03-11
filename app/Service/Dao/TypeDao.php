@@ -102,4 +102,55 @@ class TypeDao extends Service
 
         return $model;
     }
+
+    /**
+     * @return Collection<int, ConfigType>
+     */
+    public function getByProjectKey(string $key)
+    {
+        return ConfigType::where('project_key', $key)->get();
+    }
+
+    public function findByIdAndProjectKey(int $id, string $key): ConfigType
+    {
+        $model = $this->findById($id, true);
+        if ($model->project_key != $key) {
+            throw new BusinessException(ErrorCode::TYPE_NOT_FOUND);
+        }
+
+        return $model;
+    }
+
+    public function sortable(string $key, array $attributes): array
+    {
+        if (isset($attributes['sequence'])) {
+            $i = 1;
+            foreach ($attributes['sequence'] as $modelId) {
+                $model = $this->findById($modelId);
+                if (empty($model) || $model->project_key != $key) {
+                    continue;
+                }
+                $model->sn = $i++;
+                $model->save();
+            }
+        }
+        if (isset($attributes['defaultValue'])) {
+            $this->findByIdAndProjectKey((int) $attributes['defaultValue'], $key);
+            $models = $this->getByProjectKey($key);
+            foreach ($models as $model) {
+                if ($model->id == $attributes['defaultValue']) {
+                    $model->default = true;
+                    $model->save();
+                } elseif (isset($model->default)) {
+                    $model->default = false;
+                    $model->save();
+                }
+            }
+        }
+
+        $sequence = $attributes['sequence'] ?? null;
+        $default = $attributes['defaultValue'] ?? null;
+
+        return [$sequence, $default];
+    }
 }
