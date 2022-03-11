@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace App\Service\Formatter;
 
 use App\Model\Wiki;
@@ -27,7 +26,8 @@ class WikiFormatter extends Service
             'del_flag' => $model->del_flag,
             'name' => $model->name,
             'pt' => $model->pt,
-            'parent' => (string)$model->parent,
+            'parent' => (string) $model->parent,
+            'contents' => $model->contents,
             'version' => $model->version,
             'creator' => $model->creator,
             'editor' => $model->editor,
