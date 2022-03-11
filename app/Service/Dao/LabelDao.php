@@ -46,15 +46,17 @@ class LabelDao extends Service
         return Label::findFromCache($id);
     }
 
-    public function existsByName(string $name): bool
+    public function existsByName(string $projectKey, string $name): bool
     {
-        return Label::where('name', $name)->exists();
+        return Label::query()->where('project_key', $projectKey)
+            ->where('name', $name)
+            ->exists();
     }
 
     public function createOrUpdate(int $id, string $projectKey, string $name, ?string $bgColor): Label
     {
         $model = $this->findById($id);
-        $nameExists = $this->existsByName($name);
+        $nameExists = $this->existsByName($projectKey, $name);
         if ($nameExists && $model?->name !== $name) {
             throw new BusinessException(ErrorCode::LABEL_NAME_ALREADY_EXISTED);
         }
