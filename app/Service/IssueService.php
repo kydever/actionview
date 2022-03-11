@@ -17,6 +17,7 @@ use App\Constants\Schema;
 use App\Constants\StatusConstant;
 use App\Event\IssueEvent;
 use App\Exception\BusinessException;
+use App\Model\ConfigField;
 use App\Model\Issue;
 use App\Model\IssueFilter;
 use App\Model\Label;
@@ -1035,6 +1036,115 @@ class IssueService extends Service
             'del' => $this->delFilters($input['ids'] ?? [], $user, $project),
             default => $this->getIssueFilters($project, $user),
         };
+    }
+
+    public function batchUpdate(Project $project, User $user, array $ids, array $values): array
+    {
+        if (! di()->get(AclService::class)->isAllowed($user->id, Permission::EDIT_COMMNETS, $project)) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        $schemas = [];
+        $updValues = [];
+
+        if (isset($values['type'])) {
+            if (! $values['type']) {
+                throw new BusinessException(ErrorCode::ISSUE_TYPE_NOT_EMPTY);
+            }
+
+            $typeSchema = $this->provider->getSchemaByType($values['type']);
+            if (! $typeSchema) {
+                throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
+            }
+
+            $schemas[$values['type']] = $typeSchema;
+            $updValues['type'] = $values['type'];
+        }
+
+        /** @var array<string, ConfigField> $fields */
+        $fields = value(function () use ($project) {
+            $result = [];
+            $fields = $this->provider->getFieldList($project->key);
+            foreach ($fields as $field) {
+                $result[$field->key] = $field;
+            }
+            return $result;
+        });
+
+        foreach ($values as $key => $val) {
+            if (! isset($fields[$key]) || $fields[$key]->type == 'File') {
+                continue;
+            }
+
+            $field = $fields[$key];
+
+            if ($field->type == 'DateTimePicker' || $field->type == 'DatePicker') {
+                if ($val && $this->isTimestamp($val) === false) {
+                    throw new BusinessException(ErrorCode::ISSUE_DATE_TIME_PICKER_INVALID);
+                }
+                $updValues[$key] = $val;
+            } elseif ($field->type == 'TimeTracking') {
+                if ($val && ! $this->ttCheck($val)) {
+                    throw new BusinessException(ErrorCode::ISSUE_TIME_TRACKING_INVALID);
+                }
+                $updValues[$key] = $this->ttHandle($val);
+                $updValues[$key . '_m'] = $this->ttHandleInM($updValues[$key]);
+            } elseif ($key == 'assignee' || $field->type == 'SingleUser') {
+                $userInfo = di()->get(UserDao::class)->first($val);
+                if ($userInfo) {
+                    $updValues[$key] = ['id' => $val, 'name' => $userInfo->first_name, 'email' => $userInfo->email];
+                }
+            } elseif ($field->type == 'MultiUser') {
+                $userIds = $val;
+                $users = di()->get(UserDao::class)->findMany($userIds)->getDictionary();
+                $updValues[$key] = [];
+                $newUserIds = [];
+                foreach ($userIds as $uid) {
+                    if ($userInfo = $users[$uid] ?? null) {
+                        $updValues[$key][] = ['id' => $uid, 'name' => $userInfo->first_name, 'email' => $userInfo->email];
+                    }
+                    $newUserIds[] = $uid;
+                }
+                $updValues[$key . '_ids'] = $newUserIds;
+            } elseif ($field->type === 'Number' || $field->type === 'Integer') {
+                if ($val === '') {
+                    $updValues[$key] = '';
+                } else {
+                    $updValues[$key] = $field->type === 'Number' ? floatval($val) : intval($val);
+                }
+            } else {
+                $updValues[$key] = $val;
+            }
+        }
+
+        $updValues['modifier'] = ['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email];
+        $updValues['updated_at'] = time();
+
+        $models = $this->dao->findMany($ids);
+        foreach ($models as $model) {
+            $type = $values['type'] ?? $model->type;
+            if (! isset($schemas[$type])) {
+                $schemas[$type] = $this->provider->getSchemaByType($type);
+                if (! $schemas[$type]) {
+                    continue;
+                }
+            }
+            $schema = $schemas[$type];
+
+            $data = array_only($updValues, $this->getValidKeysBySchema($schema));
+            if (! $data) {
+                continue;
+            }
+
+            $model->fill($data)->save();
+        }
+
+        // create the Labels for project
+        if (! empty($updValues['labels'])) {
+            $this->createLabels($project->key, $updValues['labels']);
+        }
+
+        return ['ids' => $ids];
     }
 
     public function doAction(int $id, int $workflowId, array $input, User $user, Project $project)

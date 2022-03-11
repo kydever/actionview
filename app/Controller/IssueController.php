@@ -150,29 +150,15 @@ class IssueController extends Controller
     {
         $data = $request->input('data');
 
+        $project = get_project();
+        $user = get_user();
+
         $result = match ($request->getInputMethod()) {
-            'update' => [],
+            'update' => $this->service->batchUpdate($project, $user, $data['ids'], $data['values']),
             'delete' => [],
         };
 
         return $this->response->success($result);
-        $method = $request->input('method');
-        if ($method == 'update') {
-            $data = $request->input('data');
-            if (! $data || ! isset($data['ids']) || ! $data['ids'] || ! is_array($data['ids']) || ! isset($data['values']) || ! $data['values'] || ! is_array($data['values'])) {
-                throw new \UnexpectedValueException('the batch params has errors.', -11124);
-            }
-            return $this->batchUpdate($project_key, $data['ids'], $data['values']);
-        }
-        if ($method == 'delete') {
-            $data = $request->input('data');
-            if (! $data || ! isset($data['ids']) || ! $data['ids'] || ! is_array($data['ids'])) {
-                throw new \UnexpectedValueException('the batch params has errors.', -11124);
-            }
-            return $this->batchDelete($project_key, $data['ids']);
-        }
-
-        throw new \UnexpectedValueException('the batch method has errors.', -11125);
     }
 
     public function doAction(int $id, int $workflowId)
