@@ -27,6 +27,8 @@ class TypeFormatter extends Service
             'default' => $model->default,
             'description' => $model->description,
             'disabled' => $model->disabled,
+            'workflow_id' => $model->workflow_id,
+            'screen_id' => $model->screen_id,
         ];
     }
 }
