@@ -148,6 +148,11 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_BATCH_HANDLE_METHOD_INVALID = -11125;
 
     /**
+     * @Message("评论内容不能为空")
+     */
+    public const ISSUE_COMMENT_CONTENTS_NOT_EXIST = -11200;
+
+    /**
      * @Message("版本名必填")
      */
     public const VERSION_NAME_CANNOT_EMPTY = -11500;
