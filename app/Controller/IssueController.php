@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Request\IssueBatchHandleRequest;
 use App\Request\IssueStoreRequest;
 use App\Request\PaginationRequest;
 use App\Service\Dao\IssueDao;
@@ -141,6 +142,21 @@ class IssueController extends Controller
         $project = ProjectAuth::instance()->build()->getCurrent();
 
         $result = $this->service->batchHandleFilters($this->request->all(), $user, $project);
+
+        return $this->response->success($result);
+    }
+
+    public function batchHandle(IssueBatchHandleRequest $request)
+    {
+        $data = $request->input('data');
+
+        $project = get_project();
+        $user = get_user();
+
+        $result = match ($request->getInputMethod()) {
+            'update' => $this->service->batchUpdate($project, $user, $data['ids'], $data['values']),
+            'delete' => [],
+        };
 
         return $this->response->success($result);
     }

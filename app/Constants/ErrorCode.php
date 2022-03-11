@@ -143,6 +143,11 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_DATE_TIME_PICKER_INVALID = -11122;
 
     /**
+     * @Message("批量操作非法")
+     */
+    public const ISSUE_BATCH_HANDLE_METHOD_INVALID = -11125;
+
+    /**
      * @Message("版本名必填")
      */
     public const VERSION_NAME_CANNOT_EMPTY = -11500;
