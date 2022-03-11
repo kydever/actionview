@@ -132,6 +132,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('issue/batch', [App\Controller\IssueController::class, 'batchHandle']);
     Router::post('issue/{id:\d+}/comments', [App\Controller\CommentController::class, 'store']);
     Router::get('issue/{id:\d+}/comments', [App\Controller\CommentController::class, 'index']);
+    Router::put('issue/{id:\d+}/comments/{commentId:\d+}', [App\Controller\CommentController::class, 'update']);
 
     Router::post('issue', App\Controller\IssueController::class . '::store', [
         'options' => [

@@ -37,6 +37,15 @@ class UserFormatter extends Service
         ];
     }
 
+    public function tiny(User $model): array
+    {
+        return [
+            'id' => $model->id,
+            'name' => $model->first_name,
+            'email' => $model->email,
+        ];
+    }
+
     public function small(User $model)
     {
         return [

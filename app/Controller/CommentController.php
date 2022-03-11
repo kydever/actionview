@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\CommentStoreRequest;
+use App\Request\CommentUpdateRequest;
 use App\Service\CommentService;
 use Hyperf\Di\Annotation\Inject;
 
@@ -39,6 +40,16 @@ class CommentController extends Controller
         $project = get_project();
 
         $result = $this->service->store($id, $user, $project, $request->all());
+
+        return $this->response->success($result);
+    }
+
+    public function update(int $id, int $commentId, CommentUpdateRequest $request)
+    {
+        $user = get_user();
+        $project = get_project();
+
+        $result = $this->service->update($id, $commentId, $user, $project, $request->all());
 
         return $this->response->success($result);
     }
