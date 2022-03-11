@@ -11,3 +11,4 @@ vendor/
 .env.backup
 .DS_Store
 *.cache
+docker-compose.deploy.yml
