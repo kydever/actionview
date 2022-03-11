@@ -64,7 +64,10 @@ class CommentService extends Service
 
     public function update(int $id, int $commentId, User $user, Project $project, array $input)
     {
-        $model = $this->dao->first($id, true);
+        $model = $this->dao->first($commentId, true);
+        if ($model->issue_id !== $id) {
+            throw new BusinessException(ErrorCode::SERVER_ERROR);
+        }
 
         $operation = $input['operation'] ?? null;
         $contents = $input['contents'] ?? null;
