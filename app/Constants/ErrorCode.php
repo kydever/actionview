@@ -153,6 +153,26 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_COMMENT_CONTENTS_NOT_EXIST = -11200;
 
     /**
+     * @Message("当前问题评论不存在")
+     */
+    public const ISSUE_DONT_HAVE_COMMENTS = -11201;
+
+    /**
+     * @Message("评论的回复ID不存在")
+     */
+    public const ISSUE_COMMENT_REPLY_ID_NOT_EXIST = -11202;
+
+    /**
+     * @Message("评论的回复不存在")
+     */
+    public const ISSUE_COMMENT_REPLY_NOT_EXIST = -11203;
+
+    /**
+     * @Message("操作符非法")
+     */
+    public const ISSUE_OPERATION_INVALID = -11204;
+
+    /**
      * @Message("版本名必填")
      */
     public const VERSION_NAME_CANNOT_EMPTY = -11500;

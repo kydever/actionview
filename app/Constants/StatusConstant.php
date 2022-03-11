@@ -45,4 +45,9 @@ class StatusConstant
     public const STATUS_ARCHIVED = 'archived';
 
     public const STATUS_RELEASED = 'released';
+
+    // 是否
+    public const YES = 1;
+
+    public const NO = 0;
 }

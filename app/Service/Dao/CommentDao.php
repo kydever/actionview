@@ -11,12 +11,23 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
+use App\Constants\ErrorCode;
+use App\Exception\BusinessException;
 use App\Model\Comment;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
 
 class CommentDao extends Service
 {
+    public function first(int $id, bool $throw = false): ?Comment
+    {
+        $model = Comment::findFromCache($id);
+        if ($throw && empty($model)) {
+            throw new BusinessException(ErrorCode::ISSUE_DONT_HAVE_COMMENTS);
+        }
+        return $model;
+    }
+
     /**
      * @return Collection<int, Comment>
      */

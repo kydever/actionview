@@ -24,7 +24,10 @@ class CommentFormatter extends Service
             'contents' => $model->contents,
             'atWho' => $model->at_who,
             'creator' => $model->creator,
+            'reply' => $model->reply,
+            'edited_flag' => $model->edited_flag,
             'created_at' => $model->created_at->getTimestamp(),
+            'updated_at' => $model->updated_at->getTimestamp(),
         ];
     }
 
