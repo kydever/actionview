@@ -63,7 +63,7 @@ class TypeController extends Controller
 
     public function handle()
     {
-        [ $sequence, $default ] = $this->service->sortable(get_project_key(), $this->request->all());
+        [$sequence, $default] = $this->service->sortable(get_project_key(), $this->request->all());
 
         return $this->response->success([
             'sequence' => $sequence,
