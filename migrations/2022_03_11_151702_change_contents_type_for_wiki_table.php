@@ -22,7 +22,7 @@ class ChangeContentsTypeForWikiTable extends Migration
     public function up(): void
     {
         Schema::table('', function (Blueprint $table) {
-            Db::select('ALTER TABLE `wiki` CHANGE `contents` `contents` TEXT  CHARACTER SET utf8mb4  COLLATE utf8mb4_unicode_ci  NOT NULL;');
+            Db::select('ALTER TABLE `wiki` CHANGE `contents` `contents` TEXT  CHARACTER SET utf8mb4  COLLATE utf8mb4_unicode_ci NULL;');
         });
     }
 
