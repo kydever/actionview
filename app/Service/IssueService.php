@@ -1131,7 +1131,7 @@ class IssueService extends Service
             }
             $schema = $schemas[$type];
 
-            $data = array_only($updValues, $this->getValidKeysBySchema($schema));
+            $data = Arr::only($updValues, $this->getValidKeysBySchema($schema));
             if (! $data) {
                 continue;
             }
