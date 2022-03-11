@@ -15,10 +15,10 @@ use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\User;
 use App\Service\Dao\UserDao;
+use Hyperf\Context\Context;
 use Hyperf\HttpMessage\Cookie\Cookie;
 use Hyperf\HttpMessage\Server\Response;
 use Hyperf\Redis\Redis;
-use Hyperf\Utils\Context;
 use Hyperf\Utils\Traits\StaticInstance;
 use Psr\Http\Message\ResponseInterface;
 

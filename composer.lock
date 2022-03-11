@@ -3125,20 +3125,21 @@
         },
         {
             "name": "limingxinleo/hyperf-utils",
-            "version": "v3.2.3",
+            "version": "v3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/limingxinleo/hyperf-utils.git",
-                "reference": "e8270b2445d97f019f6648ff2c8d52bac5b20ffc"
+                "reference": "9face33193e3ec09a59715297db384b22ffffade"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/limingxinleo/hyperf-utils/zipball/e8270b2445d97f019f6648ff2c8d52bac5b20ffc",
-                "reference": "e8270b2445d97f019f6648ff2c8d52bac5b20ffc",
+                "url": "https://api.github.com/repos/limingxinleo/hyperf-utils/zipball/9face33193e3ec09a59715297db384b22ffffade",
+                "reference": "9face33193e3ec09a59715297db384b22ffffade",
                 "shasum": ""
             },
             "require": {
-                "hyperf/utils": "^2.1|^3.0",
+                "hyperf/context": " ^2.2|^3.0",
+                "hyperf/utils": "^2.2|^3.0",
                 "nesbot/carbon": "^2.0",
                 "php": ">=7.4",
                 "psr/container": "^1.0|^2.0"
@@ -3192,9 +3193,9 @@
             ],
             "support": {
                 "issues": "https://github.com/limingxinleo/hyperf-utils/issues",
-                "source": "https://github.com/limingxinleo/hyperf-utils/tree/v3.2.3"
+                "source": "https://github.com/limingxinleo/hyperf-utils/tree/v3.3.0"
             },
-            "time": "2021-12-11T06:03:12+00:00"
+            "time": "2022-03-11T06:17:37+00:00"
         },
         {
             "name": "monolog/monolog",
