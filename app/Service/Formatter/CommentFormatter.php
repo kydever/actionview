@@ -19,7 +19,7 @@ class CommentFormatter extends Service
     public function base(Comment $model): array
     {
         return [
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'issue_id' => $model->issue_id,
             'contents' => $model->contents,
             'atWho' => $model->at_who,

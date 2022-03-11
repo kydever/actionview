@@ -11,21 +11,19 @@ declare(strict_types=1);
  */
 namespace App\Service\Dao;
 
+use App\Model\Comment;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
-use App\Model\Comment;
 
 class CommentDao extends Service
 {
     /**
-     * @param int $id
-     * @param bool $isAsc
-     * @retrun Collection<int, Comment>
+     * @return Collection<int, Comment>
      */
     public function findByIssueId(int $id, bool $isAsc = false)
     {
         return Comment::query()->where('issue_id', $id)
-            ->orderBy('id', $isAsc ? 'asc': 'desc')
+            ->orderBy('id', $isAsc ? 'asc' : 'desc')
             ->get();
     }
 }
