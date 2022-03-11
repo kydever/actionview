@@ -20,6 +20,19 @@ class CommentController extends Controller
     #[Inject]
     protected CommentService $service;
 
+    public function index(int $id)
+    {
+        $isAsc = $this->request->input('sort') === 'asc';
+
+        $result = $this->service->index($id, $isAsc);
+
+        return $this->response->success($result, [
+            'options' => [
+                'current_time' => time(),
+            ],
+        ]);
+    }
+
     public function store(int $id, CommentStoreRequest $request)
     {
         $user = get_user();

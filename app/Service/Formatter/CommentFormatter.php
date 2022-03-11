@@ -27,4 +27,13 @@ class CommentFormatter extends Service
             'created_at' => $model->created_at->getTimestamp(),
         ];
     }
+
+    public function formatList($models): array
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $result[] = $this->base($model);
+        }
+        return $result;
+    }
 }

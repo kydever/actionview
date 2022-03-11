@@ -17,6 +17,7 @@ use App\Exception\BusinessException;
 use App\Model\Comment;
 use App\Model\Project;
 use App\Model\User;
+use App\Service\Dao\CommentDao;
 use App\Service\Formatter\CommentFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
@@ -28,6 +29,16 @@ class CommentService extends Service
 
     #[Inject]
     protected AclService $acl;
+
+    #[Inject]
+    protected CommentDao $dao;
+
+    public function index(int $id, bool $isAsc = false): array
+    {
+        $models = $this->dao->findByIssueId($id, $isAsc);
+
+        return $this->formatter->formatList($models);
+    }
 
     public function store(int $id, User $user, Project $project, array $input)
     {
