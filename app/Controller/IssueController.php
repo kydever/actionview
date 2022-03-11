@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Request\IssueBatchHandleRequest;
 use App\Request\IssueStoreRequest;
 use App\Request\PaginationRequest;
 use App\Service\Dao\IssueDao;
@@ -143,6 +144,35 @@ class IssueController extends Controller
         $result = $this->service->batchHandleFilters($this->request->all(), $user, $project);
 
         return $this->response->success($result);
+    }
+
+    public function batchHandle(IssueBatchHandleRequest $request)
+    {
+        $data = $request->input('data');
+
+        $result = match ($request->getInputMethod()) {
+            'update' => [],
+            'delete' => [],
+        };
+
+        return $this->response->success($result);
+        $method = $request->input('method');
+        if ($method == 'update') {
+            $data = $request->input('data');
+            if (! $data || ! isset($data['ids']) || ! $data['ids'] || ! is_array($data['ids']) || ! isset($data['values']) || ! $data['values'] || ! is_array($data['values'])) {
+                throw new \UnexpectedValueException('the batch params has errors.', -11124);
+            }
+            return $this->batchUpdate($project_key, $data['ids'], $data['values']);
+        }
+        if ($method == 'delete') {
+            $data = $request->input('data');
+            if (! $data || ! isset($data['ids']) || ! $data['ids'] || ! is_array($data['ids'])) {
+                throw new \UnexpectedValueException('the batch params has errors.', -11124);
+            }
+            return $this->batchDelete($project_key, $data['ids']);
+        }
+
+        throw new \UnexpectedValueException('the batch method has errors.', -11125);
     }
 
     public function doAction(int $id, int $workflowId)

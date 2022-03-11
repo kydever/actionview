@@ -129,6 +129,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::put('issue/{id:\d+}', App\Controller\IssueController::class . '::update');
     Router::post('issue/{id:\d+}/assign', App\Controller\IssueController::class . '::setAssignee');
     Router::post('issue/{id:\d+}/reset', [App\Controller\IssueController::class, 'resetState']);
+    Router::post('issue/batch', [\App\Controller\IssueController::class, 'batchHandle']);
 
     Router::post('issue', App\Controller\IssueController::class . '::store', [
         'options' => [
