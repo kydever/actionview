@@ -45,6 +45,7 @@
         "hyperf/utils": "3.0.*",
         "hyperf/validation": " 3.0.*",
         "jetbrains/phpstorm-attributes": "^1.0",
+        "kosinix/grafika": "^2.0",
         "limingxinleo/hyperf-orm-json-relation": "^0.2",
         "limingxinleo/hyperf-utils": "^3.1",
         "ongr/elasticsearch-dsl": "^7.2",

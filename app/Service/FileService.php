@@ -18,6 +18,7 @@ use App\Model\File;
 use App\Model\User;
 use App\Service\Dao\FileDao;
 use App\Service\Dao\IssueDao;
+use Grafika\Gd\Editor;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Han\Utils\Service;
@@ -85,8 +86,15 @@ class FileService extends Service
             }
 
             $path = format_uploaded_path(uniqid() . '.' . $extension);
-            $this->file->writeStream($path, fopen($local, 'r+'));
-            $models[] = $model = $this->createFile($path, $file, $user);
+            $this->file->writeStream($path, $fp = fopen($local, 'r+'));
+            fclose($fp);
+
+            $local = $this->createThumbnail($local, $extension);
+            $thumbnail = format_uploaded_path(uniqid() . '.' . $extension);
+            $this->file->writeStream($thumbnail, $fp = fopen($local, 'r+'));
+            fclose($fp);
+
+            $models[] = $model = $this->createFile($path, $thumbnail, $file, $user);
 
             $uploaded = $issue->{$field} ?? [];
             $uploaded[] = $model->id;
@@ -133,11 +141,11 @@ class FileService extends Service
         return $result;
     }
 
-    protected function createFile(string $path, UploadedFile $file, User $user): File
+    protected function createFile(string $path, string $thumbnail, UploadedFile $file, User $user): File
     {
         $model = new File();
         $model->index = $path;
-        $model->thumbnails_index = $path;
+        $model->thumbnails_index = $thumbnail;
         $model->type = $file->getClientMediaType();
         $model->name = $file->getClientFilename();
         $model->size = $file->getSize();
@@ -145,5 +153,24 @@ class FileService extends Service
         $model->save();
 
         return $model;
+    }
+
+    protected function createThumbnail(string $path, string $extension): string
+    {
+        $editor = new Editor();
+        if (! $editor->isAvailable()) {
+            return $path;
+        }
+
+        try {
+            $image = null;
+            $editor->open($image, $path);
+            $editor->crop($image, 200, 200, 'smart');
+            $editor->save($image, $output = BASE_PATH . '/runtime/uploads/' . uniqid() . '.' . $extension);
+
+            return $output;
+        } catch (\Throwable) {
+            return $path;
+        }
     }
 }
