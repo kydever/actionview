@@ -30,6 +30,7 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property array $data
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property string $attachments 附件
  * @property User $assigneeModel
  * @property \Hyperf\Database\Model\Collection|Issue[] $children
  * @property OswfEntry $entry
@@ -50,7 +51,7 @@ class Issue extends Model implements Searchable
     /**
      * The attributes that are mass assignable.
      */
-    protected array $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'modifier', 'no', 'data', 'created_at', 'updated_at'];
+    protected array $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'modifier', 'no', 'data', 'created_at', 'updated_at', 'attachments'];
 
     /**
      * The attributes that should be cast to native types.

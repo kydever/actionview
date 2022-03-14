@@ -41,9 +41,14 @@ class FileController extends Controller
     {
         $user = UserAuth::instance()->build()->getUser();
         $project = ProjectAuth::instance()->build()->getCurrent();
+        $issueId = (int) $this->request->input('issue_id');
 
         if (! di()->get(AclService::class)->isAllowed($user->id, Permission::UPLOAD_FILE, $project)) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        if (empty($issueId)) {
+            throw new BusinessException(ErrorCode::SERVER_ERROR, 'issue_id is required');
         }
 
         $files = $this->request->file('attachments');
@@ -51,7 +56,7 @@ class FileController extends Controller
             $files = [$files];
         }
 
-        $result = $this->service->upload($files);
+        $result = $this->service->upload($files, $user, $issueId);
 
         return $this->response->success($result);
     }

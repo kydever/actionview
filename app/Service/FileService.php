@@ -13,6 +13,9 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
+use App\Model\File;
+use App\Model\User;
+use App\Service\Dao\IssueDao;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Han\Utils\Service;
@@ -61,13 +64,27 @@ class FileService extends Service
     /**
      * @param UploadedFile[] $files
      */
-    public function upload(array $files)
+    public function upload(array $files, User $user, int $issueId)
     {
-        foreach ($files as $file) {
-            $path = $this->safeMove($file);
+        $models = [];
+        $issue = di()->get(IssueDao::class)->first($issueId, true);
+        $attachments = $issue->attachments;
 
-            $this->file->writeStream();
+        foreach ($files as $file) {
+            $local = $this->safeMove($file);
+            $info = pathinfo($file->getClientFilename());
+            $extension = $info['extension'] ?? null;
+            if (empty($extension)) {
+                throw new BusinessException(ErrorCode::SERVER_ERROR, '上传文件类型非法');
+            }
+
+            $path = format_uploaded_path(uniqid() . '.' . $extension);
+            $this->file->writeStream($path, fopen($local, 'r+'));
+            $models[] = $model = $this->createFile($path, $file, $user);
+            $attachments[] = $model->id;
         }
+
+        $issue->save();
 
         return [];
     }
@@ -82,5 +99,19 @@ class FileService extends Service
         $file->moveTo($path = $dir . uniqid());
 
         return $path;
+    }
+
+    protected function createFile(string $path, UploadedFile $file, User $user): File
+    {
+        $model = new File();
+        $model->index = $path;
+        $model->thumbnails_index = $path;
+        $model->type = $file->getClientMediaType();
+        $model->name = $file->getClientFilename();
+        $model->size = $file->getSize();
+        $model->uploader = $user->toSmall();
+        $model->save();
+
+        return $model;
     }
 }

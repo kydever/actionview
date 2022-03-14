@@ -16,7 +16,7 @@ namespace App\Model;
  * @property string $name 文件名
  * @property int $size 文件大小
  * @property string $type 文件类型
- * @property string $uploader 上传人信息
+ * @property array $uploader 上传人信息
  * @property string $index 文件位置索引
  * @property string $thumbnails_index 缩略图文件索引
  * @property int $del_flg 删除状态
@@ -38,5 +38,5 @@ class File extends Model
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'int', 'size' => 'integer', 'del_flg' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected array $casts = ['id' => 'int', 'size' => 'integer', 'uploader' => 'json', 'del_flg' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 }

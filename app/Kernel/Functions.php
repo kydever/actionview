@@ -96,3 +96,10 @@ if (! function_exists('get_user_id')) {
         return UserAuth::instance()->build()->getUserId();
     }
 }
+
+if (! function_exists('format_uploaded_path')) {
+    function format_uploaded_path(string $path)
+    {
+        return date('Y/m/d') . '/' . trim($path, '/');
+    }
+}
