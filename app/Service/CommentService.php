@@ -116,7 +116,7 @@ class CommentService extends Service
                     $key = collect($replies)->search(static function ($item) use ($replyId) {
                         return $item['id'] == $replyId;
                     });
-                    if (! $key) {
+                    if ($key === false) {
                         throw new BusinessException(ErrorCode::ISSUE_COMMENT_REPLY_NOT_EXIST);
                     }
                     $reply = $replies[$key];
@@ -145,5 +145,25 @@ class CommentService extends Service
         }
 
         return $this->formatter->base($model);
+    }
+
+    public function destroy( int $issueId, int $id )
+    {
+        $user = get_user();
+        $project = get_project();
+
+        $models = $this->dao->findByIssueId($issueId);
+        $results = $this->formatter->formatList($models);
+        if ( empty ( $results ) ) {
+            throw new BusinessException(ErrorCode::ISSUE_DONT_HAVE_COMMENTS);
+        }
+        if ( ! $this->acl->isAllowed ( $user->id, 'manage_project', $project) && ! ( $models['creator']['id'] == $user->id && $this->acl->isAllowed ( $user->id, 'delete_self_comments', $project ) ) ) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        $model = $this->dao->first($id, true);
+        $model->delete();
+
+        return $model->id;
     }
 }
