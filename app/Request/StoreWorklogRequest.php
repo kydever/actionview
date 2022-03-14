@@ -30,6 +30,7 @@ class StoreWorklogRequest extends FormRequest
     {
         return [
             'spend' => 'required',
+            'started_at' => 'required',
             'adjust_type' => 'required|between:1,4',
         ];
     }

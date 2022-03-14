@@ -30,7 +30,7 @@ class WorklogController extends Controller
 
     public function store(StoreWorklogRequest $request, int $id)
     {
-        $result = $this->service->save(get_project(), $id, get_user(), $request->all());
+        $result = $this->service->create($id, $request->all());
 
         return $this->response->success($result);
     }

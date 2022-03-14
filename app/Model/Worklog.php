@@ -44,4 +44,14 @@ class Worklog extends Model
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'int', 'issue_id' => 'integer', 'recorded_at' => 'integer', 'started_at' => 'integer', 'spend_m' => 'integer', 'adjust_type' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'edited_flag' => 'integer'];
+
+    public function setRecorderAttribute($recorder)
+    {
+        $this->attributes['recorder'] = json_encode($recorder);
+    }
+
+    public function getRecorderAttribute($recorder)
+    {
+        return json_decode($recorder, true);
+    }
 }

@@ -13,9 +13,6 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
-use App\Model\Project;
-use App\Model\User;
-use App\Model\Worklog;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\WorklogDao;
 use App\Service\Formatter\WorklogFormatter;
@@ -42,62 +39,53 @@ class WorklogService extends Service
         return $this->formatter->formatList($models);
     }
 
-    public function save(Project $project, int $issueId, User $user, array $attributes, int $worklogId = 0): array
+    public function create(int $issueId, array $attributes): array
     {
+        $user = get_user();
+        $project = get_project();
         if (! $this->acl->isAllowed($user->id, 'add_worklog', $project)) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
 
-        $spend = $this->ttHandle($attributes['spend']);
-        $spendM = $this->ttHandleInM($attributes['spend']);
-        $adjustType = $attributes['adjust_type'];
+        $spend = $attributes['spend'];
+        if (! $this->ttCheck($spend)) {
+            throw new BusinessException(ErrorCode::WORKLOG_SPEND_TIME_INVALID);
+        }
+        $attributes['spend'] = $this->ttHandle($spend);
+        $attributes['spend_m'] = $this->ttHandleInM($spend);
 
-        $leaveEstimate = $attributes['leave_estimate'] ?? '';
+        $adjustType = $attributes['adjust_type'];
         if ($adjustType == 3) {
-            if (empty($leaveEstimate)) {
+            $leaveEstimate = $attributes['leave_estimate'] ?? null;
+            if (is_null($leaveEstimate)) {
                 throw new BusinessException(ErrorCode::WORKLOG_LEAVE_ESTIMATE_TIME_CANNOT_EMPTY);
             }
             if (! $this->ttCheck($leaveEstimate)) {
                 throw new BusinessException(ErrorCode::WORKLOG_LEAVE_ESTIMATE_TIME_INVALID);
             }
-            $leaveEstimate = $this->ttHandle($attributes['leave_estimate']);
-            $leaveEstimateM = $this->ttHandleInM($attributes['leave_estimate']);
+            $attributes['leave_estimate'] = $this->ttHandle($leaveEstimate);
+            $attributes['leave_estimate_m'] = $this->ttHandleInM($attributes['leave_estimate']);
         }
-        $cut = $attributes['cut'] ?? '';
         if ($adjustType == 4) {
-            if (empty($cut)) {
+            $cut = $attributes['cut'] ?? null;
+            if (is_null($cut)) {
                 throw new BusinessException(ErrorCode::WORKLOG_CUT_CANNOT_EMPTY);
             }
             if (! $this->ttCheck($cut)) {
                 throw new BusinessException(ErrorCode::WORKLOG_CUT_INVALUD);
             }
-            $cut = $this->ttHandle($attributes['cut']);
-            $cutM = $this->ttHandleInM($attributes['cut']);
+            $attributes['cut'] = $this->ttHandle($cut);
+            $attributes['cut_m'] = $this->ttHandleInM($attributes['cut']);
         }
-
-        di(IssueDao::class)->first($issueId, true);
-
-        $model = $this->dao->findById($worklogId);
-        if (empty($model)) {
-            $model = new Worklog();
-            $model->recorder = json_encode([
-                'id' => $user->id,
-                'name' => $user->first_name,
-                'email' => $user->email,
-            ]);
-            $model->recorded_at = time();
-            $model->started_at = $attributes['started_at'];
+        if (! di()->get(IssueDao::class)->isIssueExisted($project->key)) {
+            throw new BusinessException(ErrorCode::ISSUE_NOT_FOUND);
         }
-        $model->project_key = $project->key;
-        $model->issue_id = $issueId;
-        $model->spend = $spend;
-        $model->spend_m = $spendM;
-        $model->adjust_type = $adjustType;
-        $model->comments = $attributes['comments'] ?? '';
-        $model->leave_estimate = $leaveEstimate;
-        $model->cut = $cut;
-        $model->edited_flag = isset($attributes['edited_flag']) ?? 1;
-        $model->save();
+        $attributes['recorder'] = [
+            'id' => $user->id,
+            'name' => $user->first_name,
+            'meail' => $user->email,
+        ];
+        $model = $this->dao->create($project->key, $issueId, $attributes);
 
         return $this->formatter->base($model);
     }
