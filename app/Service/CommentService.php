@@ -134,7 +134,7 @@ class CommentService extends Service
 
             $model->save();
         } else {
-            if (! $this->acl->isAllowed($user->id, Permission::EDIT_COMMNETS) && ! ($model->creator['id'] == $user->id && $this->acl->isAllowed($user->id, Permission::DELETE_SELF_COMMNETS, $project))) {
+            if (! $this->acl->isAllowed($user->id, Permission::EDIT_COMMNETS, $project) && ! ($model->creator['id'] == $user->id && $this->acl->isAllowed($user->id, Permission::DELETE_SELF_COMMNETS, $project))) {
                 throw new BusinessException(ErrorCode::PERMISSION_DENIED);
             }
 
