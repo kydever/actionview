@@ -28,6 +28,7 @@ use App\Project\Eloquent\Labels;
 use App\Project\Provider;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\ConfigScreenDao;
+use App\Service\Dao\FileDao;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\IssueFilterDao;
 use App\Service\Dao\LabelDao;
@@ -328,9 +329,8 @@ class IssueService extends Service
 
         foreach ($schema as $field) {
             if ($field['type'] === Schema::FIELD_FILE && ! empty($result[$field['key']])) {
-                foreach ($result[$field['key']] as $key => $fid);
-                // TODO: 处理文件
-                // $result[$field['key']][$key] = File::find($fid);
+                $files = di()->get(FileDao::class)->findMany($result[$field['key']]);
+                $result[$field['key']] = $files->toArray();
             }
         }
 

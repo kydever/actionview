@@ -24,7 +24,7 @@ class CreateFileTable extends Migration
             $table->bigIncrements('id');
             $table->string('name', 64)->comment('文件名');
             $table->unsignedInteger('size')->comment('文件大小');
-            $table->string('type', 32)->comment('文件类型');
+            $table->string('type', 128)->comment('文件类型');
             $table->json('uploader')->nullable()->comment('上传人信息');
             $table->string('index', 256)->comment('文件位置索引');
             $table->string('thumbnails_index', 256)->comment('缩略图文件索引');
