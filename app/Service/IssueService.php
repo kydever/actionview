@@ -1176,6 +1176,31 @@ class IssueService extends Service
         return $this->show($issue, $user, $project);
     }
 
+    public function wfactions(int $id, User $user, Project $project): array
+    {
+        if (! di()->get(AclService::class)->isAllowed($user->id, Permission::EXEC_WORKFLOW, $project)) {
+            return [];
+        }
+
+        $issue = $this->dao->first($id, true);
+
+        if ($issue->project_key !== $project->key) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+
+        $wf = new Workflow($issue->entry);
+
+        $wfactions = $wf->getAvailableActions(['project_key' => $issue->project_key, 'issue_id' => $id, 'caller' => $user->id], true);
+        foreach ($wfactions as $key => $action) {
+            if (isset($action['screen']) && $action['screen']) {
+                $wfactions[$key]['schema'] = $this->provider->getScreenSchema();
+                $wfactions[$key]['schema'] = Provider::getScreenSchema($issue->project_key, $issue->type, $action['screen']);
+            }
+        }
+
+        return $wfactions;
+    }
+
     protected function initializeWorkflow(int $type, User $user)
     {
         $definition = $this->provider->getWorkflowByType($type);

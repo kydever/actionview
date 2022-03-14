@@ -32,6 +32,7 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property \Carbon\Carbon $updated_at
  * @property User $assigneeModel
  * @property \Hyperf\Database\Model\Collection|Issue[] $children
+ * @property OswfEntry $entry
  * @property Issue $parent
  * @property ConfigType $typeModel
  */
@@ -86,7 +87,7 @@ class Issue extends Model implements Searchable
         return $this->id;
     }
 
-    public function entry()
+    public function entry(): HasOne
     {
         return $this->hasOneInJsonObject(OswfEntry::class, 'id', 'data->entry_id');
     }

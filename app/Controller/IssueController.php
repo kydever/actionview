@@ -170,4 +170,14 @@ class IssueController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function wfactions(int $id)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+        $project = ProjectAuth::instance()->build()->getCurrent();
+
+        $result = $this->service->wfactions($id, $user, $project);
+
+        return $this->response->success($result);
+    }
 }

@@ -22,7 +22,7 @@ Router::post('/user/login', App\Controller\UserController::class . '::login');
 Router::post('/user/register', App\Controller\UserController::class . '::register');
 
 Router::addGroup('/', function () {
-    Router::get('myproject', App\Controller\ProjectController::class . '::mine');
+    Router::get('myproject', [App\Controller\ProjectController::class, 'mine']);
     Router::get('project/recent', [App\Controller\ProjectController::class, 'recent']);
     Router::get('project/stats', [App\Controller\ProjectController::class, 'stats']);
     Router::get('project/checkkey/{key}', App\Controller\ProjectController::class . '::checkKey');
@@ -185,6 +185,8 @@ Router::addGroup('/project/{project_key}/', function () {
     //    Router::get('wiki/{id}/file/{fid}/download', App\Controller\WikiController::class . '::download');
     //    Router::get('wiki/{id}/download', App\Controller\WikiController::class . '::download2');
     //    Router::delete('wiki/{id}/file/{fid}',  App\Controller\WikiController::class . '::remove');
+
+    Router::get('issue/{id:\d+}/wfactions', [App\Controller\IssueController::class, 'wfactions']);
 
     Router::get('team', App\Controller\RoleController::class . '::index');
 
