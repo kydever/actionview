@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\StoreWorklogRequest;
+use App\Request\UpdateWorklogRequest;
 use App\Service\WorklogService;
 use Hyperf\Di\Annotation\Inject;
 
@@ -35,11 +36,11 @@ class WorklogController extends Controller
         return $this->response->success($result);
     }
 
-    public function update(StoreWorklogRequest $request, int $id, int $worklogId)
+    public function update(UpdateWorklogRequest $request, int $id, int $worklogId)
     {
-        $result = $this->service->save(get_project(), $id, get_user(), $request->all(), $worklogId);
+        $result = $this->service->update($id, $worklogId, $request->all());
 
-        return $this->response->success($request);
+        return $this->response->success($result);
     }
 
     public function destroy(int $id, int $worklogId)
