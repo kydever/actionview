@@ -41,4 +41,13 @@ class WorklogController extends Controller
 
         return $this->response->success($request);
     }
+
+    public function destroy(int $id, int $worklogId)
+    {
+        $result = $this->service->destroy($id, $worklogId);
+
+        return $this->response->success([
+            'id' => $result,
+        ]);
+    }
 }

@@ -101,4 +101,17 @@ class WorklogService extends Service
 
         return $this->formatter->base($model);
     }
+
+    public function destroy(int $id): int
+    {
+        $user = get_user();
+        $project = get_project();
+        $model = $this->dao->findById($id, true);
+        if (! $this->acl->isAllowed($user->id, 'delete_worklog', $project) && ! ($model->recorder['id'] == $user->id && $this->acl->isAllowed($user->id, 'delete_self_worklog', $project))) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+        $model->delete();
+
+        return $model->id;
+    }
 }
