@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\ErrorCode;
+use App\Constants\Schema;
 use App\Exception\BusinessException;
 use App\Model\File;
 use App\Model\User;
@@ -68,9 +69,13 @@ class FileService extends Service
     {
         $models = [];
         $issue = di()->get(IssueDao::class)->first($issueId, true);
-        $attachments = $issue->attachments;
+        $schemaMapping = di()->get(ProviderService::class)->getSchemaKeyTypeMapping($issue->type);
 
-        foreach ($files as $file) {
+        foreach ($files as $field => $file) {
+            if (($schemaMapping[$field] ?? null) !== Schema::FIELD_FILE) {
+                throw new BusinessException(ErrorCode::SERVER_ERROR, '上传文件类型非法');
+            }
+
             $local = $this->safeMove($file);
             $info = pathinfo($file->getClientFilename());
             $extension = $info['extension'] ?? null;
@@ -81,12 +86,25 @@ class FileService extends Service
             $path = format_uploaded_path(uniqid() . '.' . $extension);
             $this->file->writeStream($path, fopen($local, 'r+'));
             $models[] = $model = $this->createFile($path, $file, $user);
-            $attachments[] = $model->id;
+
+            $uploaded = $issue->{$field} ?? [];
+            $uploaded[] = $model->id;
+            $issue->{$field} = $uploaded;
         }
 
         $issue->save();
 
-        return [];
+        $data = [];
+        if (count($models) > 1) {
+            foreach ($models as $model) {
+                $data[] = ['file' => $model->toArray(), 'filename' => '/actionview/api/project/' . $issue->project_key . '/file/' . $model->id];
+            }
+        } else {
+            $model = $models[0];
+            $data = ['field' => 'attachments', 'file' => $model->toArray(), 'filename' => '/actionview/api/project/' . $issue->project_key . '/file/' . $model->id];
+        }
+
+        return $data;
     }
 
     public function safeMove(UploadedFile $file): string

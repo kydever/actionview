@@ -30,7 +30,7 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property array $data
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property string $attachments 附件
+ * @property array $attachments 附件
  * @property User $assigneeModel
  * @property \Hyperf\Database\Model\Collection|Issue[] $children
  * @property OswfEntry $entry
@@ -56,7 +56,7 @@ class Issue extends Model implements Searchable
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer'];
+    protected array $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer', 'attachments' => 'json'];
 
     public function typeModel()
     {

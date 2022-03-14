@@ -51,10 +51,7 @@ class FileController extends Controller
             throw new BusinessException(ErrorCode::SERVER_ERROR, 'issue_id is required');
         }
 
-        $files = $this->request->file('attachments');
-        if (! is_array($files)) {
-            $files = [$files];
-        }
+        $files = $this->request->getUploadedFiles();
 
         $result = $this->service->upload($files, $user, $issueId);
 

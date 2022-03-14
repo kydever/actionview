@@ -373,6 +373,16 @@ class ProviderService extends Service
         return $this->getScreenSchema($type->project_key, $typeId, $type->screen);
     }
 
+    public function getSchemaKeyTypeMapping(int $typeId): array
+    {
+        $res = $this->getSchemaByType($typeId);
+        $result = [];
+        foreach ($res as $re) {
+            $result[$re['key']] = $re['type'];
+        }
+        return $result;
+    }
+
     public function getScreenList(string $projectKey): array
     {
         $models = di()->get(ConfigScreenDao::class)->findByProjectKey($projectKey);
