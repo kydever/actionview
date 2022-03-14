@@ -130,8 +130,8 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('issue/{id:\d+}/assign', App\Controller\IssueController::class . '::setAssignee');
     Router::post('issue/{id:\d+}/reset', [App\Controller\IssueController::class, 'resetState']);
     Router::post('issue/batch', [App\Controller\IssueController::class, 'batchHandle']);
-    Router::post('issue/{id:\d+}/comments', [App\Controller\CommentController::class, 'store']);
     Router::get('issue/{id:\d+}/comments', [App\Controller\CommentController::class, 'index']);
+    Router::post('issue/{id:\d+}/comments', [App\Controller\CommentController::class, 'store']);
     Router::put('issue/{id:\d+}/comments/{commentId:\d+}', [App\Controller\CommentController::class, 'update']);
 
     Router::post('issue', App\Controller\IssueController::class . '::store', [
