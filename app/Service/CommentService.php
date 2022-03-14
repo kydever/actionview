@@ -43,7 +43,7 @@ class CommentService extends Service
         return $this->formatter->formatList($models);
     }
 
-    public function store(int $id, User $user, Project $project, array $input)
+    public function store(int $id, User $user, Project $project, array $input): array
     {
         if (! $this->acl->isAllowed($user->id, Permission::ADD_COMMNETS, $project)) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
@@ -62,7 +62,7 @@ class CommentService extends Service
         return $this->formatter->base($model);
     }
 
-    public function update(int $id, int $commentId, User $user, Project $project, array $input)
+    public function update(int $id, int $commentId, User $user, Project $project, array $input): array
     {
         $model = $this->dao->first($commentId, true);
         if ($model->issue_id !== $id) {
@@ -147,7 +147,7 @@ class CommentService extends Service
         return $this->formatter->base($model);
     }
 
-    public function destroy(int $issueId, int $id)
+    public function destroy(int $issueId, int $id): int
     {
         $user = get_user();
         $project = get_project();
