@@ -147,17 +147,17 @@ class CommentService extends Service
         return $this->formatter->base($model);
     }
 
-    public function destroy( int $issueId, int $id )
+    public function destroy(int $issueId, int $id)
     {
         $user = get_user();
         $project = get_project();
 
         $models = $this->dao->findByIssueId($issueId);
         $results = $this->formatter->formatList($models);
-        if ( empty ( $results ) ) {
+        if (empty($results)) {
             throw new BusinessException(ErrorCode::ISSUE_DONT_HAVE_COMMENTS);
         }
-        if ( ! $this->acl->isAllowed ( $user->id, 'manage_project', $project) && ! ( $models['creator']['id'] == $user->id && $this->acl->isAllowed ( $user->id, 'delete_self_comments', $project ) ) ) {
+        if (! $this->acl->isAllowed($user->id, 'manage_project', $project) && ! ($models['creator']['id'] == $user->id && $this->acl->isAllowed($user->id, 'delete_self_comments', $project))) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
 
