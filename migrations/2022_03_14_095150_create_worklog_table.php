@@ -22,12 +22,12 @@ class CreateWorklogTable extends Migration
     {
         Schema::create('worklog', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('issue_id');
-            $table->string('project_key', 32)->default('')->comment('项目键值');
+            $table->unsignedBigInteger('issue_id')->index('INDEX_ISSUE_ID');
+            $table->string('project_key', 32)->default('')->index('INDEX_PROJECT_KEY')->comment('项目键值');
             $table->json('recorder');
             $table->integer('recorded_at');
             $table->integer('started_at')->comment('开始日期');
-            $table->string('spend', 30)->comment('	总耗费时间');
+            $table->string('spend', 30)->comment('总耗费时间');
             $table->integer('spend_m');
             $table->tinyInteger('adjust_type')->default(1);
             $table->string('comments', 1024)->default('')->comment('备注');
