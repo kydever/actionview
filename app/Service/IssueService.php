@@ -1100,8 +1100,9 @@ class IssueService extends Service
                 $updValues[$key] = [];
                 $newUserIds = [];
                 foreach ($userIds as $uid) {
+                    /** @var User $userInfo */
                     if ($userInfo = $users[$uid] ?? null) {
-                        $updValues[$key][] = ['id' => $uid, 'name' => $userInfo->first_name, 'email' => $userInfo->email];
+                        $updValues[$key][] = $userInfo->toSmall();
                     }
                     $newUserIds[] = $uid;
                 }

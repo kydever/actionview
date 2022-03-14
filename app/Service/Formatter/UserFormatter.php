@@ -53,6 +53,7 @@ class UserFormatter extends Service
             'name' => $model->first_name,
             'email' => $model->email,
             'nameAndEmail' => sprintf('%s(%s)', $model->first_name, $model->email),
+            'avatar' => $model->avatar,
         ];
     }
 
