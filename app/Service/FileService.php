@@ -17,12 +17,18 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Han\Utils\Service;
 use Hyperf\Config\Annotation\Value;
+use Hyperf\Di\Annotation\Inject;
+use Hyperf\HttpMessage\Upload\UploadedFile;
 use Hyperf\Utils\Filesystem\Filesystem;
+use League\Flysystem\FilesystemOperator;
 
 class FileService extends Service
 {
     #[Value(key: 'file.domain')]
     protected string $domain;
+
+    #[Inject]
+    protected FilesystemOperator $file;
 
     public function getAvatar(string $object): string
     {
@@ -50,5 +56,31 @@ class FileService extends Service
         }
 
         return BASE_PATH . '/storage/hyperf.png';
+    }
+
+    /**
+     * @param UploadedFile[] $files
+     */
+    public function upload(array $files)
+    {
+        foreach ($files as $file) {
+            $path = $this->safeMove($file);
+
+            $this->file->writeStream();
+        }
+
+        return [];
+    }
+
+    public function safeMove(UploadedFile $file): string
+    {
+        $dir = BASE_PATH . '/runtime/uploads/';
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $file->moveTo($path = $dir . uniqid());
+
+        return $path;
     }
 }

@@ -195,6 +195,8 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('team', App\Controller\RoleController::class . '::index');
 
     Router::get('workflow/{id:\d+}/preview', App\Controller\WorkflowController::class . '::preview');
+
+    Router::post('file', [App\Controller\FileController::class, 'upload']);
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,
