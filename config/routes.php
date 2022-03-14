@@ -133,6 +133,9 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::get('issue/{id:\d+}/comments', [App\Controller\CommentController::class, 'index']);
     Router::post('issue/{id:\d+}/comments', [App\Controller\CommentController::class, 'store']);
     Router::put('issue/{id:\d+}/comments/{commentId:\d+}', [App\Controller\CommentController::class, 'update']);
+    Router::get('issue/{id:\d+}/worklog', [App\Controller\WorklogController::class, 'index']);
+    Router::post('issue/{id:\d+}/worklog', [App\Controller\WorklogController::class, 'store']);
+    Router::put('issue/{id:\d+}/worklog/{worklogId:\d+}', [App\Controller\WorklogController::class, 'update']);
 
     Router::post('issue', App\Controller\IssueController::class . '::store', [
         'options' => [

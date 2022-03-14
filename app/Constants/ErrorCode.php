@@ -173,6 +173,31 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_OPERATION_INVALID = -11204;
 
     /**
+     * @Message("必须指定剩余时间")
+     */
+    public const WORKLOG_LEAVE_ESTIMATE_TIME_CANNOT_EMPTY = -11304;
+
+    /**
+     * @Message("剩余时间指定格式不正确")
+     */
+    public const WORKLOG_LEAVE_ESTIMATE_TIME_INVALID = -11305;
+
+    /**
+     * @Message("必须制定缩减时间")
+     */
+    public const WORKLOG_CUT_CANNOT_EMPTY = -11306;
+
+    /**
+     * @Message("缩减时间格式不正确")
+     */
+    public const WORKLOG_CUT_INVALUD = -11307;
+
+    /**
+     * @Message("工作日志不存在或不属于此问题")
+     */
+    public const WORKLOG_NOT_FOUND = -11309;
+
+    /**
      * @Message("版本名必填")
      */
     public const VERSION_NAME_CANNOT_EMPTY = -11500;
