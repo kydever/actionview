@@ -30,7 +30,6 @@ class FileDao extends Service
     }
 
     /**
-     * @param array $ids
      * @return Collection<int, File>
      */
     public function findMany(array $ids)
