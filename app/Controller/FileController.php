@@ -34,7 +34,7 @@ class FileController extends Controller
 
         $filename = $this->service->getFile($fid);
 
-        return $this->response->image($filename);
+        return $this->response->download($filename);
     }
 
     public function upload()
@@ -62,6 +62,13 @@ class FileController extends Controller
     {
         $path = $this->service->thumbnail($id);
 
-        return $this->response->image($path);
+        return $this->response->download($path);
+    }
+
+    public function download(int $id, ?string $name = null)
+    {
+        $path = $this->service->download($id);
+
+        return $this->response->download($path);
     }
 }

@@ -198,6 +198,7 @@ Router::addGroup('/project/{project_key}/', function () {
 
     Router::post('file', [App\Controller\FileController::class, 'upload']);
     Router::get('file/{id:\d+}/thumbnail', [App\Controller\FileController::class, 'thumbnail']);
+    Router::get('file/{id:\d+}[/{name}]', [App\Controller\FileController::class, 'download']);
 }, [
     'middleware' => [
         App\Middleware\AuthorizeMiddleware::class,

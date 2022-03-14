@@ -55,7 +55,7 @@ class Response
         ]);
     }
 
-    public function image(string $pathname): PsrResponseInterface
+    public function download(string $pathname): PsrResponseInterface
     {
         // header("Content-type: application/octet-stream");
         // header("Accept-Ranges: bytes");

@@ -141,6 +141,19 @@ class FileService extends Service
         return $result;
     }
 
+    public function download(int $id)
+    {
+        $model = di()->get(FileDao::class)->first($id, true);
+
+        $result = $this->getFile($model->index, '');
+
+        if (empty($result)) {
+            throw new BusinessException(ErrorCode::AVATAR_ID_NOT_EMPTY);
+        }
+
+        return $result;
+    }
+
     protected function createFile(string $path, string $thumbnail, UploadedFile $file, User $user): File
     {
         $model = new File();
