@@ -32,7 +32,7 @@ class FileController extends Controller
             throw new BusinessException(ErrorCode::AVATAR_ID_NOT_EMPTY);
         }
 
-        $filename = $this->service->getAvatar($fid);
+        $filename = $this->service->getFile($fid);
 
         return $this->response->image($filename);
     }
@@ -56,5 +56,12 @@ class FileController extends Controller
         $result = $this->service->upload($files, $user, $issueId);
 
         return $this->response->success($result);
+    }
+
+    public function thumbnail(int $id)
+    {
+        $path = $this->service->thumbnail($id);
+
+        return $this->response->image($path);
     }
 }

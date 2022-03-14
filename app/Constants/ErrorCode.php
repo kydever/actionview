@@ -478,7 +478,7 @@ class ErrorCode extends AbstractConstants
     public const AVATAR_TYPE_INVALID = -15007;
 
     /**
-     * @Message("头像ID不能为空")
+     * @Message("文件不存在")
      */
     public const AVATAR_ID_NOT_EMPTY = -15100;
 

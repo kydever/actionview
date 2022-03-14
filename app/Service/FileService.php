@@ -16,6 +16,7 @@ use App\Constants\Schema;
 use App\Exception\BusinessException;
 use App\Model\File;
 use App\Model\User;
+use App\Service\Dao\FileDao;
 use App\Service\Dao\IssueDao;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -34,7 +35,7 @@ class FileService extends Service
     #[Inject]
     protected FilesystemOperator $file;
 
-    public function getAvatar(string $object): string
+    public function getFile(string $object, string $default = BASE_PATH . '/storage/hyperf.png'): string
     {
         if (empty($this->domain)) {
             throw new BusinessException(ErrorCode::FILE_DOMAIN_INVALID);
@@ -59,7 +60,7 @@ class FileService extends Service
             return $path;
         }
 
-        return BASE_PATH . '/storage/hyperf.png';
+        return $default;
     }
 
     /**
@@ -117,6 +118,19 @@ class FileService extends Service
         $file->moveTo($path = $dir . uniqid());
 
         return $path;
+    }
+
+    public function thumbnail(int $id)
+    {
+        $model = di()->get(FileDao::class)->first($id, true);
+
+        $result = $this->getFile($model->thumbnails_index, '');
+
+        if (empty($result)) {
+            throw new BusinessException(ErrorCode::AVATAR_ID_NOT_EMPTY);
+        }
+
+        return $result;
     }
 
     protected function createFile(string $path, UploadedFile $file, User $user): File
