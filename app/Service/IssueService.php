@@ -1194,7 +1194,6 @@ class IssueService extends Service
         foreach ($wfactions as $key => $action) {
             if (isset($action['screen']) && $action['screen']) {
                 $wfactions[$key]['schema'] = $this->provider->getScreenSchema();
-                $wfactions[$key]['schema'] = Provider::getScreenSchema($issue->project_key, $issue->type, $action['screen']);
             }
         }
 
