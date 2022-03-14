@@ -53,4 +53,11 @@ class CommentController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function destroy(int $id, int $commentId)
+    {
+        return $this->response->success(
+            $this->service->destroy($id, $commentId)
+        );
+    }
 }
