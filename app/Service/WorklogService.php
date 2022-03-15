@@ -146,16 +146,19 @@ class WorklogService extends Service
         return $this->formatter->base($model);
     }
 
-    public function destroy(int $id): int
+    public function destroy(int $issueId, int $id): array
     {
         $user = get_user();
         $project = get_project();
         $model = $this->dao->findById($id, true);
-        if (! $this->acl->isAllowed($user->id, 'delete_worklog', $project) && ! ($model->recorder['id'] == $user->id && $this->acl->isAllowed($user->id, 'delete_self_worklog', $project))) {
+        if (($project->key != $model->project_key) || ($issueId != $model->issue_id)) {
+            throw new BusinessException(ErrorCode::WORKLOG_NOT_FOUND);
+        }
+        if (! $this->acl->isAllowed($user->id, Permission::DELETE_WORKLOG, $project) && ! ($model->recorder['id'] == $user->id && $this->acl->isAllowed($user->id, Permission::DELETE_SELF_WORKLOG, $project))) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
         $model->delete();
 
-        return $model->id;
+        return ['id' => $model->id];
     }
 }

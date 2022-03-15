@@ -47,8 +47,6 @@ class WorklogController extends Controller
     {
         $result = $this->service->destroy($id, $worklogId);
 
-        return $this->response->success([
-            'id' => $result,
-        ]);
+        return $this->response->success($result);
     }
 }
