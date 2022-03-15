@@ -110,7 +110,6 @@ class WorklogService extends Service
         $spendM = $this->ttHandleInM($spend);
 
         $adjustType = $attributes['adjust_type'] ?? $model->adjust_type;
-        $model->leave_estimate = '';
         if ($adjustType == 3) {
             $leaveEstimate = $attributes['leave_estimate'] ?? null;
             if (is_null($leaveEstimate)) {
@@ -121,9 +120,8 @@ class WorklogService extends Service
             }
             $leaveEstimate = $this->ttHandle($leaveEstimate);
             $leaveEstimateM = $this->ttHandleInM($leaveEstimate);
-            $model->leave_estimate = $attributes['leave_estimate'];
+            $attributes['leave_estimate'] = $leaveEstimate;
         }
-        $model->cut = '';
         if ($adjustType == 4) {
             $cut = $attributes['cut'] ?? null;
             if (is_null($cut)) {
@@ -134,12 +132,14 @@ class WorklogService extends Service
             }
             $cut = $this->ttHandle($cut);
             $cutM = $this->ttHandleInM($cut);
-            $model->cut = $cut;
+            $attributes['cut'] = $cut;
         }
         $model->spend = $spend;
         $model->spend_m = $spendM;
         $model->started_at = $attributes['started_at'] ?? $model->started_at;
         $model->comments = $attributes['comments'] ?? '';
+        $model->leave_estimate = $attributes['leave_estimate'] ?? '';
+        $model->cut = $attributes['cut'] ?? '';
         $model->edited_flag = 1;
         $model->save();
 
