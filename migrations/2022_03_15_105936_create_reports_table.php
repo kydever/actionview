@@ -22,7 +22,7 @@ class CreateReportsTable extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('project_key', 32);
+            $table->string('project_key', 32)->index('INDEX_PROJECT_KEY');
             $table->string('mode', 30);
             $table->unsignedBigInteger('user');
             $table->json('filters');
