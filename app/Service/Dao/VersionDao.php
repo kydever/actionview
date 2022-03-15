@@ -66,4 +66,12 @@ class VersionDao extends Service
             ->orderBy('created_at', 'desc')
             ->get(['name']);
     }
+
+    public function firstByProjectKey(string $projectKey, string $status): Version
+    {
+        return Version::where('project_key', $projectKey)
+            ->where('status', $status)
+            ->orderBy('name')
+            ->first();
+    }
 }

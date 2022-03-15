@@ -45,4 +45,12 @@ class SprintDao extends Service
             ->where('status', 'completed')
             ->max('no');
     }
+
+    public function firstByProjectKey(string $projectKey, string $status, string $sortable = 'asc'): ?Sprint
+    {
+        return Sprint::where('project_key', $projectKey)
+            ->where('status', $status)
+            ->orderBy('no', $sortable)
+            ->first();
+    }
 }
