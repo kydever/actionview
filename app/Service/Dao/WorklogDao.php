@@ -39,4 +39,23 @@ class WorklogDao extends Service
 
         return $model;
     }
+
+    public function create(string $key, int $issueId, array $attributes): Worklog
+    {
+        $model = new Worklog();
+        $model->project_key = $key;
+        $model->issue_id = $issueId;
+        $model->spend = $attributes['spend'];
+        $model->spend_m = $attributes['spend_m'];
+        $model->started_at = $attributes['started_at'];
+        $model->adjust_type = $attributes['adjust_type'];
+        $model->leave_estimate = $attributes['leave_estimate'] ?? '';
+        $model->cut = $attributes['cut'] ?? '';
+        $model->comments = $attributes['comments'] ?? '';
+        $model->recorder = $attributes['recorder'];
+        $model->recorded_at = time();
+        $model->save();
+
+        return $model;
+    }
 }

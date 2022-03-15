@@ -81,4 +81,9 @@ class IssueDao extends Service
 
         return isset($issues[$labelName]);
     }
+
+    public function isIssueExisted(string $projectKey): bool
+    {
+        return Issue::where('project_key', $projectKey)->exists();
+    }
 }

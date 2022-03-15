@@ -13,7 +13,7 @@ namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class StoreWorklogRequest extends FormRequest
+class UpdateWorklogRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,10 +28,6 @@ class StoreWorklogRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'spend' => 'required',
-            'started_at' => 'required',
-            'adjust_type' => 'required|between:1,4',
-        ];
+        return [];
     }
 }

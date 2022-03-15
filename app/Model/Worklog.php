@@ -43,5 +43,5 @@ class Worklog extends Model
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'int', 'issue_id' => 'integer', 'recorded_at' => 'integer', 'started_at' => 'integer', 'spend_m' => 'integer', 'adjust_type' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'edited_flag' => 'integer'];
+    protected array $casts = ['id' => 'int', 'issue_id' => 'integer', 'recorder' => 'json', 'recorded_at' => 'integer', 'started_at' => 'integer', 'spend_m' => 'integer', 'adjust_type' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'edited_flag' => 'integer'];
 }

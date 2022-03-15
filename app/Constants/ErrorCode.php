@@ -98,7 +98,7 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_TIME_TRACKING_INVALID = -11102;
 
     /**
-     * @Message("问题不存在")
+     * @Message("问题不存在或不属于此项目")
      */
     public const ISSUE_NOT_EXIST = -11103;
 
@@ -173,6 +173,11 @@ class ErrorCode extends AbstractConstants
     public const ISSUE_OPERATION_INVALID = -11204;
 
     /**
+     * @Message("耗费时间格式不正确")
+     */
+    public const WORKLOG_SPEND_TIME_INVALID = -11301;
+
+    /**
      * @Message("必须指定剩余时间")
      */
     public const WORKLOG_LEAVE_ESTIMATE_TIME_CANNOT_EMPTY = -11304;
@@ -191,6 +196,11 @@ class ErrorCode extends AbstractConstants
      * @Message("缩减时间格式不正确")
      */
     public const WORKLOG_CUT_INVALUD = -11307;
+
+    /**
+     * @Message("问题不存在")
+     */
+    public const ISSUE_NOT_FOUND = -11308;
 
     /**
      * @Message("工作日志不存在或不属于此问题")
