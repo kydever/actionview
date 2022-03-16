@@ -20,9 +20,9 @@ class SprintService extends Service
     #[Inject]
     protected SprintDao $dao;
 
-    public function getByProjectKeyAndStatus(string $projectKey)
+    public function getByProjectKeyAndStatus(string $projectKey, array $status = ['active', 'waiting'])
     {
-        return $this->dao->getByProjectKeyAndStatus($projectKey);
+        return $this->dao->getByProjectKeyAndStatus($projectKey, $status);
     }
 
     public function maxByProjectKeyAndStatus(string $projectKey)
