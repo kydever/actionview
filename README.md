@@ -72,7 +72,7 @@ docker run --name redis -v redis-data:/data --network default-network --restart 
 docker run --name mysql -v mysql-data:/var/lib/mysql -p 3306:3306 --restart always --network default-network -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=actionview -e MYSQL_ALLOW_EMPTY_PASSWORD=true -e TZ=Asia/Shanghai -d mysql/mysql-server:5.7
 ```
 
-### 启动前段代码
+### 启动前端代码
 
 - 修改 `front-end.conf`   
 
