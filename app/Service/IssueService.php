@@ -1122,6 +1122,7 @@ class IssueService extends Service
         $updValues['updated_at'] = time();
 
         $models = $this->dao->findMany($ids);
+        /** @var Issue $model */
         foreach ($models as $model) {
             $type = $values['type'] ?? $model->type;
             if (! isset($schemas[$type])) {
@@ -1138,6 +1139,7 @@ class IssueService extends Service
             }
 
             $model->fill($data)->save();
+            $model->pushToSearch();
         }
 
         // create the Labels for project
