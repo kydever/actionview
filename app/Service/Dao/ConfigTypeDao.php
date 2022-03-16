@@ -38,7 +38,7 @@ class ConfigTypeDao extends Service
     }
 
     /**
-     * @return ConfigType[]|\Hyperf\Database\Model\Collection
+     * @return Collection<int, ConfigType>
      */
     public function getTypeList(string $key, array $with = [])
     {

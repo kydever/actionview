@@ -18,7 +18,6 @@ use App\Model\Project;
 use App\Service\Dao\TypeDao;
 use App\Service\Formatter\TypeFormatter;
 use Han\Utils\Service;
-use Hyperf\Database\Model\Collection;
 use Hyperf\Di\Annotation\Inject;
 
 class TypeService extends Service
@@ -75,16 +74,5 @@ class TypeService extends Service
     public function sortable(string $key, array $sequence): array
     {
         return $this->dao->sortable($key, $sequence);
-    }
-
-    /**
-     * @param $columns
-     * @return Collection<int, ConfigType>
-     */
-    public function getTypeList(string $projectKey, $columns = ['*'])
-    {
-        return ConfigType::where('project_key', $projectKey)
-            ->orderBy('sn', 'asc')
-            ->get($columns);
     }
 }

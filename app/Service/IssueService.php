@@ -1201,14 +1201,6 @@ class IssueService extends Service
         return $wfactions;
     }
 
-    public function getByProjectKeyWhereRaw(string $projectKey, array $where)
-    {
-        return Issue::where('project_key', $projectKey)
-//            ->whereRaw($where)
-            ->orderBy('no', 'desc')
-            ->get();
-    }
-
     protected function initializeWorkflow(int $type, User $user)
     {
         $definition = $this->provider->getWorkflowByType($type);
