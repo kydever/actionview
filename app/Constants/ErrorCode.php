@@ -278,6 +278,11 @@ class ErrorCode extends AbstractConstants
     public const BOARD_TYPE_ERROR = -11608;
 
     /**
+     * @Message
+     */
+    public const FILTER_NAME_CANNOT_EMPTY = -11852;
+
+    /**
      * @Message("父目录不能为空")
      */
     public const PARENT_NOT_EMPTY = -11950;

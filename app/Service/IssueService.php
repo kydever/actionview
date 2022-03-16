@@ -45,6 +45,7 @@ use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Database\Model\Collection;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
@@ -1201,6 +1202,18 @@ class IssueService extends Service
         }
 
         return $wfactions;
+    }
+
+    /**
+     * @param $models
+     * @return Collection<int, Issue>
+     */
+    public function getByProjectKey(string $prokectKey, array $field, $models, array $columns = ['*'])
+    {
+        return Issue::query()
+            ->where('project_key', $prokectKey)
+            ->whereRaw($field)
+            ->get($columns);
     }
 
     protected function initializeWorkflow(int $type, User $user)
