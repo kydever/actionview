@@ -16,7 +16,6 @@ use App\Model\Project;
 use App\Model\User;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\ConfigStateDao;
-use App\Service\Dao\ConfigStatePropertyDao;
 use App\Service\Formatter\StateFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
@@ -104,44 +103,5 @@ class StateService extends Service
     public function delete(Project $project, int $id): bool
     {
         return $this->dao->delete($project, $id);
-    }
-
-    public function getStateList(string $projectKey): array
-    {
-        $models = $this->dao->findOrByProjectKey($projectKey);
-        $lists = [];
-        foreach ($models as $model) {
-            $lists[] = $this->formatter->base($model);
-        }
-        $stateProperty = di()->get(ConfigStatePropertyDao::class)->firstByProjectKey($projectKey);
-        if (! is_null($stateProperty)) {
-            if ($sequence = $stateProperty->sequence) {
-                $func = function ($v1, $v2) use ($sequence) {
-                    $i1 = array_search($v1['id'], $sequence);
-                    $i1 = $i1 !== false ? $i1 : 998;
-                    $i2 = array_search($v2['id'], $sequence);
-                    $i2 = $i2 !== false ? $i2 : 999;
-                    return $i1 >= $i2 ? 1 : -1;
-                };
-                usort($lists, $func);
-            }
-        }
-
-        return $lists;
-    }
-
-    public function getStateOptions(string $projectKey)
-    {
-        $states = $this->getStateList($projectKey);
-        $options = [];
-        $tmp = [];
-        foreach ($states as $state) {
-            $tmp['id'] = isset($state['key']) && $state['key'] ? $state['key'] : $state['id'];
-            $tmp['name'] = isset($state['name']) ? trim($state['name']) : '';
-            $tmp['category'] = isset($state['category']) ? $state['category'] : '';
-            $options[] = $tmp;
-        }
-
-        return $options;
     }
 }
