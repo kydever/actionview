@@ -23,6 +23,8 @@ use Hyperf\Utils\Arr;
 
 class ReportService extends Service
 {
+    use TimeTrackTrait;
+
     #[Inject]
     protected ReportDao $dao;
 
@@ -351,7 +353,7 @@ class ReportService extends Service
                 $or = [];
                 $vals = explode(',', $val);
                 foreach ($vals as $v) {
-                    $or[] = [$key . '_ids' => $v == 'me' ? $this->user->id : $v];
+                    $or[] = [$key . '_ids' => $v == 'me' ? get_user_id() : $v];
                 }
                 $and[] = ['$or' => $or];
             } elseif (in_array($key_type_fields[$key], ['Select', 'SingleVersion', 'RadioGroup'])) {
