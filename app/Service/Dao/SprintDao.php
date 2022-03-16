@@ -31,10 +31,10 @@ class SprintDao extends Service
     /**
      * @return Collection<int, Sprint>
      */
-    public function getByProjectKeyAndStatus(string $projectKey): Collection
+    public function getByProjectKeyAndStatus(string $projectKey, array $status = ['active', 'waiting']): Collection
     {
         return Sprint::where('project_key', $projectKey)
-            ->whereIn('status', ['active', 'waiting'])
+            ->whereIn('status', $status)
             ->orderBy('no', 'asc')
             ->get();
     }

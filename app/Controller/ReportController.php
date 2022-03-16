@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Request\GetIssuesReportRequest;
 use App\Service\ReportService;
 use App\Service\TimeTrackTrait;
 use Hyperf\Di\Annotation\Inject;
@@ -27,5 +28,15 @@ class ReportController extends Controller
         return $this->response->success(
             $this->service->index()
         );
+    }
+
+    public function getIssues(GetIssuesReportRequest $request)
+    {
+        $X = $request->input('stat_x');
+        $Y = $request->input('stat_y');
+
+        $result = $this->service->getIssues($X, $Y);
+
+        return $this->response->success($result);
     }
 }

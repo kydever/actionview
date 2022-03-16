@@ -167,6 +167,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('version/merge', App\Controller\VersionController::class . '::merge');
 
     Router::get('report/index', [App\Controller\ReportController::class, 'index']);
+    Router::get('report/issues', [App\Controller\ReportController::class, 'getIssues']);
 
     Router::post('wiki', App\Controller\WikiController::class . '::create');
     Router::get('wiki/directory/{directory:\d+}', [App\Controller\WikiController::class, 'index']);
