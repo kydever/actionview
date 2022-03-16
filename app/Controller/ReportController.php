@@ -32,10 +32,14 @@ class ReportController extends Controller
 
     public function getIssues(GetIssuesReportRequest $request)
     {
-        $X = $request->input('stat_x');
-        $Y = $request->input('stat_y');
+        $x = $request->input('stat_x');
+        $y = $request->input('stat_y');
+        $input = $request->all();
 
-        $result = $this->service->getIssues($X, $Y);
+        $user = get_user();
+        $project = get_project();
+
+        $result = $this->service->getIssues($x, $y, $user, $project, $input);
 
         return $this->response->success($result);
     }

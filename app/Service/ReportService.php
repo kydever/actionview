@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\ReportFiltersConstant;
+use App\Model\Project;
+use App\Model\User;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\ConfigTypeDao;
-use App\Service\Dao\IssueDao;
 use App\Service\Dao\ReportDao;
 use App\Service\Dao\SprintDao;
 use App\Service\Dao\VersionDao;
@@ -91,98 +92,50 @@ class ReportService extends Service
         return array_values($filters);
     }
 
-    public function getIssues(string $X, ?string $Y): array
+    public function getIssues(string $x, ?string $y, User $user, Project $project, array $input): array
     {
-        $project = get_project();
         $XYData = [];
         $YAxis = [];
-        if ($X === $Y || is_null($Y)) {
-            $XYData[$X] = $this->initXYData($project->key, $X);
+        if ($x === $y || is_null($y)) {
+            $XYData[$x] = $this->initXYData($project->key, $x);
         } else {
-            $XYData[$X] = $this->initXYData($project->key, $X);
-            $XYData[$Y] = $this->initXYData($project->key, $Y);
+            $XYData[$x] = $this->initXYData($project->key, $x);
+            $XYData[$y] = $this->initXYData($project->key, $y);
         }
 
-        $issues = [];
-//        $bool = di()->get(IssueService::class)->getBoolSearch($project->key, $input, $user->id);
-//        [$count, $ids] = di()->get(IssueSearch::class)->search([
-//            'query' => $bool,
-//            'sort' => ['created_at' => 'desc'],
-//            'from' => 0,
-//            'size' => 10,
-//        ]);
-//        $issues = di()->get(IssueDao::class)->findMany($ids);
-
-        foreach ($issues as $issue) {
-            foreach ($XYData as $dimension => $z) {
-                if (! isset($issue[$dimension]) || ! $issue[$dimension]) {
-                    continue;
-                }
-
-                $issue_vals = [];
-                if (is_string($issue[$dimension])) {
-                    if (strpos($issue[$dimension], ',') !== false) {
-                        $issue_vals = explode(',', $issue[$dimension]);
-                    } else {
-                        $issue_vals = [$issue[$dimension]];
-                    }
-                } elseif (is_array($issue[$dimension])) {
-                    $issue_vals = $issue[$dimension];
-                    if (isset($issue[$dimension]['id'])) {
-                        $issue_vals = [$issue[$dimension]];
-                    }
-                }
-
-                foreach ($issue_vals as $issue_val) {
-                    $tmpv = $issue_val;
-                    if (is_array($issue_val) && isset($issue_val['id'])) {
-                        $tmpv = $issue_val['id'];
-                    }
-
-                    if (isset($z[$tmpv])) {
-                        $XYData[$dimension][$tmpv]['nos'][] = $issue['no'];
-                    } elseif ((is_array($issue_val) && isset($issue_val['id'])) || $dimension === 'labels') {
-                        if ($dimension === $Y && $X !== $Y) {
-                            $YAxis[$tmpv] = isset($issue[$dimension]['name']) ? $issue[$dimension]['name'] : $tmpv;
-                        }
-
-                        $XYData[$dimension][$tmpv] = ['name' => isset($issue[$dimension]['name']) ? $issue[$dimension]['name'] : $tmpv, 'nos' => [$issue['no']]];
-                    }
-                }
-            }
-        }
+        $bool = di()->get(IssueService::class)->getBoolSearch($project->key, $input, $user->id);
+        $res = di()->get(IssueSearch::class)->countByBoolQueryGroupBy($bool, $x);
 
         $results = [];
-        if ($X === $Y || ! $Y) {
-            foreach ($XYData[$X] as $key => $value) {
-                $results[] = ['id' => $key, 'name' => $value['name'], 'cnt' => count($value['nos'])];
-            }
-        } else {
-            foreach ($XYData[$X] as $key => $value) {
-                $results[$key] = ['id' => $key, 'name' => $value['name'], 'y' => []];
-                $x_cnt = 0;
-
-                if ($YAxis) {
-                    foreach ($YAxis as $yai => $yav) {
-                        if (isset($XYData[$Y][$yai])) {
-                            $y_cnt = count(array_intersect($value['nos'], $XYData[$Y][$yai]['nos']));
-                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => $y_cnt];
-                            $x_cnt += $y_cnt;
-                        } else {
-                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => 0];
-                        }
-                    }
-                } else {
-                    foreach ($XYData[$Y] as $key2 => $value2) {
-                        $y_cnt = count(array_intersect($value['nos'], $value2['nos']));
-
-                        $results[$key]['y'][] = ['id' => $key2, 'name' => $value2['name'], 'cnt' => $y_cnt];
-                        $x_cnt += $y_cnt;
-                    }
-                }
-                $results[$key]['cnt'] = $x_cnt;
+        if ($x === $y || ! $y) {
+            foreach ($XYData[$x] as $key => $value) {
+                $results[] = ['id' => $key, 'name' => $value['name'], 'cnt' => $res[$key] ?? 0];
             }
         }
+//            foreach ($XYData[$x] as $key => $value) {
+//                $results[$key] = ['id' => $key, 'name' => $value['name'], 'y' => []];
+//                $x_cnt = 0;
+//
+//                if ($YAxis) {
+//                    foreach ($YAxis as $yai => $yav) {
+//                        if (isset($XYData[$Y][$yai])) {
+//                            $y_cnt = count(array_intersect($value['nos'], $XYData[$Y][$yai]['nos']));
+//                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => $y_cnt];
+//                            $x_cnt += $y_cnt;
+//                        } else {
+//                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => 0];
+//                        }
+//                    }
+//                } else {
+//                    foreach ($XYData[$y] as $key2 => $value2) {
+//                        $y_cnt = count(array_intersect($value['nos'], $value2['nos']));
+//
+//                        $results[$key]['y'][] = ['id' => $key2, 'name' => $value2['name'], 'cnt' => $y_cnt];
+//                        $x_cnt += $y_cnt;
+//                    }
+//                }
+//                $results[$key]['cnt'] = $x_cnt;
+//            }
 
         return array_values($results);
     }

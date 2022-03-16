@@ -182,6 +182,36 @@ class IssueSearch extends ElasticSearch
         return $result;
     }
 
+    public function countByBoolQueryGroupBy(array $bool, string $field): array
+    {
+        $params = [
+            'index' => $this->index(),
+            'type' => $this->type(),
+            'body' => [
+                'aggs' => [
+                    'cnt' => [
+                        'filter' => $bool,
+                        'aggs' => [
+                            'group_by_field' => [
+                                'terms' => ['field' => $field],
+                            ],
+                        ],
+                    ],
+                ],
+                'size' => 0,
+            ],
+        ];
+
+        $result = $this->client()->search($params);
+        $aggregations = $result['aggregations']['cnt']['group_by_field']['buckets'] ?? [];
+        $result = [];
+        foreach ($aggregations as $aggregation) {
+            $result[$aggregation['key']] = $aggregation['doc_count'];
+        }
+
+        return $result;
+    }
+
     public function countByBoolQuery(array $bool)
     {
         $params = [
