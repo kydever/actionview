@@ -94,32 +94,34 @@ class ReportService extends Service
 
     public function getIssues(string $x, ?string $y, User $user, Project $project, array $input): array
     {
-        $XYData = [];
+        $data = [];
         $YAxis = [];
+        $fields = [$x];
         if ($x === $y || is_null($y)) {
-            $XYData[$x] = $this->initXYData($project->key, $x);
+            $data[$x] = $this->initXYData($project->key, $x);
         } else {
-            $XYData[$x] = $this->initXYData($project->key, $x);
-            $XYData[$y] = $this->initXYData($project->key, $y);
+            $data[$x] = $this->initXYData($project->key, $x);
+            $data[$y] = $this->initXYData($project->key, $y);
+            $fields[] = $y;
         }
 
         $bool = di()->get(IssueService::class)->getBoolSearch($project->key, $input, $user->id);
-        $res = di()->get(IssueSearch::class)->countByBoolQueryGroupBy($bool, $x);
+        $res = di()->get(IssueSearch::class)->countByBoolQueryGroupBy($bool, $fields);
 
         $results = [];
         if ($x === $y || ! $y) {
-            foreach ($XYData[$x] as $key => $value) {
-                $results[] = ['id' => $key, 'name' => $value['name'], 'cnt' => $res[$key] ?? 0];
+            foreach ($data[$x] as $key => $value) {
+                $results[] = ['id' => $key, 'name' => $value['name'], 'cnt' => $res[$x][$key] ?? 0];
             }
         }
-//            foreach ($XYData[$x] as $key => $value) {
+//            foreach ($data[$x] as $key => $value) {
 //                $results[$key] = ['id' => $key, 'name' => $value['name'], 'y' => []];
 //                $x_cnt = 0;
 //
 //                if ($YAxis) {
 //                    foreach ($YAxis as $yai => $yav) {
-//                        if (isset($XYData[$Y][$yai])) {
-//                            $y_cnt = count(array_intersect($value['nos'], $XYData[$Y][$yai]['nos']));
+//                        if (isset($data[$Y][$yai])) {
+//                            $y_cnt = count(array_intersect($value['nos'], $data[$Y][$yai]['nos']));
 //                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => $y_cnt];
 //                            $x_cnt += $y_cnt;
 //                        } else {
@@ -127,7 +129,7 @@ class ReportService extends Service
 //                        }
 //                    }
 //                } else {
-//                    foreach ($XYData[$y] as $key2 => $value2) {
+//                    foreach ($data[$y] as $key2 => $value2) {
 //                        $y_cnt = count(array_intersect($value['nos'], $value2['nos']));
 //
 //                        $results[$key]['y'][] = ['id' => $key2, 'name' => $value2['name'], 'cnt' => $y_cnt];
