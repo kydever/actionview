@@ -184,10 +184,9 @@ class IssueSearch extends ElasticSearch
 
     public function countByBoolQueryGroupBy(array $bool, array $fields): array
     {
-        $fields = array_values(array_unique($fields));
         $aggs = [];
-        foreach ($fields as $field) {
-            $aggs[$field] = ['terms' => ['field' => $field]];
+        foreach ($fields as $field => $value) {
+            $aggs[$field] = ['terms' => ['field' => $value]];
         }
         $params = [
             'index' => $this->index(),
@@ -207,7 +206,7 @@ class IssueSearch extends ElasticSearch
         $aggregations = $result['aggregations']['cnt'] ?? [];
         $result = [];
         foreach ($aggregations as $i => $aggregation) {
-            if (in_array($i, $fields)) {
+            if (in_array($i, array_keys($fields))) {
                 $values = $aggregation['buckets'] ?? [];
                 foreach ($values as $value) {
                     $result[$i][$value['key']] = $value['doc_count'];

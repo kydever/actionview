@@ -18,6 +18,7 @@ use App\Service\Client\IssueSearch;
 use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\ReportDao;
 use App\Service\Dao\SprintDao;
+use App\Service\Dao\UserDao;
 use App\Service\Dao\VersionDao;
 use App\Service\Formatter\ReportFormatter;
 use Han\Utils\Service;
@@ -96,19 +97,21 @@ class ReportService extends Service
     {
         $data = [];
         $YAxis = [];
-        $fields = [$x];
+        $fields = $this->formatGroupByField([$x, $y]);
         if ($x === $y || is_null($y)) {
             $data[$x] = $this->initXYData($project->key, $x);
         } else {
             $data[$x] = $this->initXYData($project->key, $x);
             $data[$y] = $this->initXYData($project->key, $y);
-            $fields[] = $y;
         }
 
         $bool = di()->get(IssueService::class)->getBoolSearch($project->key, $input, $user->id);
         $res = di()->get(IssueSearch::class)->countByBoolQueryGroupBy($bool, $fields);
 
         $results = [];
+        empty($data[$x]) && $data[$x] = $this->guessXYData($project->key, $x, $res);
+        $y && empty($data[$y]) && $data[$y] = $this->guessXYData($project->key, $y, $res);
+
         if ($x === $y || ! $y) {
             foreach ($data[$x] as $key => $value) {
                 $results[] = ['id' => $key, 'name' => $value['name'], 'cnt' => $res[$x][$key] ?? 0];
@@ -140,6 +143,22 @@ class ReportService extends Service
 //            }
 
         return array_values($results);
+    }
+
+    protected function guessXYData(string $key, string $field, $data): array
+    {
+        $result = [];
+        switch ($field) {
+            case 'assignee':
+                $ids = array_keys($data[$field] ?? []);
+                $models = di()->get(UserDao::class)->findMany($ids);
+                foreach ($models as $model) {
+                    $result[$model->id] = ['name' => $model->first_name];
+                }
+                break;
+        }
+
+        return $result;
     }
 
     protected function initXYData(string $projectKey, string $dimension)
@@ -229,5 +248,18 @@ class ReportService extends Service
         }
 
         return $results;
+    }
+
+    private function formatGroupByField($fields = [])
+    {
+        $result = [];
+        foreach ($fields as $field) {
+            $result[$field] = match ($field) {
+                'assignee' => 'assignee.id',
+                default => $field
+            };
+        }
+
+        return array_unique($result);
     }
 }
