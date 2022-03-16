@@ -116,7 +116,7 @@ class ProviderService extends Service
         $result = [];
         foreach ($states as $state) {
             $result[] = [
-                'id' => $state->key ?: $state->id,
+                'id' => $state->key ?: (string) $state->id,
                 'name' => trim($state->name),
                 'category' => $state->category,
             ];
