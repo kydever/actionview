@@ -1208,11 +1208,10 @@ class IssueService extends Service
      * @param $models
      * @return Collection<int, Issue>
      */
-    public function getByProjectKey(string $prokectKey, array $field, $models, array $columns = ['*'])
+    public function getByProjectKey(string $prokectKey, array $columns = ['*'])
     {
         return Issue::query()
             ->where('project_key', $prokectKey)
-            ->whereRaw($field)
             ->get($columns);
     }
 

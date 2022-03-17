@@ -11,15 +11,19 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
+use App\Constants\ErrorCode;
 use App\Constants\ReportFiltersConstant;
+use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\User;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\ConfigTypeDao;
+use App\Service\Dao\ProjectDao;
 use App\Service\Dao\ReportDao;
 use App\Service\Dao\SprintDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\VersionDao;
+use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\ReportFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
@@ -143,6 +147,173 @@ class ReportService extends Service
 //            }
 
         return array_values($results);
+    }
+
+    public function getTrends(array $attributes): array
+    {
+        $user = get_user();
+        $project = get_project();
+        $interval = $attributes['interval'] ?? 'day';
+        if (! in_array($interval, ['day', 'week', 'month'])) {
+            throw new BusinessException(ErrorCode::FILTER_NAME_CANNOT_EMPTY);
+        }
+
+        $isAccu = $attributes['is_accu'] == 1 ? true : false;
+        $project = di()->get(ProjectDao::class)->firstByKey($project->key, true);
+        $startStatTime = strtotime((string) $project->created_at);
+        $endStatTime = time();
+        $where = di()->get(IssueService::class)->getBoolSearch($project->key, $attributes, $user->id);
+        $statTime = $attributes['stat_time'] ?? null;
+        if (! is_null($statTime)) {
+            $or = [];
+            $dateConds = [];
+            $unitMap = ['d' => 'day', 'w' => 'week', 'm' => 'month', 'y' => 'year'];
+            $sections = explode('~', $statTime);
+            if ($sections[0]) {
+                $v = $sections[0];
+                $unit = substr($v, -1);
+                if (in_array($unit, ['d', 'w', 'm', 'y'])) {
+                    $direct = substr($v, 0, 1);
+                    $vv = abs((int) substr($v, 0, -1));
+                    $dateConds['$gte'] = strtotime(date('Ymd', strtotime(($direct === '-' ? '-' : '+') . $vv . ' ' . $unitMap[$unit])));
+                } else {
+                    $dateConds['$gte'] = strtotime($v);
+                }
+                $startStatTime = max([$startStatTime, $dateConds['$gte']]);
+            }
+
+            if (isset($sections[1]) && $sections[1]) {
+                $v = $sections[1];
+                $unit = substr($v, -1);
+                if (in_array($unit, ['d', 'w', 'm', 'y'])) {
+                    $direct = substr($v, 0, 1);
+                    $vv = abs((int) substr($v, 0, -1));
+                    $dateConds['$lte'] = strtotime(date('Y-m-d', strtotime(($direct === '-' ? '-' : '+') . $vv . ' ' . $unitMap[$unit])) . ' 23:59:59');
+                } else {
+                    $dateConds['$lte'] = strtotime($v . ' 23:59:59');
+                }
+                $endStatTime = min([$endStatTime, $dateConds['$lte']]);
+            }
+        }
+
+        $results = $this->getInitializedTrendData($interval, $startStatTime, $endStatTime);
+        $issues = di()->get(IssueService::class)->getByProjectKey($project->key);
+        $lists = di()->get(IssueFormatter::class)->formatList($issues);
+        foreach ($lists as $list) {
+            $createdAt = $list['created_at'] ?? null;
+            if (! is_null($createdAt)) {
+                $createdDate = $this->convDate($interval, $createdAt);
+                if ($isAccu) {
+                    foreach ($results as $key => $val) {
+                        if ($key >= $createdDate) {
+                            ++$results[$key]['new'];
+                        }
+                    }
+                } elseif (isset($results[$createdDate]) && $list[$createdAt] >= $startStatTime) {
+                    ++$results[$createdDate]['new'];
+                }
+            }
+
+            $resolvedAt = $list['resolved_at'] ?? null;
+            if (! is_null($resolvedAt)) {
+                $resolvedDate = $this->convDate($interval, $resolvedAt);
+                if ($isAccu) {
+                    foreach ($results as $key => $val) {
+                        if ($key >= $resolvedDate) {
+                            ++$results[$key]['resolved'];
+                        }
+                    }
+                } elseif (isset($results[$resolvedDate]) && $list['resolved_at'] >= $startStatTime) {
+                    ++$results[$resolvedDate]['resolved'];
+                }
+            }
+
+            $closedAt = $list['closed_at'] ?? null;
+            if (! is_null($closedAt)) {
+                $clsoedAt = $this->convDate($interval, $closedAt);
+                if ($isAccu) {
+                    foreach ($results as $key => $val) {
+                        if ($key >= $closedAt) {
+                            ++$results[$key]['closed'];
+                        }
+                    }
+                } elseif (isset($results[$closedAt]) && $list['closed_at'] >= $startStatTime) {
+                    ++$results[$closedAt]['closed'];
+                }
+            }
+        }
+
+        $data = array_values($results);
+        $options = [
+            'trend_start_stat_date' => date('Y/m/d', $startStatTime),
+            'trend_end_stat_date' => date('Y/m/d', $endStatTime),
+        ];
+
+        return [$data, $options];
+    }
+
+    public function convDate(string $interval, int $at): string
+    {
+        if ($interval == 'week') {
+            $n = date('N', $at);
+
+            return date('Y/m/d', $at - ($n - 1) * 24 * 3600);
+        }
+        if ($interval == 'month') {
+            return date('Y/m', $at);
+        }
+        return date('Y/m/d', $at);
+    }
+
+    public function getInitializedTrendData(string $interval, int $startStatTime, int $endStatTime): array
+    {
+        $results = [];
+        $t = $endStatTime;
+        if ($interval = 'month') {
+            $t = strtotime(date('Y/m/t', $endStatTime));
+        } elseif ($interval == 'week') {
+            $n = date('N', $endStatTime);
+            $t = strtotime(date('Y/m/d', $endStatTime) . '+' . (7 - $n) . ' day');
+        } else {
+            $t = strtotime(date('Y/m/d', $endStatTime));
+        }
+        $i = 0;
+        $days = [];
+        for (; $t >= $startStatTime && $i < 100; ++$i) {
+            $tmp = [
+                'new' => 0,
+                'resolved' => 0,
+                'closed' => 0,
+            ];
+            $y = (int) date('Y', $t);
+            $m = (int) date('m', $t);
+            $d = (int) date('d', $t);
+            if ($interval == 'month') {
+                $tmp['category'] = date('Y/m', $t);
+                $t = mktime(0, 0, 0, $m - 1, $d, $y);
+            } elseif ($interval == 'week') {
+                $tmp['category'] = date('Y/m/d', $t - 6 * 24 * 3600);
+                $t = mktime(0, 0, 0, $m, $d - 7, $y);
+            } else {
+                $tmp['category'] = date('Y/m/d', $t);
+                $days[] = $tmp['category'];
+                $weekFlg = (int) date('w', $t);
+                $tmp['notWorking'] = ($weekFlg === 0 || $weekFlg === 6) ? 1 : 0;
+                $t = mktime(0, 0, 0, $m, $d - 1, $y);
+            }
+            $results[$tmp['category']] = $tmp;
+        }
+
+        if ($days) {
+            $singulars = di(CalendarSingularService::class)->getByDays($days);
+            foreach ($singulars as $singular) {
+                if (isset($results[$singular->key])) {
+                    $results[$singular->day]['notWorking'] = $singular->type == 'holiday' ? 1 : 0;
+                }
+            }
+        }
+
+        return array_reverse($results);
     }
 
     protected function guessXYData(string $key, string $field, $data): array

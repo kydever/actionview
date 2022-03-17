@@ -278,7 +278,7 @@ class ErrorCode extends AbstractConstants
     public const BOARD_TYPE_ERROR = -11608;
 
     /**
-     * @Message
+     * @Message("过滤器名称不能为空")
      */
     public const FILTER_NAME_CANNOT_EMPTY = -11852;
 
