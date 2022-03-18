@@ -111,6 +111,7 @@ class ReportService extends Service
 
         $bool = di()->get(IssueService::class)->getBoolSearch($project->key, $input, $user->id);
         $res = di()->get(IssueSearch::class)->countByBoolQueryGroupBy($bool, $fields);
+        var_dump($res);
 
         $results = [];
         empty($data[$x]) && $data[$x] = $this->guessXYData($project->key, $x, $res);
@@ -325,6 +326,11 @@ class ReportService extends Service
                 $models = di()->get(UserDao::class)->findMany($ids);
                 foreach ($models as $model) {
                     $result[$model->id] = ['name' => $model->first_name];
+                }
+                break;
+            case 'labels':
+                foreach ($data[$field] ?? [] as $label => $count) {
+                    $result[$label] = ['name' => $label];
                 }
                 break;
         }
