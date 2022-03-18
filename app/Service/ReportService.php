@@ -111,7 +111,6 @@ class ReportService extends Service
 
         $bool = di()->get(IssueService::class)->getBoolSearch($project->key, $input, $user->id);
         $res = di()->get(IssueSearch::class)->countByBoolQueryGroupBy($bool, $fields);
-        var_dump($res);
 
         $results = [];
         empty($data[$x]) && $data[$x] = $this->guessXYData($project->key, $x, $res);
