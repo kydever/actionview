@@ -32,7 +32,8 @@ class IssueFormatter extends Service
             'updated_at' => $model->updated_at->getTimestamp(),
         ];
 
-        return array_replace($model->data, $result);
+        $result = array_replace($model->data, $result);
+        return format_item_to_string($result);
     }
 
     public function formatList($models)
