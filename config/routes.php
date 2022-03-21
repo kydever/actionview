@@ -168,6 +168,7 @@ Router::addGroup('/project/{project_key}/', function () {
 
     Router::get('report/index', [App\Controller\ReportController::class, 'index']);
     Router::get('report/issues', [App\Controller\ReportController::class, 'getIssues']);
+    Router::get('report/timetracks', [App\Controller\ReportController::class, 'getTimetracks']);
     Router::get('report/timetracks/issue/{id:\d+}', [App\Controller\ReportController::class, 'getTimetracksDetail']);
 
     Router::post('wiki', App\Controller\WikiController::class . '::create');

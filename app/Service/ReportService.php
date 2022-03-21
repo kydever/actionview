@@ -318,6 +318,46 @@ class ReportService extends Service
         return array_reverse($results);
     }
 
+    public function getTimetracks(): array
+    {
+        $issues = di()->get(IssueService::class)->getByProjectKey(get_project_key());
+        $list = [];
+        foreach ($issues as $issue) {
+            $item = di()->get(IssueFormatter::class)->base($issue);
+            $item['title'] = $item['data']['title'];
+            $item['state'] = $item['data']['state'];
+            $item['origin'] = $item['original_estimate'] ?? '';
+            $item['origin_m'] = $issue['original_estimatei_m'] ?? $this->ttHandleInM($item['origin']);
+            $spendM = 0;
+            $leftM = $item['origin_m'];
+            $worklogs = di()->get(WorklogDao::class)->findManyProjectKeyAndIssueId(get_project_key(), (int) $item['id']);
+            foreach ($worklogs as $worklog) {
+                $log[] = di()->get(WorklogFormatter::class)->base($worklog);
+                $thisSpendM = $log['spend_m'] ?? $this->ttHandleInM($log['spend'] ?? '');
+                $spendM += $thisSpendM;
+                if ($log['adjust_type'] == 1) {
+                    $leftM = $leftM ? $leftM - $thisSpendM : '';
+                } elseif ($log['adjust_type'] == 3) {
+                    $leaveEstimate = $log['leave_estimate'] ?? '';
+                    $leaveEstimateM = $log['leave_estimate_m'] ?? $this->ttHandleInM($leaveEstimate);
+                    $leftM = $leaveEstimateM;
+                } elseif ($log['adjust_type'] == 4) {
+                    $cut = $log['cut'] ?? '';
+                    $cutM = $log['cut_m'] ?? $this->ttHandleInM($cut);
+                    $leftM = $leftM ? $leftM - $cutM : '';
+                }
+            }
+            $item['spend_m'] = $spendM;
+            $item['spend'] = $this->ttHandle($spendM . 'm');
+            $item['left_m'] = $leftM ? max([$leftM, 0]) : '';
+            $item['left'] = $leftM ?? $this->ttHandle(max([$leftM, 0]) . 'm');
+
+            $list[] = $item;
+        }
+
+        return $list;
+    }
+
     public function getTimetracksDetail(int $id): array
     {
         $worklogs = di()->get(WorklogDao::class)->findManyProjectKeyAndIssueId(get_project_key(), $id);
