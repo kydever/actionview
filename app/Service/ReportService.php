@@ -322,7 +322,7 @@ class ReportService extends Service
     {
         $issues = di()->get(IssueService::class)->getByProjectKey(get_project_key());
         $list = [];
-        foreach ( $issues as $issue ) {
+        foreach ($issues as $issue) {
             $item = di(IssueFormatter::class)->base($issue);
             $item['title'] = $issue->data['title'];
             $item['state'] = $issue->data['state'];

@@ -86,4 +86,16 @@ class IssueDao extends Service
     {
         return Issue::where('project_key', $projectKey)->exists();
     }
+
+    public function firstByProjectKey(string $projectKey, bool $throw = false): ?Issue
+    {
+        $model = Issue::query()
+            ->where('project_key', $projectKey)
+            ->get();
+        if (is_null($model)) {
+            throw new BusinessException(ErrorCode::PROJECT_NOT_EXIST);
+        }
+
+        return $model;
+    }
 }
