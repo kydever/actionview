@@ -23,8 +23,10 @@ use App\Service\Dao\ReportDao;
 use App\Service\Dao\SprintDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\VersionDao;
+use App\Service\Dao\WorklogDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\ReportFormatter;
+use App\Service\Formatter\WorklogFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
 
@@ -314,6 +316,63 @@ class ReportService extends Service
         }
 
         return array_reverse($results);
+    }
+
+    public function getTimetracks(): array
+    {
+        $issues = di()->get(IssueService::class)->getByProjectKey(get_project_key());
+        $list = [];
+        foreach ( $issues as $issue ) {
+            $item = di(IssueFormatter::class)->base($issue);
+            $item['title'] = $issue->data['title'];
+            $item['state'] = $issue->data['state'];
+            $item['origin'] = $issue->data['original_estimate'] ?? '';
+            $item['origin_m'] = $issue->data['original_estimatei_m'] ?? $this->ttHandleInM($item['origin']);
+
+            $spendM = 0;
+            $leftM = $item['origin_m'];
+            $worklogs = di()->get(WorklogDao::class)->findManyProjectKeyAndIssueId(get_project_key(), $issue['id']);
+            foreach ($worklogs as $worklog) {
+                $log = di()->get(WorklogFormatter::class)->base($worklog);
+                $thisSpendM = $log['spend_m'] ?? $this->ttHandleInM($log['spend'] ?? '');
+                $spendM += $thisSpendM;
+                if ($log['adjust_type'] == 1) {
+                    $leftM = $leftM ? $leftM - $thisSpendM : '';
+                } elseif ($log['adjust_type'] == 3) {
+                    $leaveEstimate = $log['leave_estimate'] ?? '';
+                    $leaveEstimateM = $log['leave_estimate_m'] ?? $this->ttHandleInM($leaveEstimate);
+                    $leftM = $leaveEstimateM;
+                } elseif ($log['adjust_type'] == 4) {
+                    $cut = $log['cut'] ?? '';
+                    $cutM = $log['cut_m'] ?? $this->ttHandleInM($cut);
+                    $leftM = $leftM ? $leftM - $cutM : '';
+                }
+            }
+            $item['spend_m'] = $spendM;
+            $item['spend'] = $this->ttHandle($spendM . 'm');
+            $item['left_m'] = $leftM ? max([$leftM, 0]) : '';
+            $item['left'] = $leftM ?? $this->ttHandle(max([$leftM, 0]) . 'm');
+
+            $list[] = $item;
+        }
+
+        return $list;
+    }
+
+    public function getTimetracksDetail(int $id): array
+    {
+        $worklogs = di()->get(WorklogDao::class)->findManyProjectKeyAndIssueId(get_project_key(), $id);
+        $list = [];
+        foreach ($worklogs as $worklog) {
+            $item[] = di()->get(WorklogFormatter::class)->base($worklog);
+            $spendM = $item['spend_m'] ?? null;
+            if (is_null($spendM)) {
+                $item['spend_m'] = $this->ttHandleInM($worklog->spend);
+            }
+            $list[] = $item;
+        }
+
+        return $list;
     }
 
     protected function guessXYData(string $key, string $field, $data): array

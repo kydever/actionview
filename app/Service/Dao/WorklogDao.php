@@ -58,4 +58,16 @@ class WorklogDao extends Service
 
         return $model;
     }
+
+    /**
+     * @return Collection<int, Worklog>
+     */
+    public function findManyProjectKeyAndIssueId(string $key, int $issueId)
+    {
+        return Worklog::query()
+            ->where('project_key', $key)
+            ->where('issue_id', $issueId)
+            ->orderBy('recorded_at', 'desc')
+            ->get();
+    }
 }
