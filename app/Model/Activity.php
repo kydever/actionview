@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
+use Hyperf\Database\Model\Builder;
+
 /**
  * @property int $id
  * @property string $project_key
@@ -35,4 +37,14 @@ class Activity extends Model
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'int', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+
+    public function scopeProjectKey(Builder $query, string $projectKey): Builder
+    {
+        return $query->where('project_key', $projectKey);
+    }
+
+    public function scopeEventKey(Builder $query, string $category): Builder
+    {
+        return $query->where('event_key', 'like', '%' . $category);
+    }
 }
