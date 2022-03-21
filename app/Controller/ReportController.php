@@ -50,4 +50,11 @@ class ReportController extends Controller
 
         return $this->response->success($data, $options);
     }
+
+    public function getTimetracksDetail(int $id)
+    {
+        $result = $this->service->getTimetracksDetail($id);
+
+        return $this->response->success($result);
+    }
 }

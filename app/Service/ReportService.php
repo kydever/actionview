@@ -23,8 +23,10 @@ use App\Service\Dao\ReportDao;
 use App\Service\Dao\SprintDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\VersionDao;
+use App\Service\Dao\WorklogDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\ReportFormatter;
+use App\Service\Formatter\WorklogFormatter;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
 
@@ -314,6 +316,22 @@ class ReportService extends Service
         }
 
         return array_reverse($results);
+    }
+
+    public function getTimetracksDetail(int $id): array
+    {
+        $worklogs = di()->get(WorklogDao::class)->findManyProjectKeyAndIssueId(get_project_key(), $id);
+        $list = [];
+        foreach ($worklogs as $worklog) {
+            $item[] = di()->get(WorklogFormatter::class)->base($worklog);
+            $spendM = $item['spend_m'] ?? null;
+            if (is_null($spendM)) {
+                $item['spend_m'] = $this->ttHandleInM($worklog->spend);
+            }
+            $list[] = $item;
+        }
+
+        return $list;
     }
 
     protected function guessXYData(string $key, string $field, $data): array
