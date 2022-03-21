@@ -27,7 +27,6 @@ class IssueFormatter extends Service
             'assignee' => $model->assignee,
             'reporter' => $model->reporter,
             'no' => $model->no,
-            'data' => $model->data,
             'attachments' => $model->attachments,
             'created_at' => $model->created_at->getTimestamp(),
             'updated_at' => $model->updated_at->getTimestamp(),

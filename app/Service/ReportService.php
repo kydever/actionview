@@ -322,17 +322,18 @@ class ReportService extends Service
     {
         $issues = di()->get(IssueService::class)->getByProjectKey(get_project_key());
         $list = [];
-        foreach ($issues as $issue) {
-            $item = di()->get(IssueFormatter::class)->base($issue);
-            $item['title'] = $item['data']['title'];
-            $item['state'] = $item['data']['state'];
-            $item['origin'] = $item['original_estimate'] ?? '';
-            $item['origin_m'] = $issue['original_estimatei_m'] ?? $this->ttHandleInM($item['origin']);
+        foreach ( $issues as $issue ) {
+            $item = di(IssueFormatter::class)->base($issue);
+            $item['title'] = $issue->data['title'];
+            $item['state'] = $issue->data['state'];
+            $item['origin'] = $issue->data['original_estimate'] ?? '';
+            $item['origin_m'] = $issue->data['original_estimatei_m'] ?? $this->ttHandleInM($item['origin']);
+
             $spendM = 0;
             $leftM = $item['origin_m'];
-            $worklogs = di()->get(WorklogDao::class)->findManyProjectKeyAndIssueId(get_project_key(), (int) $item['id']);
+            $worklogs = di()->get(WorklogDao::class)->findManyProjectKeyAndIssueId(get_project_key(), $issue['id']);
             foreach ($worklogs as $worklog) {
-                $log[] = di()->get(WorklogFormatter::class)->base($worklog);
+                $log = di()->get(WorklogFormatter::class)->base($worklog);
                 $thisSpendM = $log['spend_m'] ?? $this->ttHandleInM($log['spend'] ?? '');
                 $spendM += $thisSpendM;
                 if ($log['adjust_type'] == 1) {
