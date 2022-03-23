@@ -423,6 +423,11 @@ class ErrorCode extends AbstractConstants
     public const ROLE_NOT_EXISTS = -12702;
 
     /**
+     * @Message("角色在项目中被使用")
+     */
+    public const ROLE_IS_USED = -12703;
+
+    /**
      * @Message("项目名称不能为空")
      */
     public const PROJECT_NAME_CANNOT_BE_EMPTY = -14000;

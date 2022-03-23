@@ -17,6 +17,7 @@ use App\Constants\ProjectConstant;
 use App\Event\AddUserToRoleEvent;
 use App\Event\DelUserFromRoleEvent;
 use App\Exception\BusinessException;
+use App\Model\AclRole;
 use App\Model\AclRoleactor;
 use App\Model\AclRolePermission;
 use App\Model\Project;
@@ -27,6 +28,7 @@ use App\Service\Dao\AclRoleactorDao;
 use App\Service\Dao\AclRoleDao;
 use App\Service\Dao\AclRolePermissionDao;
 use App\Service\Dao\UserDao;
+use App\Service\Formatter\AclRoleactorFormatter;
 use App\Service\Formatter\GroupFormatter;
 use App\Service\Formatter\RoleFormatter;
 use App\Service\Formatter\UserFormatter;
@@ -44,6 +46,9 @@ class RoleService extends Service
 
     #[Inject]
     protected RoleFormatter $formatter;
+
+    #[Inject]
+    protected AclService $acl;
 
     public function index(Project $project)
     {
@@ -74,6 +79,72 @@ class RoleService extends Service
         }
 
         return $result;
+    }
+
+    public function create(Project $project, User $user, array $attributes): array
+    {
+        $permissions = $attributes['permissions'] ?? null;
+        if (! is_null($permissions)) {
+            $allPermissions = $this->acl->getPermissions($user->id, $project);
+            if (array_diff($permissions, $allPermissions)) {
+                throw new BusinessException(ErrorCode::ROLE_INVALID);
+            }
+        }
+
+        $model = new AclRole();
+        $model->project_key = $project->key;
+        $model->name = $attributes['name'];
+        $model->save();
+
+        if (! is_null($permissions) && $model) {
+            di()->get(RolePermissionService::class)->create(['project_key' => $project->key, 'role_id' => $model->id, 'permissions' => $permissions]);
+        }
+
+        return $this->formatter->base($model);
+    }
+
+    public function update(Project $project, User $user, int $id, array $attributes): array
+    {
+        $model = $this->dao->first($id, true);
+        if ($project->key != $model->project_key) {
+            throw new BusinessException(ErrorCode::ROLE_NOT_EXISTS);
+        }
+        $permissions = $attributes['permissions'] ?? null;
+        if (! is_null($permissions)) {
+            $allPermissions = $this->acl->getPermissions($user->id, $project);
+            if (array_diff($permissions, $allPermissions)) {
+                throw new BusinessException(ErrorCode::ROLE_INVALID);
+            }
+        }
+        $model->name = $attributes['name'];
+        $model->save();
+
+        return $this->formatter->base($model);
+    }
+
+    public function delete(Project $project, int $id): array
+    {
+        $model = $this->dao->first($id, true);
+        if ($project->key === ProjectConstant::SYS) {
+            $actors = di()->get(AclRoleactorService::class)->getByRoleId($model->id);
+            foreach ($actors as $actor) {
+                $item = di(AclRoleactorFormatter::class)->base($actor);
+                if ($item['user_ids'] || $item['group_ids']) {
+                    throw new BusinessException(ErrorCode::ROLE_IS_USED);
+                }
+                $actor->delete();
+            }
+        } else {
+            $actor = di()->get(AclRoleactorDao::class)->firstByRoleId($project->key, $model->id);
+            if ($actor) {
+                $actor->delete();
+            }
+        }
+        $model->delete();
+
+        return [
+            'id' => $model->id,
+        ];
     }
 
     /**

@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Request\ProjectRoleActorSaveRequest;
 use App\Request\RolePermissionSaveRequest;
+use App\Request\RoleRequest;
 use App\Service\ProjectAuth;
 use App\Service\RoleService;
 use App\Service\UserAuth;
@@ -28,6 +29,32 @@ class RoleController extends Controller
         $project = ProjectAuth::instance()->build()->getCurrent();
 
         $result = $this->service->index($project);
+
+        return $this->response->success($result);
+    }
+
+    public function store(RoleRequest $request)
+    {
+        $project = get_project();
+        $user = get_user();
+        $result = $this->service->create($project, $user, $request->all());
+
+        return $this->response->success($result);
+    }
+
+    public function update(RoleRequest $request, int $id)
+    {
+        $project = get_project();
+        $user = get_user();
+        $result = $this->service->update($project, $user, $id, $request->all());
+
+        return $this->response->success($result);
+    }
+
+    public function destroy(int $id)
+    {
+        $project = get_project();
+        $result = $this->service->delete($project, $id);
 
         return $this->response->success($result);
     }
