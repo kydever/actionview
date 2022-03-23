@@ -92,4 +92,16 @@ class Issue extends Model implements Searchable
     {
         return $this->hasOneInJsonObject(OswfEntry::class, 'id', 'data->entry_id');
     }
+
+    public function getData(): array
+    {
+        $stringArray = ['state'];
+        $result = $this->data;
+        foreach ($stringArray as $key) {
+            if (isset($result[$key])) {
+                $result[$key] = (string) $result[$key];
+            }
+        }
+        return $result;
+    }
 }
