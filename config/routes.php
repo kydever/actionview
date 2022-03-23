@@ -83,6 +83,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('role', [App\Controller\RoleController::class, 'store']);
     Router::put('role/{id:\d+}', [App\Controller\RoleController::class, 'update']);
     Router::delete('role/{id:\d+}', [App\Controller\RoleController::class, 'destroy']);
+    Router::get('role/{id:\d+}/reset', [App\Controller\RoleController::class, 'reset']);
     Router::post('role/{id}/actor', App\Controller\RoleController::class . '::setActor');
     // Router::resource('role', 'RoleController');
     // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
