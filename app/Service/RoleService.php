@@ -147,6 +147,18 @@ class RoleService extends Service
         ];
     }
 
+    public function reset(string $key, int $id)
+    {
+        $rp = di()->get(AclRolePermissionDao::class)->firstByProjectRoleId($key, $id);
+        $rp?->delete();
+        $model = $this->dao->first($id);
+        $result = $this->formatter->base($model);
+        $rp = di()->get(AclRolePermissionDao::class)->firstByProjectRoleId(ProjectConstant::SYS, $id);
+        $result['permissions'] = $rp->permissions ?? [];
+
+        return $result;
+    }
+
     /**
      * @param $input = [
      *     'users' => []

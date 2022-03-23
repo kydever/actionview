@@ -59,6 +59,13 @@ class RoleController extends Controller
         return $this->response->success($result);
     }
 
+    public function reset(int $id)
+    {
+        $result = $this->service->reset(get_project_key(), $id);
+
+        return $this->response->success($result);
+    }
+
     public function setPermissions(RolePermissionSaveRequest $request, int $id)
     {
         $project = ProjectAuth::instance()->build()->getCurrent();
