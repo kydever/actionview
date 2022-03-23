@@ -80,6 +80,9 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('role/{id:\d+}/permissions', App\Controller\RoleController::class . '::setPermissions');
     // Router::post('role/{id}/groupactor', 'RoleController@setGroupActor');
     Router::get('role', App\Controller\RoleController::class . '::index');
+    Router::post('role', [App\Controller\RoleController::class, 'store']);
+    Router::put('role/{id:\d+}', [App\Controller\RoleController::class, 'update']);
+    Router::delete('role/{id:\d+}', [App\Controller\RoleController::class, 'destroy']);
     Router::post('role/{id}/actor', App\Controller\RoleController::class . '::setActor');
     // Router::resource('role', 'RoleController');
     // Router::get('role/{id}/used', 'RoleController@viewUsedInProject');
