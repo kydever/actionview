@@ -81,10 +81,8 @@ class RoleService extends Service
         return $result;
     }
 
-    public function create(array $attributes): array
+    public function create(Project $project, User $user, array $attributes): array
     {
-        $project = get_project();
-        $user = get_user();
         $permissions = $attributes['permissions'] ?? null;
         if (! is_null($permissions)) {
             $allPermissions = $this->acl->getPermissions($user->id, $project);
@@ -105,10 +103,8 @@ class RoleService extends Service
         return $this->formatter->base($model);
     }
 
-    public function update(int $id, array $attributes): array
+    public function update(Project $project, User $user, int $id, array $attributes): array
     {
-        $project = get_project();
-        $user = get_user();
         $model = $this->dao->first($id, true);
         if ($project->key != $model->project_key) {
             throw new BusinessException(ErrorCode::ROLE_NOT_EXISTS);
@@ -126,9 +122,8 @@ class RoleService extends Service
         return $this->formatter->base($model);
     }
 
-    public function delete(int $id): array
+    public function delete(Project $project, int $id): array
     {
-        $project = get_project();
         $model = $this->dao->first($id, true);
         if ($project->key === ProjectConstant::SYS) {
             $actors = di()->get(AclRoleactorService::class)->getByRoleId($model->id);

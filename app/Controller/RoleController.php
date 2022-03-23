@@ -35,21 +35,26 @@ class RoleController extends Controller
 
     public function store(RoleRequest $request)
     {
-        $result = $this->service->create($request->all());
+        $project = get_project();
+        $user = get_user();
+        $result = $this->service->create($project, $user, $request->all());
 
         return $this->response->success($result);
     }
 
     public function update(RoleRequest $request, int $id)
     {
-        $result = $this->service->update($id, $request->all());
+        $project = get_project();
+        $user = get_user();
+        $result = $this->service->update($project, $user, $id, $request->all());
 
         return $this->response->success($result);
     }
 
     public function destroy(int $id)
     {
-        $result = $this->service->delete($id);
+        $project = get_project();
+        $result = $this->service->delete($project, $id);
 
         return $this->response->success($result);
     }
