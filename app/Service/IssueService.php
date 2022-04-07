@@ -1141,11 +1141,11 @@ class IssueService extends Service
 
             if (isset($data['labels'])) {
                 $labels = $data['labels'] ? array_values($data['labels']) : [];
+                unset($data['labels']);
                 $model->fillJsonAttribute('data->labels', $labels);
-            } else {
-                $model->fill($data);
             }
-            $model->save();
+
+            $model->fill($data)->save();
             $model->pushToSearch();
         }
 
