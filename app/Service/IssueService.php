@@ -1139,7 +1139,7 @@ class IssueService extends Service
                 continue;
             }
 
-            $model->fill($data)->save();
+            $model->fillJsonAttribute('data->labels', array_values($data['labels']))->save();
             $model->pushToSearch();
         }
 
