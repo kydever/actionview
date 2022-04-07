@@ -35,7 +35,7 @@ class UserRoleSettingListener implements ListenerInterface
         ];
     }
 
-    public function process(object $event)
+    public function process(object $event): void
     {
         if ($event instanceof AddUserToRoleEvent) {
             $this->linkUserWithProject($event->getUserIds(), $event->getProjectKey());

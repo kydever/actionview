@@ -36,7 +36,7 @@ class DeleteGroupListener implements ListenerInterface
     /**
      * @param DeleteGroupEvent $event
      */
-    public function process(object $event)
+    public function process(object $event): void
     {
         $this->deleteGroupFromRole($event->getGroupId());
         $this->deleteGroupProject($event->getGroupId());

@@ -33,7 +33,7 @@ class FlushCacheListener implements ListenerInterface
         ];
     }
 
-    public function process(object $event)
+    public function process(object $event): void
     {
         if ($event instanceof VersionEvent) {
             $version = $event->getVersion();

@@ -34,7 +34,7 @@ class IssueUpdateListener implements ListenerInterface
     /**
      * @param IssueEvent $event
      */
-    public function process(object $event)
+    public function process(object $event): void
     {
         $issue = $event->getIssue();
         // 同步到搜索引擎
