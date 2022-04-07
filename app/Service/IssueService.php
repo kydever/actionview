@@ -1139,7 +1139,9 @@ class IssueService extends Service
                 continue;
             }
 
-            $model->fillJsonAttribute('data->labels', array_values($data['labels']))->save();
+            $labels = (! isset($data['labels'])) ? array_values($data['labels']) : [];
+
+            $model->fillJsonAttribute('data->labels', $labels)->save();
             $model->pushToSearch();
         }
 
