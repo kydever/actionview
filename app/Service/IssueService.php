@@ -1145,6 +1145,12 @@ class IssueService extends Service
                 $model->fillJsonAttribute('data->labels', $labels);
             }
 
+            if (isset($data['descriptions'])) {
+                $descriptions = $data['descriptions'];
+                unset($data['descriptions']);
+                $model->fillJsonAttribute('data->descriptions', $descriptions);
+            }
+
             $model->fill($data)->save();
             $model->pushToSearch();
         }
