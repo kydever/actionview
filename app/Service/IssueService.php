@@ -1123,6 +1123,7 @@ class IssueService extends Service
         $updValues['updated_at'] = time();
 
         $models = $this->dao->findMany($ids);
+
         /** @var Issue $model */
         foreach ($models as $model) {
             $type = $values['type'] ?? $model->type;
@@ -1149,6 +1150,54 @@ class IssueService extends Service
                 $descriptions = $data['descriptions'];
                 unset($data['descriptions']);
                 $model->fillJsonAttribute('data->descriptions', $descriptions);
+            }
+
+            if (isset($data['comments'])) {
+                $comments = $data['comments'];
+                unset($data['comments']);
+                $model->fillJsonAttribute('data->comments', $comments);
+            }
+
+            if (isset($data['related_users'])) {
+                $relatedUsers = $data['related_users'] ? array_values($data['related_users']) : [];
+                unset($data['related_users']);
+                $model->fillJsonAttribute('data->related_users', $relatedUsers);
+            }
+
+            if (isset($data['progress'])) {
+                $progress = $data['progress'];
+                unset($data['progress']);
+                $model->fillJsonAttribute('data->progress', $progress);
+            }
+
+            if (isset($data['priority'])) {
+                $priority = $data['priority'];
+                unset($data['priority']);
+                $model->fillJsonAttribute('data->priority', $priority);
+            }
+
+            if (isset($data['expect_complete_time'])) {
+                $expectCompleteTime = $data['expect_complete_time'];
+                unset($data['expect_complete_time']);
+                $model->fillJsonAttribute('data->expect_complete_time', $expectCompleteTime);
+            }
+
+            if (isset($data['original_estimate'])) {
+                $originalEstimate = $data['original_estimate'];
+                unset($data['original_estimate']);
+                $model->fillJsonAttribute('data->original_estimate', $originalEstimate);
+            }
+
+            if (isset($data['story_points'])) {
+                $storyPoints = $data['story_points'];
+                unset($data['story_points']);
+                $model->fillJsonAttribute('data->story_points', $storyPoints);
+            }
+
+            if (isset($data['expect_start_time'])) {
+                $expectStartTime = $data['expect_start_time'];
+                unset($data['expect_start_time']);
+                $model->fillJsonAttribute('data->expect_start_time', $expectStartTime);
             }
 
             $model->fill($data)->save();
