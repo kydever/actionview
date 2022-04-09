@@ -1178,7 +1178,22 @@ class IssueService extends Service
         }
 
         if (isset($data['related_users'])) {
-            // [ '用户1', '用户2' ]
+            // [
+            //   {
+            //     "id": 1,
+            //     "name": "xxx",
+            //     "email": "xxx@example.com",
+            //     "avatar": "https://www.example.com/avatars/xxx.jpg",
+            //     "nameAndEmail": "Xxx(xxx@example.com)"
+            //   },
+            //   {
+            //     "id": 2,
+            //     "name": "xxx",
+            //     "email": "xxx@example.com",
+            //     "avatar": "https://www.example.com/avatars/xxx.jpg",
+            //     "nameAndEmail": "Xxx(xxx@example.com)"
+            //   }
+            //]
             $relatedUsers = $data['related_users'] ? array_values($data['related_users']) : [];
             unset($data['related_users']);
             $model->fillJsonAttribute('data->related_users', $relatedUsers);
