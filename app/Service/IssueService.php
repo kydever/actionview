@@ -1157,6 +1157,7 @@ class IssueService extends Service
     protected function fillIssueJsonAttribute(Issue $model, array $data): array
     {
         if (isset($data['labels'])) {
+            // ['标签1', '标签2']
             $labels = $data['labels'] ? array_values($data['labels']) : [];
             unset($data['labels']);
             $model->fillJsonAttribute('data->labels', $labels);
