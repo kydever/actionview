@@ -1140,15 +1140,7 @@ class IssueService extends Service
                 continue;
             }
 
-            foreach ($data as $key => $value) {
-                if (! in_array($key, ['type', 'assignee', 'resolution'])) {
-                    if (is_array($data[$key])) {
-                        $data[$key] = array_values($value);
-                    }
-                    $model->fillJsonAttribute("data->{$key}", $data[$key]);
-                    unset($data[$key]);
-                }
-            }
+            $data = $this->fillIssueJsonAttribute($model, $data);
 
             $model->fill($data)->save();
             $model->pushToSearch();
@@ -1160,6 +1152,81 @@ class IssueService extends Service
         }
 
         return ['ids' => $ids];
+    }
+
+    protected function fillIssueJsonAttribute(Issue $model, array $data): array
+    {
+        if (isset($data['labels'])) {
+            // ['标签1', '标签2']
+            $labels = $data['labels'] ? array_values($data['labels']) : [];
+            unset($data['labels']);
+            $model->fillJsonAttribute('data->labels', $labels);
+        }
+
+        if (isset($data['descriptions'])) {
+            // '字符串'
+            $descriptions = $data['descriptions'];
+            unset($data['descriptions']);
+            $model->fillJsonAttribute('data->descriptions', $descriptions);
+        }
+
+        if (isset($data['comments'])) {
+            // '字符串'
+            $comments = $data['comments'];
+            unset($data['comments']);
+            $model->fillJsonAttribute('data->comments', $comments);
+        }
+
+        if (isset($data['related_users'])) {
+            // [ '用户1', '用户2' ]
+            $relatedUsers = $data['related_users'] ? array_values($data['related_users']) : [];
+            unset($data['related_users']);
+            $model->fillJsonAttribute('data->related_users', $relatedUsers);
+        }
+
+        if (isset($data['progress'])) {
+            // '字符串'
+            $progress = $data['progress'];
+            unset($data['progress']);
+            $model->fillJsonAttribute('data->progress', $progress);
+        }
+
+        if (isset($data['priority'])) {
+            // '字符串'
+            $priority = $data['priority'];
+            unset($data['priority']);
+            $model->fillJsonAttribute('data->priority', $priority);
+        }
+
+        if (isset($data['expect_complete_time'])) {
+            // '字符串'
+            $expectCompleteTime = $data['expect_complete_time'];
+            unset($data['expect_complete_time']);
+            $model->fillJsonAttribute('data->expect_complete_time', $expectCompleteTime);
+        }
+
+        if (isset($data['original_estimate'])) {
+            // '字符串'
+            $originalEstimate = $data['original_estimate'];
+            unset($data['original_estimate']);
+            $model->fillJsonAttribute('data->original_estimate', $originalEstimate);
+        }
+
+        if (isset($data['story_points'])) {
+            // '字符串'
+            $storyPoints = $data['story_points'];
+            unset($data['story_points']);
+            $model->fillJsonAttribute('data->story_points', $storyPoints);
+        }
+
+        if (isset($data['expect_start_time'])) {
+            // '字符串'
+            $expectStartTime = $data['expect_start_time'];
+            unset($data['expect_start_time']);
+            $model->fillJsonAttribute('data->expect_start_time', $expectStartTime);
+        }
+
+        return $data;
     }
 
     public function doAction(int $id, int $workflowId, array $input, User $user, Project $project)
