@@ -113,7 +113,7 @@ class Func
             $project = ProjectContext::instance()->first($project_key, true);
         }
 
-        return di()->get(AclService::class)->isAllowed(is_int($caller) ? $caller : $caller['id'], $permission, $project);
+        return di()->get(AclService::class)->isAllowed(is_int($caller) ? $caller : (int) $caller['id'], $permission, $project);
     }
 
     /**
