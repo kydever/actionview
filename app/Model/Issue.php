@@ -100,6 +100,6 @@ class Issue extends Model implements Searchable
                 $result[$key] = (string) $result[$key];
             }
         }
-        return $result;
+        return format_id_to_string($result);
     }
 }
