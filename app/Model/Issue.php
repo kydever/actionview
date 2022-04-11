@@ -43,8 +43,6 @@ class Issue extends Model implements Searchable
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected ?string $table = 'issue';
 

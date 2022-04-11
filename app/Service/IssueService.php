@@ -726,7 +726,7 @@ class IssueService extends Service
         $bool = [];
         foreach ($where as $key => $val) {
             if ($key === 'no') {
-                $bool['must'][] = ['term' => ['id' => intval($val)]];
+                $bool['must'][] = ['term' => ['no' => intval($val)]];
             } elseif ($key === 'title') {
                 if (is_numeric($val) && ! str_contains($val, '.')) {
                     $bool['must'][] = [
