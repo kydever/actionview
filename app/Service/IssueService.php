@@ -262,6 +262,7 @@ class IssueService extends Service
         }
 
         if ($assigneeId) {
+            $assigneeId = (int) $assigneeId;
             if ($assigneeId !== $user->id && ! di()->get(AclService::class)->hasAccess($assigneeId, $project, Permission::ASSIGNED_ISSUE)) {
                 throw new BusinessException(ErrorCode::ASSIGNED_USER_PERMISSION_DENIED);
             }
