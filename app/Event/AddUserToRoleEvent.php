@@ -14,7 +14,7 @@ namespace App\Event;
 class AddUserToRoleEvent
 {
     /**
-     * @param array<int> $userIds
+     * @param array<int|string> $userIds
      */
     public function __construct(private array $userIds, private string $projectKey)
     {

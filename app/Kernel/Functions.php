@@ -123,3 +123,14 @@ if (! function_exists('format_id_to_string')) {
         return $result;
     }
 }
+
+if (! function_exists('array_item_to_int')) {
+    function array_item_to_int(array $items): array
+    {
+        $result = [];
+        foreach ($items as $key => $item) {
+            $result[$key] = (int) $item;
+        }
+        return $result;
+    }
+}

@@ -170,6 +170,7 @@ class RoleService extends Service
         $role = $this->dao->first($id, true);
 
         if (isset($userIds)) {
+            $userIds = array_item_to_int($userIds);
             $actor = di()->get(AclRoleactorDao::class)->firstByRoleId($project->key, $role->id);
             $oldUserIds = $actor?->user_ids ?? [];
 

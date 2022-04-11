@@ -54,7 +54,7 @@ class Project extends Model
         return $this->status === self::ACTIVE;
     }
 
-    #[ArrayShape(['id' => 'int', 'name' => 'string', 'email' => 'string'])]
+    #[ArrayShape(['id' => 'int|string', 'name' => 'string', 'email' => 'string'])]
     public function getPrincipal(): array
     {
         return $this->principal;
@@ -65,7 +65,7 @@ class Project extends Model
      */
     public function isPrincipal(int $userId): bool
     {
-        return ($this->getPrincipal()['id'] ?? null) === $userId;
+        return ($this->getPrincipal()['id'] ?? null) == $userId;
     }
 
     public function isSYS(): bool
