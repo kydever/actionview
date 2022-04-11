@@ -32,6 +32,7 @@ use App\Service\Dao\SysSettingDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserGroupProjectDao;
 use App\Service\Formatter\ProjectFormatter;
+use App\Service\Formatter\UserFormatter;
 use App\Service\Struct\Principal;
 use Carbon\Carbon;
 use Han\Utils\Service;
@@ -265,11 +266,7 @@ class ProjectService extends Service
         $key = ProjectConstant::formatProjectKey($input['key']);
         $principalId = (string) ($input['principal'] ?? null);
         $description = $input['description'] ?? '';
-        $creator = [
-            'id' => $user->id,
-            'name' => $user->first_name,
-            'email' => $user->email,
-        ];
+        $creator = di()->get(UserFormatter::class)->tiny($user);
 
         if ($this->dao->exists($key)) {
             throw new BusinessException(ErrorCode::PROJECT_KEY_HAS_BEEN_TAKEN);

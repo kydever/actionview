@@ -16,6 +16,7 @@ use App\Constants\ProjectConstant;
 use App\Exception\BusinessException;
 use App\Model\OswfDefinition;
 use App\Model\User;
+use App\Service\Formatter\UserFormatter;
 use App\Service\Struct\Workflow;
 use Carbon\Carbon;
 use Han\Utils\Service;
@@ -69,10 +70,7 @@ class OswfDefinitionDao extends Service
         $name = $attributes['name'] ?? null;
 
         if (! empty($contents)) {
-            $latest_modifier = [
-                'id' => $user->id,
-                'name' => $user->first_name,
-            ];
+            $latest_modifier = di()->get(UserFormatter::class)->tiny($user);
             $state_ids = Workflow::getScreens($attributes['contents']);
             $screen_ids = Workflow::getScreens($attributes['contents']);
             $steps = Workflow::getStepNum($attributes['contents']);
@@ -84,10 +82,7 @@ class OswfDefinitionDao extends Service
         }
         if (! empty($attributes['source_id'])) {
             $source_definition = $this->findBySourceId($attributes['source_id']);
-            $latest_modifier = [
-                'id' => $user->id,
-                'name' => $user->first_name,
-            ];
+            $latest_modifier = di()->get(UserFormatter::class)->tiny($user);
             $state_ids = $source_definition->state_ids;
             $screen_ids = $source_definition->screen_ids;
             $steps = $source_definition->steps;

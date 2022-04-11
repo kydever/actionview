@@ -21,7 +21,7 @@ class UserFormatter extends Service
     public function base(User $model)
     {
         return [
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'email' => $model->email,
             'first_name' => $model->first_name,
             'name' => $model->first_name,
@@ -40,7 +40,7 @@ class UserFormatter extends Service
     public function tiny(User $model): array
     {
         return [
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'name' => $model->first_name,
             'email' => $model->email,
         ];
@@ -49,7 +49,7 @@ class UserFormatter extends Service
     public function small(User $model)
     {
         return [
-            'id' => $model->id,
+            'id' => (string) $model->id,
             'name' => $model->first_name,
             'email' => $model->email,
             'nameAndEmail' => sprintf('%s(%s)', $model->first_name, $model->email),

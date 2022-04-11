@@ -15,6 +15,7 @@ use App\Constants\ErrorCode;
 use App\Exception\BusinessException;
 use App\Model\User;
 use App\Service\Dao\UserDao;
+use App\Service\Formatter\UserFormatter;
 use Hyperf\Contract\Arrayable;
 
 /**
@@ -54,11 +55,7 @@ class Principal implements Arrayable
                     throw new BusinessException(ErrorCode::PROJECT_PRINCIPAL_CANNOT_EMPTY);
                 }
 
-                return [
-                    'id' => $this->user->id,
-                    'name' => $this->user->first_name,
-                    'email' => $this->user->email,
-                ];
+                return di()->get(UserFormatter::class)->tiny($this->user);
             }),
             default => value(
                 static function () use ($principal) {
@@ -66,11 +63,7 @@ class Principal implements Arrayable
                     if (empty($model)) {
                         throw new BusinessException(ErrorCode::PROJECT_PRINCIPAL_NOT_EXIST);
                     }
-                    return [
-                        'id' => $model->id,
-                        'name' => $model->first_name,
-                        'email' => $model->email,
-                    ];
+                    return di()->get(UserFormatter::class)->tiny($this->user);
                 }
             ),
         };

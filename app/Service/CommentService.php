@@ -50,7 +50,7 @@ class CommentService extends Service
         }
 
         $contents = $input['contents'];
-        $creator = ['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email];
+        $creator = di()->get(UserFormatter::class)->tiny($user);
 
         $model = new Comment();
         $model->contents = $contents;

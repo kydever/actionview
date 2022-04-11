@@ -1119,7 +1119,7 @@ class IssueService extends Service
             }
         }
 
-        $updValues['modifier'] = ['id' => $user->id, 'name' => $user->first_name, 'email' => $user->email];
+        $updValues['modifier'] = di()->get(UserFormatter::class)->tiny($user);
         $updValues['updated_at'] = time();
 
         $models = $this->dao->findMany($ids);
