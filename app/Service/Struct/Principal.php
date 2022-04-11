@@ -63,7 +63,7 @@ class Principal implements Arrayable
                     if (empty($model)) {
                         throw new BusinessException(ErrorCode::PROJECT_PRINCIPAL_NOT_EXIST);
                     }
-                    return di()->get(UserFormatter::class)->tiny($this->user);
+                    return di()->get(UserFormatter::class)->tiny($model);
                 }
             ),
         };

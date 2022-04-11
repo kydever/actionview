@@ -104,17 +104,21 @@ if (! function_exists('format_uploaded_path')) {
     }
 }
 
-if (! function_exists('format_item_to_string')) {
-    function format_item_to_string(array $items): array
+if (! function_exists('format_id_to_string')) {
+    function format_id_to_string(array $items): array
     {
         $result = [];
         foreach ($items as $key => $item) {
             if (is_array($item)) {
-                $result[$key] = format_item_to_string($item);
+                $result[$key] = format_id_to_string($item);
                 continue;
             }
 
-            $result[$key] = (string) $item;
+            if ($key === 'id' && ! is_array($item)) {
+                $result[$key] = (string) $item;
+            } else {
+                $result[$key] = $item;
+            }
         }
         return $result;
     }
