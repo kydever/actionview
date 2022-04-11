@@ -138,7 +138,7 @@ class IssueService extends Service
                     throw new BusinessException(ErrorCode::ISSUE_DATE_TIME_PICKER_INVALID);
                 }
             } elseif ($field['type'] == Schema::FIELD_SINGLE_USER) {
-                $userModel = di()->get(UserDao::class)->first($fieldValue);
+                $userModel = di()->get(UserDao::class)->first((int) $fieldValue);
                 if ($userModel) {
                     $updValues[$field['key']] = di()->get(UserFormatter::class)->base($userModel);
                 }
@@ -150,7 +150,7 @@ class IssueService extends Service
             }
         }
 
-        if ($assigneeId && $assigneeId !== ($issue->assignee['id'] ?? null)) {
+        if ($assigneeId && $assigneeId != ($issue->assignee['id'] ?? null)) {
             if (! $this->acl->isAllowed($assigneeId, Permission::ASSIGNED_ISSUE, $project)) {
                 throw new BusinessException(ErrorCode::ASSIGNED_USER_PERMISSION_DENIED);
             }
