@@ -48,6 +48,7 @@ class IssueFormatter extends Service
         foreach ($models as $model) {
             $item = $this->base($model);
             $item['watching'] = in_array($userId, array_column($model->watchers ?: [], 'id'));
+            $item['watchers'] = $model->watchers ?: [];
             $result[] = $item;
         }
         return $result;

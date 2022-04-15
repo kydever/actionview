@@ -1233,7 +1233,7 @@ class IssueService extends Service
                 'user' => di()->get(UserFormatter::class)->small($user),
             ]);
 
-            $watchers = $issue->watchers ?? [];
+            $watchers = $issue->watchers ?: [];
             $watchers[] = $model->user;
             $issue->watchers = $watchers;
             $issue->save();
@@ -1246,7 +1246,7 @@ class IssueService extends Service
             }
             di()->get(WatchDao::class)->deleteBy($id, $user->id);
             $watchers = [];
-            foreach ($issue->watchers ?? [] as $item) {
+            foreach ($issue->watchers ?: [] as $item) {
                 if ($item['id'] != $user->id) {
                     $watchers[] = $item;
                 }
