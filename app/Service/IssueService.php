@@ -1229,12 +1229,12 @@ class IssueService extends Service
             $model = di()->get(WatchDao::class)->create([
                 'id' => $id,
                 'project_key' => $project->key,
-                'user' => di()->get(UserFormatter::class)->small($user)
+                'user' => di()->get(UserFormatter::class)->small($user),
             ]);
         }
 
         if (! $flag) {
-            if(!$model){
+            if (! $model) {
                 throw new BusinessException(ErrorCode::SERVER_ERROR, '当前关注记录不存在');
             }
             di()->get(WatchDao::class)->deleteBy($id, $user->id);
