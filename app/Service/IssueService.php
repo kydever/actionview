@@ -455,7 +455,7 @@ class IssueService extends Service
 
         $models = $this->dao->findMany($ids);
 
-        $result = $this->formatter->formatList($models);
+        $result = $this->formatter->formatListWithWatching($models, $user->id);
 
         $options = ['total' => $count, 'sizePerPage' => $limit];
 
@@ -892,21 +892,13 @@ class IssueService extends Service
             }
         }
 
-        if (isset($query['watcher']) && $query['watcher']) {
-            // TODO: 支持 Watcher
-            // $watcher = $query['watcher'] === 'me' ? $this->user->id : $query['watcher'];
-            //
-            // $watched_issues = Watch::where('project_key', $project_key)
-            //     ->where('user.id', $watcher)
-            //     ->get()
-            //     ->toArray();
-            // $watched_issue_ids = array_column($watched_issues, 'issue_id');
-            //
-            // $watchedIds = [];
-            // foreach ($watched_issue_ids as $id) {
-            //     $watchedIds[] = new ObjectID($id);
-            // }
-            // $and[] = ['_id' => ['$in' => $watchedIds]];
+        if (isset($query['watcher']) && $watcher = $query['watcher']) {
+            if ($query['watcher'] === 'me') {
+                $watcher = $userId;
+            }
+            $bool['must'][] = [
+                'term' => ['watchers.id' => $watcher],
+            ];
         }
 
         $bool['must_not'][] = [
