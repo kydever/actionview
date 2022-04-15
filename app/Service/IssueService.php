@@ -1224,6 +1224,7 @@ class IssueService extends Service
     public function watch(int $id, bool $flag, Project $project, User $user): array
     {
         $model = di()->get(WatchDao::class)->firstBy($id, $user->id);
+        $issue = di()->get(IssueDao::class)->first($id, true);
 
         if ($flag && ! $model) {
             $model = di()->get(WatchDao::class)->create([
@@ -1231,6 +1232,12 @@ class IssueService extends Service
                 'project_key' => $project->key,
                 'user' => di()->get(UserFormatter::class)->small($user),
             ]);
+
+            $watchers = $issue->watchers ?? [];
+            $watchers[] = $model->user;
+            $issue->watchers = $watchers;
+            $issue->save();
+            $issue->pushToSearch();
         }
 
         if (! $flag) {
@@ -1238,6 +1245,15 @@ class IssueService extends Service
                 throw new BusinessException(ErrorCode::SERVER_ERROR, '当前关注记录不存在');
             }
             di()->get(WatchDao::class)->deleteBy($id, $user->id);
+            $watchers = [];
+            foreach ($issue->watchers ?? [] as $item) {
+                if ($item['id'] != $user->id) {
+                    $watchers[] = $item;
+                }
+            }
+            $issue->watchers = $watchers;
+            $issue->save();
+            $issue->pushToSearch();
         }
 
         return di()->get(WatchFormatter::class)->baseBySaved($model, $flag);

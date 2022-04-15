@@ -14,6 +14,7 @@ namespace App\Service\Formatter;
 use App\Model\Issue;
 use App\Service\Dao\WatchDao;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class IssueFormatter extends Service
 {
@@ -28,8 +29,8 @@ class IssueFormatter extends Service
             'assignee' => format_id_to_string($model->assignee),
             'reporter' => format_id_to_string($model->reporter),
             'no' => $model->no,
-            'watching' => di()->get(WatchDao::class)->exists($model->id, get_user_id()),
-            'watchers' => di()->get(WatchFormatter::class)->formatList(di()->get(WatchDao::class)->get($model->id)),
+            // 'watching' => di()->get(WatchDao::class)->exists($model->id, get_user_id()),
+            // 'watchers' => di()->get(WatchFormatter::class)->formatList(di()->get(WatchDao::class)->get($model->id)),
             'attachments' => $model->attachments,
             'created_at' => $model->created_at->getTimestamp(),
             'updated_at' => $model->updated_at->getTimestamp(),
@@ -38,7 +39,21 @@ class IssueFormatter extends Service
         return array_replace($model->getData(), $result);
     }
 
-    public function formatList($models)
+    /**
+     * @param Collection<int, Issue> $models
+     */
+    public function formatListWithWatching(Collection $models, int $userId): array
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $item = $this->base($model);
+            $item['watching'] = in_array($userId, array_column($model->watchers ?: [], 'id'));
+            $result[] = $item;
+        }
+        return $result;
+    }
+
+    public function formatList($models): array
     {
         $result = [];
         foreach ($models as $model) {

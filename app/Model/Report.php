@@ -16,7 +16,7 @@ namespace App\Model;
  * @property string $project_key
  * @property string $mode
  * @property int $user
- * @property string $filters
+ * @property array $filters
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */

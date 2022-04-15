@@ -63,6 +63,13 @@ class IssueSearch extends ElasticSearch
                     'email' => ['type' => 'text'],
                 ],
             ],
+            'watchers' => [
+                'properties' => [
+                    'id' => ['type' => 'long'],
+                    'name' => ['type' => 'text'],
+                    'email' => ['type' => 'text'],
+                ],
+            ],
             'created_at' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
             'updated_at' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
             'resolved_at' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],

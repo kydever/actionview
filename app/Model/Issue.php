@@ -26,6 +26,7 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property array $assignee
  * @property array $reporter
  * @property array $modifier
+ * @property array $watchers 关注者
  * @property int $no
  * @property array $data
  * @property \Carbon\Carbon $created_at
@@ -49,12 +50,12 @@ class Issue extends Model implements Searchable
     /**
      * The attributes that are mass assignable.
      */
-    protected array $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'modifier', 'no', 'data', 'created_at', 'updated_at', 'attachments'];
+    protected array $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'modifier', 'watchers', 'no', 'data', 'created_at', 'updated_at', 'attachments'];
 
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer', 'attachments' => 'json'];
+    protected array $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer', 'attachments' => 'json', 'watchers' => 'json'];
 
     public function typeModel()
     {
