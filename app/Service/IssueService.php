@@ -40,6 +40,7 @@ use App\Service\Dao\UserIssueFilterDao;
 use App\Service\Dao\WatchDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
+use App\Service\Formatter\WatchFormatter;
 use App\Service\Struct\Workflow;
 use Han\Utils\Service;
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
@@ -1220,27 +1221,26 @@ class IssueService extends Service
             ->get($columns);
     }
 
-    public function watch(int $id, string $key, User $user): array
+    public function watch(int $id, bool $flag, Project $project, User $user): array
     {
         $model = di()->get(WatchDao::class)->firstBy($id, $user->id);
-        $attributes['id'] = $id;
-        $attributes['project_key'] = $key;
-        $attributes['user'] = [
-            'id' => $user->id,
-            'name' => $user->first_name,
-            'email' => $user->email,
-        ];
-        if (is_null($model)) {
-            $flag = true;
-            di()->get(WatchDao::class)->create($attributes);
-        } else {
-            $flag = false;
+
+        if ($flag && ! $model) {
+            $model = di()->get(WatchDao::class)->create([
+                'id' => $id,
+                'project_key' => $project->key,
+                'user' => di()->get(UserFormatter::class)->small($user)
+            ]);
+        }
+
+        if (! $flag) {
+            if(!$model){
+                throw new BusinessException(ErrorCode::SERVER_ERROR, '当前关注记录不存在');
+            }
             di()->get(WatchDao::class)->deleteBy($id, $user->id);
         }
-        $attributes['user']['avatar'] = $user->avatar;
-        $attributes['watching'] = $flag;
 
-        return $attributes;
+        return di()->get(WatchFormatter::class)->baseBySaved($model, $flag);
     }
 
     protected function fillIssueJsonAttribute(Issue $model, array $data): array

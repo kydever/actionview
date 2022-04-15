@@ -17,10 +17,10 @@ use Hyperf\Database\Model\Collection;
 
 class WatchDao extends Service
 {
-    public function firstBy(int $issueId, int $userId)
+    public function firstBy(int $issueId, int $userId): ?Watch
     {
         return Watch::where('issue_id', $issueId)
-            ->whereJsonContains('user->id', $userId)
+            ->where('user->id', $userId)
             ->first();
     }
 
@@ -38,7 +38,7 @@ class WatchDao extends Service
     public function deleteBy(int $issueId, int $userId)
     {
         return Watch::where('issue_id', $issueId)
-            ->whereJsonContains('user->id', $userId)
+            ->where('user->id', $userId)
             ->delete();
     }
 

@@ -183,9 +183,10 @@ class IssueController extends Controller
 
     public function watch(int $id)
     {
-        $projectKey = get_project_key();
+        $project = get_project();
         $user = get_user();
-        $data = $this->service->watch($id, $projectKey, $user);
+        $flag = (bool) $this->request->input('flag');
+        $data = $this->service->watch($id, $flag, $project, $user);
 
         return $this->response->success($data);
     }
