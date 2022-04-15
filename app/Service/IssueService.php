@@ -37,6 +37,7 @@ use App\Service\Dao\OswfEntryDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserIssueFilterDao;
+use App\Service\Dao\WatchDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
 use App\Service\Struct\Workflow;
@@ -1217,6 +1218,25 @@ class IssueService extends Service
         return Issue::query()
             ->where('project_key', $prokectKey)
             ->get($columns);
+    }
+
+    public function watch(int $id, bool $flag, string $key, User $user): array
+    {
+        di()->get(WatchDao::class)->deleteByIssueId($id, $user->id);
+        $attributes['id'] = $id;
+        $attributes['project_key'] = $key;
+        $attributes['user'] = [
+            'id' => $user->id,
+            'name' => $user->first_name,
+            'email' => $user->email,
+        ];
+        if ($flag) {
+            di()->get(WatchDao::class)->create($attributes);
+        }
+        $attributes['user']['avatar'] = $user->avatar;
+        $attributes['watching'] = $flag;
+
+        return $attributes;
     }
 
     protected function fillIssueJsonAttribute(Issue $model, array $data): array

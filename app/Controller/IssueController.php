@@ -180,4 +180,14 @@ class IssueController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function watch(int $id)
+    {
+        $flag = $this->request->input('flag');
+        $projectKey = get_project_key();
+        $user = get_user();
+        $data = $this->service->watch($id, $flag, $projectKey, $user);
+
+        return $this->response->success($data);
+    }
 }
