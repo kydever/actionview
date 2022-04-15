@@ -13,14 +13,15 @@ namespace App\Service\Dao;
 
 use App\Model\Watch;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class WatchDao extends Service
 {
-    public function deleteByIssueId(int $issueId, int $userId)
+    public function firstBy(int $issueId, int $userId)
     {
         return Watch::where('issue_id', $issueId)
             ->whereJsonContains('user->id', $userId)
-            ->delete();
+            ->first();
     }
 
     public function create(array $attributes): Watch
@@ -32,5 +33,28 @@ class WatchDao extends Service
         $model->save();
 
         return $model;
+    }
+
+    public function deleteBy(int $issueId, int $userId)
+    {
+        return Watch::where('issue_id', $issueId)
+            ->whereJsonContains('user->id', $userId)
+            ->delete();
+    }
+
+    public function exists(int $issueId, int $userId): bool
+    {
+        return Watch::where('issue_id', $issueId)
+            ->whereJsonContains('user->id', $userId)
+            ->exists();
+    }
+
+    /**
+     * @return Collection<int, Watch>
+     */
+    public function get(int $issueId)
+    {
+        return Watch::where('issue_id', $issueId)
+            ->get();
     }
 }

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Service\Formatter;
 
 use App\Model\Issue;
+use App\Service\Dao\WatchDao;
 use Han\Utils\Service;
 
 class IssueFormatter extends Service
@@ -27,6 +28,8 @@ class IssueFormatter extends Service
             'assignee' => format_id_to_string($model->assignee),
             'reporter' => format_id_to_string($model->reporter),
             'no' => $model->no,
+            'watching' => di()->get(WatchDao::class)->exists($model->id, get_user_id()),
+            'watchers' => di()->get(WatchFormatter::class)->formatList(di()->get(WatchDao::class)->get($model->id)),
             'attachments' => $model->attachments,
             'created_at' => $model->created_at->getTimestamp(),
             'updated_at' => $model->updated_at->getTimestamp(),

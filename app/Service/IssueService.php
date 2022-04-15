@@ -1220,9 +1220,9 @@ class IssueService extends Service
             ->get($columns);
     }
 
-    public function watch(int $id, bool $flag, string $key, User $user): array
+    public function watch(int $id, string $key, User $user): array
     {
-        di()->get(WatchDao::class)->deleteByIssueId($id, $user->id);
+        $model = di()->get(WatchDao::class)->firstBy($id, $user->id);
         $attributes['id'] = $id;
         $attributes['project_key'] = $key;
         $attributes['user'] = [
@@ -1230,8 +1230,12 @@ class IssueService extends Service
             'name' => $user->first_name,
             'email' => $user->email,
         ];
-        if ($flag) {
+        if (is_null($model)) {
+            $flag = true;
             di()->get(WatchDao::class)->create($attributes);
+        } else {
+            $flag = false;
+            di()->get(WatchDao::class)->deleteBy($id, $user->id);
         }
         $attributes['user']['avatar'] = $user->avatar;
         $attributes['watching'] = $flag;
