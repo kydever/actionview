@@ -15,7 +15,7 @@ namespace App\Model;
  * @property int $id
  * @property int $issue_id
  * @property string $project_key 项目键值
- * @property string $recorder
+ * @property array $recorder
  * @property int $recorded_at
  * @property int $started_at 开始日期
  * @property string $spend 总耗费时间

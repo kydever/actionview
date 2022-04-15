@@ -37,8 +37,10 @@ use App\Service\Dao\OswfEntryDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\UserDao;
 use App\Service\Dao\UserIssueFilterDao;
+use App\Service\Dao\WatchDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\UserFormatter;
+use App\Service\Formatter\WatchFormatter;
 use App\Service\Struct\Workflow;
 use Han\Utils\Service;
 use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
@@ -453,7 +455,7 @@ class IssueService extends Service
 
         $models = $this->dao->findMany($ids);
 
-        $result = $this->formatter->formatList($models);
+        $result = $this->formatter->formatListWithWatching($models, $user->id);
 
         $options = ['total' => $count, 'sizePerPage' => $limit];
 
@@ -890,21 +892,13 @@ class IssueService extends Service
             }
         }
 
-        if (isset($query['watcher']) && $query['watcher']) {
-            // TODO: 支持 Watcher
-            // $watcher = $query['watcher'] === 'me' ? $this->user->id : $query['watcher'];
-            //
-            // $watched_issues = Watch::where('project_key', $project_key)
-            //     ->where('user.id', $watcher)
-            //     ->get()
-            //     ->toArray();
-            // $watched_issue_ids = array_column($watched_issues, 'issue_id');
-            //
-            // $watchedIds = [];
-            // foreach ($watched_issue_ids as $id) {
-            //     $watchedIds[] = new ObjectID($id);
-            // }
-            // $and[] = ['_id' => ['$in' => $watchedIds]];
+        if (isset($query['watcher']) && $watcher = $query['watcher']) {
+            if ($query['watcher'] === 'me') {
+                $watcher = $userId;
+            }
+            $bool['must'][] = [
+                'term' => ['watchers.id' => $watcher],
+            ];
         }
 
         $bool['must_not'][] = [
@@ -1217,6 +1211,44 @@ class IssueService extends Service
         return Issue::query()
             ->where('project_key', $prokectKey)
             ->get($columns);
+    }
+
+    public function watch(int $id, bool $flag, Project $project, User $user): array
+    {
+        $model = di()->get(WatchDao::class)->firstBy($id, $user->id);
+        $issue = di()->get(IssueDao::class)->first($id, true);
+
+        if ($flag && ! $model) {
+            $model = di()->get(WatchDao::class)->create([
+                'id' => $id,
+                'project_key' => $project->key,
+                'user' => di()->get(UserFormatter::class)->small($user),
+            ]);
+
+            $watchers = $issue->watchers ?: [];
+            $watchers[] = $model->user;
+            $issue->watchers = $watchers;
+            $issue->save();
+            $issue->pushToSearch();
+        }
+
+        if (! $flag) {
+            if (! $model) {
+                throw new BusinessException(ErrorCode::SERVER_ERROR, '当前关注记录不存在');
+            }
+            di()->get(WatchDao::class)->deleteBy($id, $user->id);
+            $watchers = [];
+            foreach ($issue->watchers ?: [] as $item) {
+                if ($item['id'] != $user->id) {
+                    $watchers[] = $item;
+                }
+            }
+            $issue->watchers = $watchers;
+            $issue->save();
+            $issue->pushToSearch();
+        }
+
+        return di()->get(WatchFormatter::class)->baseBySaved($model, $flag);
     }
 
     protected function fillIssueJsonAttribute(Issue $model, array $data): array

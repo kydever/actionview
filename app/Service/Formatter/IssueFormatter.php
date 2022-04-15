@@ -13,6 +13,7 @@ namespace App\Service\Formatter;
 
 use App\Model\Issue;
 use Han\Utils\Service;
+use Hyperf\Database\Model\Collection;
 
 class IssueFormatter extends Service
 {
@@ -35,7 +36,22 @@ class IssueFormatter extends Service
         return array_replace($model->getData(), $result);
     }
 
-    public function formatList($models)
+    /**
+     * @param Collection<int, Issue> $models
+     */
+    public function formatListWithWatching(Collection $models, int $userId): array
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $item = $this->base($model);
+            $item['watching'] = in_array($userId, array_column($model->watchers ?: [], 'id'));
+            $item['watchers'] = $model->watchers ?: [];
+            $result[] = $item;
+        }
+        return $result;
+    }
+
+    public function formatList($models): array
     {
         $result = [];
         foreach ($models as $model) {
