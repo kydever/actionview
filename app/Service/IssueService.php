@@ -328,7 +328,7 @@ class IssueService extends Service
             throw new BusinessException(ErrorCode::ISSUE_TYPE_SCHEMA_NOT_EXIST);
         }
 
-        $result = di()->get(IssueFormatter::class)->base($issue);
+        $result = di()->get(IssueFormatter::class)->base($issue, $user->id);
         $result['assignee']['avatar'] = $issue->assigneeModel?->avatar ?? '';
 
         foreach ($schema as $field) {
@@ -455,7 +455,7 @@ class IssueService extends Service
 
         $models = $this->dao->findMany($ids);
 
-        $result = $this->formatter->formatListWithWatching($models, $user->id);
+        $result = $this->formatter->formatList($models, $user->id);
 
         $options = ['total' => $count, 'sizePerPage' => $limit];
 

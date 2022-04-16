@@ -17,7 +17,7 @@ use Hyperf\Database\Model\Collection;
 
 class IssueFormatter extends Service
 {
-    public function base(Issue $model)
+    public function base(Issue $model, int $userId = 0)
     {
         $result = [
             'id' => $model->id,
@@ -29,33 +29,24 @@ class IssueFormatter extends Service
             'reporter' => format_id_to_string($model->reporter),
             'no' => $model->no,
             'attachments' => $model->attachments,
+            'watchers' => $model->watchers ?: [],
             'created_at' => $model->created_at->getTimestamp(),
             'updated_at' => $model->updated_at->getTimestamp(),
         ];
-
+        if ($userId > 0) {
+            $result['watching'] = in_array($userId, array_column($model->watchers ?: [], 'id'));
+        }
         return array_replace($model->getData(), $result);
     }
 
     /**
      * @param Collection<int, Issue> $models
      */
-    public function formatListWithWatching(Collection $models, int $userId): array
+    public function formatList(Collection $models, int $userId = 0): array
     {
         $result = [];
         foreach ($models as $model) {
-            $item = $this->base($model);
-            $item['watching'] = in_array($userId, array_column($model->watchers ?: [], 'id'));
-            $item['watchers'] = $model->watchers ?: [];
-            $result[] = $item;
-        }
-        return $result;
-    }
-
-    public function formatList($models): array
-    {
-        $result = [];
-        foreach ($models as $model) {
-            $result[] = $this->base($model);
+            $result[] = $this->base($model, $userId);
         }
         return $result;
     }
