@@ -14,6 +14,7 @@ namespace App\Controller;
 use App\Constants\ErrorCode;
 use App\Constants\Permission;
 use App\Exception\BusinessException;
+use App\Request\DeleteFileRequest;
 use App\Service\AclService;
 use App\Service\FileService;
 use App\Service\ProjectAuth;
@@ -70,5 +71,14 @@ class FileController extends Controller
         $path = $this->service->download($id);
 
         return $this->response->download($path);
+    }
+
+    public function delete(DeleteFileRequest $request, int $id)
+    {
+        $project = get_project();
+        $user = get_user();
+        $result = $this->service->delete($id, $request->all(), $project, $user);
+
+        return $this->response->success($result);
     }
 }
