@@ -503,6 +503,11 @@ class ErrorCode extends AbstractConstants
     public const AVATAR_ID_NOT_EMPTY = -15100;
 
     /**
+     * @Message("文件删除失败")
+     */
+    public const FILE_DELETE_FAILD = -15102;
+
+    /**
      * @Message("邮件发送失败")
      */
     public const MAIL_SEND_FAILED = -15200;

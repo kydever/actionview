@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Constants\ErrorCode;
+use App\Constants\Permission;
 use App\Constants\Schema;
 use App\Exception\BusinessException;
 use App\Model\File;
+use App\Model\Project;
 use App\Model\User;
 use App\Service\Dao\FileDao;
 use App\Service\Dao\IssueDao;
@@ -35,6 +37,12 @@ class FileService extends Service
 
     #[Inject]
     protected FilesystemOperator $file;
+
+    #[Inject]
+    protected FileDao $dao;
+
+    #[Inject]
+    protected AclService $acl;
 
     public function getFile(string $object, string $default = BASE_PATH . '/storage/hyperf.png'): string
     {
@@ -152,6 +160,21 @@ class FileService extends Service
         }
 
         return $result;
+    }
+
+    public function delete(int $id, array $attributes, Project $project, User $user): array
+    {
+        $model = $this->dao->first($id);
+        if ($model && ! $this->acl->isAllowed($user->id, Permission::REMOVE_FILE, $project) && ! ($this->acl->isAllowed($user->id, Permission::REMOVE_SELF_FILE, $project) && $this->file->uploader['id'] == $user->id)) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+        if ($model) {
+            $model->delete();
+
+            return ['id' => $id];
+        }
+
+        throw new BusinessException(ErrorCode::FILE_DELETE_FAILD);
     }
 
     protected function createFile(string $path, string $thumbnail, UploadedFile $file, User $user): File
