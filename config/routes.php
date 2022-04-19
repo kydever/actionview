@@ -63,6 +63,7 @@ Router::addGroup('/', function () {
         Router::post('user', App\Controller\UserController::class . '::store');
 
         Router::get('group', App\Controller\GroupController::class . '::index');
+        Router::get('group/search', [App\Controller\GroupController::class, 'search']);
     }, [
         'middleware' => [App\Middleware\PrivilegeMiddleware::class],
         'options' => [

@@ -56,4 +56,20 @@ class GroupFormatter extends Service
 
         return $result;
     }
+
+    /**
+     * @param Collection<int, AclGroup> $models
+     */
+    public function formatTinyList($models): array
+    {
+        $result = [];
+        foreach ($models as $model) {
+            $result[] = [
+                'id' => (string) $model->id,
+                'name' => $model->name,
+            ];
+        }
+
+        return $result;
+    }
 }

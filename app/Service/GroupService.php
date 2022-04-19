@@ -47,6 +47,17 @@ class GroupService extends Service
         return [$total, $result];
     }
 
+    public function search(string $keyword, int $userId)
+    {
+        if (empty($keyword)) {
+            return [];
+        }
+
+        $models = $this->dao->search($keyword, $userId);
+
+        return $models->columns(['id', 'name'])->toArray();
+    }
+
     /**
      * @param $input = [
      *     'name' => '',

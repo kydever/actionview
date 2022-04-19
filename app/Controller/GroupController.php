@@ -37,6 +37,16 @@ class GroupController extends Controller
         ]);
     }
 
+    public function search()
+    {
+        $keyword = (string) $this->request->input('s');
+        $userId = get_user_id();
+
+        return $this->response->success(
+            $this->service->search($keyword, $userId)
+        );
+    }
+
     public function store(GroupStoreRequest $request)
     {
         $user = UserAuth::instance()->build()->getUser();

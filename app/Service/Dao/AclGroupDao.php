@@ -17,6 +17,7 @@ use App\Exception\BusinessException;
 use App\Model\AclGroup;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Builder;
+use Hyperf\Database\Model\Collection;
 
 class AclGroupDao extends Service
 {
@@ -44,6 +45,24 @@ class AclGroupDao extends Service
     public function all()
     {
         return AclGroup::query()->get();
+    }
+
+    /**
+     * @return Collection<int, AclGroup>
+     */
+    public function search(string $keyword, int $userId)
+    {
+        return AclGroup::query()->where('name', 'like', "%{$keyword}%")
+            ->where(static function (Builder $query) use ($userId) {
+                $query->where('principal->id', $userId)
+                    ->orWhere(static function ($query) use ($userId) {
+                        $query->where('public_scope', StatusConstant::SCOPE_MEMBER)->where('users', $userId);
+                    })
+                    ->orWhere(static function ($query) {
+                        $query->where('public_scope', '<>', StatusConstant::SCOPE_PRIVATE)
+                            ->where('public_scope', '<>', StatusConstant::SCOPE_MEMBER);
+                    });
+            })->get();
     }
 
     /**
