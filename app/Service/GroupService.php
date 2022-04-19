@@ -161,4 +161,22 @@ class GroupService extends Service
 
         return [$total, $result];
     }
+
+    public function searchGroup(string $s)
+    {
+        return $this->dao->likeByName(
+            $s,
+            fn ($query) => $query->where(
+            fn ($query) => $query->where('principal->id', get_user_id())
+                    ->orWhere(
+                        fn ($query) => $query->where('public_scope', 3)
+                            ->where('users', get_user_id())
+                    )
+                    ->orWhere(
+                        fn ($query) => $query->where('public_scope', '!=', 2)
+                            ->where('public_scope', '!=', 3)
+                    )
+        )->get(['id', 'name'])
+        );
+    }
 }

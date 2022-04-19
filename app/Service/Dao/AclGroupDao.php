@@ -17,6 +17,7 @@ use App\Exception\BusinessException;
 use App\Model\AclGroup;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Builder;
+use Hyperf\Database\Model\Collection;
 
 class AclGroupDao extends Service
 {
@@ -100,5 +101,18 @@ class AclGroupDao extends Service
     public function findByUserId(int $userId)
     {
         return AclGroup::query()->whereRaw('JSON_CONTAINS(users, ?, ?)', [$userId, '$'])->get();
+    }
+
+    /**
+     * @return Collection<int, AclGroup>
+     */
+    public function likeByName(string $name, ?callable $callback = null)
+    {
+        $query = AclGroup::where('name', 'like', '%' . $name . '%');
+        if (is_null($callback)) {
+            return $query->get();
+        }
+
+        return $callback($query);
     }
 }

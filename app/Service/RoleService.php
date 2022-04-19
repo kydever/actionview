@@ -256,4 +256,25 @@ class RoleService extends Service
 
         return ['users' => $users, 'groups' => $groups];
     }
+
+    public function setGroupActor(array $ids, int $id, Project $project): array
+    {
+        if (isset($ids)) {
+            $actor = di()->get(AclRoleactorDao::class)->firstByRoleId($project->key, $id);
+            $actor?->delete();
+            di()->get(AclRoleactorDao::class)->createNewRoleactor([
+                'project_key' => $project->key,
+                'role_id' => $id,
+                'group_ids' => $ids,
+                'user_ids' => $actor->user_ids ?? [],
+            ]);
+        }
+        $model = $this->dao->first($id);
+        $userGroups = $this->getGroupsAndUsers($project->key, $id);
+        $result = $this->formatter->base($model);
+        $result['users'] = $userGroups['users'];
+        $result['groups'] = $userGroups['groups'];
+
+        return $result;
+    }
 }

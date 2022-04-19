@@ -79,4 +79,12 @@ class GroupController extends Controller
             ],
         ]);
     }
+
+    public function search()
+    {
+        $s = $this->request->input('s');
+        $groups = $this->service->searchGroup($s);
+
+        return $this->response->success($groups);
+    }
 }
