@@ -48,13 +48,13 @@ class FileController extends Controller
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
 
-        if (empty($issueId)) {
-            throw new BusinessException(ErrorCode::SERVER_ERROR, 'issue_id is required');
-        }
-
         $files = $this->request->getUploadedFiles();
 
-        $result = $this->service->upload($files, $user, $issueId);
+        if ($issueId > 0) {
+            $result = $this->service->upload($files, $user, $issueId);
+        } else {
+            $result = $this->service->uploadWithoutIssue($files, $user, $project);
+        }
 
         return $this->response->success($result);
     }

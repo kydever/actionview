@@ -103,6 +103,7 @@ class IssueService extends Service
         $assigneeId = intval($input['assignee'] ?? null);
         $assignee = null;
         $resolution = $input['resolution'] ?? null;
+        $attachments = $input['attachments'] ?? null;
 
         $isAllowed = $this->acl->isAllowed($user->id, Permission::EDIT_ISSUE, $project)
             || ($this->acl->isAllowed($user->id, Permission::EDIT_SELF_ISSUE, $project) && ($issue->reporter['id'] ?? null) == $user->id)
@@ -178,6 +179,7 @@ class IssueService extends Service
         $issue->data = $updValues;
         $resolution && $issue->resolution = $resolution;
         $assignee && $issue->assignee = $assignee;
+        $attachments && $issue->attachments = array_merge($issue->attachments ?? [], $attachments);
 
         Db::beginTransaction();
         try {
@@ -207,6 +209,7 @@ class IssueService extends Service
         $assigneeId = $input['assignee'] ?? null;
         $moduleIds = $input['module'] ?? null;
         $resolution = $input['resolution'] ?? null;
+        $attachments = $input['attachments'] ?? null;
 
         $schema = $this->provider->getSchemaByType($type);
         if (! $schema) {
@@ -296,6 +299,7 @@ class IssueService extends Service
             $model->assignee = $assignee;
             $model->reporter = di()->get(UserFormatter::class)->small($user);
             $model->modifier = di()->get(UserFormatter::class)->small($user);
+            $model->attachments = $attachments;
             $model->no = $maxNumber;
             $model->data = $insValues;
             $model->save();

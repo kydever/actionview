@@ -137,4 +137,9 @@ class User extends Model
     {
         return di()->get(UserFormatter::class)->small($this);
     }
+
+    public function toTiny(): array
+    {
+        return di()->get(UserFormatter::class)->tiny($this);
+    }
 }

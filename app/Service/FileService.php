@@ -75,6 +75,45 @@ class FileService extends Service
     /**
      * @param UploadedFile[] $files
      */
+    public function uploadWithoutIssue(array $files, User $user, Project $project)
+    {
+        $models = [];
+        foreach ($files as $field => $file) {
+            $local = $this->safeMove($file);
+            $info = pathinfo($file->getClientFilename());
+            $extension = $info['extension'] ?? null;
+            if (empty($extension)) {
+                throw new BusinessException(ErrorCode::SERVER_ERROR, '上传文件类型非法');
+            }
+
+            $path = format_uploaded_path(uniqid() . '.' . $extension);
+            $this->file->writeStream($path, $fp = fopen($local, 'r+'));
+            fclose($fp);
+
+            $local = $this->createThumbnail($local, $extension);
+            $thumbnail = format_uploaded_path(uniqid() . '.' . $extension);
+            $this->file->writeStream($thumbnail, $fp = fopen($local, 'r+'));
+            fclose($fp);
+
+            $models[] = $this->createFile($path, $thumbnail, $file, $user);
+        }
+
+        $data = [];
+        if (count($models) > 1) {
+            foreach ($models as $model) {
+                $data[] = ['file' => format_id_to_string($model->toArray()), 'filename' => '/actionview/api/project/' . $project->key . '/file/' . $model->id];
+            }
+        } else {
+            $model = $models[0];
+            $data = ['field' => 'attachments', 'file' => format_id_to_string($model->toArray()), 'filename' => '/actionview/api/project/' . $project->key . '/file/' . $model->id];
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param UploadedFile[] $files
+     */
     public function upload(array $files, User $user, int $issueId)
     {
         $models = [];
@@ -93,12 +132,12 @@ class FileService extends Service
                 throw new BusinessException(ErrorCode::SERVER_ERROR, '上传文件类型非法');
             }
 
-            $path = format_uploaded_path(uniqid() . '.' . $extension);
+            $path = format_uploaded_path(uniqid());
             $this->file->writeStream($path, $fp = fopen($local, 'r+'));
             fclose($fp);
 
             $local = $this->createThumbnail($local, $extension);
-            $thumbnail = format_uploaded_path(uniqid() . '.' . $extension);
+            $thumbnail = $path . '_thumbnail';
             $this->file->writeStream($thumbnail, $fp = fopen($local, 'r+'));
             fclose($fp);
 
@@ -185,7 +224,7 @@ class FileService extends Service
         $model->type = $file->getClientMediaType();
         $model->name = $file->getClientFilename();
         $model->size = $file->getSize();
-        $model->uploader = $user->toSmall();
+        $model->uploader = $user->toTiny();
         $model->save();
 
         return $model;
