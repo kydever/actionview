@@ -62,4 +62,9 @@ class AclRoleactorDao extends Service
             ->where('role_id', $roleId)
             ->first();
     }
+
+    public function createNewRoleactor(array $attributes): AclRoleactor
+    {
+        return AclRoleactor::create($attributes);
+    }
 }

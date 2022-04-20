@@ -84,4 +84,13 @@ class RoleController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function setGroupActor(int $id)
+    {
+        $project = get_project();
+        $ids = $this->request->input('groups');
+        $result = $this->service->setGroupActor($ids, $id, $project);
+
+        return $this->response->success($result);
+    }
 }
