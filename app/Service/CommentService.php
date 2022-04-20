@@ -58,7 +58,8 @@ class CommentService extends Service
         $model->issue_id = $id;
         $model->creator = $creator;
         $model->save();
-        di()->get(IssueService::class)->increment($id);
+
+        di()->get(IssueService::class)->syncCommentNum($id);
 
         return $this->formatter->base($model);
     }
@@ -90,7 +91,6 @@ class CommentService extends Service
                     $replyId = md5(microtime(true) . $user->id);
                     $replies[] = Arr::only($input, ['contents', 'atWho']) + ['id' => $replyId, 'creator' => $creator, 'created_at' => time()];
                     $model->reply = $replies;
-                    di()->get(IssueService::class)->increment($id);
                     break;
                 case 'editReply':
                     $replyId = $input['reply_id'] ?? null;
@@ -129,7 +129,6 @@ class CommentService extends Service
 
                     unset($replies[$key]);
                     $model->reply = $replies;
-                    di()->get(IssueService::class)->decrement($id);
                     break;
                 default:
                     throw new BusinessException(ErrorCode::ISSUE_OPERATION_INVALID);
@@ -155,18 +154,15 @@ class CommentService extends Service
         $user = get_user();
         $project = get_project();
 
-        $models = $this->dao->findByIssueId($issueId);
-        $results = $this->formatter->formatList($models);
-        if (empty($results)) {
-            throw new BusinessException(ErrorCode::ISSUE_DONT_HAVE_COMMENTS);
-        }
         if (! $this->acl->isAllowed($user->id, 'manage_project', $project) && ! ($models['creator']['id'] == $user->id && $this->acl->isAllowed($user->id, 'delete_self_comments', $project))) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
 
         $model = $this->dao->first($id, true);
+
         $model->delete();
-        di()->get(IssueService::class)->decrement($issueId);
+
+        di()->get(IssueService::class)->syncCommentNum($issueId);
 
         return $model->id;
     }

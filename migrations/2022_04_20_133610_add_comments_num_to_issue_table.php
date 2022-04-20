@@ -21,7 +21,7 @@ class AddCommentsNumToIssueTable extends Migration
     public function up(): void
     {
         Schema::table('issue', function (Blueprint $table) {
-            $table->unsignedBigInteger('comments_num')->default(0)->comment('评论数');
+            $table->unsignedBigInteger('comments_num')->default(0)->comment('评论数')->after('data');
         });
     }
 
