@@ -1255,6 +1255,21 @@ class IssueService extends Service
         return di()->get(WatchFormatter::class)->baseBySaved($model, $flag);
     }
 
+    public function increment(int $id, int $amount = 1): Issue
+    {
+        $model = $this->dao->first($id, true);
+        $model->comments_num += $amount;
+        $model->save();
+        $model->pushToSearch();
+
+        return $model;
+    }
+
+    public function decrement(int $id, int $amount = 1): Issue
+    {
+        return $this->increment($id, $amount * -1);
+    }
+
     protected function fillIssueJsonAttribute(Issue $model, array $data): array
     {
         if (isset($data['labels'])) {

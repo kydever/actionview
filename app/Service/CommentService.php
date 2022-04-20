@@ -58,6 +58,7 @@ class CommentService extends Service
         $model->issue_id = $id;
         $model->creator = $creator;
         $model->save();
+        di()->get(IssueService::class)->increment($id);
 
         return $this->formatter->base($model);
     }
@@ -89,6 +90,7 @@ class CommentService extends Service
                     $replyId = md5(microtime(true) . $user->id);
                     $replies[] = Arr::only($input, ['contents', 'atWho']) + ['id' => $replyId, 'creator' => $creator, 'created_at' => time()];
                     $model->reply = $replies;
+                    di()->get(IssueService::class)->increment($id);
                     break;
                 case 'editReply':
                     $replyId = $input['reply_id'] ?? null;
@@ -127,6 +129,7 @@ class CommentService extends Service
 
                     unset($replies[$key]);
                     $model->reply = $replies;
+                    di()->get(IssueService::class)->decrement($id);
                     break;
                 default:
                     throw new BusinessException(ErrorCode::ISSUE_OPERATION_INVALID);
@@ -163,6 +166,7 @@ class CommentService extends Service
 
         $model = $this->dao->first($id, true);
         $model->delete();
+        di()->get(IssueService::class)->decrement($issueId);
 
         return $model->id;
     }
