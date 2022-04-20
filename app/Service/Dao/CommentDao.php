@@ -37,4 +37,9 @@ class CommentDao extends Service
             ->orderBy('id', $isAsc ? 'asc' : 'desc')
             ->get();
     }
+
+    public function countByIssueId(int $issueId)
+    {
+        return Comment::query()->where('issue_id', $issueId)->count();
+    }
 }

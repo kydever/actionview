@@ -27,6 +27,7 @@ use App\Model\UserIssueFilter;
 use App\Project\Eloquent\Labels;
 use App\Project\Provider;
 use App\Service\Client\IssueSearch;
+use App\Service\Dao\CommentDao;
 use App\Service\Dao\ConfigScreenDao;
 use App\Service\Dao\FileDao;
 use App\Service\Dao\IssueDao;
@@ -1253,6 +1254,16 @@ class IssueService extends Service
         }
 
         return di()->get(WatchFormatter::class)->baseBySaved($model, $flag);
+    }
+
+    public function syncCommentNum(Issue|int $issue)
+    {
+        if (! $issue instanceof Issue) {
+            $issue = $this->dao->first($issue, true);
+        }
+
+        $issue->comments_num = di()->get(CommentDao::class)->countByIssueId($issue->id);
+        $issue->save();
     }
 
     protected function fillIssueJsonAttribute(Issue $model, array $data): array

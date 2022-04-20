@@ -29,14 +29,15 @@ use Hyperf\Database\Model\Relations\HasOne;
  * @property array $watchers 关注者
  * @property int $no
  * @property array $data
+ * @property int $comments_num 评论数
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property array $attachments 附件
+ * @property ConfigType $typeModel
  * @property User $assigneeModel
+ * @property Issue $parent
  * @property \Hyperf\Database\Model\Collection|Issue[] $children
  * @property OswfEntry $entry
- * @property Issue $parent
- * @property ConfigType $typeModel
  */
 class Issue extends Model implements Searchable
 {
@@ -50,12 +51,12 @@ class Issue extends Model implements Searchable
     /**
      * The attributes that are mass assignable.
      */
-    protected array $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'modifier', 'watchers', 'no', 'data', 'created_at', 'updated_at', 'attachments'];
+    protected array $fillable = ['id', 'project_key', 'type', 'parent_id', 'del_flg', 'resolution', 'assignee', 'reporter', 'modifier', 'watchers', 'no', 'data', 'comments_num', 'created_at', 'updated_at', 'attachments'];
 
     /**
      * The attributes that should be cast to native types.
      */
-    protected array $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer', 'attachments' => 'json', 'watchers' => 'json'];
+    protected array $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer', 'attachments' => 'json', 'watchers' => 'json', 'comments_num' => 'integer'];
 
     public function typeModel()
     {

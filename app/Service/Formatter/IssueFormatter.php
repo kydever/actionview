@@ -30,6 +30,7 @@ class IssueFormatter extends Service
             'no' => $model->no,
             'attachments' => $model->attachments,
             'watchers' => $model->watchers ?: [],
+            'comments_num' => $model->comments_num,
             'created_at' => $model->created_at->getTimestamp(),
             'updated_at' => $model->updated_at->getTimestamp(),
         ];

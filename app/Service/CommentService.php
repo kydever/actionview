@@ -59,6 +59,8 @@ class CommentService extends Service
         $model->creator = $creator;
         $model->save();
 
+        di()->get(IssueService::class)->syncCommentNum($id);
+
         return $this->formatter->base($model);
     }
 
@@ -152,17 +154,15 @@ class CommentService extends Service
         $user = get_user();
         $project = get_project();
 
-        $models = $this->dao->findByIssueId($issueId);
-        $results = $this->formatter->formatList($models);
-        if (empty($results)) {
-            throw new BusinessException(ErrorCode::ISSUE_DONT_HAVE_COMMENTS);
-        }
         if (! $this->acl->isAllowed($user->id, 'manage_project', $project) && ! ($models['creator']['id'] == $user->id && $this->acl->isAllowed($user->id, 'delete_self_comments', $project))) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
 
         $model = $this->dao->first($id, true);
+
         $model->delete();
+
+        di()->get(IssueService::class)->syncCommentNum($issueId);
 
         return $model->id;
     }
