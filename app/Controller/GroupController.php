@@ -83,7 +83,8 @@ class GroupController extends Controller
     public function search()
     {
         $s = $this->request->input('s');
-        $groups = $this->service->searchGroup($s);
+        $userId = get_user_id();
+        $groups = $this->service->searchGroup($s, $userId);
 
         return $this->response->success($groups);
     }
