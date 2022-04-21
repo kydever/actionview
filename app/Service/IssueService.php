@@ -741,7 +741,7 @@ class IssueService extends Service
                         'bool' => [
                             'should' => [
                                 [
-                                    'term' => ['id' => intval($val)],
+                                    'term' => ['no' => intval($val)],
                                 ],
                                 [
                                     'match' => [ik('title') => $val],
