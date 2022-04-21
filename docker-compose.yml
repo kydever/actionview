@@ -24,6 +24,8 @@ services:
     build:
       context: "."
       dockerfile: "front-end.Dockerfile"
+    depends_on:
+      - actionview
     ports:
       - "10011:8080"
     networks:
@@ -36,6 +38,7 @@ services:
     depends_on:
       - mysql
       - redis
+      - elasticsearch
     environment:
       APP_ENV: "${APP_ENV:-prod}"
       DB_HOST: "mysql"
