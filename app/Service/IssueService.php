@@ -1273,9 +1273,9 @@ class IssueService extends Service
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
         $ids = Arr::wrap($id);
-        di()->get(WatchDao::class)->deleteByIssueIds($ids);
-        di()->get(CommentDao::class)->deleteByIssueIds($ids);
-        $model->delete();
+        $model->del_flg = true;
+        $model->save();
+        $model->pushToSearch();
 
         return ['ids' => $ids];
     }

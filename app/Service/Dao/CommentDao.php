@@ -16,7 +16,6 @@ use App\Exception\BusinessException;
 use App\Model\Comment;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
-use Hyperf\Utils\Arr;
 
 class CommentDao extends Service
 {
@@ -42,12 +41,5 @@ class CommentDao extends Service
     public function countByIssueId(int $issueId)
     {
         return Comment::query()->where('issue_id', $issueId)->count();
-    }
-
-    public function deleteByIssueIds(array|int $issueIds)
-    {
-        $issueIds = Arr::wrap($issueIds);
-
-        return Comment::whereIn('issue_id', $issueIds)->delete();
     }
 }
