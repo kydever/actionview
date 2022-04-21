@@ -14,6 +14,7 @@ namespace App\Service\Dao;
 use App\Model\Watch;
 use Han\Utils\Service;
 use Hyperf\Database\Model\Collection;
+use Hyperf\Utils\Arr;
 
 class WatchDao extends Service
 {
@@ -56,5 +57,12 @@ class WatchDao extends Service
     {
         return Watch::where('issue_id', $issueId)
             ->get();
+    }
+
+    public function deleteByIssueIds(array|int $issueIds)
+    {
+        $issueIds = Arr::wrap($issueIds);
+
+        return Watch::whereIn('issue_id', $issueIds)->delete();
     }
 }
