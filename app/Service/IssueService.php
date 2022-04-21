@@ -1266,6 +1266,30 @@ class IssueService extends Service
         $issue->save();
     }
 
+    public function delete(int $id, Project $project, User $user): array
+    {
+        $model = $this->dao->first($id, true);
+        if (! $this->acl->isAllowed($user->id, Permission::DELETE_ISSUE, $project) && ! (($model->reporter['id'] ?? null) === $user->id && $this->acl->isAllowed($user->id, Permission::DELETE_SELF_ISSUE, $project))) {
+            throw new BusinessException(ErrorCode::PERMISSION_DENIED);
+        }
+        $ids = Arr::wrap($id);
+        $model->del_flg = true;
+        $model->save();
+        $model->pushToSearch();
+
+        return ['ids' => $ids];
+    }
+
+    public function batchDelete(array $ids, Project $project, User $user)
+    {
+        foreach ($ids as $id) {
+            $this->delete($id, $project, $user);
+            $deleted[] = $id;
+        }
+
+        return $deleted;
+    }
+
     protected function fillIssueJsonAttribute(Issue $model, array $data): array
     {
         if (isset($data['labels'])) {

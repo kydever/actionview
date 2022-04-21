@@ -155,7 +155,7 @@ class IssueController extends Controller
 
         $result = match ($request->getInputMethod()) {
             'update' => $this->service->batchUpdate($project, $user, $data['ids'], $data['values']),
-            'delete' => [],
+            'delete' => $this->service->batchDelete($data['ids'], $project, $user),
         };
 
         return $this->response->success($result);
@@ -189,5 +189,14 @@ class IssueController extends Controller
         $data = $this->service->watch($id, $flag, $project, $user);
 
         return $this->response->success($data);
+    }
+
+    public function destroy(int $id)
+    {
+        $project = get_project();
+        $user = get_user();
+        $result = $this->service->delete($id, $project, $user);
+
+        return $this->response->success($result);
     }
 }
