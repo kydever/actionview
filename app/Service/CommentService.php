@@ -156,7 +156,7 @@ class CommentService extends Service
 
         $model = $this->dao->first($id, true);
 
-        if (! $this->acl->isAllowed($user->id, 'manage_project', $project) && ! ($model['creator']['id'] == $user->id && $this->acl->isAllowed($user->id, 'delete_self_comments', $project))) {
+        if (! $this->acl->isAllowed($user->id, Permission::DELETE_COMMNETS, $project) && ! (($model->creator['id'] ?? null) !== $user->id && $this->acl->isAllowed($user->id, Permission::DELETE_SELF_COMMNETS, $project))) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
 

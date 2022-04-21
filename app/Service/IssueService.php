@@ -1269,7 +1269,7 @@ class IssueService extends Service
     public function delete(int $id, Project $project, User $user): array
     {
         $model = $this->dao->first($id, true);
-        if (! $this->acl->isAllowed($user->id, Permission::DELETE_ISSUE, $project) && ! ($model->reporter['id'] == $user->id && $this->acl->isAllowed($user->id, Permission::DELETE_SELF_ISSUE, $project))) {
+        if (! $this->acl->isAllowed($user->id, Permission::DELETE_ISSUE, $project) && ! (($model->reporter['id'] ?? null) === $user->id && $this->acl->isAllowed($user->id, Permission::DELETE_SELF_ISSUE, $project))) {
             throw new BusinessException(ErrorCode::PERMISSION_DENIED);
         }
         $ids = Arr::wrap($id);
