@@ -49,7 +49,7 @@ class ActivityService extends Service
                 if (! is_null($cacheIssues)) {
                     $issue = $cacheIssues;
                 } else {
-                    $issue = di()->get(IssueDao::class)->firstByProjectKey(get_project_key());
+                    $issue = di()->get(IssueDao::class)->firstByProjectKey(get_project_key(), throw: true);
                 }
                 $activities[$key]['issue_link']['src'] = [
                     'id' => $activity['issue_id'],

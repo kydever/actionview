@@ -72,4 +72,13 @@ class WorkflowController extends Controller
             'options' => $options,
         ]);
     }
+
+    public function handle()
+    {
+        $actions = (array) $this->request->input('actions');
+
+        $this->service->handle($actions);
+
+        return $this->response->success(true);
+    }
 }

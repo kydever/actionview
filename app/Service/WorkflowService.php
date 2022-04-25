@@ -16,8 +16,11 @@ use App\Exception\BusinessException;
 use App\Model\OswfDefinition;
 use App\Model\Project;
 use App\Model\User;
+use App\Service\Dao\IssueDao;
 use App\Service\Dao\OswfDefinitionDao;
+use App\Service\Dao\ProjectDao;
 use App\Service\Formatter\DefinitionFormatter;
+use App\Service\Struct\Workflow;
 use Han\Utils\Service;
 use Hyperf\Di\Annotation\Inject;
 
@@ -69,5 +72,50 @@ class WorkflowService extends Service
     public function save(int $id, User $user, string $projectKey, array $attributes): OswfDefinition
     {
         return $this->dao->createOrUpdate($id, $user, $projectKey, $attributes);
+    }
+
+    public function handle(array $actions): void
+    {
+        foreach ($actions as $item) {
+            $action = $item['action'] ?? null;
+            $project = $item['project'] ?? null;
+            $no = $item['no'] ?? null;
+            if ($action && $project && $no) {
+                $project = di()->get(ProjectDao::class)->firstByKey($project);
+                if ($project && $issue = di()->get(IssueDao::class)->firstByProjectKey($project->key, (int) $no)) {
+                    ProjectAuth::instance()->setCurrent($project);
+
+                    $wf = new Workflow($issue->entry);
+
+                    $wfactions = $wf->getAvailableActions([
+                        'project_key' => $issue->project_key,
+                        'issue_id' => $issue->id,
+                        'caller' => $issue->assignee['id'],
+                    ], true);
+
+                    $actionId = null;
+                    foreach ($wfactions as $wfaction) {
+                        if (($wfaction['state'] ?? null) == $action || ($wfaction['id'] ?? null) == $action || ($wfaction['name'] ?? null) == $action) {
+                            $actionId = $wfaction['id'];
+                            break;
+                        }
+                    }
+
+                    if ($actionId) {
+                        $wf->doAction(
+                            $actionId,
+                            [
+                                'project_key' => $project->key,
+                                'issue_id' => $issue->id,
+                                'issue' => $issue,
+                                'caller' => $issue->assignee,
+                            ]
+                        );
+
+                        $issue->pushToSearch();
+                    }
+                }
+            }
+        }
     }
 }

@@ -55,6 +55,11 @@ class ProjectAuth
         return $this->project;
     }
 
+    public function setCurrent(Project $project): void
+    {
+        $this->project = $project;
+    }
+
     public function getProjectKey(): string
     {
         return $this->projectKey;
