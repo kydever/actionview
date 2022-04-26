@@ -58,7 +58,7 @@ class WebHookService extends Service
                                 'project_key' => $project->key,
                                 'issue_id' => $issue->id,
                                 'issue' => $issue,
-                                'caller' => $issue->assignee,
+                                'caller' => $user->toSmall(),
                             ]
                         );
 
