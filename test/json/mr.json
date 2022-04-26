@@ -1,0 +1,136 @@
+{
+    "object_kind": "merge_request",
+    "event_type": "merge_request",
+    "user": {
+        "id": 2,
+        "name": "李铭昕",
+        "username": "limingxinleo",
+        "avatar_url": "http://gitlab.com/uploads/-/system/user/avatar/2/avatar.png",
+        "email": "l@hyperf.io"
+    },
+    "project": {
+        "id": 87,
+        "name": "hook-server",
+        "description": "",
+        "web_url": "http://gitlab.com/backend/hook-server",
+        "avatar_url": null,
+        "git_ssh_url": "git@gitlab.com:backend/hook-server.git",
+        "git_http_url": "http://gitlab.com/backend/hook-server.git",
+        "namespace": "backend",
+        "visibility_level": 0,
+        "path_with_namespace": "backend/hook-server",
+        "default_branch": "master",
+        "ci_config_path": null,
+        "homepage": "http://gitlab.com/backend/hook-server",
+        "url": "git@gitlab.com:backend/hook-server.git",
+        "ssh_url": "git@gitlab.com:backend/hook-server.git",
+        "http_url": "http://gitlab.com/backend/hook-server.git"
+    },
+    "object_attributes": {
+        "assignee_id": null,
+        "author_id": 2,
+        "created_at": "2022-04-25 13:38:05 UTC",
+        "description": "fix https://actionview.cn/actionview/project/p_kyapp/issue?no=291",
+        "head_pipeline_id": 28213,
+        "id": 1127,
+        "iid": 23,
+        "last_edited_at": null,
+        "last_edited_by_id": null,
+        "merge_commit_sha": null,
+        "merge_error": null,
+        "merge_params": {
+            "force_remove_source_branch": "0",
+            "auto_merge_strategy": "merge_when_pipeline_succeeds",
+            "should_remove_source_branch": true,
+            "commit_message": "Merge branch 'feature-close-av' into 'test'\n\nUpdate\n\nSee merge request backend/hook-server!23",
+            "sha": "570b3a79bd2f30c4ed93dfd75b819d08d04e68ea"
+        },
+        "merge_status": "can_be_merged",
+        "merge_user_id": 2,
+        "merge_when_pipeline_succeeds": true,
+        "milestone_id": null,
+        "source_branch": "feature-close-av",
+        "source_project_id": 87,
+        "state_id": 3,
+        "target_branch": "test",
+        "target_project_id": 87,
+        "time_estimate": 0,
+        "title": "Update",
+        "updated_at": "2022-04-25 13:39:14 UTC",
+        "updated_by_id": null,
+        "url": "http://gitlab.com/backend/hook-server/-/merge_requests/23",
+        "source": {
+            "id": 87,
+            "name": "hook-server",
+            "description": "",
+            "web_url": "http://gitlab.com/backend/hook-server",
+            "avatar_url": null,
+            "git_ssh_url": "git@gitlab.com:backend/hook-server.git",
+            "git_http_url": "http://gitlab.com/backend/hook-server.git",
+            "namespace": "backend",
+            "visibility_level": 0,
+            "path_with_namespace": "backend/hook-server",
+            "default_branch": "master",
+            "ci_config_path": null,
+            "homepage": "http://gitlab.com/backend/hook-server",
+            "url": "git@gitlab.com:backend/hook-server.git",
+            "ssh_url": "git@gitlab.com:backend/hook-server.git",
+            "http_url": "http://gitlab.com/backend/hook-server.git"
+        },
+        "target": {
+            "id": 87,
+            "name": "hook-server",
+            "description": "",
+            "web_url": "http://gitlab.com/backend/hook-server",
+            "avatar_url": null,
+            "git_ssh_url": "git@gitlab.com:backend/hook-server.git",
+            "git_http_url": "http://gitlab.com/backend/hook-server.git",
+            "namespace": "backend",
+            "visibility_level": 0,
+            "path_with_namespace": "backend/hook-server",
+            "default_branch": "master",
+            "ci_config_path": null,
+            "homepage": "http://gitlab.com/backend/hook-server",
+            "url": "git@gitlab.com:backend/hook-server.git",
+            "ssh_url": "git@gitlab.com:backend/hook-server.git",
+            "http_url": "http://gitlab.com/backend/hook-server.git"
+        },
+        "last_commit": {
+            "id": "570b3a79bd2f30c4ed93dfd75b819d08d04e68ea",
+            "message": "Update\n",
+            "title": "Update",
+            "timestamp": "2022-04-25T21:37:43+08:00",
+            "url": "http://gitlab.com/backend/hook-server/-/commit/570b3a79bd2f30c4ed93dfd75b819d08d04e68ea",
+            "author": {
+                "name": "李铭昕",
+                "email": "715557344@qq.com"
+            }
+        },
+        "work_in_progress": false,
+        "total_time_spent": 0,
+        "time_change": 0,
+        "human_total_time_spent": null,
+        "human_time_change": null,
+        "human_time_estimate": null,
+        "assignee_ids": [],
+        "state": "merged",
+        "action": "merge"
+    },
+    "labels": [],
+    "changes": {
+        "state_id": {
+            "previous": 4,
+            "current": 3
+        },
+        "updated_at": {
+            "previous": "2022-04-25 13:39:14 UTC",
+            "current": "2022-04-25 13:39:14 UTC"
+        }
+    },
+    "repository": {
+        "name": "hook-server",
+        "url": "git@gitlab.com:backend/hook-server.git",
+        "description": "",
+        "homepage": "http://gitlab.com/backend/hook-server"
+    }
+}

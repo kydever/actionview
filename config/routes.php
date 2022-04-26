@@ -20,7 +20,7 @@ Router::delete('/session', App\Controller\SessionController::class . '::destroy'
 
 Router::post('/user/login', App\Controller\UserController::class . '::login');
 Router::post('/user/register', App\Controller\UserController::class . '::register');
-// Router::post('/workflow/handle', [App\Controller\WorkflowController::class, 'handle']);
+Router::post('/webhook/handle', [App\Controller\WebHookController::class, 'handle']);
 
 Router::addGroup('/', function () {
     Router::get('myproject', [App\Controller\ProjectController::class, 'mine']);
