@@ -21,6 +21,8 @@ class WebHookTest extends HttpTestCase
 {
     public function testWorkflowHandle()
     {
+        $this->markTestSkipped('不使用这种 Hook 方式');
+
         $this->json('/workflow/handle', [
             'actions' => [
                 ['action' => 'Resolved', 'project' => 'p_ceshi', 'no' => '2'],
