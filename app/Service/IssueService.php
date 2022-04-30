@@ -1377,6 +1377,11 @@ class IssueService extends Service
             $model->fillJsonAttribute('data->expect_start_time', $expectStartTime);
         }
 
+        if (isset($data['resolve_version'])) {
+            $model->fillJsonAttribute('data->resolve_version', $data['resolve_version']);
+            unset($data['resolve_version']);
+        }
+
         return $data;
     }
 
