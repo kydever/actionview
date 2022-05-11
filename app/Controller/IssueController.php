@@ -181,6 +181,16 @@ class IssueController extends Controller
         return $this->response->success($result);
     }
 
+    public function getHistory(int $id)
+    {
+        $sort = $this->request->input('sort') == 'asc' ? 'asc' : 'desc';
+        $projectKey = get_project_key();
+
+        $result = $this->service->getHistory($id, $sort, $projectKey);
+
+        return $this->response->success($result);
+    }
+
     public function watch(int $id)
     {
         $project = get_project();

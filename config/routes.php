@@ -145,6 +145,7 @@ Router::addGroup('/project/{project_key}/', function () {
     Router::post('issue/{id:\d+}/worklog', [App\Controller\WorklogController::class, 'store']);
     Router::put('issue/{id:\d+}/worklog/{worklogId:\d+}', [App\Controller\WorklogController::class, 'update']);
     Router::delete('issue/{id:\d+}/worklog/{worklogId:\d+}', [App\Controller\WorklogController::class, 'destroy']);
+    Router::get('issue/{id:\d+}/history', [App\Controller\IssueController::class, 'getHistory']);
     Router::post('issue/{id:\d+}/watching', [App\Controller\IssueController::class, 'watch']);
 
     Router::post('issue', App\Controller\IssueController::class . '::store', [

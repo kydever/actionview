@@ -32,6 +32,7 @@ use App\Service\Dao\ConfigScreenDao;
 use App\Service\Dao\FileDao;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\IssueFilterDao;
+use App\Service\Dao\IssueHistoryDao;
 use App\Service\Dao\LabelDao;
 use App\Service\Dao\ModuleDao;
 use App\Service\Dao\OswfEntryDao;
@@ -40,6 +41,7 @@ use App\Service\Dao\UserDao;
 use App\Service\Dao\UserIssueFilterDao;
 use App\Service\Dao\WatchDao;
 use App\Service\Formatter\IssueFormatter;
+use App\Service\Formatter\IssueHistoryFormatter;
 use App\Service\Formatter\UserFormatter;
 use App\Service\Formatter\WatchFormatter;
 use App\Service\Struct\Workflow;
@@ -96,6 +98,7 @@ class IssueService extends Service
     public function update(int $id, array $input, User $user, Project $project)
     {
         $issue = $this->dao->first($id, true);
+
         if (empty($input)) {
             return $this->show($issue, $user, $project);
         }
@@ -304,6 +307,16 @@ class IssueService extends Service
             $model->no = $maxNumber;
             $model->data = $insValues;
             $model->save();
+
+            di(IssueHistoryDao::class)->create([
+                'project_key' => $project->key,
+                'issue_id' => $model->id,
+                'operator' => [
+                    'id' => $user->id,
+                    'name' => $user->first_name,
+                    'email' => $user->email,
+                ],
+            ]);
 
             // create the Labels for project
             if (isset($insValues['labels']) && $insValues['labels']) {
@@ -1216,6 +1229,13 @@ class IssueService extends Service
         return Issue::query()
             ->where('project_key', $prokectKey)
             ->get($columns);
+    }
+
+    public function getHistory(int $id, string $sort, string $projectKey): array
+    {
+        $historys = di(IssueHistoryDao::class)->findMany($projectKey, $id, $sort);
+
+        return di(IssueHistoryFormatter::class)->formatList($historys);
     }
 
     public function watch(int $id, bool $flag, Project $project, User $user): array
