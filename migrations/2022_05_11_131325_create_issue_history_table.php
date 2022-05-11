@@ -23,7 +23,7 @@ class CreateIssueHistoryTable extends Migration
         Schema::create('issue_history', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('project_key', 32)->index('INDEX_PROJECT_KEY');
-            $table->unsignedBigInteger('issue_id');
+            $table->unsignedBigInteger('issue_id')->index('INDEX_ISSUE_ID');
             $table->string('operation', 30);
             $table->integer('operated_at');
             $table->json('operator');
