@@ -19,9 +19,6 @@ class IssueHistoryFormatter extends Service
     public function base(IssueHistory $model): array
     {
         return [
-            'id' => $model->id,
-            'project_key' => $model->project_key,
-            'issue_id' => $model->issue_id,
             'operation' => $model->operation,
             'operated_at' => $model->operated_at,
             'operator' => $model->operator,

@@ -188,7 +188,7 @@ class IssueController extends Controller
 
         $result = $this->service->getHistory($id, $sort, $projectKey);
 
-        return $this->response->success($result);
+        return $this->response->success($result, ['options' => ['current_time' => time()]]);
     }
 
     public function watch(int $id)
