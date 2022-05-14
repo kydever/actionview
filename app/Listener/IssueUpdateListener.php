@@ -63,7 +63,7 @@ class IssueUpdateListener
             };
 
             if ($item) {
-                if (! array_is_list($item)) {
+                if (Arr::isAssoc($item)) {
                     $item = [$item];
                 }
 
