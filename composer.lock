@@ -8420,12 +8420,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swoole/ide-helper.git",
-                "reference": "8f82ba3b6af04a5bccb97c1654af992d1ee8b0fe"
+                "reference": "566dfdeb75fe89c836d59c8e06ec9615c1318c08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/8f82ba3b6af04a5bccb97c1654af992d1ee8b0fe",
-                "reference": "8f82ba3b6af04a5bccb97c1654af992d1ee8b0fe",
+                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/566dfdeb75fe89c836d59c8e06ec9615c1318c08",
+                "reference": "566dfdeb75fe89c836d59c8e06ec9615c1318c08",
                 "shasum": ""
             },
             "default-branch": true,
@@ -8443,7 +8443,7 @@
             "description": "IDE help files for Swoole.",
             "support": {
                 "issues": "https://github.com/swoole/ide-helper/issues",
-                "source": "https://github.com/swoole/ide-helper/tree/4.8.9"
+                "source": "https://github.com/swoole/ide-helper/tree/4.8.10"
             },
             "funding": [
                 {
@@ -8455,7 +8455,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-04-18T20:38:04+00:00"
+            "time": "2022-05-13T22:24:54+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
