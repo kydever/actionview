@@ -80,9 +80,21 @@ class IssueUpdateListener
         ]);
     }
 
+    /**
+     * 将 Unix 时间戳转换为日期(年-月-日).
+     */
     protected function formatDate(int $timestamp): string
     {
         return date('Y-m-d', $timestamp);
+    }
+
+    /**
+     * 过滤一些字段.
+     */
+    protected function isIgnore(string $column): bool
+    {
+        // type: 类型 original_estimate_m: 原估时间_m
+        return in_array($column, ['type', 'original_estimate_m']);
     }
 
     protected function formatData(Issue $issue): array
@@ -92,7 +104,7 @@ class IssueUpdateListener
 
         $result = [];
         foreach ($data as $key => $value) {
-            if (($original[$key] ?? null) != $value && (! in_array($key, ['type', 'original_estimate_m']))) {
+            if (($original[$key] ?? null) != $value && ! $this->isIgnore($key)) {
                 $field = str_replace(
                     ['title', 'priority', 'assignee', 'module', 'descriptions', 'attachments', 'epic', 'expect_start_time', 'expect_complete_time', 'progress', 'original_estimate', 'story_points', 'resolve_version', 'labels', 'related_users', 'state'],
                     ['主题', '优先级', '负责人', '模块', '描述', '附件', 'Epic', '计划开始时间', '计划完成时间', '进度', '原估时间', '故事点数', '解决版本', '标签', '关联用户', '状态'],
