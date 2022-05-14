@@ -58,7 +58,7 @@ class IssueUpdateListener
                 'type' => $this->formatTypeData($issue),
                 'resolution' => $this->formatResolutionData($issue),
                 'assignee', 'reporter' => $this->formatUserData($issue, $key),
-                'data' => $this->formatDate($issue),
+                'data' => $this->formatData($issue),
                 default => null,
             };
 
@@ -80,20 +80,46 @@ class IssueUpdateListener
         ]);
     }
 
-    protected function formatDate(Issue $issue): array
+    /**
+     * 将 Unix 时间戳转换为日期(年-月-日).
+     */
+    protected function formatDate(int $timestamp): string
+    {
+        return date('Y-m-d', $timestamp);
+    }
+
+    /**
+     * 过滤一些字段.
+     */
+    protected function isIgnore(string $column): bool
+    {
+        // type: 类型 original_estimate_m: 原估时间_m
+        return in_array($column, ['type', 'original_estimate_m']);
+    }
+
+    protected function formatData(Issue $issue): array
     {
         $original = $issue->getOriginal('data');
         $data = $issue->data;
 
         $result = [];
         foreach ($data as $key => $value) {
-            if (($original[$key] ?? null) != $value) {
+            if (($original[$key] ?? null) != $value && ! $this->isIgnore($key)) {
                 $field = str_replace(
-                    ['type', 'title', 'priority', 'assignee', 'module', 'descriptions', 'attachments', 'epic', 'expect_start_time', 'expect_complete_time', 'progress', 'original_estimate', 'story_points', 'resolve_version', 'labels', 'related_users', 'state'],
-                    ['类型', '主题', '优先级', '负责人', '模块', '描述', '附件', 'Epic', '计划开始时间', '计划完成时间', '进度', '原估时间', '故事点数', '解决版本', '标签', '关联用户', '状态'],
+                    ['title', 'priority', 'assignee', 'module', 'descriptions', 'attachments', 'epic', 'expect_start_time', 'expect_complete_time', 'progress', 'original_estimate', 'story_points', 'resolve_version', 'labels', 'related_users', 'state'],
+                    ['主题', '优先级', '负责人', '模块', '描述', '附件', 'Epic', '计划开始时间', '计划完成时间', '进度', '原估时间', '故事点数', '解决版本', '标签', '关联用户', '状态'],
                     $key
                 );
-
+                switch ($key) {
+                    case 'expect_start_time':
+                    case 'expect_complete_time':
+                    case 'original_estimate':
+                        $timestamp = (int) $original[$key];
+                        $original[$key] = $this->formatDate($timestamp);
+                        $timestamp = (int) $value;
+                        $value = $this->formatDate($timestamp);
+                        break;
+                }
                 if (! is_array($value)) {
                     $item = match ($key) {
                         'state' => $this->formatStateData($issue),
