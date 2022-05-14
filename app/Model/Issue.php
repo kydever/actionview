@@ -14,6 +14,7 @@ namespace App\Model;
 use App\Constants\StatusConstant;
 use App\Service\Client\IssueSearch;
 use Hao\ORMJsonRelation\HasORMJsonRelations;
+use Hyperf\Database\Model\Events\Saved;
 use Hyperf\Database\Model\Relations\HasOne;
 
 /**
@@ -57,6 +58,13 @@ class Issue extends Model implements Searchable
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'int', 'del_flg' => 'integer', 'assignee' => 'json', 'reporter' => 'json', 'modifier' => 'json', 'data' => 'json', 'no' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'type' => 'integer', 'parent_id' => 'integer', 'attachments' => 'json', 'watchers' => 'json', 'comments_num' => 'integer'];
+
+    public function saved(Saved $event)
+    {
+        defer(function () {
+            $this->pushToSearch();
+        });
+    }
 
     public function typeModel()
     {

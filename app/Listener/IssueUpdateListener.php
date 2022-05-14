@@ -11,33 +11,19 @@ declare(strict_types=1);
  */
 namespace App\Listener;
 
-use App\Event\IssueEvent;
-use App\Service\IssueService;
-use Hyperf\Event\Annotation\Listener;
-use Hyperf\Event\Contract\ListenerInterface;
-use Psr\Container\ContainerInterface;
+use App\Model\Issue;
+use Hyperf\Database\Model\Events\Updated;
+use Hyperf\ModelListener\Annotation\ModelListener;
 
-#[Listener]
-class IssueUpdateListener implements ListenerInterface
+#[ModelListener(models: [Issue::class])]
+class IssueUpdateListener
 {
-    public function __construct(protected ContainerInterface $container)
+    public function updated(Updated $event)
     {
-    }
-
-    public function listen(): array
-    {
-        return [
-            IssueEvent::class,
-        ];
-    }
-
-    /**
-     * @param IssueEvent $event
-     */
-    public function process(object $event): void
-    {
-        $issue = $event->getIssue();
-        // 同步到搜索引擎
-        di()->get(IssueService::class)->pushToSearch($issue->id);
+        /** @var Issue $model */
+        $model = $event->getModel();
+        defer(static function () use ($model) {
+            $model->pushToSearch();
+        });
     }
 }

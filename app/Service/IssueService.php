@@ -15,7 +15,6 @@ use App\Constants\ErrorCode;
 use App\Constants\Permission;
 use App\Constants\Schema;
 use App\Constants\StatusConstant;
-use App\Event\IssueEvent;
 use App\Exception\BusinessException;
 use App\Model\ConfigField;
 use App\Model\Issue;
@@ -25,7 +24,6 @@ use App\Model\Project;
 use App\Model\User;
 use App\Model\UserIssueFilter;
 use App\Project\Eloquent\Labels;
-use App\Project\Provider;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\CommentDao;
 use App\Service\Dao\ConfigScreenDao;
@@ -55,8 +53,6 @@ use Hyperf\Database\Model\Collection;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
-use Illuminate\Support\Facades\Event;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use function issue_key as ik;
 
 class IssueService extends Service
@@ -192,7 +188,6 @@ class IssueService extends Service
             $issue->save();
 
             // TODO: History table
-            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
             if (isset($updValues['labels']) && $updValues['labels']) {
                 $this->createLabels($project->key, $updValues['labels']);
             }
@@ -358,13 +353,6 @@ class IssueService extends Service
             if (isset($insValues['labels']) && $insValues['labels']) {
                 $this->createLabels($project->key, $insValues['labels']);
             }
-
-            // TODO: Support History
-            // Provider::snap2His($project_key, $id, $schema);
-
-            // TODO: IssueEvent 通知 Activity 和 Webhook
-            // Event::fire(new IssueEvent($project_key, $id->__toString(), $insValues['reporter'], ['event_key' => 'create_issue']));
-            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($model));
 
             Db::commit();
         } catch (\Throwable $exception) {
@@ -986,7 +974,6 @@ class IssueService extends Service
         Db::beginTransaction();
         try {
             $issue->save();
-            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
             Db::commit();
         } catch (\Throwable $exception) {
             Db::rollBack();
@@ -1024,7 +1011,6 @@ class IssueService extends Service
 
             // TODO: Histroy Table
 
-            di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
             Db::commit();
         } catch (\Throwable $exception) {
             Db::rollBack();
