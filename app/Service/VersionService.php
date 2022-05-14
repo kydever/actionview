@@ -13,7 +13,6 @@ namespace App\Service;
 
 use App\Constants\ErrorCode;
 use App\Constants\StatusConstant;
-use App\Event\IssueEvent;
 use App\Event\VersionEvent;
 use App\Exception\BusinessException;
 use App\Model\Project;
@@ -302,8 +301,6 @@ class VersionService extends Service
                 $issue->data = $issueData;
                 $issue->modifier = di()->get(UserFormatter::class)->small($user);
                 $issue->save();
-
-                di()->get(EventDispatcherInterface::class)->dispatch(new IssueEvent($issue));
             }
             Db::commit();
         } catch (\Throwable $exception) {
