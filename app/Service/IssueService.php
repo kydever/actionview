@@ -27,7 +27,6 @@ use App\Project\Eloquent\Labels;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\CommentDao;
 use App\Service\Dao\ConfigScreenDao;
-use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\FileDao;
 use App\Service\Dao\IssueDao;
 use App\Service\Dao\IssueFilterDao;
@@ -95,7 +94,6 @@ class IssueService extends Service
     public function update(int $id, array $input, User $user, Project $project)
     {
         $issue = $this->dao->first($id, true);
-        $oldIssueData = $issue->data;
 
         if (empty($input)) {
             return $this->show($issue, $user, $project);
@@ -191,38 +189,6 @@ class IssueService extends Service
             if (isset($updValues['labels']) && $updValues['labels']) {
                 $this->createLabels($project->key, $updValues['labels']);
             }
-
-            $data = [];
-            foreach ($input as $key => $value) {
-                unset($input[$key]);
-                $field = str_replace(
-                    ['type', 'title', 'priority', 'assignee', 'module', 'descriptions', 'attachments', 'epic', 'expect_start_time', 'expect_complete_time', 'progress', 'original_estimate', 'story_points', 'resolve_version', 'labels', 'related_users'],
-                    ['类型', '主题', '优先级', '负责人', '模块', '描述', '附件', 'Epic', '计划开始时间', '计划完成时间', '进度', '原估时间', '故事点数', '解决版本', '标签', '关联用户'],
-                    $key
-                );
-                if ($key === 'type') {
-                    $oldType = di(ConfigTypeDao::class)->first((int) $oldIssueData[$key]);
-                    $oldIssueData[$key] = $oldType->name;
-                    $newType = di(ConfigTypeDao::class)->first((int) $value);
-                    $value = $newType->name;
-                }
-                $data[] = [
-                    'field' => $field,
-                    'before_value' => $oldIssueData[$key] ?? '',
-                    'after_value' => $value,
-                ];
-            }
-            di(IssueHistoryDao::class)->create([
-                'project_key' => $project->key,
-                'issue_id' => $issue->id,
-                'operation' => 'modify',
-                'operator' => [
-                    'id' => $user->id,
-                    'name' => $user->first_name,
-                    'email' => $user->email,
-                ],
-                'data' => $data,
-            ]);
 
             Db::commit();
         } catch (\Throwable $exception) {
@@ -338,16 +304,6 @@ class IssueService extends Service
             $model->no = $maxNumber;
             $model->data = $insValues;
             $model->save();
-
-            di(IssueHistoryDao::class)->create([
-                'project_key' => $project->key,
-                'issue_id' => $model->id,
-                'operator' => [
-                    'id' => $user->id,
-                    'name' => $user->first_name,
-                    'email' => $user->email,
-                ],
-            ]);
 
             // create the Labels for project
             if (isset($insValues['labels']) && $insValues['labels']) {
@@ -1197,7 +1153,6 @@ class IssueService extends Service
         }
 
         $issue = $this->dao->first($id, true);
-        $oldIssueData = $issue->data;
 
         try {
             $entry = new Workflow(di()->get(OswfEntryDao::class)->first($workflowId));
@@ -1216,28 +1171,6 @@ class IssueService extends Service
             di()->get(StdoutLoggerInterface::class)->warning((string) $e);
             throw new BusinessException(ErrorCode::ISSUE_DO_ACTION_ID_CANNOT_EMPTY);
         }
-
-        $oldState = $this->replaceState($oldIssueData['state'] ?? '');
-        $newState = $this->replaceState($issue->data['state'] ?? '');
-
-        $data = [];
-        $data[] = [
-            'field' => '状态',
-            'before_value' => $oldState,
-            'after_value' => $newState,
-        ];
-
-        di(IssueHistoryDao::class)->create([
-            'project_key' => $project->key,
-            'issue_id' => $id,
-            'operation' => 'modify',
-            'operator' => [
-                'id' => $user->id,
-                'name' => $user->first_name,
-                'email' => $user->email,
-            ],
-            'data' => $data,
-        ]);
 
         return $this->show($issue, $user, $project);
     }
@@ -1279,9 +1212,9 @@ class IssueService extends Service
 
     public function getHistory(int $id, string $sort, string $projectKey): array
     {
-        $historys = di(IssueHistoryDao::class)->findMany($projectKey, $id, $sort);
+        $models = di(IssueHistoryDao::class)->findMany($projectKey, $id, $sort);
 
-        return di(IssueHistoryFormatter::class)->formatList($historys);
+        return di(IssueHistoryFormatter::class)->formatList($models);
     }
 
     public function watch(int $id, bool $flag, Project $project, User $user): array
@@ -1348,21 +1281,13 @@ class IssueService extends Service
 
     public function batchDelete(array $ids, Project $project, User $user)
     {
+        $deleted = [];
         foreach ($ids as $id) {
             $this->delete($id, $project, $user);
             $deleted[] = $id;
         }
 
         return $deleted;
-    }
-
-    protected function replaceState(string $status): string
-    {
-        return str_replace(
-            ['Open', 'In Progess', 'Resolved', 'Closed', 'Reopened'],
-            ['开始', '进行中', '已完成', '关闭', '重新打开'],
-            $status
-        );
     }
 
     protected function fillIssueJsonAttribute(Issue $model, array $data): array
