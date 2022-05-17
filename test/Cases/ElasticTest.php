@@ -17,6 +17,7 @@ use App\Model\User;
 use App\Service\Client\IssueSearch;
 use App\Service\ProjectSummaryService;
 use App\Service\ProviderService;
+use Carbon\Carbon;
 use HyperfTest\HttpTestCase;
 
 /**
@@ -55,7 +56,7 @@ class ElasticTest extends HttpTestCase
     {
         $project = Project::findFromCache(1);
         if ($project) {
-            $res = di()->get(IssueSearch::class)->countDaily($project->key);
+            $res = di()->get(IssueSearch::class)->countDaily($project->key, Carbon::now()->subDays(14));
         }
 
         $this->assertTrue(true);

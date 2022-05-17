@@ -14,12 +14,14 @@ namespace App\Service\Client;
 use App\Constants\StatusConstant;
 use App\Model\Issue;
 use App\Service\Formatter\IssueFormatter;
+use Carbon\Carbon;
 use Han\Utils\ElasticSearch;
 use Hyperf\Database\Model\Model;
 use Hyperf\Utils\Str;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\DateHistogramAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
+use ONGR\ElasticsearchDSL\Query\TermLevel\RangeQuery;
 use ONGR\ElasticsearchDSL\Query\TermLevel\TermQuery;
 use ONGR\ElasticsearchDSL\Search;
 use function Han\Utils\date_load;
@@ -157,12 +159,15 @@ class IssueSearch extends ElasticSearch
      *     ],
      * ]
      */
-    public function countDaily(string $key): array
+    public function countDaily(string $key, ?Carbon $begin = null): array
     {
         $search = new Search();
         $bool = new BoolQuery();
         $bool->add(new TermQuery('del_flg', StatusConstant::DELETED), BoolQuery::MUST_NOT);
         $bool->add(new TermQuery('project_key', $key), BoolQuery::MUST);
+        if ($begin) {
+            $bool->add(new RangeQuery('created_at', [RangeQuery::GTE => $begin->toDateTimeString()]));
+        }
         $body = $search
             ->addQuery($bool)
             ->addAggregation(new DateHistogramAggregation('created_cnt', 'created_at', 'day', 'yyyy/MM/dd'))

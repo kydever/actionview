@@ -1479,16 +1479,16 @@
         },
         {
             "name": "hyperf/di",
-            "version": "v3.0.0-alpha.9",
+            "version": "v3.0.0-alpha.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/di.git",
-                "reference": "33290dc1feba28dd4bd6a65d4afea9999268d370"
+                "reference": "0a6ec2de8a7b117e3575d09c5701902b21e458b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/di/zipball/33290dc1feba28dd4bd6a65d4afea9999268d370",
-                "reference": "33290dc1feba28dd4bd6a65d4afea9999268d370",
+                "url": "https://api.github.com/repos/hyperf/di/zipball/0a6ec2de8a7b117e3575d09c5701902b21e458b3",
+                "reference": "0a6ec2de8a7b117e3575d09c5701902b21e458b3",
                 "shasum": ""
             },
             "require": {
@@ -1537,7 +1537,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2022-04-15T08:58:38+00:00"
+            "time": "2022-05-16T03:30:34+00:00"
         },
         {
             "name": "hyperf/dispatcher",
@@ -1993,16 +1993,16 @@
         },
         {
             "name": "hyperf/http-server",
-            "version": "v3.0.0-alpha.11",
+            "version": "v3.0.0-alpha.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/http-server.git",
-                "reference": "80ab50a9364463639d9100c46467fa033cf008b6"
+                "reference": "cd7b7c92d543a5f65b7a16d37eea273e4db3fd94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/http-server/zipball/80ab50a9364463639d9100c46467fa033cf008b6",
-                "reference": "80ab50a9364463639d9100c46467fa033cf008b6",
+                "url": "https://api.github.com/repos/hyperf/http-server/zipball/cd7b7c92d543a5f65b7a16d37eea273e4db3fd94",
+                "reference": "cd7b7c92d543a5f65b7a16d37eea273e4db3fd94",
                 "shasum": ""
             },
             "require": {
@@ -2054,20 +2054,20 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2022-04-30T03:56:44+00:00"
+            "time": "2022-05-07T05:49:03+00:00"
         },
         {
             "name": "hyperf/logger",
-            "version": "v3.0.0-alpha.4",
+            "version": "v3.0.0-alpha.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/logger.git",
-                "reference": "b5cfc66ea9229df1d2c8036392fcc828d5a39a45"
+                "reference": "803e269504df8a50db746cb093e71f3d53b3e8bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/logger/zipball/b5cfc66ea9229df1d2c8036392fcc828d5a39a45",
-                "reference": "b5cfc66ea9229df1d2c8036392fcc828d5a39a45",
+                "url": "https://api.github.com/repos/hyperf/logger/zipball/803e269504df8a50db746cb093e71f3d53b3e8bf",
+                "reference": "803e269504df8a50db746cb093e71f3d53b3e8bf",
                 "shasum": ""
             },
             "require": {
@@ -2077,6 +2077,9 @@
                 "php": ">=8.0",
                 "psr/container": "^1.0|^2.0",
                 "psr/log": "^1.0|^2.0|^3.0"
+            },
+            "conflict": {
+                "monolog/monolog": ">=2.6.0"
             },
             "type": "library",
             "extra": {
@@ -2109,7 +2112,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2022-03-01T03:13:47+00:00"
+            "time": "2022-05-16T03:30:34+00:00"
         },
         {
             "name": "hyperf/macroable",
@@ -3167,16 +3170,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "2.6.0",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "247918972acd74356b0a91dfaa5adcaec069b6c0"
+                "reference": "4192345e260f1d51b365536199744b987e160edc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/247918972acd74356b0a91dfaa5adcaec069b6c0",
-                "reference": "247918972acd74356b0a91dfaa5adcaec069b6c0",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/4192345e260f1d51b365536199744b987e160edc",
+                "reference": "4192345e260f1d51b365536199744b987e160edc",
                 "shasum": ""
             },
             "require": {
@@ -3189,23 +3192,18 @@
             "require-dev": {
                 "aws/aws-sdk-php": "^2.4.9 || ^3.0",
                 "doctrine/couchdb": "~1.0@dev",
-                "elasticsearch/elasticsearch": "^7 || ^8",
-                "ext-json": "*",
+                "elasticsearch/elasticsearch": "^7",
                 "graylog2/gelf-php": "^1.4.2",
-                "guzzlehttp/guzzle": "^7.4",
-                "guzzlehttp/psr7": "^2.2",
                 "mongodb/mongodb": "^1.8",
                 "php-amqplib/php-amqplib": "~2.4 || ^3",
                 "php-console/php-console": "^3.1.3",
-                "phpspec/prophecy": "^1.15",
+                "phpspec/prophecy": "^1.6.1",
                 "phpstan/phpstan": "^0.12.91",
-                "phpunit/phpunit": "^8.5.14",
+                "phpunit/phpunit": "^8.5",
                 "predis/predis": "^1.1",
                 "rollbar/rollbar": "^1.3 || ^2 || ^3",
-                "ruflin/elastica": "^7",
-                "swiftmailer/swiftmailer": "^5.3|^6.0",
-                "symfony/mailer": "^5.4 || ^6",
-                "symfony/mime": "^5.4 || ^6"
+                "ruflin/elastica": ">=0.90@dev",
+                "swiftmailer/swiftmailer": "^5.3|^6.0"
             },
             "suggest": {
                 "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
@@ -3255,7 +3253,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/2.6.0"
+                "source": "https://github.com/Seldaek/monolog/tree/2.5.0"
             },
             "funding": [
                 {
@@ -3267,7 +3265,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-10T09:36:00+00:00"
+            "time": "2022-04-08T15:43:54+00:00"
         },
         {
             "name": "myclabs/php-enum",

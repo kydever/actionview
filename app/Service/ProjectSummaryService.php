@@ -74,16 +74,18 @@ class ProjectSummaryService extends Service
      */
     public function getPulseData(Project $project)
     {
-        // initialize the results
-        $trend = $this->init14DaysArray();
-
-        $countDaily = di()->get(IssueSearch::class)->countDaily($project->key);
+        $countDaily = di()->get(IssueSearch::class)->countDaily($project->key, Carbon::today()->subDays(30));
+        $trend = [];
         foreach ($countDaily as $date => $item) {
             $trend[$date] = [
                 'new' => $item['created_cnt'] ?? 0,
                 'resolved' => $item['resolved_cnt'] ?? 0,
                 'closed' => $item['closed_cnt'] ?? 0,
             ];
+        }
+
+        if (! $trend) {
+            $trend = $this->init14DaysArray();
         }
 
         $result = [];
