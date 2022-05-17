@@ -70,7 +70,9 @@ class IssueUpdateListener
                 $data = array_merge($data, $item);
             }
         }
-
+        if (empty($data)) {
+            return;
+        }
         di(IssueHistoryDao::class)->create([
             'project_key' => $issue->project_key,
             'issue_id' => $issue->id,
@@ -94,7 +96,7 @@ class IssueUpdateListener
     protected function isIgnore(string $column): bool
     {
         // type: 类型 original_estimate_m: 原估时间_m
-        return in_array($column, ['type', 'original_estimate_m']);
+        return in_array($column, ['type', 'original_estimate_m', 'closed_at', 'resolved_at', 'resolution']);
     }
 
     protected function formatData(Issue $issue): array
