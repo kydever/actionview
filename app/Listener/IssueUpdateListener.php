@@ -96,7 +96,7 @@ class IssueUpdateListener
     protected function isIgnore(string $column): bool
     {
         // type: 类型 original_estimate_m: 原估时间_m
-        return in_array($column, ['type', 'original_estimate_m', 'closed_at', 'resolved_at', 'resolution']);
+        return in_array($column, ['type', 'original_estimate_m', 'closed_at', 'resolved_at', 'resolution', 'regression_times']);
     }
 
     protected function formatData(Issue $issue): array
