@@ -52,6 +52,7 @@ use Hyperf\Database\Model\Collection;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
+use function Han\Utils\date_load;
 use function issue_key as ik;
 
 class IssueService extends Service
@@ -836,7 +837,9 @@ class IssueService extends Service
                             $vv = abs((float) substr($v, 0, -1));
                             $dateRange['gte'] = strtotime(date('Ymd', strtotime(($direct === '-' ? '-' : '+') . $vv . ' ' . $unitMap[$unit])));
                         } else {
-                            $dateRange['gte'] = date('Y-m-d H:i:s', strtotime($v));
+                            if ($dt = date_load($v)?->toDateTimeString()) {
+                                $dateRange['gte'] = $dt;
+                            }
                         }
                     }
 
@@ -848,7 +851,9 @@ class IssueService extends Service
                             $vv = abs((float) substr($v, 0, -1));
                             $dateRange['lte'] = strtotime(date('Y-m-d', strtotime(($direct === '-' ? '-' : '+') . $vv . ' ' . $unitMap[$unit])) . ' 23:59:59');
                         } else {
-                            $dateRange['lte'] = date('Y-m-d H:i:s', strtotime($v . ' 23:59:59'));
+                            if ($dt = date_load($v)?->endOfDay()->toDateTimeString()) {
+                                $dateRange['lte'] = $dt;
+                            }
                         }
                     }
                     $bool['must'][] = [
