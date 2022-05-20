@@ -836,7 +836,8 @@ class IssueService extends Service
                             $vv = abs((float) substr($v, 0, -1));
                             $dateRange['gte'] = strtotime(date('Ymd', strtotime(($direct === '-' ? '-' : '+') . $vv . ' ' . $unitMap[$unit])));
                         } else {
-                            $dateRange['gte'] = strtotime($v);
+                            $timestamp = strtotime($v);
+                            $dateRange['gte'] = date('Y-m-d H:i:s', $timestamp);
                         }
                     }
 
@@ -848,7 +849,8 @@ class IssueService extends Service
                             $vv = abs((float) substr($v, 0, -1));
                             $dateRange['lte'] = strtotime(date('Y-m-d', strtotime(($direct === '-' ? '-' : '+') . $vv . ' ' . $unitMap[$unit])) . ' 23:59:59');
                         } else {
-                            $dateRange['lte'] = strtotime($v . ' 23:59:59');
+                            $timestamp = strtotime($v . ' 23:59:59');
+                            $dateRange['lte'] = date('Y-m-d H:i:s', $timestamp);
                         }
                     }
                     $bool['must'][] = [
