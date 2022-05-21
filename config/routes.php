@@ -168,7 +168,7 @@ Router::addGroup('/project/{project_key}/', function () {
         ],
     ]);
 
-    Router::get('activity', [\App\Controller\ActivityController::class, 'index']);
+    Router::get('activity', [App\Controller\ActivityController::class, 'index']);
 
     Router::get('version', App\Controller\VersionController::class . '::index');
     Router::post('version', App\Controller\VersionController::class . '::store');

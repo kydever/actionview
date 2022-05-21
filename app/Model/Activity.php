@@ -23,8 +23,6 @@ class Activity extends Model
 {
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected ?string $table = 'activity';
 

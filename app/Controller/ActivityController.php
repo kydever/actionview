@@ -21,7 +21,9 @@ class ActivityController extends Controller
 
     public function index()
     {
-        $result = $this->service->index($this->request->all());
+        $input = $this->request->all();
+
+        $result = $this->service->index($input);
 
         return $this->response->success($result, [
             'options' => [
