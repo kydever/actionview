@@ -15,6 +15,7 @@ use App\Constants\ErrorCode;
 use App\Constants\ReportFiltersConstant;
 use App\Exception\BusinessException;
 use App\Model\Project;
+use App\Model\Report;
 use App\Model\User;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\ConfigTypeDao;
@@ -97,6 +98,32 @@ class ReportService extends Service
             }
         }
         return array_values($filters);
+    }
+
+    public function saveFilter(string $mode, array $attributes, int $userId, string $projectKey): array
+    {
+        if (! in_array($mode, ReportFiltersConstant::MODE_MENU)) {
+            throw new BusinessException(ErrorCode::FILTER_NAME_CANNOT_EMPTY);
+        }
+        $attributes = array_merge($attributes, compact('mode', 'userId', 'projectKey'));
+
+        return $this->create($attributes);
+    }
+
+    public function create(array $attributes): array
+    {
+        $model = new Report();
+        $model->user = $attributes['userId'];
+        $model->project_key = $attributes['projectKey'];
+        $model->mode = $attributes['mode'];
+        $model->filters = [
+            'id' => md5(microtime()),
+            'name' => $attributes['name'],
+            'query' => $attributes['query'],
+        ];
+        $model->save();
+
+        return $this->formatter->base($model);
     }
 
     public function getIssues(string $x, ?string $y, User $user, Project $project, array $input): array
