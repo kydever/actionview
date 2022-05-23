@@ -375,6 +375,16 @@ class ReportService extends Service
         return $list;
     }
 
+    public function saveFilter(string $mode, array $attributes, int $userId, string $projectKey)
+    {
+        if (! in_array($mode, ReportFiltersConstant::MODE_MENU)) {
+            throw new BusinessException(ErrorCode::FILTER_NAME_CANNOT_EMPTY);
+        }
+        $attributes = array_merge($attributes, compact('mode', 'userId', 'projectKey'));
+
+        return di(ReportFilterService::class)->create($attributes);
+    }
+
     protected function guessXYData(string $key, string $field, $data): array
     {
         $result = [];

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Request\GetIssuesReportRequest;
+use App\Request\SaveFilterReportRequest;
 use App\Service\ReportService;
 use App\Service\TimeTrackTrait;
 use Hyperf\Di\Annotation\Inject;
@@ -61,6 +62,15 @@ class ReportController extends Controller
     public function getTimetracksDetail(int $id)
     {
         $result = $this->service->getTimetracksDetail($id);
+
+        return $this->response->success($result);
+    }
+
+    public function saveFilter(SaveFilterReportRequest $request, string $mode)
+    {
+        $user = get_user_id();
+        $project = get_project_key();
+        $result = $this->service->saveFilter($mode, $request->all(), $user, $project);
 
         return $this->response->success($result);
     }
