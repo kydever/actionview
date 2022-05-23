@@ -179,6 +179,7 @@ Router::addGroup('/project/{project_key}/', function () {
 
     Router::get('report/index', [App\Controller\ReportController::class, 'index']);
     Router::get('report/issues', [App\Controller\ReportController::class, 'getIssues']);
+    Router::post('report/{mode}/filter', [App\Controller\ReportController::class, 'saveFilter']);
     Router::get('report/timetracks', [App\Controller\ReportController::class, 'getTimetracks']);
     Router::get('report/timetracks/issue/{id:\d+}', [App\Controller\ReportController::class, 'getTimetracksDetail']);
 
