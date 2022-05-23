@@ -44,17 +44,18 @@ class ReportService extends Service
     #[Inject]
     protected ProviderService $provider;
 
-    public function index(): array
+    public function index(string $key, int $userId): array
     {
         $filters = ReportFiltersConstant::DEFAULT_REPORT_FILTERS;
-        $models = $this->dao->getByProjectKey(get_project_key(), get_user_id());
+        $reportFilters = $this->dao->getByProjectKey($key, $userId);
+        $models = $this->formatter->formatList($reportFilters);
         foreach ($models as $model) {
             if (isset($model['filters'])) {
-                $filters[$model['mode']] = $model['filters'];
+                $filters[$model['mode']][] = $model['filters'];
             }
         }
-        foreach ($filters as $mode => $some_filters) {
-            $filter[$mode] = $this->convFilters(get_project_key(), $some_filters);
+        foreach ($filters as $mode => $someFilters) {
+            $filters[$mode] = $this->convFilters($key, $someFilters);
         }
 
         return $filters;
@@ -97,6 +98,7 @@ class ReportService extends Service
                 }
             }
         }
+
         return array_values($filters);
     }
 

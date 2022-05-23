@@ -27,7 +27,7 @@ class ReportController extends Controller
     public function index()
     {
         return $this->response->success(
-            $this->service->index()
+            $this->service->index(get_project_key(), get_user_id())
         );
     }
 
