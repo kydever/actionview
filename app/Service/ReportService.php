@@ -16,14 +16,14 @@ use App\Constants\ReportFiltersConstant;
 use App\Exception\BusinessException;
 use App\Model\Project;
 use App\Model\Report;
-use App\Model\Sprint;
 use App\Model\User;
-use App\Model\Version;
 use App\Service\Client\IssueSearch;
 use App\Service\Dao\ConfigTypeDao;
 use App\Service\Dao\ProjectDao;
 use App\Service\Dao\ReportDao;
+use App\Service\Dao\SprintDao;
 use App\Service\Dao\UserDao;
+use App\Service\Dao\VersionDao;
 use App\Service\Dao\WorklogDao;
 use App\Service\Formatter\IssueFormatter;
 use App\Service\Formatter\ReportFormatter;
@@ -61,43 +61,36 @@ class ReportService extends Service
         return $filters;
     }
 
-    public function convFilters($project_key, array $filters)
+    public function convFilters(string $projectKey, array $filters)
     {
         foreach ($filters as $key => $filter) {
-            if ($filter['id'] === 'active_sprint') {
-                $sprint = Sprint::where('project_key', $project_key)
-                    ->where('status', 'active')
-                    ->first();
+            if ($filter['id'] == 'active_sprint') {
+                $sprint = di()->get(SprintDao::class)->firstByProjectKey($projectKey, 'active');
                 if ($sprint) {
-                    $filters[$key]['query'] = ['sprints' => $sprint->no];
+                    $filters[$key]['query'] = [
+                        'sprints' => $sprint->no,
+                    ];
                 } else {
                     unset($filters[$key]);
                 }
             } elseif ($filter['id'] === 'latest_completed_sprint') {
-                $sprint = Sprint::where('project_key', $project_key)
-                    ->where('status', 'completed')
-                    ->orderBy('no', 'desc')
-                    ->first();
+                $sprint = di()->get(SprintDao::class)->firstByProjectKey($projectKey, 'completed', 'desc');
                 if ($sprint) {
-                    $filters[$key]['query'] = ['sprints' => $sprint->no];
+                    $filters[$key]['query'] = [
+                        'sprints' => $sprint->no,
+                    ];
                 } else {
                     unset($filters[$key]);
                 }
             } elseif ($filter['id'] === 'will_release_version') {
-                $version = Version::where('project_key', $project_key)
-                    ->where('status', 'unreleased')
-                    ->orderBy('name', 'asc')
-                    ->first();
+                $version = di()->get(VersionDao::class)->firstByProjectKey(get_project_key(), 'unreleased');
                 if ($version) {
                     $filters[$key]['query'] = ['resolve_version' => $version->id];
                 } else {
                     unset($filters[$key]);
                 }
             } elseif ($filter['id'] === 'latest_released_version') {
-                $version = Version::where('project_key', $project_key)
-                    ->where('status', 'released')
-                    ->orderBy('name', 'desc')
-                    ->first();
+                $version = di()->get(VersionDao::class)->firstByProjectKey(get_project_key(), 'released');
                 if ($version) {
                     $filters[$key]['query'] = ['resolve_version' => $version->id];
                 } else {
