@@ -74,4 +74,11 @@ class ReportController extends Controller
 
         return $this->response->success($result);
     }
+
+    public function editSomeFilters(string $mode)
+    {
+        return $this->response->success(
+            $this->service->editSomeFilters($mode, $this->request->all(), get_project_key(), get_user_id())
+        );
+    }
 }

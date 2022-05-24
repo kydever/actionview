@@ -105,7 +105,7 @@ class ReportService extends Service
     public function saveFilter(string $mode, array $attributes, int $userId, string $projectKey): array
     {
         if (! in_array($mode, ReportFiltersConstant::MODE_MENU)) {
-            throw new BusinessException(ErrorCode::FILTER_NAME_CANNOT_EMPTY);
+            throw new BusinessException(ErrorCode::REPORT_TYPE_ERROR);
         }
         $attributes = array_merge($attributes, compact('mode', 'userId', 'projectKey'));
 
@@ -402,6 +402,28 @@ class ReportService extends Service
         }
 
         return $list;
+    }
+
+    public function editSomeFilters(string $mode, array $attributes, string $key, int $userId): array
+    {
+        if (! in_array($mode, ReportFiltersConstant::MODE_MENU)) {
+            throw new BusinessException(ErrorCode::REPORT_TYPE_ERROR);
+        }
+        $sequence = $attributes['sequence'] ?? null;
+        if ($sequence !== null) {
+            $reports = $this->dao->get($key, $mode, $userId);
+            $ids = [];
+            foreach ($reports as $report) {
+                if (! in_array(($report->filters['id'] ?? null), $sequence)) {
+                    $ids[] = $report->id;
+                }
+            }
+            if (! empty($ids)) {
+                $this->dao->deleteByIds($ids);
+            }
+        }
+
+        return $this->index($key, $userId);
     }
 
     protected function guessXYData(string $key, string $field, $data): array
