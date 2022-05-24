@@ -84,9 +84,22 @@ class WorklogService extends Service
         $attributes['recorder'] = [
             'id' => $user->id,
             'name' => $user->first_name,
-            'meail' => $user->email,
+            'email' => $user->email,
         ];
         $model = $this->dao->create($project->key, $issueId, $attributes);
+        $attributes += ['eventKey' => 'add_worklog'];
+        $logs = [];
+        $logs['data'] = $attributes;
+        $logs['eventKey'] = 'add_worklog';
+        $logs['issue'] = di(IssueDao::class)->first($issueId, true);
+        $logs['user'] = [
+            'id' => $user->id,
+            'name' => $user->first_name,
+            'email' => $user->email,
+            'avatar' => $user->avatar,
+        ];
+        $logs['projectKey'] = $project->key;
+        di(ActivityService::class)->create(array_merge($logs, compact('issueId')));
 
         return $this->formatter->base($model);
     }

@@ -41,4 +41,10 @@ class ActivityDao extends Service
 
         return $result;
     }
+
+    public function whereBy(string $column, string $value): Builder
+    {
+        return Activity::query()
+            ->where($column, $value);
+    }
 }
