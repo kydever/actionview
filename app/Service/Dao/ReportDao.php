@@ -26,4 +26,23 @@ class ReportDao extends Service
             ->where('user', $userId)
             ->get();
     }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function get(string $key, string $mode, int $userId)
+    {
+        return Report::query()
+            ->where('project_key', $key)
+            ->where('mode', $mode)
+            ->where('user', $userId)
+            ->get();
+    }
+
+    public function deleteByIds(array $ids): int
+    {
+        return Report::query()
+            ->whereIn('id', $ids)
+            ->delete();
+    }
 }
