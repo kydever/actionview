@@ -18,14 +18,10 @@ class CreateActivityTable extends Migration
     final public function up(): void
     {
         Schema::create('activity', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('project_key', 32);
-            $table->json('data');
-            $table->string('event_key', 64);
-            $table->json('issue');
-            $table->unsignedBigInteger('issue_id');
-            $table->json('user');
-            $table->timestamps();
+            $table->addColumn('bigInteger', 'id', ['autoIncrement' => true, 'unsigned' => true]);
+            $table->addColumn('string', 'project_key', ['length' => 32])->default('');
+            $table->addColumn('dateTime', 'created_at', [])->default('2021-01-01 00:00:00');
+            $table->addColumn('dateTime', 'updated_at', [])->default('2021-01-01 00:00:00');
         });
     }
 
