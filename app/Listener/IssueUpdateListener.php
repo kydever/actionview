@@ -119,7 +119,9 @@ class IssueUpdateListener
                         if ($original[$key] != null) {
                             $original[$key] = $this->formatDate((int) $original[$key]);
                         }
-                        $value = $this->formatDate((int) $value);
+                        if ($data[$key] != null) {
+                            $value = $this->formatDate((int) $value);
+                        }
                         break;
                 }
                 if (! is_array($value)) {
