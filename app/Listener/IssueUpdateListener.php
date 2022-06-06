@@ -116,10 +116,10 @@ class IssueUpdateListener
                     case 'expect_start_time':
                     case 'expect_complete_time':
                     case 'original_estimate':
-                        $timestamp = (int) $original[$key];
-                        $original[$key] = $this->formatDate($timestamp);
-                        $timestamp = (int) $value;
-                        $value = $this->formatDate($timestamp);
+                        if ($original[$key] != null) {
+                            $original[$key] = $this->formatDate((int) $original[$key]);
+                        }
+                        $value = $this->formatDate((int) $value);
                         break;
                 }
                 if (! is_array($value)) {
