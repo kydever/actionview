@@ -115,11 +115,10 @@ class IssueUpdateListener
                 switch ($key) {
                     case 'expect_start_time':
                     case 'expect_complete_time':
-                    case 'original_estimate':
-                        if ($original[$key] != null) {
+                        if (! empty($original[$key])) {
                             $original[$key] = $this->formatDate((int) $original[$key]);
                         }
-                        if ($data[$key] != null) {
+                        if (! empty($data[$key])) {
                             $value = $this->formatDate((int) $value);
                         }
                         break;
