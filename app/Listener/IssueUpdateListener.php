@@ -83,14 +83,6 @@ class IssueUpdateListener
     }
 
     /**
-     * 将 Unix 时间戳转换为日期(年-月-日).
-     */
-    protected function formatDate(int $timestamp): string
-    {
-        return date('Y-m-d', $timestamp);
-    }
-
-    /**
      * 过滤一些字段.
      */
     protected function isIgnore(string $column): bool
@@ -116,10 +108,10 @@ class IssueUpdateListener
                     case 'expect_start_time':
                     case 'expect_complete_time':
                         if (! empty($original[$key])) {
-                            $original[$key] = $this->formatDate((int) $original[$key]);
+                            formatDate($original[$key]);
                         }
                         if (! empty($data[$key])) {
-                            $value = $this->formatDate((int) $value);
+                            formatDate($value);
                         }
                         break;
                 }

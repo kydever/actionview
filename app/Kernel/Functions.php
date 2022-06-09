@@ -23,6 +23,7 @@ use Hyperf\Utils\ApplicationContext;
 if (! function_exists('di')) {
     /**
      * Finds an entry of the container by its identifier and returns it.
+     *
      * @return mixed|\Psr\Container\ContainerInterface
      */
     function di(?string $id = null)
@@ -132,5 +133,35 @@ if (! function_exists('array_item_to_int')) {
             $result[$key] = (int) $item;
         }
         return $result;
+    }
+}
+
+/*
+ * 将 Unix 时间戳转换为日期.
+ */
+if (! function_exists('format')) {
+    function format(string $format, int &$timestamp): void
+    {
+        $timestamp = date($format, $timestamp);
+    }
+}
+
+/*
+ * 将 Unix 时间戳转换为日期(年-月-日).
+ */
+if (! function_exists('formatDate')) {
+    function formatDate(int &$timestamp): void
+    {
+        format('Y-m-d', $timestamp);
+    }
+}
+
+/*
+ * 将 Unix 时间戳转换为日期(年-月-日 时:分:秒).
+ */
+if (! function_exists('formatDateTime')) {
+    function formatDateTime(int &$timestamp): void
+    {
+        format('Y-m-d H:i:s', $timestamp);
     }
 }
