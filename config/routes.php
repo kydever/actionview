@@ -61,7 +61,8 @@ Router::addGroup('/', function () {
         Router::post('syssetting/sendtestmail', App\Controller\SysSettingController::class . '::sendTestMail');
 
         Router::get('user', App\Controller\UserController::class . '::index');
-        Router::post('user', App\Controller\UserController::class . '::store');
+        Router::post('user', [App\Controller\UserController::class, 'store']);
+        Router::put('user', [App\Controller\UserController::class, 'update']);
 
         Router::get('group', App\Controller\GroupController::class . '::index');
         Router::get('group/search', [App\Controller\GroupController::class, 'search']);

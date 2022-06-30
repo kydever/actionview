@@ -16,6 +16,7 @@ use App\Request\SessionCreateRequest;
 use App\Request\UserRegisterRequest;
 use App\Request\UserSearchRequest;
 use App\Request\UserStoreRequest;
+use App\Request\UserUpdateRequest;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\GroupService;
@@ -86,6 +87,15 @@ class UserController extends Controller
 
         return $this->response->success(
             $this->service->store(0, $request->all(), $user)
+        );
+    }
+
+    public function update(int $id, UserUpdateRequest $request)
+    {
+        $user = UserAuth::instance()->build()->getUser();
+
+        return $this->response->success(
+            $this->service->update($id, $request->all(), $user)
         );
     }
 }

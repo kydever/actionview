@@ -68,6 +68,11 @@ class ErrorCode extends AbstractConstants
     public const PASSWORD_NOT_EXIST = -10103;
 
     /**
+     * @Message("用户不存在")
+     */
+    public const USER_NOT_EXIST = -10106;
+
+    /**
      * @Message("用户组名称不能为空")
      */
     public const GROUP_NAME_NOT_EMPTY = -10200;

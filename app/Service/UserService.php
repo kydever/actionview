@@ -117,6 +117,41 @@ class UserService extends Service
      *     'first_name' => '',
      *     'email' => '',
      *     'phone' => '',
+     *     'invalid_flag' => 1,
+     * ]
+     */
+    public function update(int $id, array $input, User $user)
+    {
+        $model = $this->dao->first($id, true);
+        if (! empty($input['first_name'] ?? '')) {
+            $model->first_name = $input['first_name'];
+        }
+
+        if (! empty($input['email'])) {
+            if ($this->dao->firstByEmail($input['email'])) {
+                throw new BusinessException(ErrorCode::EMAIL_ALREADY_REGISTERED);
+            }
+            $model->email = $input['email'];
+        }
+
+        if (! empty($input['phone'])) {
+            $model->phone = $input['phone'];
+        }
+
+        if (isset($input['invalid_flag'])) {
+            $model->invalid_flag = $input['invalid_flag'];
+        }
+
+        $model->save();
+
+        return $this->formatter->base($model);
+    }
+
+    /**
+     * @param $input = [
+     *     'first_name' => '',
+     *     'email' => '',
+     *     'phone' => '',
      * ]
      */
     public function store(int $id, array $input, User $user)
