@@ -81,12 +81,16 @@ class WorklogService extends Service
         if (! di()->get(IssueDao::class)->isIssueExisted($project->key)) {
             throw new BusinessException(ErrorCode::ISSUE_NOT_FOUND);
         }
-        $attributes['recorder'] = [
-            'id' => $user->id,
-            'name' => $user->first_name,
-            'meail' => $user->email,
-        ];
+        $attributes['recorder'] = $user->toTiny();
         $model = $this->dao->create($project->key, $issueId, $attributes);
+        $attributes += ['eventKey' => 'add_worklog'];
+        $logs = [];
+        $logs['data'] = $attributes;
+        $logs['eventKey'] = 'add_worklog';
+        $logs['issue'] = di(IssueDao::class)->first($issueId, true);
+        $logs['user'] = $user->toSmall();
+        $logs['projectKey'] = $project->key;
+        di(ActivityService::class)->create(array_merge($logs, compact('issueId')));
 
         return $this->formatter->base($model);
     }

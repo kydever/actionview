@@ -21,9 +21,10 @@ class ActivityController extends Controller
 
     public function index()
     {
+        $key = get_project_key();
         $input = $this->request->all();
 
-        $result = $this->service->index($input);
+        $result = $this->service->index($key, $input);
 
         return $this->response->success($result, [
             'options' => [

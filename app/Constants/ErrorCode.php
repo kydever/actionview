@@ -23,6 +23,11 @@ class ErrorCode extends AbstractConstants
     public const SERVER_ERROR = -99999;
 
     /**
+     * @Message("缺少必要参数")
+     */
+    public const MISSING_PARAMETER = -99998;
+
+    /**
      * @Message("邮箱或密码错误")
      */
     public const USER_PASSWORD_INVALID = -10000;
