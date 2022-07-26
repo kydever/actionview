@@ -414,7 +414,7 @@ class ReportService extends Service
             $reports = $this->dao->get($key, $mode, $userId);
             $ids = [];
             foreach ($reports as $report) {
-                if (! in_array(($report->filters['id'] ?? null), $sequence)) {
+                if (! in_array($report->filters['id'] ?? null, $sequence)) {
                     $ids[] = $report->id;
                 }
             }

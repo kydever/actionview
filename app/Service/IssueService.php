@@ -52,6 +52,7 @@ use Hyperf\Database\Model\Collection;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
+
 use function Han\Utils\date_load;
 use function issue_key as ik;
 
@@ -532,7 +533,7 @@ class IssueService extends Service
         if ($from == 'export') {
             $export_fields = $request->input('export_fields');
             $this->export($project_key, isset($export_fields) ? explode(',', $export_fields) : [], $issues);
-            exit();
+            exit;
         }
 
         $watched_issue_ids = [];
