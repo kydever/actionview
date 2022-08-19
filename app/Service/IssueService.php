@@ -446,9 +446,16 @@ class IssueService extends Service
     {
         $bool = $this->getBoolSearch($project->key, $input, $user->id);
 
+        $orderBy = $input['orderBy'] ?? 'created_at desc';
+        $sort = [];
+        foreach (explode(',', $orderBy) as $item) {
+            $item = explode(' ', trim($item));
+            $sort[] = [$item[0], $item[1] ?? 'asc'];
+        }
+
         [$count, $ids] = $this->search->search([
             'query' => $bool,
-            'sort' => ['created_at' => 'desc'],
+            'sort' => $sort,
             'from' => $offset,
             'size' => $limit,
         ]);
@@ -460,156 +467,6 @@ class IssueService extends Service
         $options = ['total' => $count, 'sizePerPage' => $limit];
 
         return [$count, $result, $options];
-        // TODO: 看板
-        // $from = $request->input('from');
-        // $from_kanban_id = $request->input('from_kanban_id');
-        // if (in_array($from, [ 'kanban', 'active_sprint', 'backlog' ]) && $from_kanban_id)
-        // {
-        //     $board = Board::find($from_kanban_id);
-        //     if ($board && isset($board->query) && $board->query)
-        //     {
-        //         $global_query = $this->getIssueQueryWhere($project_key, $board->query);
-        //         $query->whereRaw($global_query);
-        //     }
-        //
-        //     if ($from === 'kanban')
-        //     {
-        //         $query->where(function ($query) {
-        //             $query->whereRaw([ 'resolve_version' => [ '$exists' => 0 ] ])->orWhere('resolve_version', '');
-        //         });
-        //     }
-        //     else if ($from === 'active_sprint' || $from === 'backlog')
-        //     {
-        //         $active_sprint_issues = [];
-        //         $active_sprint = Sprint::where('project_key', $project_key)->where('status', 'active')->first();
-        //         if ($from === 'active_sprint' && !$active_sprint)
-        //         {
-        //             Response()->json([ 'ecode' => 0, 'data' => []]);
-        //         }
-        //         else if ($active_sprint && isset($active_sprint['issues']) && $active_sprint['issues'])
-        //         {
-        //             $active_sprint_issues = $active_sprint['issues'];
-        //         }
-        //
-        //         $last_column_states = [];
-        //         if ($board && isset($board->columns))
-        //         {
-        //             $board_columns = $board->columns;
-        //             $last_column = array_pop($board_columns) ?: [];
-        //             if ($last_column && isset($last_column['states']) && $last_column['states'])
-        //             {
-        //                 $last_column_states = $last_column['states'];
-        //             }
-        //         }
-        //
-        //         $query->where(function ($query) use ($last_column_states, $active_sprint_issues) {
-        //             $query->whereRaw([ 'state' => [ '$nin' => $last_column_states ] ])->orWhereIn('no', $active_sprint_issues);
-        //         });
-        //     }
-        // }
-
-        // get total num
-        $total = $query->count();
-
-        $orderBy = $request->input('orderBy') ?: '';
-        if ($orderBy) {
-            $orderBy = explode(',', $orderBy);
-            foreach ($orderBy as $val) {
-                $val = explode(' ', trim($val));
-                $field = array_shift($val);
-                $sort = array_pop($val) ?: 'asc';
-                $query = $query->orderBy($field, $sort);
-            }
-        }
-
-        $query->orderBy('_id', isset($from) && $from != 'gantt' ? 'asc' : 'desc');
-
-        $page_size = $request->input('limit') ? intval($request->input('limit')) : 50;
-        // $page_size = 200;
-        $page = $request->input('page') ?: 1;
-        $query = $query->skip($page_size * ($page - 1))->take($page_size);
-        $issues = $query->get();
-
-        if ($from == 'export') {
-            $export_fields = $request->input('export_fields');
-            $this->export($project_key, isset($export_fields) ? explode(',', $export_fields) : [], $issues);
-            exit;
-        }
-
-        $watched_issue_ids = [];
-        if (! isset($from)) {
-            $watched_issues = Watch::where('project_key', $project_key)
-                ->where('user.id', $this->user->id)
-                ->get()
-                ->toArray();
-            $watched_issue_ids = array_column($watched_issues, 'issue_id');
-        }
-
-        $cache_parents = [];
-        $issue_ids = [];
-        foreach ($issues as $key => $issue) {
-            $issue_ids[] = $issue['_id']->__toString();
-            // set issue watching flag
-            if (in_array($issue['_id']->__toString(), $watched_issue_ids)) {
-                $issues[$key]['watching'] = true;
-            }
-
-            // get the parent issue
-            if (isset($issue['parent_id']) && $issue['parent_id']) {
-                if (isset($cache_parents[$issue['parent_id']]) && $cache_parents[$issue['parent_id']]) {
-                    $issues[$key]['parent'] = $cache_parents[$issue['parent_id']];
-                } else {
-                    $parent = DB::collection('issue_' . $project_key)->where('_id', $issue['parent_id'])->first();
-                    $issues[$key]['parent'] = $parent ? Arr::only($parent, ['_id', 'title', 'no', 'type', 'state']) : [];
-                    $cache_parents[$issue['parent_id']] = $issues[$key]['parent'];
-                }
-            }
-
-            if (! isset($from)) {
-                $issues[$key]['hasSubtasks'] = DB::collection('issue_' . $project_key)
-                    ->where('parent_id', $issue['_id']->__toString())
-                    ->where('del_flg', '<>', 1)
-                    ->exists();
-            }
-        }
-
-        if ($issues && in_array($from, ['kanban', 'active_sprint', 'backlog', 'his_sprint'])) {
-            $filter = $request->input('filter') ?: '';
-            $issues = $this->arrangeIssues($project_key, $issues, $from, $from_kanban_id, $filter === 'all');
-        }
-
-        $options = ['total' => $total, 'sizePerPage' => $page_size];
-
-        if ($from == 'gantt') {
-            foreach ($issues as $key => $issue) {
-                $issues[$key]['links'] = $this->getLinks($project_key, $issue);
-                if (! isset($issue['parent_id']) || ! $issue['parent_id'] || in_array($issue['parent_id'], $issue_ids)) {
-                    continue;
-                }
-                if (isset($issue['parent']) && $issue['parent']) {
-                    $issues[] = $issue['parent'];
-                    $issue_ids[] = $issue['parent_id'];
-                }
-            }
-
-            $singulars = CalendarSingular::all();
-            $new_singulars = [];
-            foreach ($singulars as $singular) {
-                $tmp = [];
-                $tmp['notWorking'] = $singular->type == 'holiday' ? 1 : 0;
-                $tmp['date'] = $singular->date;
-                $new_singulars[] = $tmp;
-            }
-            $options['singulars'] = $new_singulars;
-            $options['today'] = date('Y/m/d');
-        }
-
-        $requested_at = $request->input('requested_at');
-        if ($requested_at) {
-            $options['requested_at'] = intval($requested_at);
-        }
-
-        return Response()->json(['ecode' => 0, 'data' => parent::arrange($issues), 'options' => $options]);
     }
 
     public function getAllOptions(int $userId, Project $project): array
