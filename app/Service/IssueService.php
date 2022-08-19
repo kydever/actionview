@@ -450,7 +450,7 @@ class IssueService extends Service
         $sort = [];
         foreach (explode(',', $orderBy) as $item) {
             $item = explode(' ', trim($item));
-            $sort[] = [$item[0], $item[1] ?? 'asc'];
+            $sort[] = [$item[0] => $item[1] ?? 'asc'];
         }
 
         [$count, $ids] = $this->search->search([
