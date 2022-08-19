@@ -51,6 +51,7 @@
         "limingxinleo/hyperf-utils": "^3.1",
         "ongr/elasticsearch-dsl": "^7.2",
         "overtrue/flysystem-qiniu": "^2.0",
+        "qiniu/php-sdk": "dev-master as v7.6.1",
         "yurunsoft/phpmailer-swoole": "^1.0"
     },
     "require-dev": {

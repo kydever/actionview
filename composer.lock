@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f807532b24e4db4956804777ef705ac0",
+    "content-hash": "d52f208038a7d21d6d1760262436e273",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -4363,16 +4363,16 @@
         },
         {
             "name": "qiniu/php-sdk",
-            "version": "v7.6.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/qiniu/php-sdk.git",
-                "reference": "57033fab64c92f8c7ae165222dd958553741e711"
+                "reference": "dcce3da83fa163ceb089858a47b9cbe9f4327f15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/qiniu/php-sdk/zipball/57033fab64c92f8c7ae165222dd958553741e711",
-                "reference": "57033fab64c92f8c7ae165222dd958553741e711",
+                "url": "https://api.github.com/repos/qiniu/php-sdk/zipball/dcce3da83fa163ceb089858a47b9cbe9f4327f15",
+                "reference": "dcce3da83fa163ceb089858a47b9cbe9f4327f15",
                 "shasum": ""
             },
             "require": {
@@ -4384,6 +4384,7 @@
                 "phpunit/phpunit": "~4.0",
                 "squizlabs/php_codesniffer": "~3.6"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -4414,9 +4415,9 @@
             ],
             "support": {
                 "issues": "https://github.com/qiniu/php-sdk/issues",
-                "source": "https://github.com/qiniu/php-sdk/tree/v7.6.0"
+                "source": "https://github.com/qiniu/php-sdk/tree/master"
             },
-            "time": "2022-06-08T10:05:47+00:00"
+            "time": "2022-08-18T07:26:51+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -9092,9 +9093,17 @@
             "time": "2022-06-03T18:03:27+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "qiniu/php-sdk",
+            "version": "9999999-dev",
+            "alias": "v7.6.1",
+            "alias_normalized": "7.6.1.0"
+        }
+    ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "qiniu/php-sdk": 20,
         "swoole/ide-helper": 20
     },
     "prefer-stable": true,
