@@ -450,7 +450,11 @@ class IssueService extends Service
         $sort = [];
         foreach (explode(',', $orderBy) as $item) {
             $item = explode(' ', trim($item));
-            $sort[] = [$item[0] => $item[1] ?? 'asc'];
+            $key = match ($item[0]) {
+                'assignee' => 'assignee.id',
+                default => $item[0],
+            };
+            $sort[] = [$key => $item[1] ?? 'asc'];
         }
 
         [$count, $ids] = $this->search->search([
