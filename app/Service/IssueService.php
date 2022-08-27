@@ -600,7 +600,7 @@ class IssueService extends Service
                                     'term' => ['no' => intval($val)],
                                 ],
                                 [
-                                    'match' => [ik('title') => $val],
+                                    'match_phrase' => [ik('title') => $val],
                                 ],
                             ],
                         ],
@@ -626,7 +626,11 @@ class IssueService extends Service
                         ],
                     ];
                 } else {
-                    $bool['must'][] = ['match' => [ik('title') => $val]];
+                    if (str_contains($val, ' ')) {
+                        $bool['must'][] = ['match' => [ik('title') => $val]];
+                    } else {
+                        $bool['must'][] = ['match_phrase' => [ik('title') => $val]];
+                    }
                 }
             } elseif ($key === 'sprints') {
                 $bool['must'][] = ['term' => [ik('sprints') => intval($val)]];
