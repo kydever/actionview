@@ -199,7 +199,7 @@ class IssueSearch extends ElasticSearch
     {
         $aggs = [];
         foreach ($fields as $field => $value) {
-            $aggs[$field] = ['terms' => ['field' => $value]];
+            $aggs[$field] = ['terms' => ['field' => $value, 'size' => 20]];
         }
         $params = [
             'index' => $this->index(),
@@ -209,7 +209,6 @@ class IssueSearch extends ElasticSearch
                     'cnt' => [
                         'filter' => $bool,
                         'aggs' => $aggs,
-                        'size' => 20,
                     ],
                 ],
                 'size' => 0,
