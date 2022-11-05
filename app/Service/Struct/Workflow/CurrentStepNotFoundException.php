@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service\Struct\Workflow;
 
-class CurrentStepNotFoundException extends \UnexpectedValueException
+use UnexpectedValueException;
+
+class CurrentStepNotFoundException extends UnexpectedValueException
 {
 }

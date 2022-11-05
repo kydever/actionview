@@ -52,6 +52,7 @@ use Hyperf\Database\Model\Collection;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
+use Throwable;
 
 use function Han\Utils\date_load;
 use function issue_key as ik;
@@ -193,7 +194,7 @@ class IssueService extends Service
             }
 
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -313,7 +314,7 @@ class IssueService extends Service
             }
 
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -344,7 +345,7 @@ class IssueService extends Service
                 $entry = di()->get(OswfEntryDao::class)->first($issue->data['entry_id'], false);
                 $wf = new Workflow($entry);
                 $result['wfactions'] = $wf->getAvailableActions(['project_key' => $project->key, 'issue_id' => $issue->id, 'caller' => $user->toSmall()]);
-            } catch (\Throwable $exception) {
+            } catch (Throwable $exception) {
                 di()->get(StdoutLoggerInterface::class)->error((string) $exception);
                 $result['wfactions'] = [];
             }
@@ -642,7 +643,7 @@ class IssueService extends Service
                 $userIds = array_values(array_filter($userIds, static function ($value) {
                     return is_numeric($value);
                 }));
-                $bool['must'][] = ['terms' => [ik($key . '.' . 'id') => $userIds]];
+                $bool['must'][] = ['terms' => [ik($key . '.id') => $userIds]];
             } elseif ($fieldsMapping[$key] === Schema::FIELD_MULTI_USER) {
                 $userIds = [];
                 $vals = explode(',', $val);
@@ -802,7 +803,7 @@ class IssueService extends Service
         try {
             $issue->save();
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -839,7 +840,7 @@ class IssueService extends Service
             // TODO: Histroy Table
 
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -1038,7 +1039,7 @@ class IssueService extends Service
             );
 
             $issue->pushToSearch();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             di()->get(StdoutLoggerInterface::class)->warning((string) $e);
             throw new BusinessException(ErrorCode::ISSUE_DO_ACTION_ID_CANNOT_EMPTY);
         }

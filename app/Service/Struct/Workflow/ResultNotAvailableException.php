@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service\Struct\Workflow;
 
-class ResultNotAvailableException extends \UnexpectedValueException
+use UnexpectedValueException;
+
+class ResultNotAvailableException extends UnexpectedValueException
 {
 }

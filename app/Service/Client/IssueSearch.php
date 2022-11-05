@@ -211,7 +211,7 @@ class IssueSearch extends ElasticSearch
                         'aggs' => $aggs,
                     ],
                 ],
-                'size' => 0,
+                'size' => 100,
             ],
         ];
 

@@ -20,6 +20,7 @@ use App\Service\Formatter\SysSettingFormatter;
 use Han\Utils\Service;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
+use Throwable;
 
 class SysSettingService extends Service
 {
@@ -81,7 +82,7 @@ class SysSettingService extends Service
 
             $this->handleUserPermission('sys_admin', $addedUserIds, $deletedUserIds);
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -129,7 +130,7 @@ class SysSettingService extends Service
         try {
             $client = new EmailSender(...$setting->getSmtp());
             $client->send($subject, $contents, [$to]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->logger->error((string) $e);
             throw new BusinessException(ErrorCode::MAIL_SEND_FAILED, $e->getMessage());
         }

@@ -42,6 +42,7 @@ use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 class ProjectService extends Service
 {
@@ -238,7 +239,7 @@ class ProjectService extends Service
                 di()->get(EventDispatcherInterface::class)->dispatch(new DelUserFromRoleEvent([$principalId], $model->key));
             }
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -282,7 +283,7 @@ class ProjectService extends Service
 
             di()->get(EventDispatcherInterface::class)->dispatch(new AddUserToRoleEvent([$project->getPrincipal()['id']], $project->key));
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
 
             throw $exception;

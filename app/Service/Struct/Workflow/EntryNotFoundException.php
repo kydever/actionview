@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service\Struct\Workflow;
 
-class EntryNotFoundException extends \UnexpectedValueException
+use UnexpectedValueException;
+
+class EntryNotFoundException extends UnexpectedValueException
 {
 }

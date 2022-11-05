@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace App\Service\Struct\Workflow;
 
-class ConfigNotFoundException extends \UnexpectedValueException
+use UnexpectedValueException;
+
+class ConfigNotFoundException extends UnexpectedValueException
 {
 }

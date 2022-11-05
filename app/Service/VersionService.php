@@ -29,6 +29,7 @@ use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Utils\Arr;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 class VersionService extends Service
 {
@@ -83,7 +84,7 @@ class VersionService extends Service
             $version->save();
             di()->get(EventDispatcherInterface::class)->dispatch(new VersionEvent($version));
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -128,7 +129,7 @@ class VersionService extends Service
             $model->save();
             di()->get(EventDispatcherInterface::class)->dispatch(new VersionEvent($model));
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -188,7 +189,7 @@ class VersionService extends Service
             }
 
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }
@@ -303,7 +304,7 @@ class VersionService extends Service
                 $issue->save();
             }
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
             throw $exception;
         }

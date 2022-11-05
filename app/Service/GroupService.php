@@ -27,6 +27,7 @@ use Hyperf\Cache\Annotation\CachePut;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 class GroupService extends Service
 {
@@ -145,7 +146,7 @@ class GroupService extends Service
             $model->delete();
             di()->get(EventDispatcherInterface::class)->dispatch(new DeleteGroupEvent($id));
             Db::commit();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Db::rollBack();
 
             throw $exception;
