@@ -209,9 +209,10 @@ class IssueSearch extends ElasticSearch
                     'cnt' => [
                         'filter' => $bool,
                         'aggs' => $aggs,
+                        'size' => 20,
                     ],
                 ],
-                'size' => 100,
+                'size' => 0,
             ],
         ];
 
