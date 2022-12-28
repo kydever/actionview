@@ -56,7 +56,7 @@ class ReportController extends Controller
 
     public function getTrends()
     {
-        [ $data, $options ] = $this->service->getTrends($this->request->all());
+        [$data, $options] = $this->service->getTrends($this->request->all());
 
         return $this->response->success($data, $options);
     }
