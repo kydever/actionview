@@ -204,6 +204,7 @@ class ReportService extends Service
                     'new' => $value['created_cnt'] ?? 0,
                     'resolved' => $value['resolved_cnt'] ?? 0,
                     'closed' => $value['closed_cnt'] ?? 0,
+                    'category' => $date,
                 ];
             }
         }
