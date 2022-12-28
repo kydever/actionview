@@ -160,7 +160,7 @@ class IssueSearch extends ElasticSearch
      *     ],
      * ]
      */
-    public function countDaily(string $key, ?Carbon $begin = null): array
+    public function countDaily(string $key, ?Carbon $begin = null, ?Carbon $end = null, string $interval = 'day', array $boolSearch = []): array
     {
         $search = new Search();
         $bool = new BoolQuery();
@@ -169,13 +169,25 @@ class IssueSearch extends ElasticSearch
         if ($begin) {
             $bool->add(new RangeQuery('created_at', [RangeQuery::GTE => $begin->toDateTimeString()]));
         }
+        if ($end) {
+            $bool->add(new RangeQuery('created_at', [RangeQuery::LTE => $end->toDateTimeString()]));
+        }
+
+        $format = match ($interval) {
+            'month' => 'yyyy/MM',
+            default => 'yyyy/MM/dd',
+        };
         $body = $search
             ->addQuery($bool)
-            ->addAggregation(new DateHistogramAggregation('created_cnt', 'created_at', 'day', 'yyyy/MM/dd'))
-            ->addAggregation(new DateHistogramAggregation('resolved_cnt', 'resolved_at', 'day', 'yyyy/MM/dd'))
-            ->addAggregation(new DateHistogramAggregation('closed_cnt', 'closed_at', 'day', 'yyyy/MM/dd'))
+            ->addAggregation(new DateHistogramAggregation('created_cnt', 'created_at', $interval, $format))
+            ->addAggregation(new DateHistogramAggregation('resolved_cnt', 'resolved_at', $interval, $format))
+            ->addAggregation(new DateHistogramAggregation('closed_cnt', 'closed_at', $interval, $format))
             ->setSize(0)
             ->toArray();
+
+        if ($boolSearch) {
+            $body['query']['bool']['must'][] = $boolSearch;
+        }
 
         $res = $this->client()->search([
             'index' => $this->index(),

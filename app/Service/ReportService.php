@@ -152,30 +152,30 @@ class ReportService extends Service
                 $results[] = ['id' => $key, 'name' => $value['name'], 'cnt' => $res[$x][$key] ?? 0];
             }
         }
-//            foreach ($data[$x] as $key => $value) {
-//                $results[$key] = ['id' => $key, 'name' => $value['name'], 'y' => []];
-//                $x_cnt = 0;
-//
-//                if ($YAxis) {
-//                    foreach ($YAxis as $yai => $yav) {
-//                        if (isset($data[$Y][$yai])) {
-//                            $y_cnt = count(array_intersect($value['nos'], $data[$Y][$yai]['nos']));
-//                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => $y_cnt];
-//                            $x_cnt += $y_cnt;
-//                        } else {
-//                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => 0];
-//                        }
-//                    }
-//                } else {
-//                    foreach ($data[$y] as $key2 => $value2) {
-//                        $y_cnt = count(array_intersect($value['nos'], $value2['nos']));
-//
-//                        $results[$key]['y'][] = ['id' => $key2, 'name' => $value2['name'], 'cnt' => $y_cnt];
-//                        $x_cnt += $y_cnt;
-//                    }
-//                }
-//                $results[$key]['cnt'] = $x_cnt;
-//            }
+        //            foreach ($data[$x] as $key => $value) {
+        //                $results[$key] = ['id' => $key, 'name' => $value['name'], 'y' => []];
+        //                $x_cnt = 0;
+        //
+        //                if ($YAxis) {
+        //                    foreach ($YAxis as $yai => $yav) {
+        //                        if (isset($data[$Y][$yai])) {
+        //                            $y_cnt = count(array_intersect($value['nos'], $data[$Y][$yai]['nos']));
+        //                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => $y_cnt];
+        //                            $x_cnt += $y_cnt;
+        //                        } else {
+        //                            $results[$key]['y'][] = ['id' => $yai, 'name' => $yav, 'cnt' => 0];
+        //                        }
+        //                    }
+        //                } else {
+        //                    foreach ($data[$y] as $key2 => $value2) {
+        //                        $y_cnt = count(array_intersect($value['nos'], $value2['nos']));
+        //
+        //                        $results[$key]['y'][] = ['id' => $key2, 'name' => $value2['name'], 'cnt' => $y_cnt];
+        //                        $x_cnt += $y_cnt;
+        //                    }
+        //                }
+        //                $results[$key]['cnt'] = $x_cnt;
+        //            }
 
         return array_values($results);
     }
@@ -189,11 +189,51 @@ class ReportService extends Service
             throw new BusinessException(ErrorCode::FILTER_NAME_CANNOT_EMPTY);
         }
 
-        $isAccu = $attributes['is_accu'] == 1 ? true : false;
         $project = di()->get(ProjectDao::class)->firstByKey($project->key, true);
+
+        $where = di()->get(IssueService::class)->getBoolSearch($project->key, $attributes, $user->id);
+        $res = di()->get(IssueSearch::class)->countDaily($project->key, interval: $interval, boolSearch: $where);
+
+        [$startStatTime, $endStatTime] = $this->getStatTime($project, $attributes);
+
+        $results = $this->getInitializedTrendData($interval, $startStatTime, $endStatTime);
+
+        foreach ($results as $date => $item) {
+            if ($value = $res[$date] ?? null) {
+                $results[$date] = [
+                    'new' => $value['created_cnt'] ?? 0,
+                    'resolved' => $value['resolved_cnt'] ?? 0,
+                    'closed' => $value['closed_cnt'] ?? 0,
+                ];
+            }
+        }
+
+        $data = array_values($results);
+        $options = [
+            'trend_start_stat_date' => date('Y/m/d', $startStatTime),
+            'trend_end_stat_date' => date('Y/m/d', $endStatTime),
+        ];
+
+        return [$data, $options];
+    }
+
+    public function convDate(string $interval, int $at): string
+    {
+        if ($interval == 'week') {
+            $n = date('N', $at);
+
+            return date('Y/m/d', $at - ($n - 1) * 24 * 3600);
+        }
+        if ($interval == 'month') {
+            return date('Y/m', $at);
+        }
+        return date('Y/m/d', $at);
+    }
+
+    public function getStatTime(Project $project, array $attributes): array
+    {
         $startStatTime = strtotime((string) $project->created_at);
         $endStatTime = time();
-        $where = di()->get(IssueService::class)->getBoolSearch($project->key, $attributes, $user->id);
         $statTime = $attributes['stat_time'] ?? null;
         if (! is_null($statTime)) {
             $or = [];
@@ -227,90 +267,23 @@ class ReportService extends Service
             }
         }
 
-        $results = $this->getInitializedTrendData($interval, $startStatTime, $endStatTime);
-        $issues = di()->get(IssueService::class)->getByProjectKey($project->key);
-        $lists = di()->get(IssueFormatter::class)->formatList($issues);
-        foreach ($lists as $list) {
-            $createdAt = $list['created_at'] ?? null;
-            if (! is_null($createdAt)) {
-                $createdDate = $this->convDate($interval, $createdAt);
-                if ($isAccu) {
-                    foreach ($results as $key => $val) {
-                        if ($key >= $createdDate) {
-                            ++$results[$key]['new'];
-                        }
-                    }
-                } elseif (isset($results[$createdDate]) && $list[$createdAt] >= $startStatTime) {
-                    ++$results[$createdDate]['new'];
-                }
-            }
-
-            $resolvedAt = $list['resolved_at'] ?? null;
-            if (! is_null($resolvedAt)) {
-                $resolvedDate = $this->convDate($interval, $resolvedAt);
-                if ($isAccu) {
-                    foreach ($results as $key => $val) {
-                        if ($key >= $resolvedDate) {
-                            ++$results[$key]['resolved'];
-                        }
-                    }
-                } elseif (isset($results[$resolvedDate]) && $list['resolved_at'] >= $startStatTime) {
-                    ++$results[$resolvedDate]['resolved'];
-                }
-            }
-
-            $closedAt = $list['closed_at'] ?? null;
-            if (! is_null($closedAt)) {
-                $clsoedAt = $this->convDate($interval, $closedAt);
-                if ($isAccu) {
-                    foreach ($results as $key => $val) {
-                        if ($key >= $closedAt) {
-                            ++$results[$key]['closed'];
-                        }
-                    }
-                } elseif (isset($results[$closedAt]) && $list['closed_at'] >= $startStatTime) {
-                    ++$results[$closedAt]['closed'];
-                }
-            }
-        }
-
-        $data = array_values($results);
-        $options = [
-            'trend_start_stat_date' => date('Y/m/d', $startStatTime),
-            'trend_end_stat_date' => date('Y/m/d', $endStatTime),
-        ];
-
-        return [$data, $options];
-    }
-
-    public function convDate(string $interval, int $at): string
-    {
-        if ($interval == 'week') {
-            $n = date('N', $at);
-
-            return date('Y/m/d', $at - ($n - 1) * 24 * 3600);
-        }
-        if ($interval == 'month') {
-            return date('Y/m', $at);
-        }
-        return date('Y/m/d', $at);
+        return [$startStatTime, $endStatTime];
     }
 
     public function getInitializedTrendData(string $interval, int $startStatTime, int $endStatTime): array
     {
         $results = [];
         $t = $endStatTime;
-        if ($interval = 'month') {
-            $t = strtotime(date('Y/m/t', $endStatTime));
+        if ($interval == 'month') {
+            $t = strtotime(date('Y/m/d', $endStatTime));
         } elseif ($interval == 'week') {
             $n = date('N', $endStatTime);
             $t = strtotime(date('Y/m/d', $endStatTime) . '+' . (7 - $n) . ' day');
         } else {
             $t = strtotime(date('Y/m/d', $endStatTime));
         }
-        $i = 0;
         $days = [];
-        for (; $t >= $startStatTime && $i < 100; ++$i) {
+        for ($i = 0; $t >= $startStatTime && $i < 100; ++$i) {
             $tmp = [
                 'new' => 0,
                 'resolved' => 0,
